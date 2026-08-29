@@ -12,7 +12,7 @@ body{
 
 /* Encabezado */
 header{
-    background: #B47801;
+    background: #D4954D;
     color:white;
     padding:20px;
     text-align:center;
@@ -24,7 +24,7 @@ header h1{
 
 /* Menú */
 nav{
-    background:#BB8B2A;
+    background:#775533;
     padding:15px;
     text-align:center;
 }
@@ -49,7 +49,7 @@ nav a:hover{
 
 .hero h2{
     margin-bottom:15px;
-    color:#9E6900;
+    color: #252525;
 }
 
 .hero p{
@@ -71,7 +71,7 @@ nav a:hover{
 .vr-container h2{
     text-align:center;
     padding:20px;
-    background:#0a192f;
+    background:#290024;
     color:white;
 }
 
@@ -104,7 +104,7 @@ a-scene{
 
 /* Footer */
 footer{
-    background:#B47801;
+    background: #;
     color:white;
     text-align:center;
     padding:20px;
@@ -123,7 +123,7 @@ body{
     width:fit-content;
     margin:20px auto;
     padding:10px 20px;
-    background:#D3A857;
+    background:#676127;
     border-radius:12px;
 }
 
@@ -139,7 +139,7 @@ body{
 }
 
 .tabs button:hover{
-    background:#B47801;
+    background:#35321E;
 }
 
 #visor{
@@ -147,7 +147,7 @@ body{
     height:90vh;
     border:none;
     border-radius:10px;
-    box-shadow:0 0 15px#B47801;
+    box-shadow:0 0 15px#A9A135  ;
     display:block;
     margin:auto; 
 }
