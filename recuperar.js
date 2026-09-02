@@ -7,7 +7,7 @@ const mensaje = document.getElementById("mensaje");
 
 function mostrar(texto, tipo = "error") {
     mensaje.textContent = texto;
-    mensaje.className = "mensdaje" + (texto ? tipo : "");
+    mensaje.className = "mensaje" + (texto ? tipo : "");
 }
 
 formulario.addEventListener("submit", async evento => {
