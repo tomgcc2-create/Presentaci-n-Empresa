@@ -13,13 +13,14 @@ import {
     getDoc
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-export async function registrar(nombre, email, password) {
+export async function registrar(nombre, email, password, apellido = "") {
     const credencial = await createUserWithEmailAndPassword(auth, email, password);
 
     await updateProfile(credencial.user, { displayName: nombre });
 
     await setDoc(doc(db, "usuarios", credencial.user.uid), {
         nombre,
+        apellido,
         email,
         rol: "usuario"
     });
