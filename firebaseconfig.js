@@ -3,12 +3,13 @@ import { getAuth } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth
 import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 export const firebaseConfig = {
-  apiKey: "AIzaSyDFHe0xWDU8Uisue0LH4tjAIgO6R0tlxCc",
-  authDomain: "empresa-bd2fc.firebaseapp.com",
-  projectId: "empresa-bd2fc",
-  storageBucket: "empresa-bd2fc.firebasestorage.app",
-  messagingSenderId: "490000723314",
-  appId: "1:490000723314:web:7f63facd37d496465e01eb"
+ apiKey: "AIzaSyAATokjcROkb3-9mkDqL8buOaC0ISJll-k",
+  authDomain: "pricenice-bc139.firebaseapp.com",
+  projectId: "pricenice-bc139",
+  storageBucket: "pricenice-bc139.firebasestorage.app",
+  messagingSenderId: "319905538353",
+  appId: "1:319905538353:web:5166dfa5e987a85f82d010",
+  measurementId: "G-BL4N3BGZS9"
 };
 
 export const app = initializeApp(firebaseConfig);
