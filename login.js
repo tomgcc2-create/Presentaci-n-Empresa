@@ -3,11 +3,13 @@ import { registrar, iniciarSesion, cerrarSesion, observarSesion, mensajeError } 
 const formulario      = document.getElementById("formulario");
 const campoNombre     = document.getElementById("campoNombre");
 const campoApellido   = document.getElementById("campoApellido");
+const campoRol        = document.getElementById("campoRol");
 const campoTerminos   = document.getElementById("campoTerminos");
 const nombre          = document.getElementById("nombre");
 const apellido        = document.getElementById("apellido");
 const email           = document.getElementById("email");
 const password        = document.getElementById("password");
+const rol             = document.getElementById("rol");
 const iAgree          = document.getElementById("iAgree");
 const enviar          = document.getElementById("enviar");
 const mensaje         = document.getElementById("mensaje");
@@ -22,28 +24,18 @@ let modo = "ingresar";
 // ---------- Observar si ya hay sesión activa ----------
 observarSesion(usuario => {
     if (usuario) {
-        // Ocultar formulario y secciones de login
-        formulario.hidden = true;
-        tabIngresar.parentElement.parentElement.parentElement.hidden = true;
-        mensaje.hidden = true;
-        document.querySelectorAll(".card-body > .row").forEach(row => {
-            if (row.querySelector("hr") || row.querySelector(".d-flex.gap-2")) {
-                row.hidden = true;
-            }
-        });
-
-        // Mostrar panel del usuario logueado
+        formulario.hidden        = true;
+        panelLogueado.hidden     = false;
+        mensaje.hidden           = true;
+        document.getElementById("seccionTabs").hidden  = true;
+        document.getElementById("seccionLinks").hidden = true;
         correoUsuario.textContent = "📧 " + usuario.email;
-        panelLogueado.hidden = false;
     } else {
-        // Mostrar formulario, ocultar panel
-        formulario.hidden = false;
-        tabIngresar.parentElement.parentElement.parentElement.hidden = false;
-        mensaje.hidden = false;
-        document.querySelectorAll(".card-body > .row").forEach(row => {
-            row.hidden = false;
-        });
-        panelLogueado.hidden = true;
+        formulario.hidden        = false;
+        panelLogueado.hidden     = true;
+        mensaje.hidden           = false;
+        document.getElementById("seccionTabs").hidden  = false;
+        document.getElementById("seccionLinks").hidden = false;
     }
 });
 
@@ -70,6 +62,7 @@ function cambiarModo(nuevo) {
 
     campoNombre.hidden   = !registrando;
     campoApellido.hidden = !registrando;
+    campoRol.hidden      = !registrando;
     campoTerminos.hidden = !registrando;
 
     nombre.required   = registrando;
@@ -109,7 +102,8 @@ formulario.addEventListener("submit", async evento => {
                 nombre.value.trim(),
                 email.value.trim(),
                 password.value,
-                apellido.value.trim()
+                apellido.value.trim(),
+                rol.value
             );
         } else {
             await iniciarSesion(email.value.trim(), password.value);
