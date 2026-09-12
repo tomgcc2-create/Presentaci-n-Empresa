@@ -1,4 +1,4 @@
-import { registrar, iniciarSesion, cerrarSesion, observarSesion, mensajeError } from "./auth.js";
+import { registrar, iniciarSesion, cerrarSesion, observarSesion, obtenerRol, mensajeError } from "./auth.js";
 
 const formulario      = document.getElementById("formulario");
 const campoNombre     = document.getElementById("campoNombre");
@@ -21,15 +21,26 @@ const btnCerrarSesion = document.getElementById("btnCerrarSesion");
 
 let modo = "ingresar";
 
+// ---------- Mapa de roles a páginas ----------
+const paginaPorRol = {
+    "usuario":      "usuario.html",
+    "vendedor":     "vendedor.html",
+    "verificador":  "verificador.html",
+    "patrocinador": "patrocinador.html",
+    "dueño":        "dueño.html"
+};
+
+async function redirigirPorRol(usuario) {
+    const rol = await obtenerRol(usuario.uid);
+    const destino = paginaPorRol[rol] || "usuario.html";
+    window.location.href = destino;
+}
+
 // ---------- Observar si ya hay sesión activa ----------
 observarSesion(usuario => {
     if (usuario) {
-        formulario.hidden        = true;
-        panelLogueado.hidden     = false;
-        mensaje.hidden           = true;
-        document.getElementById("seccionTabs").hidden  = true;
-        document.getElementById("seccionLinks").hidden = true;
-        correoUsuario.textContent = "📧 " + usuario.email;
+        // Si ya hay sesión y el usuario navega a login, redirigir directo
+        redirigirPorRol(usuario);
     } else {
         formulario.hidden        = false;
         panelLogueado.hidden     = true;
@@ -97,8 +108,9 @@ formulario.addEventListener("submit", async evento => {
     mostrar("Verificando...", "info");
 
     try {
+        let usuarioActual;
         if (modo === "registrar") {
-            await registrar(
+            usuarioActual = await registrar(
                 nombre.value.trim(),
                 email.value.trim(),
                 password.value,
@@ -106,9 +118,10 @@ formulario.addEventListener("submit", async evento => {
                 rol.value
             );
         } else {
-            await iniciarSesion(email.value.trim(), password.value);
+            usuarioActual = await iniciarSesion(email.value.trim(), password.value);
         }
-        // observarSesion se encargará de mostrar el panel
+        mostrar("¡Acceso correcto! Redirigiendo...", "info");
+        await redirigirPorRol(usuarioActual);
     } catch (error) {
         mostrar(mensajeError(error));
         enviar.disabled = false;
