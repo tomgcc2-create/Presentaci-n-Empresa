@@ -64,7 +64,9 @@ export function mensajeError(error) {
         "auth/network-request-failed": "Sin conexión con Firebase.",
         "auth/operation-not-allowed": "Activa Email/Contraseña en Firebase Authentication.",
         "auth/invalid-api-key": "Revisa los datos de firebase-config.js",
-        "auth/api-key-not-valid-please-pass-a-valid-api-key": "Falta pegar tus claves reales en firebase-config.js."
+        "auth/api-key-not-valid-please-pass-a-valid-api-key": "Falta pegar tus claves reales en firebase-config.js.",
+        "auth/missing-email": "Escribe tu correo electrónico.",
+        "auth/user-disabled": "Esta cuenta ha sido deshabilitada. Contacta al soporte."
     };
 
     return codigos[error?.code] || "Ocurrió un error: " + (error.message || error);
