@@ -27,7 +27,7 @@
                     </a>
                   </div>
                   <!-- Pestañas Ingresar / Registrar -->
-                  <div class="d-flex justify-content-center gap-3 mb-3">
+                  <div id="seccionTabs" class="d-flex justify-content-center gap-3 mb-3">
                     <button id="tabIngresar" class="btn btn-primary">Ingresar</button>
                     <button id="tabRegistrar" class="btn btn-outline-primary">Registrarse</button>
                   </div>
@@ -66,6 +66,18 @@
                     <label for="password" class="form-label">Contraseña</label>
                   </div>
                 </div>
+                <div class="col-12" id="campoRol" hidden>
+                  <div class="form-floating mb-3">
+                    <select class="form-select" id="rol">
+                      <option value="usuario">Usuario</option>
+                      <option value="vendedor">Vendedor</option>
+                      <option value="verificador">Verificador</option>
+                      <option value="patrocinador">Patrocinador</option>
+                      <option value="dueño">Dueño</option>
+                    </select>
+                    <label for="rol">Tipo de usuario</label>
+                  </div>
+                </div>
                 <div class="col-12" id="campoTerminos" hidden>
                   <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="" name="iAgree" id="iAgree">
@@ -101,7 +113,7 @@
                 <a href="Index.html" class="link-primary text-decoration-none">← Volver al inicio</a>
               </p>
             </div>
-            <div class="row">
+            <div id="seccionLinks" class="row">
               <div class="col-12">
                 <hr class="mt-5 mb-4 border-secondary-subtle">
               <p class="m-0 text-secondary text-center">¿Olvidaste tu contraseña? <a href="recuperar.html" class="link-primary text-decoration-none">Recupera tu contraseña</a></p>
