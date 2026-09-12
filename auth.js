@@ -13,7 +13,7 @@ import {
     getDoc
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-export async function registrar(nombre, email, password, apellido = "") {
+export async function registrar(nombre, email, password, apellido = "", rol = "usuario") {
     const credencial = await createUserWithEmailAndPassword(auth, email, password);
 
     await updateProfile(credencial.user, { displayName: nombre });
@@ -22,7 +22,7 @@ export async function registrar(nombre, email, password, apellido = "") {
         nombre,
         apellido,
         email,
-        rol: "usuario"
+        rol
     });
 
     return credencial.user;
