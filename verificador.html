@@ -52,28 +52,10 @@
 
       <div class="col-12 col-sm-6 col-lg-4">
         <div class="card card-opcion p-4 text-center">
-          <div class="icono">👥</div>
-          <h5 class="fw-bold mb-2">Usuarios</h5>
-          <p class="text-secondary small">Consulta el listado de usuarios registrados.</p>
-          <a href="admin.html" class="btn btn-primary mt-2 fw-semibold">Ver panel</a>
-        </div>
-      </div>
-
-      <div class="col-12 col-sm-6 col-lg-4">
-        <div class="card card-opcion p-4 text-center">
-          <div class="icono">📋</div>
-          <h5 class="fw-bold mb-2">Reportes</h5>
-          <p class="text-secondary small">Genera reportes de actividad de la plataforma.</p>
-          <a href="tienda.html" class="btn btn-outline-secondary mt-2 fw-semibold">Ver tienda</a>
-        </div>
-      </div>
-
-      <div class="col-12 col-sm-6 col-lg-4">
-        <div class="card card-opcion p-4 text-center">
           <div class="icono">💲</div>
-          <h5 class="fw-bold mb-2">Precios</h5>
-          <p class="text-secondary small">Consulta los precios de los productos publicados.</p>
-          <a href="tienda.html" class="btn btn-outline-primary mt-2 fw-semibold">Ver precios</a>
+          <h5 class="fw-bold mb-2">Actualizar Precios</h5>
+          <p class="text-secondary small">Registra precios en vivo con foto, lugar y tienda como evidencia.</p>
+          <a href="verificador-precios.html" class="btn btn-outline-primary mt-2 fw-semibold">Actualizar precios</a>
         </div>
       </div>
 
@@ -104,11 +86,20 @@
   import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
   import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
+  let yaResuelto = false;
+
   onAuthStateChanged(auth, async usuario => {
+    if (yaResuelto) return;
     if (!usuario) {
-      window.location.href = "login.html";
+      // Esperar antes de redirigir por si Firebase aún está restaurando la sesión
+      await new Promise(r => setTimeout(r, 2000));
+      if (!auth.currentUser) {
+        window.location.href = "login.html";
+      }
       return;
     }
+    yaResuelto = true;
+
     const snap = await getDoc(doc(db, "usuarios", usuario.uid));
     const datos = snap.exists() ? snap.data() : {};
     const nombre = datos.nombre || usuario.email;
