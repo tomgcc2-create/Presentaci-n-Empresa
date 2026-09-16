@@ -430,43 +430,8 @@
 <script type="module">
 import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { doc, getDoc, collection, getDocs, setDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-let yaResuelto = false;
-
-onAuthStateChanged(auth, async usuario => {
-  if (yaResuelto) return;
-  if (!usuario) {
-    await new Promise(r => setTimeout(r, 2000));
-    if (!auth.currentUser) {
-      window.location.href = "login.html";
-    }
-    return;
-  }
-  yaResuelto = true;
-
-  try {
-    const snap = await getDoc(doc(db, "usuarios", usuario.uid));
-    const datos = snap.exists() ? snap.data() : {};
-    const rol = (datos.rol || "usuario").trim().toLowerCase();
-
-    if (rol !== "verificador" && rol !== "admin" && rol !== "dueño") {
-      document.getElementById("bloqueAcceso").style.display = "";
-      return;
-    }
-
-    document.getElementById("contenidoPrincipal").style.display = "";
-    document.getElementById("bienvenida").textContent =
-      "Verificador: " + (datos.nombre || usuario.email) + " · Actualización en vivo 👋";
-    window._verificadorNombre = datos.nombre || usuario.email;
-    iniciarApp();
-  } catch (e) {
-    console.error("Error al obtener rol:", e);
-    window.location.href = "login.html";
-  }
-});
-</script>
-<script>
 // ══════════════════════════════════════════════════════
 //  DATOS
 // ══════════════════════════════════════════════════════
@@ -514,8 +479,16 @@ const BASE_PRODUCTOS = [
 ];
 
 const KEY_PRECIOS = "pn_precios_actualizados";
-let preciosActualizados = JSON.parse(localStorage.getItem(KEY_PRECIOS) || "{}");
+let preciosActualizados = {};
 // { [nombre]: { precioNuevo, lugar, tienda, fotoUrl, fecha, verificador, notas } }
+
+async function cargarPrecios() {
+  const snap = await getDocs(collection(db, "actualizacionesPrecios"));
+  preciosActualizados = {};
+  snap.forEach(documento => {
+    preciosActualizados[documento.id] = documento.data();
+  });
+}
 
 let busqueda = "";
 let filtroCategoria = "todas";
@@ -532,7 +505,9 @@ function getPrecioVigente(nombre) {
   return preciosActualizados[nombre]?.precioNuevo ?? p?.precio ?? 0;
 }
 
-function iniciarApp() {
+async function iniciarApp() {
+  await cargarPrecios();
+
   // Poblar filtro de tiendas
   const tiendas = [...new Set(BASE_PRODUCTOS.map(p => p.tienda))].sort();
   const selTienda = document.getElementById("filtroTienda");
@@ -728,7 +703,7 @@ window.calcularDiff = function() {
   }
 };
 
-function guardarPrecio() {
+async function guardarPrecio() {
   const foto   = document.getElementById("inputFoto").files[0];
   const lugar  = document.getElementById("inputLugar").value.trim();
   const tienda = document.getElementById("inputTienda").value.trim();
@@ -765,10 +740,10 @@ function guardarPrecio() {
   }
 
   const reader = new FileReader();
-  reader.onload = ev => {
+  reader.onload = async ev => {
     const p = BASE_PRODUCTOS[productoActual];
     const ahora = fecha + " " + new Date().toLocaleTimeString("es-CO");
-    preciosActualizados[p.nombre] = {
+    const actualizacion = {
       producto: p.nombre,
       precioNuevo: precio,
       precioAnterior: window._precioBase,
@@ -777,21 +752,67 @@ function guardarPrecio() {
       fecha: ahora,
       verificador: window._verificadorNombre || "Verificador"
     };
-    localStorage.setItem(KEY_PRECIOS, JSON.stringify(preciosActualizados));
 
-    // Mostrar éxito
-    document.getElementById("botonesModal").style.display = "none";
-    document.getElementById("errorModal").style.display = "none";
-    document.getElementById("exitoMsg").textContent =
-      "\"" + p.nombre + "\" actualizado a " + formatCOP(precio) + " · " + tienda + " · " + lugar;
-    document.getElementById("precioExito").style.display = "";
+    try {
+      await setDoc(doc(db, "actualizacionesPrecios", p.nombre), actualizacion);
+      preciosActualizados[p.nombre] = actualizacion;
 
-    renderStats();
-    renderHistorial();
-    renderGrid();
+      // Mostrar éxito
+      document.getElementById("botonesModal").style.display = "none";
+      document.getElementById("errorModal").style.display = "none";
+      document.getElementById("exitoMsg").textContent =
+        "\"" + p.nombre + "\" actualizado a " + formatCOP(precio) + " · " + tienda + " · " + lugar;
+      document.getElementById("precioExito").style.display = "";
+
+      renderStats();
+      renderHistorial();
+      renderGrid();
+    } catch (error) {
+      console.error("Error al guardar precio:", error);
+      document.getElementById("errorModal").textContent =
+        error.code === "permission-denied"
+          ? "No tienes permiso para guardar precios. Revisa las reglas de Firestore."
+          : "No se pudo guardar el precio: " + error.message;
+      document.getElementById("errorModal").style.display = "";
+    }
   };
   reader.readAsDataURL(foto);
 }
+
+let yaResuelto = false;
+onAuthStateChanged(auth, async usuario => {
+  if (yaResuelto) return;
+  if (!usuario) {
+    await new Promise(r => setTimeout(r, 2000));
+    if (!auth.currentUser) window.location.href = "login.html";
+    return;
+  }
+  yaResuelto = true;
+
+  try {
+    const snap = await getDoc(doc(db, "usuarios", usuario.uid));
+    const datos = snap.exists() ? snap.data() : {};
+    const rol = String(datos.rol || "usuario").trim().toLowerCase();
+
+    if (!["verificador", "admin", "dueño", "dueno"].includes(rol)) {
+      document.getElementById("bloqueAcceso").style.display = "";
+      document.querySelector("#bloqueAcceso p").textContent =
+        "Tu cuenta no tiene el rol verificador o dueño en Firestore.";
+      return;
+    }
+
+    document.getElementById("contenidoPrincipal").style.display = "";
+    document.getElementById("bienvenida").textContent =
+      "Verificador: " + (datos.nombre || usuario.email) + " · Actualización en vivo 👋";
+    window._verificadorNombre = datos.nombre || usuario.email;
+    await iniciarApp();
+  } catch (error) {
+    console.error("Error al obtener rol o precios:", error);
+    document.getElementById("bloqueAcceso").style.display = "";
+    document.querySelector("#bloqueAcceso p").textContent =
+      "No se pudo consultar tu permiso en Firebase: " + error.message;
+  }
+});
 </script>
 
 </body>
