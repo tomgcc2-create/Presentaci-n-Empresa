@@ -85,7 +85,7 @@ function modoEditar(usuario) {
     nombre.value = usuario.nombre || "";
     email.value = usuario.email || "";
     password.value = "";
-    rol.value = usuario.rol === "admin" ? "admin" : "usuario";
+    rol.value = usuario.rol || "usuario";
     email.disabled = true;
     password.disabled = true;
     password.required = false;
