@@ -6,20 +6,20 @@
   <title>Panel Dueño | PRICE NICE</title>
   <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <style>
+    :root { --brand:#b71c1c; --brand-dark:#7f0000; --ok:#2e7d32; --warn:#f57f17; }
+
     .panel-header {
-      background: linear-gradient(135deg, #b71c1c, #7f0000);
-      color: white;
-      padding: 40px 20px;
-      text-align: center;
-      border-radius: 0 0 20px 20px;
-      margin-bottom: 30px;
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      color: white; padding: 40px 20px; text-align: center;
+      border-radius: 0 0 20px 20px; margin-bottom: 30px;
     }
     .panel-header h1 { font-size: 2rem; margin-bottom: 8px; }
     .panel-header p  { opacity: 0.9; }
+
     .card-opcion {
-      border: none;
-      border-radius: 16px;
+      border: none; border-radius: 16px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.10);
       transition: transform 0.2s, box-shadow 0.2s;
     }
@@ -28,6 +28,108 @@
       box-shadow: 0 8px 24px rgba(183,28,28,0.25);
     }
     .icono { font-size: 2.5rem; margin-bottom: 12px; }
+
+    /* ── Modales comunes ── */
+    .modal-header-brand {
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      color: white; border-radius: 16px 16px 0 0;
+    }
+    .modal-header-brand .btn-close { filter: invert(1); }
+    .modal-content { border-radius: 16px; border: none; }
+
+    /* ── ADMINISTRACIÓN ── */
+    .tabs-admin { display:flex; gap:8px; margin-bottom:20px; }
+    .tab-admin {
+      flex:1; padding:10px; border:2px solid #ddd; border-radius:12px;
+      background:white; font-weight:700; font-size:.88rem; cursor:pointer;
+      transition:all .25s; color:#666; text-align:center;
+    }
+    .tab-admin.active, .tab-admin:hover {
+      background:var(--brand); color:white; border-color:var(--brand);
+    }
+
+    /* Tabla de productos */
+    .tabla-productos { width:100%; border-collapse:collapse; font-size:.88rem; }
+    .tabla-productos th {
+      background:#f5f5f5; padding:10px 12px; text-align:left;
+      font-size:.75rem; font-weight:700; color:#888; text-transform:uppercase;
+      letter-spacing:.4px;
+    }
+    .tabla-productos td { padding:10px 12px; border-bottom:1px solid #f0f0f0; vertical-align:middle; }
+    .tabla-productos tr:last-child td { border-bottom:none; }
+    .precio-edit {
+      border:2px solid #eee; border-radius:8px; padding:6px 10px;
+      font-size:.9rem; font-weight:700; color:var(--ok); width:110px;
+      transition:border-color .3s;
+    }
+    .precio-edit:focus { border-color:var(--brand); outline:none; }
+    .btn-guardar-precio {
+      border:none; background:var(--brand); color:white;
+      border-radius:8px; padding:5px 12px; font-size:.78rem;
+      font-weight:700; cursor:pointer; transition:background .2s;
+    }
+    .btn-guardar-precio:hover { background:var(--brand-dark); }
+    .btn-eliminar-prod {
+      border:none; background:#ffebee; color:#c62828;
+      border-radius:8px; padding:5px 10px; font-size:.78rem;
+      font-weight:700; cursor:pointer; transition:background .2s;
+    }
+    .btn-eliminar-prod:hover { background:#c62828; color:white; }
+
+    .cat-badge {
+      font-size:.68rem; font-weight:700; padding:2px 8px; border-radius:20px;
+      display:inline-block;
+    }
+    .cat-belleza   { background:#fce4ec; color:#c62828; }
+    .cat-higiene   { background:#e0f7fa; color:#00695c; }
+    .cat-alimentos { background:#fff3e0; color:#e65100; }
+    .cat-hogar     { background:#e8eaf6; color:#283593; }
+    .cat-bebes     { background:#f3e5f5; color:#6a1b9a; }
+    .cat-mascotas  { background:#e8f5e9; color:#2e7d32; }
+
+    /* Formulario agregar producto */
+    .form-label-sm {
+      font-size:.75rem; font-weight:700; color:#888;
+      text-transform:uppercase; letter-spacing:.4px; margin-bottom:4px;
+    }
+    .form-ctrl {
+      width:100%; border:2px solid #eee; border-radius:10px;
+      padding:9px 12px; font-size:.9rem; background:#fafafa;
+      transition:border-color .3s;
+    }
+    .form-ctrl:focus { border-color:var(--brand); outline:none; box-shadow:0 0 0 3px rgba(183,28,28,.12); }
+    .form-ctrl.error { border-color:#e74c3c; }
+
+    .btn-agregar-prod {
+      width:100%; padding:12px; background:var(--brand); color:white;
+      border:none; border-radius:12px; font-weight:700; font-size:.95rem;
+      cursor:pointer; transition:background .2s;
+    }
+    .btn-agregar-prod:hover { background:var(--brand-dark); }
+
+    .msg-ok { color:var(--ok); font-size:.85rem; font-weight:700; margin-top:8px; }
+    .msg-err { color:#c62828; font-size:.85rem; font-weight:700; margin-top:8px; }
+
+    /* ── REPORTES ── */
+    .reporte-tabs { display:flex; gap:8px; justify-content:center; margin-bottom:20px; }
+    .reporte-tab {
+      border:2px solid #ddd; border-radius:20px; padding:7px 18px;
+      font-size:.85rem; font-weight:700; background:white; color:#666;
+      cursor:pointer; transition:all .25s;
+    }
+    .reporte-tab.active, .reporte-tab:hover {
+      background:var(--brand); color:white; border-color:var(--brand);
+    }
+    .reporte-panel { display:none; }
+    .reporte-panel.visible { display:block; }
+    .grafica-wrap { position:relative; height:280px; }
+    .kpi-row { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-bottom:18px; }
+    .kpi-chip {
+      background:#f9f9f9; border-radius:12px; padding:12px 20px; text-align:center;
+      min-width:110px; box-shadow:0 2px 8px rgba(0,0,0,.06);
+    }
+    .kpi-chip .kv { font-size:1.3rem; font-weight:800; color:var(--brand); }
+    .kpi-chip .kl { font-size:.7rem; color:#aaa; font-weight:700; display:block; }
   </style>
 </head>
 <body>
@@ -41,33 +143,19 @@
   <div class="container pb-5">
     <div class="row g-4 justify-content-center">
 
+      <!-- ── Administración ── -->
       <div class="col-12 col-sm-6 col-lg-4">
         <div class="card card-opcion p-4 text-center">
           <div class="icono">⚙️</div>
           <h5 class="fw-bold mb-2">Administración</h5>
-          <p class="text-secondary small">Gestiona usuarios, productos y configuración general.</p>
-          <a href="admin.html" class="btn btn-danger mt-2 fw-semibold">Ir al admin</a>
+          <p class="text-secondary small">Cambia precios y agrega nuevos productos al catálogo.</p>
+          <button class="btn btn-danger mt-2 fw-semibold" data-bs-toggle="modal" data-bs-target="#modalAdmin">
+            Gestionar productos
+          </button>
         </div>
       </div>
 
-      <div class="col-12 col-sm-6 col-lg-4">
-        <div class="card card-opcion p-4 text-center">
-          <div class="icono">👥</div>
-          <h5 class="fw-bold mb-2">Usuarios</h5>
-          <p class="text-secondary small">Administra todos los usuarios registrados en la plataforma.</p>
-          <a href="admin.html" class="btn btn-danger mt-2 fw-semibold">Gestionar</a>
-        </div>
-      </div>
-
-      <div class="col-12 col-sm-6 col-lg-4">
-        <div class="card card-opcion p-4 text-center">
-          <div class="icono">📦</div>
-          <h5 class="fw-bold mb-2">Catálogo</h5>
-          <p class="text-secondary small">Controla todos los productos publicados en la tienda.</p>
-          <a href="catalogo.html" class="btn btn-danger mt-2 fw-semibold">Ver catálogo</a>
-        </div>
-      </div>
-
+      <!-- ── Tienda ── -->
       <div class="col-12 col-sm-6 col-lg-4">
         <div class="card card-opcion p-4 text-center">
           <div class="icono">🛒</div>
@@ -77,26 +165,29 @@
         </div>
       </div>
 
+      <!-- ── Precios (igual que verificador) ── -->
       <div class="col-12 col-sm-6 col-lg-4">
         <div class="card card-opcion p-4 text-center">
           <div class="icono">💲</div>
           <h5 class="fw-bold mb-2">Precios</h5>
-          <p class="text-secondary small">Consulta y actualiza los precios de los productos.</p>
-          <button type="button" class="btn btn-outline-danger mt-2 fw-semibold" data-bs-toggle="modal" data-bs-target="#modalPrecios">
-            Ver precios
-          </button>
+          <p class="text-secondary small">Actualiza precios en vivo con foto, lugar y tienda como evidencia.</p>
+          <a href="verificador-precios.html" class="btn btn-outline-danger mt-2 fw-semibold">Actualizar precios</a>
         </div>
       </div>
 
+      <!-- ── Reportes ── -->
       <div class="col-12 col-sm-6 col-lg-4">
         <div class="card card-opcion p-4 text-center">
           <div class="icono">📊</div>
           <h5 class="fw-bold mb-2">Reportes</h5>
-          <p class="text-secondary small">Analiza métricas y rendimiento de la plataforma.</p>
-          <a href="Index.html" class="btn btn-outline-danger mt-2 fw-semibold">Ver inicio</a>
+          <p class="text-secondary small">Analiza ventas, ingresos y compara con otras tiendas.</p>
+          <button class="btn btn-outline-danger mt-2 fw-semibold" data-bs-toggle="modal" data-bs-target="#modalReportes">
+            Ver reportes
+          </button>
         </div>
       </div>
 
+      <!-- ── Inicio ── -->
       <div class="col-12 col-sm-6 col-lg-4">
         <div class="card card-opcion p-4 text-center">
           <div class="icono">🏠</div>
@@ -115,43 +206,166 @@
     </div>
   </div>
 
-  <div class="modal fade" id="modalPrecios" tabindex="-1" aria-labelledby="tituloPrecios" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+  <!-- ════════════════════════════════════════════════════
+       MODAL ADMINISTRACIÓN — Gestión de productos/precios
+  ════════════════════════════════════════════════════ -->
+  <div class="modal fade" id="modalAdmin" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
       <div class="modal-content">
-        <div class="modal-header">
-          <h2 class="modal-title fs-5" id="tituloPrecios">Precios de productos</h2>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        <div class="modal-header modal-header-brand">
+          <h5 class="modal-title fw-bold">⚙️ Administración de Productos</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-        <div class="modal-body">
-          <div class="table-responsive">
-            <table class="table align-middle mb-0">
-              <thead>
-                <tr>
-                  <th>Producto</th>
-                  <th>Precio</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Producto rojo</td>
-                  <td><input class="form-control precio-producto" type="number" min="0" step="0.01" value="10.00" aria-label="Precio del producto rojo"></td>
-                </tr>
-                <tr>
-                  <td>Producto azul</td>
-                  <td><input class="form-control precio-producto" type="number" min="0" step="0.01" value="15.00" aria-label="Precio del producto azul"></td>
-                </tr>
-                <tr>
-                  <td>Producto verde</td>
-                  <td><input class="form-control precio-producto" type="number" min="0" step="0.01" value="20.00" aria-label="Precio del producto verde"></td>
-                </tr>
-              </tbody>
-            </table>
+        <div class="modal-body p-4">
+
+          <!-- Tabs -->
+          <div class="tabs-admin">
+            <button class="tab-admin active" id="tabEditar" onclick="mostrarTabAdmin('editar')">
+              ✏️ Editar precios
+            </button>
+            <button class="tab-admin" id="tabAgregar" onclick="mostrarTabAdmin('agregar')">
+              ➕ Agregar producto
+            </button>
           </div>
-          <p id="mensajePrecios" class="text-success small mt-3 mb-0" role="status"></p>
+
+          <!-- ── Tab Editar precios ── -->
+          <div id="panelEditar">
+            <div class="mb-3 d-flex gap-2 flex-wrap">
+              <input type="text" id="filtroAdminBuscar" class="form-ctrl" style="max-width:260px"
+                placeholder="🔍 Buscar producto…" oninput="filtrarTabla()">
+              <select id="filtroAdminCat" class="form-ctrl" style="max-width:200px" onchange="filtrarTabla()">
+                <option value="">Todas las categorías</option>
+                <option value="belleza">💄 Belleza</option>
+                <option value="higiene">🧴 Higiene</option>
+                <option value="alimentos">🍎 Alimentos</option>
+                <option value="hogar">🏠 Hogar</option>
+                <option value="bebes">🍼 Bebés</option>
+                <option value="mascotas">🐾 Mascotas</option>
+              </select>
+            </div>
+            <div style="max-height:380px; overflow-y:auto;">
+              <table class="tabla-productos" id="tablaProductos">
+                <thead>
+                  <tr>
+                    <th>Producto</th>
+                    <th>Categoría</th>
+                    <th>Tienda</th>
+                    <th>Precio actual</th>
+                    <th>Nuevo precio</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="cuerpoTabla"></tbody>
+              </table>
+            </div>
+            <div id="msgEditarPrecios" class="msg-ok" style="display:none"></div>
+          </div>
+
+          <!-- ── Tab Agregar producto ── -->
+          <div id="panelAgregar" style="display:none">
+            <div class="row g-3">
+              <div class="col-12 col-md-6">
+                <label class="form-label-sm">Nombre del producto *</label>
+                <input type="text" id="npNombre" class="form-ctrl" placeholder="Ej: Shampoo Natural 400ml">
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label-sm">Categoría *</label>
+                <select id="npCategoria" class="form-ctrl">
+                  <option value="">— Selecciona —</option>
+                  <option value="belleza">💄 Belleza</option>
+                  <option value="higiene">🧴 Higiene y Limpieza</option>
+                  <option value="alimentos">🍎 Alimentos y Bebidas</option>
+                  <option value="hogar">🏠 Hogar</option>
+                  <option value="bebes">🍼 Bebés</option>
+                  <option value="mascotas">🐾 Mascotas</option>
+                </select>
+              </div>
+              <div class="col-12">
+                <label class="form-label-sm">Descripción *</label>
+                <textarea id="npDescripcion" class="form-ctrl" rows="2"
+                  placeholder="Describe el producto brevemente…"></textarea>
+              </div>
+              <div class="col-12 col-md-4">
+                <label class="form-label-sm">Precio (COP $) *</label>
+                <input type="number" id="npPrecio" class="form-ctrl" placeholder="0" min="0" step="1">
+              </div>
+              <div class="col-12 col-md-4">
+                <label class="form-label-sm">Tienda *</label>
+                <input type="text" id="npTienda" class="form-ctrl" placeholder="Ej: D1, Jumbo, Éxito…">
+              </div>
+              <div class="col-12 col-md-4">
+                <label class="form-label-sm">Ciudad *</label>
+                <input type="text" id="npCiudad" class="form-ctrl" placeholder="Ej: Bogotá">
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label-sm">Barrio / Sector</label>
+                <input type="text" id="npBarrio" class="form-ctrl" placeholder="Ej: Chapinero">
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label-sm">Fecha de vencimiento</label>
+                <input type="text" id="npVencimiento" class="form-ctrl" placeholder="Ej: 12/2027 o N/A">
+              </div>
+              <div class="col-12">
+                <div id="msgAgregar" style="display:none"></div>
+                <button class="btn-agregar-prod" onclick="agregarProducto()">
+                  ➕ Agregar al catálogo
+                </button>
+              </div>
+            </div>
+          </div>
+
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-          <button type="button" class="btn btn-danger" id="btnGuardarPrecios">Guardar precios</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════
+       MODAL REPORTES — Gráficas de ventas
+  ════════════════════════════════════════════════════ -->
+  <div class="modal fade" id="modalReportes" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header modal-header-brand">
+          <h5 class="modal-title fw-bold">📊 Reportes y Análisis de Ventas</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+
+          <!-- KPIs -->
+          <div class="kpi-row" id="kpiRow"></div>
+
+          <!-- Tabs de reporte -->
+          <div class="reporte-tabs">
+            <button class="reporte-tab active" onclick="mostrarReporte('ventas')">📈 Ventas mensuales</button>
+            <button class="reporte-tab" onclick="mostrarReporte('tiendas')">🏪 Comparativa tiendas</button>
+            <button class="reporte-tab" onclick="mostrarReporte('categorias')">📦 Por categoría</button>
+            <button class="reporte-tab" onclick="mostrarReporte('top')">🏆 Top productos</button>
+          </div>
+
+          <!-- Panel ventas mensuales -->
+          <div class="reporte-panel visible" id="rpVentas">
+            <p class="text-secondary text-center" style="font-size:.82rem">Unidades y monto vendido por mes — últimos 8 meses</p>
+            <div class="grafica-wrap"><canvas id="graficaVentas"></canvas></div>
+          </div>
+
+          <!-- Panel comparativa tiendas -->
+          <div class="reporte-panel" id="rpTiendas">
+            <p class="text-secondary text-center" style="font-size:.82rem">Ingresos totales por tienda (COP $)</p>
+            <div class="grafica-wrap"><canvas id="graficaTiendas"></canvas></div>
+          </div>
+
+          <!-- Panel por categoría -->
+          <div class="reporte-panel" id="rpCategorias">
+            <p class="text-secondary text-center" style="font-size:.82rem">Unidades vendidas por categoría</p>
+            <div class="grafica-wrap"><canvas id="graficaCategorias"></canvas></div>
+          </div>
+
+          <!-- Panel top productos -->
+          <div class="reporte-panel" id="rpTop">
+            <p class="text-secondary text-center" style="font-size:.82rem">Top 10 productos más vendidos</p>
+            <div class="grafica-wrap"><canvas id="graficaTop"></canvas></div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -161,32 +375,440 @@
     <p>© 2026 PRICE NICE — Todos los derechos reservados</p>
   </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script type="module">
-  import { auth, db } from "./firebase-config.js";
-  import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-  import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+  <script src="https://unpkg.com/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-  onAuthStateChanged(auth, async usuario => {
-    if (!usuario) {
+  <!-- Auth module -->
+  <script type="module">
+    import { auth, db } from "./firebase-config.js";
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+    let yaResuelto = false;
+    onAuthStateChanged(auth, async usuario => {
+      if (yaResuelto) return;
+      if (!usuario) {
+        await new Promise(r => setTimeout(r, 2000));
+        if (!auth.currentUser) { window.location.href = "login.html"; }
+        return;
+      }
+      yaResuelto = true;
+      const snap = await getDoc(doc(db, "usuarios", usuario.uid));
+      const datos = snap.exists() ? snap.data() : {};
+      const nombre = datos.nombre || usuario.email;
+      document.getElementById("bienvenida").textContent = "Bienvenido, " + nombre + " 👑";
+    });
+
+    document.getElementById("btnCerrarSesion").addEventListener("click", async () => {
+      const { signOut: so } = await import("https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js");
+      await so(auth);
       window.location.href = "login.html";
+    });
+  </script>
+
+  <!-- Lógica principal (no-module para acceso global) -->
+  <script>
+  // ════════════════════════════════════════════════════
+  //  CATÁLOGO BASE (igual que el resto de la app)
+  // ════════════════════════════════════════════════════
+  const CATEGORIAS = {
+    belleza:   { nombre:"Belleza",    icono:"💄", clase:"cat-belleza" },
+    higiene:   { nombre:"Higiene",    icono:"🧴", clase:"cat-higiene" },
+    alimentos: { nombre:"Alimentos",  icono:"🍎", clase:"cat-alimentos" },
+    hogar:     { nombre:"Hogar",      icono:"🏠", clase:"cat-hogar" },
+    bebes:     { nombre:"Bebés",      icono:"🍼", clase:"cat-bebes" },
+    mascotas:  { nombre:"Mascotas",   icono:"🐾", clase:"cat-mascotas" }
+  };
+
+  const KEY_PROD  = "pn_productos_dueno";
+  const KEY_PREC  = "pn_precios_dueno";
+
+  // Productos base — se fusionan con los guardados en localStorage
+  const PRODUCTOS_BASE = [
+    { nombre:"Crema Hidratante Facial",    descripcion:"Crema hidratante con ácido hialurónico.",        precio:38900,  tienda:"Droguería Cruz Verde", categoria:"belleza",   ubicacion:"Bogotá",       barrio:"Chapinero" },
+    { nombre:"Base de Maquillaje Mate",    descripcion:"Base líquida cobertura media, acabado mate.",     precio:65900,  tienda:"Falabella",            categoria:"belleza",   ubicacion:"Medellín",     barrio:"El Poblado" },
+    { nombre:"Sérum Vitamina C",           descripcion:"Sérum antioxidante vitamina C al 15%.",           precio:89900,  tienda:"Linio",                categoria:"belleza",   ubicacion:"Cali",         barrio:"Granada" },
+    { nombre:"Labial Líquido Mate",        descripcion:"Labial larga duración, fórmula vegana.",          precio:29900,  tienda:"Éxito",                categoria:"belleza",   ubicacion:"Barranquilla", barrio:"El Prado" },
+    { nombre:"Paleta de Sombras x12",      descripcion:"12 tonos mate y shimmer.",                        precio:72900,  tienda:"Falabella",            categoria:"belleza",   ubicacion:"Medellín",     barrio:"Laureles" },
+    { nombre:"Detergente Líquido 3L",      descripcion:"Detergente concentrado, aroma lavanda.",          precio:24900,  tienda:"D1",                   categoria:"higiene",   ubicacion:"Bogotá",       barrio:"Kennedy" },
+    { nombre:"Jabón Antibacterial x3",     descripcion:"Pack 3 jabones antibacteriales.",                 precio:8900,   tienda:"Jumbo",                categoria:"higiene",   ubicacion:"Cali",         barrio:"San Fernando" },
+    { nombre:"Cloro Desinfectante 2L",     descripcion:"Cloro concentrado para el hogar.",                precio:6900,   tienda:"Olímpica",             categoria:"higiene",   ubicacion:"Bucaramanga",  barrio:"Cabecera" },
+    { nombre:"Pasta Dental Blanqueadora",  descripcion:"Micro-partículas blanqueadoras y flúor.",         precio:12500,  tienda:"Droguería Cruz Verde", categoria:"higiene",   ubicacion:"Bogotá",       barrio:"Usaquén" },
+    { nombre:"Shampoo Anticaspa 750ml",    descripcion:"Zinc para control de caspa.",                     precio:21900,  tienda:"Carulla",              categoria:"higiene",   ubicacion:"Medellín",     barrio:"Envigado" },
+    { nombre:"Arroz Grano Largo 1kg",      descripcion:"Arroz blanco grano largo.",                       precio:4200,   tienda:"D1",                   categoria:"alimentos", ubicacion:"Bogotá",       barrio:"Suba" },
+    { nombre:"Aceite de Oliva 500ml",      descripcion:"Extra virgen, prensado en frío.",                 precio:28900,  tienda:"PriceSmart",           categoria:"alimentos", ubicacion:"Barranquilla", barrio:"Bello Horizonte" },
+    { nombre:"Leche Entera 1L",            descripcion:"Leche fresca pasteurizada.",                      precio:3800,   tienda:"Olímpica",             categoria:"alimentos", ubicacion:"Cali",         barrio:"Ciudad Jardín" },
+    { nombre:"Café Molido 500g",           descripcion:"100% arábica tostado y molido.",                  precio:18900,  tienda:"Jumbo",                categoria:"alimentos", ubicacion:"Manizales",    barrio:"La Enea" },
+    { nombre:"Jugo de Naranja 1L",         descripcion:"Natural sin conservadores.",                      precio:7500,   tienda:"Carulla",              categoria:"alimentos", ubicacion:"Bogotá",       barrio:"Teusaquillo" },
+    { nombre:"Galletas Integrales x6",     descripcion:"Integrales con avena y miel.",                    precio:9900,   tienda:"Ara",                  categoria:"alimentos", ubicacion:"Pereira",      barrio:"Álamos" },
+    { nombre:"Almohada Memory Foam",       descripcion:"Espuma viscoelástica, funda lavable.",            precio:89900,  tienda:"Éxito",                categoria:"hogar",     ubicacion:"Medellín",     barrio:"Belén" },
+    { nombre:"Juego de Sábanas Queen",     descripcion:"Microfibra suave, 4 piezas.",                     precio:119900, tienda:"Alkosto",              categoria:"hogar",     ubicacion:"Bogotá",       barrio:"Fontibón" },
+    { nombre:"Foco LED 10W (Pack x4)",     descripcion:"LED 10W luz blanca cálida.",                      precio:22900,  tienda:"Homecenter",           categoria:"hogar",     ubicacion:"Cali",         barrio:"Menga" },
+    { nombre:"Organizador Multiusos",      descripcion:"Caja apilable con tapa.",                         precio:32900,  tienda:"Jumbo",                categoria:"hogar",     ubicacion:"Bucaramanga",  barrio:"Floridablanca" },
+    { nombre:"Velas Aromáticas x3",        descripcion:"Cera de soya, aromas relajantes.",                precio:45900,  tienda:"Miniso",               categoria:"hogar",     ubicacion:"Barranquilla", barrio:"Riomar" },
+    { nombre:"Pañales Etapa 3 (40 pzas)",  descripcion:"Ultrasorbentes, ajuste suave.",                   precio:54900,  tienda:"Droguería Cruz Verde", categoria:"bebes",     ubicacion:"Bogotá",       barrio:"Bosa" },
+    { nombre:"Toallitas Húmedas x80",      descripcion:"Sin alcohol, hipoalergénicas.",                   precio:14900,  tienda:"Jumbo",                categoria:"bebes",     ubicacion:"Medellín",     barrio:"Robledo" },
+    { nombre:"Fórmula Láctea 900g",        descripcion:"Con hierro y DHA.",                               precio:98900,  tienda:"PriceSmart",           categoria:"bebes",     ubicacion:"Cali",         barrio:"Versalles" },
+    { nombre:"Biberón Anticólicos 250ml",  descripcion:"Válvula anticólicos, tetina silicón.",             precio:39900,  tienda:"Éxito",                categoria:"bebes",     ubicacion:"Barranquilla", barrio:"Boston" },
+    { nombre:"Papilla de Frutas x12",      descripcion:"Naturales sin azúcar añadida.",                   precio:42900,  tienda:"Ara",                  categoria:"bebes",     ubicacion:"Pereira",      barrio:"Pinares" },
+    { nombre:"Croquetas Perro Adulto 5kg", descripcion:"Premium sabor pollo.",                            precio:89900,  tienda:"Agrocampo",            categoria:"mascotas",  ubicacion:"Bogotá",       barrio:"Engativá" },
+    { nombre:"Arena para Gato 10L",        descripcion:"Aglutinante, control de olores.",                 precio:28900,  tienda:"Jumbo",                categoria:"mascotas",  ubicacion:"Medellín",     barrio:"Itagüí" },
+    { nombre:"Juguete Mordedor",           descripcion:"Caucho natural para perros medianos.",             precio:19900,  tienda:"Agrocampo",            categoria:"mascotas",  ubicacion:"Cali",         barrio:"Aguablanca" },
+    { nombre:"Snacks para Gato x10",       descripcion:"Atún y salmón.",                                  precio:24900,  tienda:"Olímpica",             categoria:"mascotas",  ubicacion:"Bucaramanga",  barrio:"García Rovira" },
+    { nombre:"Collar Antipulgas",          descripcion:"Protección 8 meses contra pulgas.",               precio:52900,  tienda:"Droguería Cruz Verde", categoria:"mascotas",  ubicacion:"Manizales",    barrio:"Chipre" }
+  ];
+
+  // Combinar base + productos agregados por el dueño
+  let productosExtras = JSON.parse(localStorage.getItem(KEY_PROD) || "[]");
+  let preciosEditados  = JSON.parse(localStorage.getItem(KEY_PREC) || "{}");
+  // { [nombre]: nuevoPrecio }
+
+  function getTodosProductos() {
+    return [...PRODUCTOS_BASE, ...productosExtras].map(p => ({
+      ...p,
+      precio: preciosEditados[p.nombre] ?? p.precio
+    }));
+  }
+
+  function formatCOP(v) {
+    return "$ " + v.toLocaleString("es-CO", { minimumFractionDigits:0, maximumFractionDigits:0 });
+  }
+
+  // ════════════════════════════════════════════════════
+  //  TABS MODAL ADMIN
+  // ════════════════════════════════════════════════════
+  window.mostrarTabAdmin = function(tab) {
+    document.getElementById("panelEditar").style.display  = tab === "editar"  ? "" : "none";
+    document.getElementById("panelAgregar").style.display = tab === "agregar" ? "" : "none";
+    document.getElementById("tabEditar").classList.toggle("active",  tab === "editar");
+    document.getElementById("tabAgregar").classList.toggle("active", tab === "agregar");
+  };
+
+  // Render tabla de productos
+  function renderTabla(lista) {
+    const tbody = document.getElementById("cuerpoTabla");
+    tbody.innerHTML = "";
+    if (!lista.length) {
+      tbody.innerHTML = `<tr><td colspan="6" class="text-center text-secondary py-4">Sin resultados</td></tr>`;
       return;
     }
-    const snap = await getDoc(doc(db, "usuarios", usuario.uid));
-    const datos = snap.exists() ? snap.data() : {};
-    const nombre = datos.nombre || usuario.email;
-    document.getElementById("bienvenida").textContent = "Bienvenido, " + nombre + " 👑";
+    lista.forEach(p => {
+      const cat = CATEGORIAS[p.categoria] || { nombre:p.categoria, icono:"", clase:"" };
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><strong style="font-size:.88rem">${p.nombre}</strong></td>
+        <td><span class="cat-badge ${cat.clase}">${cat.icono} ${cat.nombre}</span></td>
+        <td style="font-size:.82rem;color:#888">${p.tienda}</td>
+        <td style="font-weight:800;color:var(--ok)">${formatCOP(p.precio)}</td>
+        <td>
+          <input type="number" class="precio-edit" data-nombre="${p.nombre}"
+            value="${p.precio}" min="0" step="1" aria-label="Nuevo precio ${p.nombre}">
+        </td>
+        <td>
+          <button class="btn-guardar-precio me-1" onclick="guardarPrecio('${p.nombre.replace(/'/g,"\\'")}', this)">
+            💾 Guardar
+          </button>
+          ${ productosExtras.some(e => e.nombre === p.nombre)
+            ? `<button class="btn-eliminar-prod" onclick="eliminarProducto('${p.nombre.replace(/'/g,"\\'")}')">🗑️</button>`
+            : "" }
+        </td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  window.filtrarTabla = function() {
+    const q   = (document.getElementById("filtroAdminBuscar")?.value || "").toLowerCase().trim();
+    const cat = (document.getElementById("filtroAdminCat")?.value   || "");
+    let lista = getTodosProductos();
+    if (q)   lista = lista.filter(p => p.nombre.toLowerCase().includes(q) || p.tienda.toLowerCase().includes(q));
+    if (cat) lista = lista.filter(p => p.categoria === cat);
+    renderTabla(lista);
+  };
+
+  window.guardarPrecio = function(nombre, btn) {
+    const fila  = btn.closest("tr");
+    const input = fila.querySelector(".precio-edit");
+    const nuevo = parseFloat(input.value);
+    if (isNaN(nuevo) || nuevo < 0) { input.style.borderColor = "#e74c3c"; return; }
+    input.style.borderColor = "";
+    preciosEditados[nombre] = nuevo;
+    localStorage.setItem(KEY_PREC, JSON.stringify(preciosEditados));
+    // Actualizar celda precio actual
+    const celdaActual = fila.querySelector("td:nth-child(4)");
+    celdaActual.textContent = formatCOP(nuevo);
+    // Feedback
+    btn.textContent = "✅ Guardado";
+    btn.style.background = "#2e7d32";
+    setTimeout(() => { btn.textContent = "💾 Guardar"; btn.style.background = ""; }, 1800);
+    document.getElementById("msgEditarPrecios").textContent =
+      "Precio de \"" + nombre + "\" actualizado a " + formatCOP(nuevo);
+    document.getElementById("msgEditarPrecios").style.display = "";
+    setTimeout(() => { document.getElementById("msgEditarPrecios").style.display = "none"; }, 3000);
+  };
+
+  window.eliminarProducto = function(nombre) {
+    if (!confirm('¿Eliminar "' + nombre + '" del catálogo?')) return;
+    productosExtras = productosExtras.filter(p => p.nombre !== nombre);
+    localStorage.setItem(KEY_PROD, JSON.stringify(productosExtras));
+    filtrarTabla();
+  };
+
+  window.agregarProducto = function() {
+    const nombre      = document.getElementById("npNombre").value.trim();
+    const categoria   = document.getElementById("npCategoria").value;
+    const descripcion = document.getElementById("npDescripcion").value.trim();
+    const precio      = parseFloat(document.getElementById("npPrecio").value);
+    const tienda      = document.getElementById("npTienda").value.trim();
+    const ubicacion   = document.getElementById("npCiudad").value.trim();
+    const barrio      = document.getElementById("npBarrio").value.trim();
+    const vencimiento = document.getElementById("npVencimiento").value.trim() || "N/A";
+    const msgDiv      = document.getElementById("msgAgregar");
+
+    const campos = ["npNombre","npCategoria","npDescripcion","npPrecio","npTienda","npCiudad"];
+    let ok = true;
+    campos.forEach(id => {
+      const el = document.getElementById(id);
+      const vacio = !el.value.trim();
+      el.classList.toggle("error", vacio);
+      if (vacio) ok = false;
+    });
+    if (!ok || isNaN(precio) || precio <= 0) {
+      msgDiv.className = "msg-err"; msgDiv.style.display = "";
+      msgDiv.textContent = "⚠️ Completa todos los campos obligatorios correctamente.";
+      return;
+    }
+    if (getTodosProductos().some(p => p.nombre.toLowerCase() === nombre.toLowerCase())) {
+      msgDiv.className = "msg-err"; msgDiv.style.display = "";
+      msgDiv.textContent = "⚠️ Ya existe un producto con ese nombre.";
+      return;
+    }
+
+    productosExtras.push({ nombre, descripcion, precio, tienda, categoria, ubicacion, barrio, vencimiento });
+    localStorage.setItem(KEY_PROD, JSON.stringify(productosExtras));
+
+    // Limpiar form
+    ["npNombre","npDescripcion","npPrecio","npTienda","npCiudad","npBarrio","npVencimiento"].forEach(id => {
+      document.getElementById(id).value = "";
+      document.getElementById(id).classList.remove("error");
+    });
+    document.getElementById("npCategoria").value = "";
+
+    msgDiv.className = "msg-ok"; msgDiv.style.display = "";
+    msgDiv.textContent = "✅ Producto \"" + nombre + "\" agregado correctamente.";
+    setTimeout(() => { msgDiv.style.display = "none"; }, 3000);
+  };
+
+  // Inicializar tabla cuando se abre el modal
+  document.getElementById("modalAdmin").addEventListener("show.bs.modal", () => {
+    filtrarTabla();
   });
 
-  document.getElementById("btnCerrarSesion").addEventListener("click", async () => {
-    await signOut(auth);
-    window.location.href = "login.html";
-  });
+  // ════════════════════════════════════════════════════
+  //  REPORTES — Gráficas Chart.js
+  // ════════════════════════════════════════════════════
+  const MESES = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago"];
+  const TIENDAS_REPORTE = ["D1","Jumbo","Éxito","Carulla","Olímpica","Droguería Cruz Verde","Falabella","PriceSmart","Alkosto","Homecenter","Ara","Miniso","Agrocampo","Linio"];
+  const PALETA = ["#b71c1c","#1565c0","#2e7d32","#f57f17","#6a1b9a","#00695c","#e64a19","#37474f","#ad1457","#558b2f","#0277bd","#4527a0","#00838f","#c43e00"];
 
-  document.getElementById("btnGuardarPrecios").addEventListener("click", () => {
-    document.getElementById("mensajePrecios").textContent = "Precios actualizados correctamente.";
+  // Datos simulados de ventas
+  function simVentas(base, variacion = 0.15) {
+    return MESES.map(() => Math.round(base * (0.8 + Math.random() * variacion * 2)));
+  }
+  function simIngresos(prod) {
+    const unidades = Math.floor(Math.random() * 200) + 50;
+    return { unidades, ingreso: unidades * prod.precio };
+  }
+
+  let chartsReporte = {};
+
+  function destruirChart(id) {
+    if (chartsReporte[id]) { chartsReporte[id].destroy(); delete chartsReporte[id]; }
+  }
+
+  function buildVentas() {
+    destruirChart("ventas");
+    const ctx = document.getElementById("graficaVentas").getContext("2d");
+    // Ventas propias vs promedio mercado
+    const propias  = simVentas(120);
+    const mercado  = simVentas(95);
+    chartsReporte.ventas = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: MESES,
+        datasets: [
+          {
+            label: "🏪 Tus ventas (unidades)",
+            data: propias,
+            borderColor: "#b71c1c", backgroundColor: "rgba(183,28,28,.1)",
+            borderWidth: 3, pointRadius: 5, tension: 0.4, fill: true
+          },
+          {
+            label: "📊 Promedio del mercado",
+            data: mercado,
+            borderColor: "#1565c0", backgroundColor: "rgba(21,101,192,.07)",
+            borderWidth: 2, pointRadius: 4, tension: 0.4,
+            borderDash: [6,3], fill: false
+          }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { position:"bottom", labels:{ boxWidth:12 } },
+          tooltip: { callbacks: { label: c => " " + c.dataset.label + ": " + c.parsed.y + " uds" } }
+        },
+        scales: { y:{ beginAtZero:true, grid:{ color:"#f0f0f0" } }, x:{ grid:{ color:"#f5f5f5" } } }
+      }
+    });
+  }
+
+  function buildTiendas() {
+    destruirChart("tiendas");
+    const ctx = document.getElementById("graficaTiendas").getContext("2d");
+    const prods = getTodosProductos();
+    // Calcular ingreso simulado por tienda
+    const ingresosTienda = {};
+    TIENDAS_REPORTE.forEach(t => {
+      const prodsT = prods.filter(p => p.tienda === t);
+      ingresosTienda[t] = prodsT.length > 0
+        ? prodsT.reduce((s, p) => s + simIngresos(p).ingreso, 0)
+        : Math.round(Math.random() * 8000000 + 2000000);
+    });
+    const tiendas  = Object.keys(ingresosTienda).sort((a,b) => ingresosTienda[b] - ingresosTienda[a]);
+    const ingresos = tiendas.map(t => ingresosTienda[t]);
+
+    chartsReporte.tiendas = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: tiendas,
+        datasets: [{
+          label: "Ingresos (COP $)",
+          data: ingresos,
+          backgroundColor: tiendas.map((_, i) => PALETA[i % PALETA.length] + "CC"),
+          borderColor:      tiendas.map((_, i) => PALETA[i % PALETA.length]),
+          borderWidth: 2, borderRadius: 8
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display:false },
+          tooltip: { callbacks: { label: c => " " + formatCOP(c.parsed.y) } }
+        },
+        scales: {
+          y: { ticks:{ callback: v => "$ " + (v/1000000).toFixed(1) + "M" }, grid:{ color:"#f0f0f0" } },
+          x: { ticks:{ font:{ size:10 } }, grid:{ display:false } }
+        }
+      }
+    });
+  }
+
+  function buildCategorias() {
+    destruirChart("categorias");
+    const ctx = document.getElementById("graficaCategorias").getContext("2d");
+    const prods = getTodosProductos();
+    const cats  = Object.keys(CATEGORIAS);
+    const unids = cats.map(c => {
+      const n = prods.filter(p => p.categoria === c).length;
+      return Math.round(n * (Math.random() * 30 + 15));
+    });
+    const labels = cats.map(c => CATEGORIAS[c].icono + " " + CATEGORIAS[c].nombre);
+
+    chartsReporte.categorias = new Chart(ctx, {
+      type: "doughnut",
+      data: {
+        labels,
+        datasets: [{
+          data: unids,
+          backgroundColor: PALETA.slice(0, cats.length).map(c => c + "CC"),
+          borderColor: PALETA.slice(0, cats.length),
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { position:"right", labels:{ boxWidth:12, font:{ size:11 } } },
+          tooltip: { callbacks: { label: c => " " + c.label + ": " + c.parsed + " uds" } }
+        }
+      }
+    });
+  }
+
+  function buildTop() {
+    destruirChart("top");
+    const ctx = document.getElementById("graficaTop").getContext("2d");
+    const prods = getTodosProductos();
+    const conVentas = prods
+      .map(p => ({ nombre: p.nombre.length > 22 ? p.nombre.substring(0,22)+"…" : p.nombre,
+                   vendidos: Math.round(Math.random() * 180 + 20) }))
+      .sort((a,b) => b.vendidos - a.vendidos)
+      .slice(0, 10);
+
+    chartsReporte.top = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: conVentas.map(p => p.nombre),
+        datasets: [{
+          label: "Unidades vendidas",
+          data: conVentas.map(p => p.vendidos),
+          backgroundColor: "#b71c1cCC", borderColor: "#b71c1c",
+          borderWidth: 2, borderRadius: 8
+        }]
+      },
+      options: {
+        indexAxis: "y",
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display:false },
+          tooltip: { callbacks: { label: c => " " + c.parsed.x + " uds" } }
+        },
+        scales: { x:{ grid:{ color:"#f0f0f0" } }, y:{ ticks:{ font:{ size:10 } }, grid:{ display:false } } }
+      }
+    });
+  }
+
+  function buildKPIs() {
+    const prods = getTodosProductos();
+    const totalVentas    = Math.round(Math.random() * 500 + 300);
+    const ingresoTotal   = prods.reduce((s,p) => s + p.precio, 0) * (totalVentas / prods.length);
+    const ticketPromedio = ingresoTotal / totalVentas;
+    const crecimiento    = (Math.random() * 20 + 5).toFixed(1);
+
+    document.getElementById("kpiRow").innerHTML = [
+      { v: totalVentas,              l:"Ventas totales",    fmt: v => v.toLocaleString("es-CO") },
+      { v: ingresoTotal,             l:"Ingresos (COP $)",  fmt: v => formatCOP(v) },
+      { v: ticketPromedio,           l:"Ticket promedio",   fmt: v => formatCOP(v) },
+      { v: crecimiento + "%",        l:"Crecimiento vs ant",fmt: v => v },
+      { v: prods.length,             l:"Productos activos", fmt: v => v }
+    ].map(k => `
+      <div class="kpi-chip">
+        <div class="kv">${k.fmt(k.v)}</div>
+        <span class="kl">${k.l}</span>
+      </div>`).join("");
+  }
+
+  window.mostrarReporte = function(tab) {
+    const map = { ventas:"rpVentas", tiendas:"rpTiendas", categorias:"rpCategorias", top:"rpTop" };
+    Object.values(map).forEach(id => document.getElementById(id).classList.remove("visible"));
+    document.getElementById(map[tab]).classList.add("visible");
+    document.querySelectorAll(".reporte-tab").forEach((b, i) => {
+      b.classList.toggle("active", ["ventas","tiendas","categorias","top"][i] === tab);
+    });
+    // Construir gráfica si no existe
+    if (tab === "ventas"     && !chartsReporte.ventas)     buildVentas();
+    if (tab === "tiendas"    && !chartsReporte.tiendas)    buildTiendas();
+    if (tab === "categorias" && !chartsReporte.categorias) buildCategorias();
+    if (tab === "top"        && !chartsReporte.top)        buildTop();
+  };
+
+  // Construir gráficas y KPIs al abrir el modal
+  document.getElementById("modalReportes").addEventListener("show.bs.modal", () => {
+    buildKPIs();
+    // Destruir todas para refrescar datos
+    Object.keys(chartsReporte).forEach(k => { chartsReporte[k].destroy(); delete chartsReporte[k]; });
+    buildVentas();
   });
-</script>
+  </script>
 
 </body>
 </html>
