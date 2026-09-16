@@ -7,6 +7,9 @@
   <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="style.css">
   <style>
+    /* ════════════════════════════
+       HEADER
+    ════════════════════════════ */
     .panel-header {
       background: linear-gradient(135deg, #1a6e3c, #0f4226);
       color: white;
@@ -17,6 +20,10 @@
     }
     .panel-header h1 { font-size: 2rem; margin-bottom: 8px; }
     .panel-header p  { opacity: 0.9; }
+
+    /* ════════════════════════════
+       CARDS MENÚ PRINCIPAL
+    ════════════════════════════ */
     .card-opcion {
       border: none;
       border-radius: 16px;
@@ -28,98 +35,1398 @@
       box-shadow: 0 8px 24px rgba(26,110,60,0.25);
     }
     .icono { font-size: 2.5rem; margin-bottom: 12px; }
+
+    /* ════════════════════════════
+       SECCIONES (ocultas por defecto)
+    ════════════════════════════ */
+    #seccion-publicar,
+    #seccion-mis-productos,
+    #seccion-resenas { display: none; }
+
+    /* ════════════════════════════
+       CABECERA COMPARTIDA DE SECCIONES
+    ════════════════════════════ */
+    .form-header {
+      background: linear-gradient(135deg, #1a6e3c, #0f4226);
+      color: white;
+      padding: 28px 20px 20px;
+      text-align: center;
+      border-radius: 16px 16px 0 0;
+    }
+    .form-header h2 { font-size: 1.6rem; margin-bottom: 4px; }
+    .form-header p  { opacity: 0.85; font-size: 0.92rem; }
+
+    .form-wrapper {
+      background: white;
+      border-radius: 0 0 16px 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+      padding: 32px 36px 36px;
+    }
+
+    /* ════════════════════════════
+       FORMULARIO
+    ════════════════════════════ */
+    .seccion-titulo {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #1a6e3c;
+      border-bottom: 2px solid #d4edda;
+      padding-bottom: 6px;
+      margin-bottom: 18px;
+      margin-top: 8px;
+    }
+    .form-label {
+      font-weight: 600;
+      font-size: 0.88rem;
+      color: #333;
+      margin-bottom: 4px;
+    }
+    .form-control, .form-select {
+      border-radius: 10px;
+      border: 1.5px solid #d0d0d0;
+      font-size: 0.93rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: #1a6e3c;
+      box-shadow: 0 0 0 3px rgba(26,110,60,0.13);
+    }
+    #preview-imagen, #edit-preview-imagen {
+      display: none;
+      width: 100%;
+      max-height: 220px;
+      object-fit: contain;
+      border-radius: 10px;
+      border: 1.5px solid #d0d0d0;
+      margin-top: 8px;
+      background: #f8f8f8;
+    }
+    .btn-publicar, .btn-guardar {
+      background: linear-gradient(135deg, #1a6e3c, #0f4226);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 36px;
+      font-size: 1rem;
+      font-weight: 700;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .btn-publicar:hover, .btn-guardar:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+      color: white;
+    }
+    .btn-cancelar {
+      border-radius: 12px;
+      padding: 12px 28px;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+    #alerta-publicado, #alerta-guardado {
+      display: none;
+      border-radius: 12px;
+    }
+
+    /* ════════════════════════════
+       MIS PRODUCTOS — barra superior
+    ════════════════════════════ */
+    .mis-prod-header {
+      background: white;
+      border-radius: 0 0 16px 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      padding: 24px 28px 20px;
+      margin-bottom: 20px;
+    }
+    .buscador-prod {
+      border-radius: 30px;
+      border: 1.5px solid #d0d0d0;
+      padding: 10px 18px;
+      font-size: 0.93rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .buscador-prod:focus {
+      border-color: #1a6e3c;
+      box-shadow: 0 0 0 3px rgba(26,110,60,0.12);
+      outline: none;
+    }
+    .filtro-select-prod {
+      border-radius: 10px;
+      border: 1.5px solid #d0d0d0;
+      padding: 9px 14px;
+      font-size: 0.9rem;
+      background: #fafafa;
+      transition: border-color 0.2s;
+    }
+    .filtro-select-prod:focus {
+      border-color: #1a6e3c;
+      box-shadow: 0 0 0 3px rgba(26,110,60,0.12);
+      outline: none;
+    }
+    .info-resultados {
+      font-size: 0.83rem;
+      color: #888;
+    }
+    .info-resultados strong { color: #1a6e3c; }
+
+    /* ════════════════════════════
+       TARJETAS DE PRODUCTO
+    ════════════════════════════ */
+    .prod-card {
+      border: none;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.09);
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+      background: white;
+      display: flex;
+      flex-direction: column;
+    }
+    .prod-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(26,110,60,0.18);
+    }
+    .prod-card-img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      background: #f4f4f4;
+    }
+    .prod-card-img-placeholder {
+      width: 100%;
+      height: 160px;
+      background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+    }
+    .prod-card-body {
+      padding: 16px 18px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .prod-nombre {
+      font-weight: 700;
+      font-size: 1rem;
+      color: #1a1a1a;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .prod-descripcion {
+      font-size: 0.82rem;
+      color: #777;
+      margin-bottom: 10px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .prod-meta {
+      font-size: 0.8rem;
+      color: #555;
+      margin-bottom: 3px;
+    }
+    .prod-precio {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #1a6e3c;
+      margin: 8px 0 4px;
+    }
+    .badge-estado {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+    .estado-nuevo         { background: #d4edda; color: #155724; }
+    .estado-como_nuevo    { background: #cce5ff; color: #004085; }
+    .estado-buen_estado   { background: #fff3cd; color: #856404; }
+    .estado-aceptable     { background: #fde8d8; color: #7d3c10; }
+    .estado-reacondicionado { background: #e2d9f3; color: #4a235a; }
+
+    .prod-acciones {
+      display: flex;
+      gap: 8px;
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px solid #f0f0f0;
+    }
+    .btn-editar {
+      flex: 1;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 8px;
+      border: 1.5px solid #1a6e3c;
+      color: #1a6e3c;
+      background: white;
+      transition: all 0.2s;
+    }
+    .btn-editar:hover {
+      background: #1a6e3c;
+      color: white;
+    }
+    .btn-eliminar {
+      flex: 1;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 8px;
+      border: 1.5px solid #dc3545;
+      color: #dc3545;
+      background: white;
+      transition: all 0.2s;
+    }
+    .btn-eliminar:hover {
+      background: #dc3545;
+      color: white;
+    }
+
+    /* ════════════════════════════
+       ESTADO VACÍO
+    ════════════════════════════ */
+    .sin-productos {
+      text-align: center;
+      padding: 60px 20px;
+      color: #999;
+    }
+    .sin-productos span { font-size: 3.5rem; display: block; margin-bottom: 14px; }
+
+    /* ════════════════════════════
+       MODAL CONFIRMACIÓN ELIMINAR
+    ════════════════════════════ */
+    .modal-confirmar .modal-header {
+      background: linear-gradient(135deg, #dc3545, #a71d2a);
+      color: white;
+      border-radius: 12px 12px 0 0;
+    }
+    .modal-confirmar .modal-content {
+      border-radius: 12px;
+      border: none;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    }
+    .modal-confirmar .btn-close { filter: invert(1); }
+
+    /* ════════════════════════════
+       MODAL EDITAR
+    ════════════════════════════ */
+    .modal-editar .modal-header {
+      background: linear-gradient(135deg, #1a6e3c, #0f4226);
+      color: white;
+      border-radius: 12px 12px 0 0;
+    }
+    .modal-editar .modal-content {
+      border-radius: 12px;
+      border: none;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    }
+    .modal-editar .modal-title { font-weight: 700; }
+    .modal-editar .btn-close { filter: invert(1); }
+    .modal-editar .form-label { font-weight: 600; font-size: 0.87rem; color: #333; }
+    .modal-editar .form-control,
+    .modal-editar .form-select {
+      border-radius: 10px;
+      border: 1.5px solid #d0d0d0;
+      font-size: 0.92rem;
+    }
+    .modal-editar .form-control:focus,
+    .modal-editar .form-select:focus {
+      border-color: #1a6e3c;
+      box-shadow: 0 0 0 3px rgba(26,110,60,0.13);
+    }
+    .modal-editar .seccion-titulo {
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #1a6e3c;
+      border-bottom: 2px solid #d4edda;
+      padding-bottom: 5px;
+      margin-bottom: 14px;
+      margin-top: 6px;
+    }
+
+    /* ════════════════════════════
+       SECCIÓN RESEÑAS DEL VENDEDOR
+    ════════════════════════════ */
+    .res-filtros-bar {
+      background: white;
+      border-radius: 0 0 16px 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      padding: 22px 28px 18px;
+      margin-bottom: 20px;
+    }
+    .res-filtros-bar .form-control,
+    .res-filtros-bar .form-select {
+      border-radius: 10px;
+      border: 1.5px solid #d0d0d0;
+      font-size: 0.9rem;
+    }
+    .res-filtros-bar .form-control:focus,
+    .res-filtros-bar .form-select:focus {
+      border-color: #1a6e3c;
+      box-shadow: 0 0 0 3px rgba(26,110,60,0.12);
+    }
+    .card-resena {
+      border: none;
+      border-radius: 14px;
+      box-shadow: 0 3px 14px rgba(0,0,0,0.08);
+      background: white;
+      padding: 20px 22px;
+      transition: transform 0.18s, box-shadow 0.18s;
+    }
+    .card-resena:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(26,110,60,0.14);
+    }
+    .estrellas-display-v { color: #f5a623; font-size: 1.05rem; letter-spacing: 1px; }
+    .estrellas-display-v .vacia { color: #ddd; }
+    .res-tipo-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: #d4edda;
+      color: #155724;
+    }
+    .res-prom-box {
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+      padding: 20px 24px;
+      text-align: center;
+    }
+    .res-prom-num {
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: #1a6e3c;
+      line-height: 1;
+    }
+    .sin-resenas {
+      text-align: center;
+      padding: 60px 20px;
+      color: #999;
+    }
+    .sin-resenas span { font-size: 3.5rem; display: block; margin-bottom: 14px; }
+    .res-info { font-size: 0.83rem; color: #888; }
+    .res-info strong { color: #1a6e3c; }
   </style>
 </head>
 <body>
 
-  <div class="panel-header">
-    <img src="img/LOGO PRIN.jpg" alt="PRICE NICE" height="80" class="mb-3 rounded-3">
-    <h1>🏪 Panel de Vendedor</h1>
-    <p id="bienvenida">Bienvenido a tu espacio de ventas</p>
-  </div>
+  <!-- ══════════════════════════════════════════
+       SECCIÓN PRINCIPAL — Menú del panel
+  ══════════════════════════════════════════ -->
+  <div id="seccion-principal">
+    <div class="panel-header">
+      <img src="img/LOGO PRIN.jpg" alt="PRICE NICE" height="80" class="mb-3 rounded-3">
+      <h1>🏪 Panel de Vendedor</h1>
+      <p id="bienvenida">Bienvenido a tu espacio de ventas</p>
+    </div>
 
-  <div class="container pb-5">
-    <div class="row g-4 justify-content-center">
+    <div class="container pb-5">
+      <div class="row g-4 justify-content-center">
 
-      <div class="col-12 col-sm-6 col-lg-4">
-        <div class="card card-opcion p-4 text-center">
-          <div class="icono">➕</div>
-          <h5 class="fw-bold mb-2">Publicar Producto</h5>
-          <p class="text-secondary small">Agrega nuevos productos al catálogo.</p>
-          <a href="admin.html" class="btn btn-success mt-2 fw-semibold">Publicar</a>
+        <div class="col-12 col-sm-6 col-lg-4">
+          <div class="card card-opcion p-4 text-center">
+            <div class="icono">➕</div>
+            <h5 class="fw-bold mb-2">Publicar Producto</h5>
+            <p class="text-secondary small">Agrega nuevos productos al catálogo.</p>
+            <button onclick="mostrarFormulario()" class="btn btn-success mt-2 fw-semibold">Publicar</button>
+          </div>
         </div>
+
+        <div class="col-12 col-sm-6 col-lg-4">
+          <div class="card card-opcion p-4 text-center">
+            <div class="icono">📊</div>
+            <h5 class="fw-bold mb-2">Mis Productos</h5>
+            <p class="text-secondary small">Consulta y gestiona tus productos publicados.</p>
+            <button onclick="mostrarMisProductos()" class="btn btn-success mt-2 fw-semibold">Ver productos</button>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-4">
+          <div class="card card-opcion p-4 text-center">
+            <div class="icono">🛒</div>
+            <h5 class="fw-bold mb-2">Tienda</h5>
+            <p class="text-secondary small">Revisa la tienda como la ven los clientes.</p>
+            <a href="tienda.html" class="btn btn-outline-secondary mt-2 fw-semibold">Ver tienda</a>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-4">
+          <div class="card card-opcion p-4 text-center">
+            <div class="icono">⭐</div>
+            <h5 class="fw-bold mb-2">Reseñas de mi Tienda</h5>
+            <p class="text-secondary small">Consulta lo que los usuarios opinan de tus productos.</p>
+            <button onclick="mostrarResenas()" class="btn btn-success mt-2 fw-semibold">Ver reseñas</button>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-4">
+          <div class="card card-opcion p-4 text-center">
+            <div class="icono">💲</div>
+            <h5 class="fw-bold mb-2">Precios</h5>
+            <p class="text-secondary small">Consulta los precios de tus productos publicados.</p>
+            <a href="tienda.html" class="btn btn-outline-success mt-2 fw-semibold">Ver precios</a>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-4">
+          <div class="card card-opcion p-4 text-center">
+            <div class="icono">🏠</div>
+            <h5 class="fw-bold mb-2">Inicio</h5>
+            <p class="text-secondary small">Vuelve a la página principal.</p>
+            <a href="Index.html" class="btn btn-outline-secondary mt-2 fw-semibold">Ir al inicio</a>
+          </div>
+        </div>
+
       </div>
 
-      <div class="col-12 col-sm-6 col-lg-4">
-        <div class="card card-opcion p-4 text-center">
-          <div class="icono">📊</div>
-          <h5 class="fw-bold mb-2">Mis Productos</h5>
-          <p class="text-secondary small">Consulta y gestiona tus productos publicados.</p>
-          <a href="catalogo.html" class="btn btn-success mt-2 fw-semibold">Ver productos</a>
-        </div>
+      <div class="text-center mt-5">
+        <button id="btnCerrarSesion" class="btn btn-danger px-4 py-2 rounded-pill fw-semibold">
+          🚪 Cerrar sesión
+        </button>
+      </div>
+    </div>
+  </div><!-- /seccion-principal -->
+
+
+  <!-- ══════════════════════════════════════════
+       SECCIÓN PUBLICAR PRODUCTO
+  ══════════════════════════════════════════ -->
+  <div id="seccion-publicar">
+    <div class="panel-header">
+      <img src="img/LOGO PRIN.jpg" alt="PRICE NICE" height="70" class="mb-3 rounded-3">
+      <h1>🏪 Panel de Vendedor</h1>
+      <p id="bienvenida-form">Tu espacio de ventas</p>
+    </div>
+
+    <div class="container pb-5" style="max-width: 780px;">
+
+      <div id="alerta-publicado" class="alert alert-success d-flex align-items-center gap-2 mb-4" role="alert">
+        <span style="font-size:1.3rem;">✅</span>
+        <div><strong>¡Producto publicado!</strong> Tu producto fue registrado correctamente en el catálogo.</div>
       </div>
 
-      <div class="col-12 col-sm-6 col-lg-4">
-        <div class="card card-opcion p-4 text-center">
-          <div class="icono">🛒</div>
-          <h5 class="fw-bold mb-2">Tienda</h5>
-          <p class="text-secondary small">Revisa la tienda como la ven los clientes.</p>
-          <a href="tienda.html" class="btn btn-outline-secondary mt-2 fw-semibold">Ver tienda</a>
-        </div>
+      <div class="form-header">
+        <h2>➕ Publicar Nuevo Producto</h2>
+        <p>Completa todos los campos para agregar tu producto al catálogo</p>
       </div>
 
-      <div class="col-12 col-sm-6 col-lg-4">
-        <div class="card card-opcion p-4 text-center">
-          <div class="icono">💲</div>
-          <h5 class="fw-bold mb-2">Precios</h5>
-          <p class="text-secondary small">Consulta los precios de tus productos publicados.</p>
-          <a href="tienda.html" class="btn btn-outline-success mt-2 fw-semibold">Ver precios</a>
+      <form id="form-producto" class="form-wrapper" novalidate>
+
+        <p class="seccion-titulo">📋 Información General</p>
+
+        <div class="mb-3">
+          <label for="nombre" class="form-label">Nombre del producto <span class="text-danger">*</span></label>
+          <input type="text" id="nombre" class="form-control" placeholder="Ej. Auriculares Bluetooth Pro" required>
+          <div class="invalid-feedback">Por favor ingresa el nombre del producto.</div>
         </div>
+
+        <div class="mb-3">
+          <label for="descripcion" class="form-label">Descripción <span class="text-danger">*</span></label>
+          <textarea id="descripcion" class="form-control" rows="3"
+            placeholder="Describe las características principales del producto..." required></textarea>
+          <div class="invalid-feedback">Por favor ingresa una descripción.</div>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-sm-6">
+            <label for="categoria" class="form-label">Categoría <span class="text-danger">*</span></label>
+            <select id="categoria" class="form-select" required>
+              <option value="">— Seleccionar categoría —</option>
+              <option>Electrónica</option>
+              <option>Ropa y Moda</option>
+              <option>Hogar y Decoración</option>
+              <option>Alimentos y Bebidas</option>
+              <option>Deportes y Fitness</option>
+              <option>Salud y Belleza</option>
+              <option>Juguetes y Juegos</option>
+              <option>Libros y Papelería</option>
+              <option>Herramientas y Ferretería</option>
+              <option>Mascotas</option>
+              <option>Automotriz</option>
+              <option>Otro</option>
+            </select>
+            <div class="invalid-feedback">Selecciona una categoría.</div>
+          </div>
+          <div class="col-sm-6">
+            <label for="marca" class="form-label">Marca</label>
+            <input type="text" id="marca" class="form-control" placeholder="Ej. Samsung, Nike, Genérico…">
+          </div>
+        </div>
+
+        <p class="seccion-titulo">💰 Precio y Disponibilidad</p>
+
+        <div class="row g-3 mb-3">
+          <div class="col-sm-6">
+            <label for="precio" class="form-label">Precio (COP) <span class="text-danger">*</span></label>
+            <div class="input-group">
+              <span class="input-group-text" style="border-radius:10px 0 0 10px; border:1.5px solid #d0d0d0;">$</span>
+              <input type="number" id="precio" class="form-control" placeholder="0"
+                min="0" step="1" style="border-radius:0 10px 10px 0;" required>
+            </div>
+            <div class="invalid-feedback">Ingresa un precio válido.</div>
+          </div>
+          <div class="col-sm-6">
+            <label for="cantidad" class="form-label">Cantidad disponible <span class="text-danger">*</span></label>
+            <input type="number" id="cantidad" class="form-control" placeholder="Ej. 50" min="0" step="1" required>
+            <div class="invalid-feedback">Ingresa la cantidad disponible.</div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="estado" class="form-label">Estado del producto <span class="text-danger">*</span></label>
+          <select id="estado" class="form-select" required>
+            <option value="">— Seleccionar estado —</option>
+            <option value="nuevo">Nuevo</option>
+            <option value="como_nuevo">Como nuevo</option>
+            <option value="buen_estado">Buen estado</option>
+            <option value="aceptable">Aceptable</option>
+            <option value="reacondicionado">Reacondicionado</option>
+          </select>
+          <div class="invalid-feedback">Selecciona el estado del producto.</div>
+        </div>
+
+        <p class="seccion-titulo">🏬 Tienda o Establecimiento</p>
+
+        <div class="mb-3">
+          <label for="tienda" class="form-label">Nombre de tu tienda <span class="text-danger">*</span></label>
+          <input type="text" id="tienda" class="form-control" placeholder="Ej. Electrónica Central, Boutique Moda…" required>
+          <div class="invalid-feedback">Ingresa el nombre de tu tienda.</div>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-sm-6">
+            <label for="ubicacion" class="form-label">Ciudad <span class="text-danger">*</span></label>
+            <select id="ubicacion" class="form-select" required>
+              <option value="">— Seleccionar ciudad —</option>
+              <option>Bogotá</option><option>Medellín</option><option>Cali</option>
+              <option>Barranquilla</option><option>Bucaramanga</option><option>Manizales</option>
+              <option>Pereira</option><option>Cartagena</option><option>Cúcuta</option>
+              <option>Ibagué</option><option>Santa Marta</option><option>Villavicencio</option>
+              <option>Otra</option>
+            </select>
+            <div class="invalid-feedback">Selecciona la ciudad.</div>
+          </div>
+          <div class="col-sm-6">
+            <label for="barrio" class="form-label">Barrio o sector</label>
+            <input type="text" id="barrio" class="form-control" placeholder="Ej. Chapinero, El Poblado…">
+            <div class="form-text text-muted">Ayuda a los clientes a encontrarte más fácil.</div>
+          </div>
+        </div>
+
+        <p class="seccion-titulo">🖼️ Imagen del Producto</p>
+
+        <div class="mb-4">
+          <label for="imagen" class="form-label">Subir imagen</label>
+          <input type="file" id="imagen" class="form-control" accept="image/*">
+          <div class="form-text text-muted">Formatos: JPG, PNG, WEBP. Recomendado: 800×800 px.</div>
+          <img id="preview-imagen" src="#" alt="Vista previa">
+        </div>
+
+        <hr class="my-4">
+        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-end">
+          <button type="button" class="btn btn-outline-secondary btn-cancelar" onclick="volverPanel()">
+            ← Cancelar y volver
+          </button>
+          <button type="submit" class="btn btn-publicar">
+            🚀 Publicar producto
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div><!-- /seccion-publicar -->
+
+
+  <!-- ══════════════════════════════════════════
+       SECCIÓN MIS PRODUCTOS
+  ══════════════════════════════════════════ -->
+  <div id="seccion-mis-productos">
+    <div class="panel-header">
+      <img src="img/LOGO PRIN.jpg" alt="PRICE NICE" height="70" class="mb-3 rounded-3">
+      <h1>🏪 Panel de Vendedor</h1>
+      <p id="bienvenida-mis">Tu espacio de ventas</p>
+    </div>
+
+    <div class="container pb-5">
+
+      <!-- Cabecera + búsqueda + filtros -->
+      <div class="form-header" style="border-radius:16px 16px 0 0;">
+        <h2>📊 Mis Productos</h2>
+        <p>Gestiona, edita o elimina tus productos publicados</p>
       </div>
 
-      <div class="col-12 col-sm-6 col-lg-4">
-        <div class="card card-opcion p-4 text-center">
-          <div class="icono">🏠</div>
-          <h5 class="fw-bold mb-2">Inicio</h5>
-          <p class="text-secondary small">Vuelve a la página principal.</p>
-          <a href="Index.html" class="btn btn-outline-secondary mt-2 fw-semibold">Ir al inicio</a>
+      <div class="mis-prod-header">
+        <div class="row g-3 align-items-end">
+          <!-- Buscador -->
+          <div class="col-12 col-md-5">
+            <label class="form-label mb-1" style="font-size:0.82rem;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.05em;">🔍 Buscar</label>
+            <input type="text" id="buscadorMisProductos" class="form-control buscador-prod"
+              placeholder="Nombre, marca, tienda…">
+          </div>
+          <!-- Filtro categoría -->
+          <div class="col-6 col-md-3">
+            <label class="form-label mb-1" style="font-size:0.82rem;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.05em;">📂 Categoría</label>
+            <select id="filtroCatMis" class="form-select filtro-select-prod">
+              <option value="">Todas</option>
+              <option>Electrónica</option><option>Ropa y Moda</option>
+              <option>Hogar y Decoración</option><option>Alimentos y Bebidas</option>
+              <option>Deportes y Fitness</option><option>Salud y Belleza</option>
+              <option>Juguetes y Juegos</option><option>Libros y Papelería</option>
+              <option>Herramientas y Ferretería</option><option>Mascotas</option>
+              <option>Automotriz</option><option>Otro</option>
+            </select>
+          </div>
+          <!-- Filtro estado -->
+          <div class="col-6 col-md-3">
+            <label class="form-label mb-1" style="font-size:0.82rem;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.05em;">📦 Estado</label>
+            <select id="filtroEstadoMis" class="form-select filtro-select-prod">
+              <option value="">Todos</option>
+              <option value="nuevo">Nuevo</option>
+              <option value="como_nuevo">Como nuevo</option>
+              <option value="buen_estado">Buen estado</option>
+              <option value="aceptable">Aceptable</option>
+              <option value="reacondicionado">Reacondicionado</option>
+            </select>
+          </div>
+          <!-- Botón limpiar -->
+          <div class="col-12 col-md-1 d-flex align-items-end">
+            <button id="btnLimpiarMis" class="btn btn-outline-secondary w-100" title="Limpiar filtros"
+              style="border-radius:10px;font-size:0.85rem;padding:9px;">🗑️</button>
+          </div>
         </div>
+
+        <!-- Info resultados -->
+        <div class="info-resultados mt-3" id="infoResultadosMis"></div>
+      </div>
+
+      <!-- Alerta de guardado -->
+      <div id="alerta-guardado" class="alert alert-success d-flex align-items-center gap-2 mb-4" role="alert">
+        <span style="font-size:1.3rem;">✅</span>
+        <div><strong>¡Cambios guardados!</strong> El producto fue actualizado correctamente.</div>
+      </div>
+
+      <!-- Grid de productos -->
+      <div id="gridMisProductos" class="row g-4 mb-4"></div>
+
+      <!-- Botón volver -->
+      <div class="text-center mt-2">
+        <button onclick="volverPanel()" class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-semibold">
+          ← Volver al panel
+        </button>
       </div>
 
     </div>
+  </div><!-- /seccion-mis-productos -->
 
-    <div class="text-center mt-5">
-      <button id="btnCerrarSesion" class="btn btn-danger px-4 py-2 rounded-pill fw-semibold">
-        🚪 Cerrar sesión
-      </button>
+
+  <!-- ══════════════════════════════════════════
+       MODAL — EDITAR PRODUCTO
+  ══════════════════════════════════════════ -->
+  <div class="modal fade modal-editar" id="modalEditar" tabindex="-1" aria-labelledby="tituloEditar" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="tituloEditar">✏️ Editar Producto</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body p-4">
+
+          <form id="form-editar" novalidate>
+            <input type="hidden" id="edit-id">
+
+            <p class="seccion-titulo">📋 Información General</p>
+
+            <div class="mb-3">
+              <label for="edit-nombre" class="form-label">Nombre del producto <span class="text-danger">*</span></label>
+              <input type="text" id="edit-nombre" class="form-control" required>
+              <div class="invalid-feedback">Ingresa el nombre del producto.</div>
+            </div>
+
+            <div class="mb-3">
+              <label for="edit-descripcion" class="form-label">Descripción <span class="text-danger">*</span></label>
+              <textarea id="edit-descripcion" class="form-control" rows="3" required></textarea>
+              <div class="invalid-feedback">Ingresa una descripción.</div>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-sm-6">
+                <label for="edit-categoria" class="form-label">Categoría <span class="text-danger">*</span></label>
+                <select id="edit-categoria" class="form-select" required>
+                  <option value="">— Seleccionar —</option>
+                  <option>Electrónica</option><option>Ropa y Moda</option>
+                  <option>Hogar y Decoración</option><option>Alimentos y Bebidas</option>
+                  <option>Deportes y Fitness</option><option>Salud y Belleza</option>
+                  <option>Juguetes y Juegos</option><option>Libros y Papelería</option>
+                  <option>Herramientas y Ferretería</option><option>Mascotas</option>
+                  <option>Automotriz</option><option>Otro</option>
+                </select>
+                <div class="invalid-feedback">Selecciona una categoría.</div>
+              </div>
+              <div class="col-sm-6">
+                <label for="edit-marca" class="form-label">Marca</label>
+                <input type="text" id="edit-marca" class="form-control">
+              </div>
+            </div>
+
+            <p class="seccion-titulo">💰 Precio y Disponibilidad</p>
+
+            <div class="row g-3 mb-3">
+              <div class="col-sm-6">
+                <label for="edit-precio" class="form-label">Precio (COP) <span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <span class="input-group-text" style="border-radius:10px 0 0 10px;border:1.5px solid #d0d0d0;">$</span>
+                  <input type="number" id="edit-precio" class="form-control" min="0" step="1"
+                    style="border-radius:0 10px 10px 0;" required>
+                </div>
+                <div class="invalid-feedback">Ingresa un precio válido.</div>
+              </div>
+              <div class="col-sm-6">
+                <label for="edit-cantidad" class="form-label">Cantidad disponible <span class="text-danger">*</span></label>
+                <input type="number" id="edit-cantidad" class="form-control" min="0" step="1" required>
+                <div class="invalid-feedback">Ingresa la cantidad.</div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="edit-estado" class="form-label">Estado <span class="text-danger">*</span></label>
+              <select id="edit-estado" class="form-select" required>
+                <option value="">— Seleccionar —</option>
+                <option value="nuevo">Nuevo</option>
+                <option value="como_nuevo">Como nuevo</option>
+                <option value="buen_estado">Buen estado</option>
+                <option value="aceptable">Aceptable</option>
+                <option value="reacondicionado">Reacondicionado</option>
+              </select>
+              <div class="invalid-feedback">Selecciona el estado.</div>
+            </div>
+
+            <p class="seccion-titulo">🏬 Tienda o Establecimiento</p>
+
+            <div class="mb-3">
+              <label for="edit-tienda" class="form-label">Nombre de tu tienda <span class="text-danger">*</span></label>
+              <input type="text" id="edit-tienda" class="form-control" required>
+              <div class="invalid-feedback">Ingresa el nombre de tu tienda.</div>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-sm-6">
+                <label for="edit-ubicacion" class="form-label">Ciudad <span class="text-danger">*</span></label>
+                <select id="edit-ubicacion" class="form-select" required>
+                  <option value="">— Seleccionar —</option>
+                  <option>Bogotá</option><option>Medellín</option><option>Cali</option>
+                  <option>Barranquilla</option><option>Bucaramanga</option><option>Manizales</option>
+                  <option>Pereira</option><option>Cartagena</option><option>Cúcuta</option>
+                  <option>Ibagué</option><option>Santa Marta</option><option>Villavicencio</option>
+                  <option>Otra</option>
+                </select>
+                <div class="invalid-feedback">Selecciona la ciudad.</div>
+              </div>
+              <div class="col-sm-6">
+                <label for="edit-barrio" class="form-label">Barrio o sector</label>
+                <input type="text" id="edit-barrio" class="form-control" placeholder="Ej. Chapinero, El Poblado…">
+              </div>
+            </div>
+
+            <p class="seccion-titulo">🖼️ Imagen del Producto</p>
+
+            <div class="mb-2">
+              <label for="edit-imagen" class="form-label">Cambiar imagen</label>
+              <input type="file" id="edit-imagen" class="form-control" accept="image/*">
+              <div class="form-text text-muted">Deja vacío para conservar la imagen actual.</div>
+              <img id="edit-preview-imagen" src="#" alt="Vista previa edición">
+            </div>
+
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary rounded-pill px-4"
+            data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-guardar px-4" id="btnGuardarEdicion">
+            💾 Guardar cambios
+          </button>
+        </div>
+      </div>
     </div>
   </div>
+
+
+  <!-- ══════════════════════════════════════════
+       MODAL — CONFIRMAR ELIMINAR
+  ══════════════════════════════════════════ -->
+  <div class="modal fade modal-confirmar" id="modalEliminar" tabindex="-1" aria-labelledby="tituloEliminar" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold" id="tituloEliminar">🗑️ Eliminar producto</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body text-center py-4">
+          <div style="font-size:3rem;margin-bottom:12px;">⚠️</div>
+          <p class="fw-semibold fs-5 mb-1">¿Estás seguro?</p>
+          <p class="text-secondary" style="font-size:0.92rem;">
+            Vas a eliminar <strong id="nombreProductoEliminar"></strong>.<br>
+            Esta acción no se puede deshacer.
+          </p>
+        </div>
+        <div class="modal-footer justify-content-center gap-3">
+          <button type="button" class="btn btn-outline-secondary rounded-pill px-4"
+            data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-danger rounded-pill px-4 fw-semibold"
+            id="btnConfirmarEliminar">Sí, eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════
+       SECCIÓN RESEÑAS DEL VENDEDOR
+  ══════════════════════════════════════════ -->
+  <div id="seccion-resenas">
+    <div class="panel-header">
+      <img src="img/LOGO PRIN.jpg" alt="PRICE NICE" height="70" class="mb-3 rounded-3">
+      <h1>🏪 Panel de Vendedor</h1>
+      <p id="bienvenida-res">Tu espacio de ventas</p>
+    </div>
+
+    <div class="container pb-5">
+
+      <!-- Cabecera -->
+      <div class="form-header" style="border-radius:16px 16px 0 0;">
+        <h2>⭐ Reseñas de mi Tienda</h2>
+        <p>Opiniones y calificaciones que los usuarios dejaron sobre tus productos y tienda</p>
+      </div>
+
+      <!-- Resumen + filtros -->
+      <div class="res-filtros-bar">
+
+        <!-- Resumen numérico -->
+        <div class="row g-3 mb-4" id="resumenResenas">
+          <div class="col-6 col-md-3">
+            <div class="res-prom-box">
+              <div class="res-prom-num" id="totalResenas">0</div>
+              <small class="text-secondary fw-semibold">Reseñas totales</small>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="res-prom-box">
+              <div class="res-prom-num" id="promCalif">—</div>
+              <small class="text-secondary fw-semibold">Calificación promedio</small>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="res-prom-box">
+              <div class="res-prom-num" id="totalTiendas">0</div>
+              <small class="text-secondary fw-semibold">Tiendas mencionadas</small>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="res-prom-box">
+              <div class="res-prom-num" id="totalProductosRes">0</div>
+              <small class="text-secondary fw-semibold">Productos mencionados</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="row g-3 align-items-end">
+          <div class="col-12 col-md-4">
+            <label class="form-label mb-1" style="font-size:0.8rem;font-weight:700;color:#555;text-transform:uppercase;">🔍 Buscar</label>
+            <input type="text" id="buscarResenas" class="form-control"
+              placeholder="Producto, tienda, usuario…">
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label mb-1" style="font-size:0.8rem;font-weight:700;color:#555;text-transform:uppercase;">📂 Tipo</label>
+            <select id="filtroTipoRes" class="form-select">
+              <option value="">Todos</option>
+              <option value="producto">Producto</option>
+              <option value="tienda">Tienda</option>
+              <option value="servicio">Servicio general</option>
+            </select>
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label mb-1" style="font-size:0.8rem;font-weight:700;color:#555;text-transform:uppercase;">⭐ Calificación</label>
+            <select id="filtroCalifRes" class="form-select">
+              <option value="">Todas</option>
+              <option value="5">★★★★★ (5)</option>
+              <option value="4">★★★★☆ (4)</option>
+              <option value="3">★★★☆☆ (3)</option>
+              <option value="2">★★☆☆☆ (2)</option>
+              <option value="1">★☆☆☆☆ (1)</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-2 d-flex align-items-end gap-2">
+            <button id="btnLimpiarRes" class="btn btn-outline-secondary w-100"
+              style="border-radius:10px;font-size:0.85rem;padding:9px;" title="Limpiar filtros">🗑️ Limpiar</button>
+          </div>
+        </div>
+
+        <div class="res-info mt-3" id="infoResenas"></div>
+      </div>
+
+      <!-- Grid de reseñas -->
+      <div id="gridResenas" class="row g-4 mb-4"></div>
+
+      <!-- Volver -->
+      <div class="text-center mt-2">
+        <button onclick="volverPanel()" class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-semibold">
+          ← Volver al panel
+        </button>
+      </div>
+
+    </div>
+  </div><!-- /seccion-resenas -->
+
 
   <footer>
     <p>© 2026 PRICE NICE — Todos los derechos reservados</p>
   </footer>
 
-<script type="module">
-  import { auth, db } from "./firebase-config.js";
-  import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-  import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-  onAuthStateChanged(auth, async usuario => {
-    if (!usuario) {
+  <!-- ══════════════════════════════════════════
+       SCRIPTS
+  ══════════════════════════════════════════ -->
+  <script src="https://unpkg.com/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module">
+    import { auth, db } from "./firebase-config.js";
+    import { onAuthStateChanged, signOut }
+      from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+    import { doc, getDoc, collection, addDoc, getDocs,
+             updateDoc, deleteDoc, query, where, serverTimestamp }
+      from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+    /* ─── Estado global ─── */
+    let usuarioActual  = null;
+    let todosProductos = [];          // cache local de productos del vendedor
+    let idEliminar     = null;        // id del doc a borrar
+    let imagenEditBase64 = null;      // nueva imagen en edición (base64)
+
+    /* ─── Instancias de modales Bootstrap ─── */
+    const modalEditar   = new bootstrap.Modal(document.getElementById("modalEditar"));
+    const modalEliminar = new bootstrap.Modal(document.getElementById("modalEliminar"));
+
+    /* ─── Auth ─── */
+    onAuthStateChanged(auth, async usuario => {
+      if (!usuario) { window.location.href = "login.html"; return; }
+      usuarioActual = usuario;
+
+      const snap  = await getDoc(doc(db, "usuarios", usuario.uid));
+      const datos = snap.exists() ? snap.data() : {};
+      const nombre = datos.nombre || usuario.email;
+
+      document.getElementById("bienvenida").textContent     = "Bienvenido, " + nombre + " 👋";
+      document.getElementById("bienvenida-form").textContent = "Hola, " + nombre + " — tu espacio de ventas";
+      document.getElementById("bienvenida-mis").textContent  = "Hola, " + nombre + " — tu espacio de ventas";
+      document.getElementById("bienvenida-res").textContent  = "Hola, " + nombre + " — tu espacio de ventas";
+    });
+
+    document.getElementById("btnCerrarSesion").addEventListener("click", async () => {
+      await signOut(auth);
       window.location.href = "login.html";
-      return;
-    }
-    const snap = await getDoc(doc(db, "usuarios", usuario.uid));
-    const datos = snap.exists() ? snap.data() : {};
-    const nombre = datos.nombre || usuario.email;
-    document.getElementById("bienvenida").textContent = "Bienvenido, " + nombre + " 👋";
-  });
+    });
 
-  document.getElementById("btnCerrarSesion").addEventListener("click", async () => {
-    await signOut(auth);
-    window.location.href = "login.html";
-  });
-</script>
+    /* ════════════════════════════════════
+       PUBLICAR PRODUCTO
+    ════════════════════════════════════ */
+    document.getElementById("imagen").addEventListener("change", function () {
+      const preview = document.getElementById("preview-imagen");
+      const archivo = this.files[0];
+      if (archivo) {
+        const reader = new FileReader();
+        reader.onload = e => { preview.src = e.target.result; preview.style.display = "block"; };
+        reader.readAsDataURL(archivo);
+      } else { preview.style.display = "none"; }
+    });
+
+    document.getElementById("form-producto").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      this.classList.add("was-validated");
+      if (!this.checkValidity()) return;
+
+      const btn = this.querySelector(".btn-publicar");
+      btn.disabled = true; btn.textContent = "⏳ Publicando…";
+
+      try {
+        // Leer imagen como base64 si se seleccionó
+        let imagenBase64 = null;
+        const archivoImg = document.getElementById("imagen").files[0];
+        if (archivoImg) {
+          imagenBase64 = await comprimirImagen(archivoImg);
+        }
+
+        const producto = {
+          nombre:      document.getElementById("nombre").value.trim(),
+          descripcion: document.getElementById("descripcion").value.trim(),
+          categoria:   document.getElementById("categoria").value,
+          marca:       document.getElementById("marca").value.trim(),
+          precio:      parseFloat(document.getElementById("precio").value),
+          cantidad:    parseInt(document.getElementById("cantidad").value),
+          estado:      document.getElementById("estado").value,
+          tienda:      document.getElementById("tienda").value.trim(),
+          ubicacion:   document.getElementById("ubicacion").value,
+          barrio:      document.getElementById("barrio").value.trim(),
+          imagenBase64: imagenBase64,
+          vendedorId:  usuarioActual.uid,
+          fechaPublicacion: serverTimestamp()
+        };
+
+        await addDoc(collection(db, "productos"), producto);
+
+        document.getElementById("alerta-publicado").style.display = "flex";
+        this.classList.remove("was-validated");
+        this.reset();
+        document.getElementById("preview-imagen").style.display = "none";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        setTimeout(() => { document.getElementById("alerta-publicado").style.display = "none"; }, 5000);
+
+      } catch (err) {
+        console.error("Error al publicar:", err);
+        let msg = "❌ No se pudo publicar el producto.";
+        if (err.code === "permission-denied")          msg += " Sin permiso en Firestore. Revisa las reglas de seguridad.";
+        else if (err.code === "resource-exhausted")    msg += " Cuota de Firestore agotada.";
+        else if (err.message && err.message.includes("exceeds")) msg += " El documento es demasiado grande (imagen muy pesada).";
+        else                                           msg += " " + (err.message || "Error desconocido.");
+        alert(msg);
+      } finally {
+        btn.disabled = false; btn.textContent = "🚀 Publicar producto";
+      }
+    });
+
+    /* ════════════════════════════════════
+       MIS PRODUCTOS — cargar y renderizar
+    ════════════════════════════════════ */
+    async function cargarMisProductos() {
+      if (!usuarioActual) return;
+      try {
+        const q = query(
+          collection(db, "productos"),
+          where("vendedorId", "==", usuarioActual.uid)
+        );
+        const snap = await getDocs(q);
+        todosProductos = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      } catch (err) {
+        console.error("Error al cargar productos:", err);
+        todosProductos = [];
+      }
+      aplicarFiltrosMis();
+    }
+
+    function aplicarFiltrosMis() {
+      const busq   = document.getElementById("buscadorMisProductos").value.toLowerCase().trim();
+      const cat    = document.getElementById("filtroCatMis").value;
+      const estado = document.getElementById("filtroEstadoMis").value;
+
+      const visibles = todosProductos.filter(p => {
+        if (cat    && p.categoria !== cat)   return false;
+        if (estado && p.estado   !== estado) return false;
+        if (busq) {
+          const texto = [p.nombre, p.marca, p.tienda, p.descripcion].join(" ").toLowerCase();
+          if (!texto.includes(busq)) return false;
+        }
+        return true;
+      });
+
+      renderizarMisProductos(visibles);
+    }
+
+    function renderizarMisProductos(lista) {
+      const grid = document.getElementById("gridMisProductos");
+      const info = document.getElementById("infoResultadosMis");
+      grid.innerHTML = "";
+
+      if (todosProductos.length === 0) {
+        grid.innerHTML = `
+          <div class="col-12">
+            <div class="sin-productos">
+              <span>📦</span>
+              <h5>Aún no tienes productos publicados</h5>
+              <p class="text-secondary">Usa la opción <strong>Publicar Producto</strong> para agregar tu primer producto.</p>
+              <button onclick="mostrarFormulario()" class="btn btn-success mt-2 px-4 rounded-pill fw-semibold">
+                ➕ Publicar ahora
+              </button>
+            </div>
+          </div>`;
+        info.innerHTML = "";
+        return;
+      }
+
+      if (lista.length === 0) {
+        grid.innerHTML = `
+          <div class="col-12">
+            <div class="sin-productos">
+              <span>🔍</span>
+              <h5>No hay productos que coincidan</h5>
+              <p class="text-secondary">Prueba con otros términos o limpia los filtros.</p>
+            </div>
+          </div>`;
+      } else {
+        lista.forEach(p => {
+          const col = document.createElement("div");
+          col.className = "col-12 col-sm-6 col-lg-4";
+
+          const estadoLabel = {
+            nuevo: "Nuevo", como_nuevo: "Como nuevo",
+            buen_estado: "Buen estado", aceptable: "Aceptable",
+            reacondicionado: "Reacondicionado"
+          }[p.estado] || p.estado || "—";
+
+          const imgHTML = p.imagenBase64
+            ? `<img src="${p.imagenBase64}" class="prod-card-img" alt="${p.nombre}">`
+            : `<div class="prod-card-img-placeholder">📦</div>`;
+
+          col.innerHTML = `
+            <div class="prod-card h-100">
+              ${imgHTML}
+              <div class="prod-card-body">
+                <div class="d-flex justify-content-between align-items-start mb-1">
+                  <div class="prod-nombre flex-grow-1 me-2">${p.nombre}</div>
+                  <span class="badge-estado estado-${p.estado || 'nuevo'}">${estadoLabel}</span>
+                </div>
+                <p class="prod-descripcion">${p.descripcion || '—'}</p>
+                <div class="prod-meta">📂 <strong>${p.categoria || '—'}</strong></div>
+                ${p.marca    ? `<div class="prod-meta">🏷️ ${p.marca}</div>` : ''}
+                <div class="prod-meta">🏪 ${p.tienda || '—'}</div>
+                <div class="prod-meta">📍 ${p.ubicacion || '—'}${p.barrio ? ' · ' + p.barrio : ''}</div>
+                <div class="prod-meta">📦 Stock: <strong>${p.cantidad ?? '—'}</strong> unidades</div>
+                <div class="prod-precio">$ ${(p.precio || 0).toLocaleString("es-CO")}</div>
+                <div class="prod-acciones">
+                  <button class="btn-editar" onclick="abrirEditar('${p.id}')">✏️ Editar</button>
+                  <button class="btn-eliminar" onclick="pedirEliminar('${p.id}', '${p.nombre.replace(/'/g, "\\'")}')">🗑️ Eliminar</button>
+                </div>
+              </div>
+            </div>`;
+          grid.appendChild(col);
+        });
+      }
+
+      // Info de resultados
+      if (lista.length === todosProductos.length) {
+        info.innerHTML = `<strong>${todosProductos.length}</strong> producto${todosProductos.length !== 1 ? 's' : ''} publicado${todosProductos.length !== 1 ? 's' : ''}`;
+      } else {
+        info.innerHTML = `Mostrando <strong>${lista.length}</strong> de <strong>${todosProductos.length}</strong> productos`;
+      }
+    }
+
+    /* ════════════════════════════════════
+       EDITAR PRODUCTO
+    ════════════════════════════════════ */
+    window.abrirEditar = function (id) {
+      const p = todosProductos.find(x => x.id === id);
+      if (!p) return;
+
+      imagenEditBase64 = p.imagenBase64 || null;
+
+      document.getElementById("edit-id").value          = id;
+      document.getElementById("edit-nombre").value      = p.nombre      || "";
+      document.getElementById("edit-descripcion").value = p.descripcion || "";
+      document.getElementById("edit-categoria").value   = p.categoria   || "";
+      document.getElementById("edit-marca").value       = p.marca       || "";
+      document.getElementById("edit-precio").value      = p.precio      ?? "";
+      document.getElementById("edit-cantidad").value    = p.cantidad    ?? "";
+      document.getElementById("edit-estado").value      = p.estado      || "";
+      document.getElementById("edit-tienda").value      = p.tienda      || "";
+      document.getElementById("edit-ubicacion").value   = p.ubicacion   || "";
+      document.getElementById("edit-barrio").value      = p.barrio      || "";
+
+      const editPreview = document.getElementById("edit-preview-imagen");
+      if (p.imagenBase64) {
+        editPreview.src = p.imagenBase64;
+        editPreview.style.display = "block";
+      } else {
+        editPreview.style.display = "none";
+      }
+
+      document.getElementById("form-editar").classList.remove("was-validated");
+      document.getElementById("edit-imagen").value = "";
+      modalEditar.show();
+    };
+
+    // Vista previa en edición
+    document.getElementById("edit-imagen").addEventListener("change", async function () {
+      const archivo = this.files[0];
+      const preview = document.getElementById("edit-preview-imagen");
+      if (archivo) {
+        imagenEditBase64 = await comprimirImagen(archivo);
+        preview.src = imagenEditBase64;
+        preview.style.display = "block";
+      }
+    });
+
+    document.getElementById("btnGuardarEdicion").addEventListener("click", async () => {
+      const form = document.getElementById("form-editar");
+      form.classList.add("was-validated");
+      if (!form.checkValidity()) return;
+
+      const btn = document.getElementById("btnGuardarEdicion");
+      btn.disabled = true; btn.textContent = "⏳ Guardando…";
+
+      try {
+        const id = document.getElementById("edit-id").value;
+        const datos = {
+          nombre:       document.getElementById("edit-nombre").value.trim(),
+          descripcion:  document.getElementById("edit-descripcion").value.trim(),
+          categoria:    document.getElementById("edit-categoria").value,
+          marca:        document.getElementById("edit-marca").value.trim(),
+          precio:       parseFloat(document.getElementById("edit-precio").value),
+          cantidad:     parseInt(document.getElementById("edit-cantidad").value),
+          estado:       document.getElementById("edit-estado").value,
+          tienda:       document.getElementById("edit-tienda").value.trim(),
+          ubicacion:    document.getElementById("edit-ubicacion").value,
+          barrio:       document.getElementById("edit-barrio").value.trim(),
+          imagenBase64: imagenEditBase64,
+          fechaActualizacion: serverTimestamp()
+        };
+
+        await updateDoc(doc(db, "productos", id), datos);
+
+        // Actualizar cache local
+        const idx = todosProductos.findIndex(x => x.id === id);
+        if (idx !== -1) todosProductos[idx] = { id, ...datos };
+
+        modalEditar.hide();
+        aplicarFiltrosMis();
+
+        document.getElementById("alerta-guardado").style.display = "flex";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        setTimeout(() => { document.getElementById("alerta-guardado").style.display = "none"; }, 5000);
+
+      } catch (err) {
+        console.error("Error al guardar:", err);
+        let msg = "❌ No se pudo guardar el producto.";
+        if (err.code === "permission-denied")       msg += " Sin permiso en Firestore.";
+        else if (err.message && err.message.includes("exceeds")) msg += " El documento es demasiado grande.";
+        else                                        msg += " " + (err.message || "Error desconocido.");
+        alert(msg);
+      } finally {
+        btn.disabled = false; btn.textContent = "💾 Guardar cambios";
+      }
+    });
+
+    /* ════════════════════════════════════
+       ELIMINAR PRODUCTO
+    ════════════════════════════════════ */
+    window.pedirEliminar = function (id, nombre) {
+      idEliminar = id;
+      document.getElementById("nombreProductoEliminar").textContent = nombre;
+      modalEliminar.show();
+    };
+
+    document.getElementById("btnConfirmarEliminar").addEventListener("click", async () => {
+      if (!idEliminar) return;
+      const btn = document.getElementById("btnConfirmarEliminar");
+      btn.disabled = true; btn.textContent = "⏳ Eliminando…";
+
+      try {
+        await deleteDoc(doc(db, "productos", idEliminar));
+        todosProductos = todosProductos.filter(p => p.id !== idEliminar);
+        idEliminar = null;
+        modalEliminar.hide();
+        aplicarFiltrosMis();
+      } catch (err) {
+        console.error("Error al eliminar:", err);
+        alert("❌ No se pudo eliminar. Intenta de nuevo.");
+      } finally {
+        btn.disabled = false; btn.textContent = "Sí, eliminar";
+      }
+    });
+
+    /* ════════════════════════════════════
+       FILTROS EN MIS PRODUCTOS
+    ════════════════════════════════════ */
+    document.getElementById("buscadorMisProductos").addEventListener("input",  aplicarFiltrosMis);
+    document.getElementById("filtroCatMis").addEventListener("change",         aplicarFiltrosMis);
+    document.getElementById("filtroEstadoMis").addEventListener("change",      aplicarFiltrosMis);
+    document.getElementById("btnLimpiarMis").addEventListener("click", () => {
+      document.getElementById("buscadorMisProductos").value = "";
+      document.getElementById("filtroCatMis").value         = "";
+      document.getElementById("filtroEstadoMis").value      = "";
+      aplicarFiltrosMis();
+    });
+
+    /* ════════════════════════════════════
+       NAVEGACIÓN ENTRE SECCIONES
+    ════════════════════════════════════ */
+    function ocultarTodo() {
+      ["seccion-principal","seccion-publicar","seccion-mis-productos"]
+        .forEach(id => document.getElementById(id).style.display = "none");
+    }
+
+    window.mostrarFormulario = function () {
+      ocultarTodo();
+      document.getElementById("seccion-publicar").style.display = "block";
+      document.getElementById("alerta-publicado").style.display = "none";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    window.mostrarMisProductos = async function () {      ocultarTodo();
+      document.getElementById("seccion-mis-productos").style.display = "block";
+      document.getElementById("alerta-guardado").style.display       = "none";
+      document.getElementById("gridMisProductos").innerHTML =
+        `<div class="col-12 text-center py-5 text-secondary">
+           <div class="spinner-border text-success mb-3" role="status"></div>
+           <p>Cargando tus productos…</p>
+         </div>`;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      await cargarMisProductos();
+    };
+
+    window.volverPanel = function () {
+      ocultarTodo();
+      document.getElementById("seccion-principal").style.display = "block";
+      // Limpiar formulario publicar
+      const fp = document.getElementById("form-producto");
+      fp.classList.remove("was-validated");
+      fp.reset();
+      document.getElementById("preview-imagen").style.display = "none";
+      // Limpiar filtros mis productos
+      document.getElementById("buscadorMisProductos").value = "";
+      document.getElementById("filtroCatMis").value         = "";
+      document.getElementById("filtroEstadoMis").value      = "";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    /* ─── Utilidad: redimensionar y comprimir imagen antes de guardar ─── */
+    // Firestore tiene límite de 1 MB por documento.
+    // Reducimos la imagen a máx. 600px y calidad 0.7 para quedar bien por debajo.
+    function comprimirImagen(archivo, maxPx = 600, calidad = 0.7) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = reject;
+        reader.onload = e => {
+          const img = new Image();
+          img.onerror = reject;
+          img.onload = () => {
+            // Calcular nuevo tamaño manteniendo proporción
+            let w = img.width;
+            let h = img.height;
+            if (w > maxPx || h > maxPx) {
+              if (w >= h) { h = Math.round(h * maxPx / w); w = maxPx; }
+              else        { w = Math.round(w * maxPx / h); h = maxPx; }
+            }
+            const canvas = document.createElement("canvas");
+            canvas.width  = w;
+            canvas.height = h;
+            canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL("image/jpeg", calidad));
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(archivo);
+      });
+    }
+
+  </script>
 
 </body>
 </html>
