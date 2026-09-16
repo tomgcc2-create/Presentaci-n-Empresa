@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Precios por Categoría | PRICE NICE</title>
+  <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .panel-header {
+      background: linear-gradient(135deg, #D4954D, #775533);
+      color: white;
+      padding: 40px 20px;
+      text-align: center;
+      border-radius: 0 0 20px 20px;
+      margin-bottom: 30px;
+    }
+    .panel-header h1 { font-size: 2rem; margin-bottom: 8px; }
+    .panel-header p  { opacity: 0.9; }
+
+    /* ── Buscador ── */
+    .buscador-container {
+      max-width: 500px;
+      margin: 0 auto 24px;
+    }
+    .buscador-container input {
+      border-radius: 30px;
+      padding: 10px 20px;
+      border: 2px solid #ddd;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+    .buscador-container input:focus {
+      border-color: #D4954D;
+      box-shadow: 0 0 0 3px rgba(212,149,77,0.15);
+      outline: none;
+    }
+
+    /* ── Filtros de categoría ── */
+    .filtros {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    .filtro-btn {
+      border: 2px solid #ddd;
+      border-radius: 24px;
+      padding: 7px 18px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      background: white;
+      cursor: pointer;
+      transition: all 0.25s;
+      color: #555;
+    }
+    .filtro-btn:hover { border-color: #D4954D; color: #D4954D; }
+    .filtro-btn.active {
+      background: #D4954D;
+      color: white;
+      border-color: #D4954D;
+    }
+
+    /* ── Filtros avanzados ── */
+    .filtros-avanzados {
+      background: white;
+      border-radius: 16px;
+      padding: 20px 24px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      margin-bottom: 28px;
+    }
+    .filtros-avanzados .filtro-grupo {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .filtro-item {
+      flex: 1 1 200px;
+      max-width: 280px;
+      min-width: 180px;
+    }
+    .filtro-item label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #777;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .filtro-item select,
+    .filtro-item input[type="number"] {
+      width: 100%;
+      border: 2px solid #eee;
+      border-radius: 12px;
+      padding: 9px 14px;
+      font-size: 0.92rem;
+      background: #fafafa;
+      color: #333;
+      transition: border-color 0.3s;
+      appearance: auto;
+    }
+    .filtro-item select:focus,
+    .filtro-item input[type="number"]:focus {
+      border-color: #D4954D;
+      box-shadow: 0 0 0 3px rgba(212,149,77,0.12);
+      outline: none;
+    }
+    .rango-precio-grupo {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .rango-precio-grupo input[type="number"] {
+      width: 100%;
+      border: 2px solid #eee;
+      border-radius: 12px;
+      padding: 9px 12px;
+      font-size: 0.92rem;
+      background: #fafafa;
+      color: #333;
+      transition: border-color 0.3s;
+    }
+    .rango-precio-grupo input[type="number"]:focus {
+      border-color: #D4954D;
+      box-shadow: 0 0 0 3px rgba(212,149,77,0.12);
+      outline: none;
+    }
+    .rango-precio-grupo span {
+      color: #aaa;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .btn-limpiar-filtros {
+      border: 2px solid #ddd;
+      border-radius: 12px;
+      padding: 9px 20px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      background: white;
+      color: #999;
+      cursor: pointer;
+      transition: all 0.25s;
+      white-space: nowrap;
+      align-self: flex-end;
+    }
+    .btn-limpiar-filtros:hover {
+      border-color: #e74c3c;
+      color: #e74c3c;
+      background: #fff5f5;
+    }
+    .filtros-avanzados .filtro-titulo {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #D4954D;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+    .resultados-info {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #999;
+      margin-bottom: 8px;
+    }
+    .resultados-info strong { color: #D4954D; }
+
+    /* ── Tarjetas de producto ── */
+    .producto-card {
+      border: none;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      transition: transform 0.2s, box-shadow 0.2s;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .producto-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 28px rgba(212,149,77,0.22);
+    }
+    .producto-card .card-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cat-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+    .cat-belleza       { background: #fce4ec; color: #c62828; }
+    .cat-higiene       { background: #e0f7fa; color: #00695c; }
+    .cat-alimentos     { background: #fff3e0; color: #e65100; }
+    .cat-hogar         { background: #e8eaf6; color: #283593; }
+    .cat-bebes         { background: #f3e5f5; color: #6a1b9a; }
+    .cat-mascotas      { background: #e8f5e9; color: #2e7d32; }
+
+    .precio-tag {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #2e7d32;
+      margin-top: auto;
+    }
+    .tienda-tag {
+      font-size: 0.82rem;
+      color: #888;
+      margin-top: 6px;
+    }
+    .tienda-tag strong { color: #555; }
+
+    .seccion-titulo {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin: 36px 0 18px;
+      padding-bottom: 8px;
+      border-bottom: 3px solid #D4954D;
+      display: inline-block;
+    }
+
+    .sin-resultados {
+      text-align: center;
+      padding: 60px 20px;
+      color: #999;
+    }
+    .sin-resultados span { font-size: 3rem; display: block; margin-bottom: 12px; }
+
+    /* ── Resumen ── */
+    .resumen-box {
+      background: white;
+      border-radius: 16px;
+      padding: 20px 28px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      margin-bottom: 28px;
+    }
+    .resumen-num {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #D4954D;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="panel-header">
+    <img src="img/LOGO PRIN.jpg" alt="PRICE NICE" height="80" class="mb-3 rounded-3">
+    <h1>💲 Precios por Categoría</h1>
+    <p>Compara productos, precios y tiendas fácilmente</p>
+  </div>
+
+  <div class="container pb-5">
+
+    <!-- Resumen rápido -->
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-3">
+        <div class="resumen-box text-center">
+          <div class="resumen-num" id="totalProductos">0</div>
+          <small class="text-secondary fw-semibold">Productos</small>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="resumen-box text-center">
+          <div class="resumen-num" id="totalCategorias">0</div>
+          <small class="text-secondary fw-semibold">Categorías</small>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="resumen-box text-center">
+          <div class="resumen-num" id="totalTiendas">0</div>
+          <small class="text-secondary fw-semibold">Tiendas</small>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="resumen-box text-center">
+          <div class="resumen-num" id="precioPromedio">$0</div>
+          <small class="text-secondary fw-semibold">Precio promedio</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Buscador -->
+    <div class="buscador-container">
+      <input type="text" id="buscador" class="form-control" placeholder="🔍 Buscar producto, tienda o categoría...">
+    </div>
+
+    <!-- Filtros de categoría -->
+    <div class="filtros" id="filtros"></div>
+
+    <!-- Filtros avanzados -->
+    <div class="filtros-avanzados">
+      <div class="filtro-titulo">⚙️ Filtros avanzados</div>
+      <div class="filtro-grupo">
+        <!-- Ordenar por -->
+        <div class="filtro-item">
+          <label for="ordenar">📊 Ordenar por</label>
+          <select id="ordenar">
+            <option value="default">Predeterminado</option>
+            <option value="precio-asc">Precio: menor a mayor</option>
+            <option value="precio-desc">Precio: mayor a menor</option>
+            <option value="nombre-asc">Nombre: A → Z</option>
+            <option value="nombre-desc">Nombre: Z → A</option>
+          </select>
+        </div>
+
+        <!-- Rango de precio -->
+        <div class="filtro-item">
+          <label>💰 Rango de precio (COP $)</label>
+          <div class="rango-precio-grupo">
+            <input type="number" id="precioMin" placeholder="Mín" min="0" step="1">
+            <span>—</span>
+            <input type="number" id="precioMax" placeholder="Máx" min="0" step="1">
+          </div>
+        </div>
+
+        <!-- Filtro por tienda -->
+        <div class="filtro-item">
+          <label for="filtroTienda">🏪 Tienda</label>
+          <select id="filtroTienda">
+            <option value="todas">Todas las tiendas</option>
+          </select>
+        </div>
+
+        <!-- Filtro por ciudad -->
+        <div class="filtro-item">
+          <label for="filtroCiudad">📍 Ciudad</label>
+          <select id="filtroCiudad">
+            <option value="todas">Todas las ciudades</option>
+          </select>
+        </div>
+
+        <!-- Botón limpiar -->
+        <button class="btn-limpiar-filtros" id="btnLimpiar" title="Limpiar todos los filtros">
+          🗑️ Limpiar filtros
+        </button>
+      </div>
+    </div>
+
+    <!-- Info de resultados -->
+    <div class="resultados-info" id="resultadosInfo"></div>
+
+    <!-- Lista de productos -->
+    <div id="contenedorProductos"></div>
+
+    <!-- Botón volver -->
+    <div class="text-center mt-5">
+      <a href="usuario.html" class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-semibold">
+        ← Volver al panel
+      </a>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2026 PRICE NICE — Todos los derechos reservados</p>
+  </footer>
+
+<script>
+  // ══════════════════════════════════════════════════════
+  //  CATÁLOGO DE PRODUCTOS — Plantilla categórica
+  // ══════════════════════════════════════════════════════
+
+  const CATEGORIAS = {
+    belleza:   { nombre: "Productos de Belleza",       icono: "💄", clase: "cat-belleza" },
+    higiene:   { nombre: "Higiene y Limpieza",         icono: "🧴", clase: "cat-higiene" },
+    alimentos: { nombre: "Alimentos y Bebidas",        icono: "🍎", clase: "cat-alimentos" },
+    hogar:     { nombre: "Productos para el Hogar",    icono: "🏠", clase: "cat-hogar" },
+    bebes:     { nombre: "Productos para Bebés",       icono: "🍼", clase: "cat-bebes" },
+    mascotas:  { nombre: "Productos para Mascotas",    icono: "🐾", clase: "cat-mascotas" }
+  };
+
+  const PRODUCTOS = [
+    // ── Belleza ──
+    { nombre: "Crema Hidratante Facial",    descripcion: "Crema hidratante con ácido hialurónico para todo tipo de piel.",       precio: 38900,  tienda: "Droguería Cruz Verde",  categoria: "belleza",   ubicacion: "Bogotá",       barrio: "Chapinero" },
+    { nombre: "Base de Maquillaje Mate",    descripcion: "Base líquida de cobertura media con acabado mate, larga duración.",    precio: 65900,  tienda: "Falabella",             categoria: "belleza",   ubicacion: "Medellín",     barrio: "El Poblado" },
+    { nombre: "Sérum Vitamina C",           descripcion: "Sérum antioxidante con vitamina C al 15% para luminosidad.",           precio: 89900,  tienda: "Linio",                 categoria: "belleza",   ubicacion: "Cali",         barrio: "Granada" },
+    { nombre: "Labial Líquido Mate",        descripcion: "Labial de larga duración, no transfiere, fórmula vegana.",             precio: 29900,  tienda: "Éxito",                 categoria: "belleza",   ubicacion: "Barranquilla", barrio: "El Prado" },
+    { nombre: "Paleta de Sombras x12",      descripcion: "Paleta con 12 tonos mate y shimmer para ojos, pigmentación intensa.", precio: 72900,  tienda: "Falabella",             categoria: "belleza",   ubicacion: "Medellín",     barrio: "Laureles" },
+
+    // ── Higiene y Limpieza ──
+    { nombre: "Detergente Líquido 3L",      descripcion: "Detergente concentrado para ropa, aroma lavanda.",                     precio: 24900,  tienda: "D1",                    categoria: "higiene",   ubicacion: "Bogotá",       barrio: "Kennedy" },
+    { nombre: "Jabón Antibacterial x3",     descripcion: "Pack de 3 jabones en barra con protección antibacterial.",             precio: 8900,   tienda: "Jumbo",                 categoria: "higiene",   ubicacion: "Cali",         barrio: "San Fernando" },
+    { nombre: "Cloro Desinfectante 2L",     descripcion: "Cloro concentrado para desinfección del hogar.",                       precio: 6900,   tienda: "Olímpica",              categoria: "higiene",   ubicacion: "Bucaramanga",  barrio: "Cabecera" },
+    { nombre: "Pasta Dental Blanqueadora",  descripcion: "Pasta dental con micro-partículas blanqueadoras y flúor.",             precio: 12500,  tienda: "Droguería Cruz Verde",  categoria: "higiene",   ubicacion: "Bogotá",       barrio: "Usaquén" },
+    { nombre: "Shampoo Anticaspa 750ml",    descripcion: "Shampoo con zinc para control de caspa desde la primera aplicación.",  precio: 21900,  tienda: "Carulla",               categoria: "higiene",   ubicacion: "Medellín",     barrio: "Envigado" },
+
+    // ── Alimentos y Bebidas ──
+    { nombre: "Arroz Grano Largo 1kg",      descripcion: "Arroz blanco de grano largo, ideal para cualquier platillo.",          precio: 4200,   tienda: "D1",                    categoria: "alimentos", ubicacion: "Bogotá",       barrio: "Suba" },
+    { nombre: "Aceite de Oliva 500ml",      descripcion: "Aceite de oliva extra virgen, prensado en frío.",                      precio: 28900,  tienda: "PriceSmart",            categoria: "alimentos", ubicacion: "Barranquilla", barrio: "Bello Horizonte" },
+    { nombre: "Leche Entera 1L",            descripcion: "Leche fresca pasteurizada, entera, de origen local.",                  precio: 3800,   tienda: "Olímpica",              categoria: "alimentos", ubicacion: "Cali",         barrio: "Ciudad Jardín" },
+    { nombre: "Café Molido 500g",           descripcion: "Café 100% arábica tostado y molido, intensidad media.",                precio: 18900,  tienda: "Jumbo",                 categoria: "alimentos", ubicacion: "Manizales",    barrio: "La Enea" },
+    { nombre: "Jugo de Naranja 1L",         descripcion: "Jugo natural sin conservadores ni azúcar añadida.",                    precio: 7500,   tienda: "Carulla",               categoria: "alimentos", ubicacion: "Bogotá",       barrio: "Teusaquillo" },
+    { nombre: "Galletas Integrales x6",     descripcion: "Paquete de galletas integrales con avena y miel.",                     precio: 9900,   tienda: "Ara",                   categoria: "alimentos", ubicacion: "Pereira",      barrio: "Álamos" },
+
+    // ── Hogar ──
+    { nombre: "Almohada Memory Foam",       descripcion: "Almohada ergonómica de espuma viscoelástica, funda lavable.",          precio: 89900,  tienda: "Éxito",                 categoria: "hogar",     ubicacion: "Medellín",     barrio: "Belén" },
+    { nombre: "Juego de Sábanas Queen",     descripcion: "Juego de sábanas de microfibra suave, 4 piezas.",                     precio: 119900, tienda: "Alkosto",               categoria: "hogar",     ubicacion: "Bogotá",       barrio: "Fontibón" },
+    { nombre: "Foco LED 10W (Pack x4)",     descripcion: "Focos LED ahorradores de 10W, luz blanca cálida.",                    precio: 22900,  tienda: "Homecenter",            categoria: "hogar",     ubicacion: "Cali",         barrio: "Menga" },
+    { nombre: "Organizador Multiusos",      descripcion: "Caja organizadora apilable con tapa, ideal para closet.",             precio: 32900,  tienda: "Jumbo",                 categoria: "hogar",     ubicacion: "Bucaramanga",  barrio: "Floridablanca" },
+    { nombre: "Velas Aromáticas x3",        descripcion: "Set de 3 velas de cera de soya con aromas relajantes.",               precio: 45900,  tienda: "Miniso",                categoria: "hogar",     ubicacion: "Barranquilla", barrio: "Riomar" },
+
+    // ── Bebés ──
+    { nombre: "Pañales Etapa 3 (40 pzas)",  descripcion: "Pañales ultra absorbentes con ajuste suave para bebé.",               precio: 54900,  tienda: "Droguería Cruz Verde",  categoria: "bebes",     ubicacion: "Bogotá",       barrio: "Bosa" },
+    { nombre: "Toallitas Húmedas x80",      descripcion: "Toallitas sin alcohol ni fragancias, hipoalergénicas.",                precio: 14900,  tienda: "Jumbo",                 categoria: "bebes",     ubicacion: "Medellín",     barrio: "Robledo" },
+    { nombre: "Fórmula Láctea 900g",        descripcion: "Fórmula infantil de continuación, enriquecida con hierro y DHA.",     precio: 98900,  tienda: "PriceSmart",            categoria: "bebes",     ubicacion: "Cali",         barrio: "Versalles" },
+    { nombre: "Biberón Anticólicos 250ml",  descripcion: "Biberón con válvula anticólicos y tetina de silicón.",                 precio: 39900,  tienda: "Éxito",                 categoria: "bebes",     ubicacion: "Barranquilla", barrio: "Boston" },
+    { nombre: "Papilla de Frutas x12",      descripcion: "Pack de 12 papillas naturales de frutas sin azúcar añadida.",         precio: 42900,  tienda: "Ara",                   categoria: "bebes",     ubicacion: "Pereira",      barrio: "Pinares" },
+
+    // ── Mascotas ──
+    { nombre: "Croquetas Perro Adulto 5kg", descripcion: "Alimento seco premium para perro adulto, sabor pollo.",               precio: 89900,  tienda: "Agrocampo",             categoria: "mascotas",  ubicacion: "Bogotá",       barrio: "Engativá" },
+    { nombre: "Arena para Gato 10L",        descripcion: "Arena aglutinante con control de olores, bajo polvo.",                precio: 28900,  tienda: "Jumbo",                 categoria: "mascotas",  ubicacion: "Medellín",     barrio: "Itagüí" },
+    { nombre: "Juguete Mordedor",           descripcion: "Mordedor de caucho natural resistente para perros medianos.",          precio: 19900,  tienda: "Agrocampo",             categoria: "mascotas",  ubicacion: "Cali",         barrio: "Aguablanca" },
+    { nombre: "Snacks para Gato x10",       descripcion: "Pack de 10 sobres de snacks húmedos sabor atún y salmón.",            precio: 24900,  tienda: "Olímpica",              categoria: "mascotas",  ubicacion: "Bucaramanga",  barrio: "García Rovira" },
+    { nombre: "Collar Antipulgas",          descripcion: "Collar con protección hasta 8 meses contra pulgas y garrapatas.",      precio: 52900,  tienda: "Droguería Cruz Verde",  categoria: "mascotas",  ubicacion: "Manizales",    barrio: "Chipre" }
+  ];
+
+  // ── Estado ──
+  let filtroActual = "todos";
+  let busqueda = "";
+  let ordenActual = "default";
+  let precioMin = null;
+  let precioMax = null;
+  let tiendaActual = "todas";
+  let ciudadActual = "todas";
+
+  // ── Inicializar ──
+  document.addEventListener("DOMContentLoaded", () => {
+    renderFiltros();
+    poblarTiendas();
+    poblarCiudades();
+    renderProductos();
+    actualizarResumen();
+
+    // Buscador
+    document.getElementById("buscador").addEventListener("input", e => {
+      busqueda = e.target.value.toLowerCase().trim();
+      renderProductos();
+    });
+
+    // Ordenar por
+    document.getElementById("ordenar").addEventListener("change", e => {
+      ordenActual = e.target.value;
+      renderProductos();
+    });
+
+    // Rango de precios
+    document.getElementById("precioMin").addEventListener("input", e => {
+      const val = e.target.value.trim();
+      precioMin = val !== "" ? parseFloat(val) : null;
+      renderProductos();
+    });
+    document.getElementById("precioMax").addEventListener("input", e => {
+      const val = e.target.value.trim();
+      precioMax = val !== "" ? parseFloat(val) : null;
+      renderProductos();
+    });
+
+    // Filtro por tienda
+    document.getElementById("filtroTienda").addEventListener("change", e => {
+      tiendaActual = e.target.value;
+      renderProductos();
+    });
+
+    // Filtro por ciudad
+    document.getElementById("filtroCiudad").addEventListener("change", e => {
+      ciudadActual = e.target.value;
+      renderProductos();
+    });
+
+    // Botón limpiar filtros
+    document.getElementById("btnLimpiar").addEventListener("click", () => {
+      // Reset estado
+      filtroActual = "todos";
+      busqueda = "";
+      ordenActual = "default";
+      precioMin = null;
+      precioMax = null;
+      tiendaActual = "todas";
+      ciudadActual = "todas";
+
+      // Reset UI
+      document.getElementById("buscador").value = "";
+      document.getElementById("ordenar").value = "default";
+      document.getElementById("precioMin").value = "";
+      document.getElementById("precioMax").value = "";
+      document.getElementById("filtroTienda").value = "todas";
+      document.getElementById("filtroCiudad").value = "todas";
+      document.querySelectorAll(".filtro-btn").forEach(b => b.classList.remove("active"));
+      const btnTodos = document.querySelector('.filtro-btn[data-filtro="todos"]');
+      if (btnTodos) btnTodos.classList.add("active");
+
+      renderProductos();
+    });
+  });
+
+  // ── Poblar dropdown de tiendas ──
+  function poblarTiendas() {
+    const select = document.getElementById("filtroTienda");
+    const tiendas = [...new Set(PRODUCTOS.map(p => p.tienda))].sort();
+    tiendas.forEach(t => {
+      const opt = document.createElement("option");
+      opt.value = t;
+      opt.textContent = t;
+      select.appendChild(opt);
+    });
+  }
+
+  // ── Poblar dropdown de ciudades ──
+  function poblarCiudades() {
+    const select = document.getElementById("filtroCiudad");
+    const ciudades = [...new Set(PRODUCTOS.map(p => p.ubicacion))].sort();
+    ciudades.forEach(c => {
+      const opt = document.createElement("option");
+      opt.value = c;
+      opt.textContent = c;
+      select.appendChild(opt);
+    });
+  }
+
+  // ── Filtros de categoría ──
+  function renderFiltros() {
+    const contenedor = document.getElementById("filtros");
+
+    // Botón "Todos"
+    const btnTodos = crearBotonFiltro("todos", "📋 Todos");
+    btnTodos.classList.add("active");
+    contenedor.appendChild(btnTodos);
+
+    // Botón por cada categoría
+    Object.entries(CATEGORIAS).forEach(([clave, cat]) => {
+      contenedor.appendChild(crearBotonFiltro(clave, cat.icono + " " + cat.nombre));
+    });
+  }
+
+  function crearBotonFiltro(clave, texto) {
+    const btn = document.createElement("button");
+    btn.className = "filtro-btn";
+    btn.textContent = texto;
+    btn.dataset.filtro = clave;
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".filtro-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      filtroActual = clave;
+      renderProductos();
+    });
+    return btn;
+  }
+
+  // ── Obtener productos filtrados y ordenados ──
+  function productosFiltrados() {
+    let resultado = PRODUCTOS.filter(p => {
+      // Filtro de categoría
+      const coincideFiltro = filtroActual === "todos" || p.categoria === filtroActual;
+      if (!coincideFiltro) return false;
+
+      // Filtro de búsqueda
+      if (busqueda) {
+        const texto = (p.nombre + " " + p.descripcion + " " + p.tienda + " " + CATEGORIAS[p.categoria].nombre).toLowerCase();
+        if (!texto.includes(busqueda)) return false;
+      }
+
+      // Filtro de rango de precio
+      if (precioMin !== null && p.precio < precioMin) return false;
+      if (precioMax !== null && p.precio > precioMax) return false;
+
+      // Filtro de tienda
+      if (tiendaActual !== "todas" && p.tienda !== tiendaActual) return false;
+
+      // Filtro de ciudad
+      if (ciudadActual !== "todas" && p.ubicacion !== ciudadActual) return false;
+
+      return true;
+    });
+
+    // Ordenamiento
+    switch (ordenActual) {
+      case "precio-asc":
+        resultado.sort((a, b) => a.precio - b.precio);
+        break;
+      case "precio-desc":
+        resultado.sort((a, b) => b.precio - a.precio);
+        break;
+      case "nombre-asc":
+        resultado.sort((a, b) => a.nombre.localeCompare(b.nombre, "es"));
+        break;
+      case "nombre-desc":
+        resultado.sort((a, b) => b.nombre.localeCompare(a.nombre, "es"));
+        break;
+      default:
+        break;
+    }
+
+    return resultado;
+  }
+
+  // ── Renderizar productos agrupados por categoría ──
+  function renderProductos() {
+    const contenedor = document.getElementById("contenedorProductos");
+    contenedor.innerHTML = "";
+
+    const visibles = productosFiltrados();
+
+    // Actualizar info de resultados
+    const infoDiv = document.getElementById("resultadosInfo");
+    const totalFiltros = PRODUCTOS.length;
+    if (visibles.length === totalFiltros) {
+      infoDiv.textContent = "";
+    } else {
+      infoDiv.innerHTML = `Mostrando <strong>${visibles.length}</strong> de <strong>${totalFiltros}</strong> productos`;
+    }
+
+    if (visibles.length === 0) {
+      contenedor.innerHTML = `
+        <div class="sin-resultados">
+          <span>🔍</span>
+          <h5>No se encontraron productos</h5>
+          <p class="text-secondary">Intenta con otra búsqueda, ajusta el rango de precio o cambia los filtros.</p>
+        </div>`;
+      return;
+    }
+
+    // Si hay un orden explícito (no por defecto), mostrar como lista plana
+    const usarListaPlana = ordenActual !== "default";
+
+    if (usarListaPlana) {
+      const row = document.createElement("div");
+      row.className = "row g-4 mb-2";
+
+      visibles.forEach(p => {
+        const cat = CATEGORIAS[p.categoria];
+        const col = document.createElement("div");
+        col.className = "col-12 col-sm-6 col-lg-4";
+        col.innerHTML = `
+          <div class="card producto-card p-4">
+            <div class="card-body">
+              <span class="cat-badge ${cat.clase}">${cat.icono} ${cat.nombre}</span>
+              <h5 class="fw-bold mb-1">${p.nombre}</h5>
+              <p class="text-secondary small mb-3">${p.descripcion}</p>
+              <div class="precio-tag">${formatCOP(p.precio)}</div>
+              <div class="tienda-tag">🏪 <strong>${p.tienda}</strong></div>
+              <div class="tienda-tag">📍 ${p.ubicacion}${p.barrio ? ' · ' + p.barrio : ''}</div>
+            </div>
+          </div>`;
+        row.appendChild(col);
+      });
+
+      contenedor.appendChild(row);
+    } else {
+      // Agrupar por categoría
+      const agrupados = {};
+      visibles.forEach(p => {
+        if (!agrupados[p.categoria]) agrupados[p.categoria] = [];
+        agrupados[p.categoria].push(p);
+      });
+
+      // Renderizar cada grupo
+      const ordenCategorias = ["belleza", "higiene", "alimentos", "hogar", "bebes", "mascotas"];
+
+      ordenCategorias.forEach(catKey => {
+        if (!agrupados[catKey]) return;
+        const cat = CATEGORIAS[catKey];
+        const productos = agrupados[catKey];
+
+        // Título de sección
+        const titulo = document.createElement("div");
+        titulo.innerHTML = `<div class="seccion-titulo">${cat.icono} ${cat.nombre}</div>`;
+        contenedor.appendChild(titulo);
+
+        // Grid de productos
+        const row = document.createElement("div");
+        row.className = "row g-4 mb-2";
+
+        productos.forEach(p => {
+          const col = document.createElement("div");
+          col.className = "col-12 col-sm-6 col-lg-4";
+          col.innerHTML = `
+            <div class="card producto-card p-4">
+              <div class="card-body">
+                <span class="cat-badge ${cat.clase}">${cat.icono} ${cat.nombre}</span>
+                <h5 class="fw-bold mb-1">${p.nombre}</h5>
+                <p class="text-secondary small mb-3">${p.descripcion}</p>
+                <div class="precio-tag">${formatCOP(p.precio)}</div>
+                <div class="tienda-tag">🏪 <strong>${p.tienda}</strong></div>
+                <div class="tienda-tag">📍 ${p.ubicacion}${p.barrio ? ' · ' + p.barrio : ''}</div>
+              </div>
+            </div>`;
+          row.appendChild(col);
+        });
+
+        contenedor.appendChild(row);
+      });
+    }
+  }
+
+  // ── Formato de precio en COP ──
+  function formatCOP(valor) {
+    return "$ " + valor.toLocaleString("es-CO", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  }
+
+  // ── Resumen ──
+  function actualizarResumen() {
+    const total = PRODUCTOS.length;
+    const categorias = new Set(PRODUCTOS.map(p => p.categoria)).size;
+    const tiendas = new Set(PRODUCTOS.map(p => p.tienda)).size;
+    const promedio = total > 0 ? PRODUCTOS.reduce((s, p) => s + p.precio, 0) / total : 0;
+
+    document.getElementById("totalProductos").textContent = total;
+    document.getElementById("totalCategorias").textContent = categorias;
+    document.getElementById("totalTiendas").textContent = tiendas;
+    document.getElementById("precioPromedio").textContent = formatCOP(promedio);
+  }
+</script>
+
+</body>
+</html>
