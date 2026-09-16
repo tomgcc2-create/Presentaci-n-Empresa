@@ -1,106 +1,683 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LINDA</title>
-    <link rel="stylesheet" href="style.css">
-    
-    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verificación de Productos | PRICE NICE</title>
+  <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    :root { --brand:#1565c0; --brand-dark:#0d47a1; --ok:#2e7d32; --warn:#f57f17; --danger:#c62828; }
+    body { background:#f4f6fb; }
+
+    .page-header {
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      color: white;
+      padding: 36px 20px 28px;
+      text-align: center;
+      border-radius: 0 0 24px 24px;
+      margin-bottom: 32px;
+    }
+    .page-header h1 { font-size: 1.9rem; font-weight: 800; margin-bottom: 6px; }
+    .page-header p  { opacity:.88; margin:0; }
+
+    /* ── Filtros ── */
+    .filtro-bar {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 14px rgba(0,0,0,.07);
+      padding: 18px 24px;
+      margin-bottom: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+    .filtro-bar input, .filtro-bar select {
+      border: 2px solid #eee;
+      border-radius: 12px;
+      padding: 8px 14px;
+      font-size: .9rem;
+      transition: border-color .3s;
+      background: #fafafa;
+    }
+    .filtro-bar input:focus, .filtro-bar select:focus {
+      border-color: var(--brand);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(21,101,192,.12);
+    }
+    .filtro-bar input { flex: 1 1 220px; }
+
+    /* ── Tarjeta producto ── */
+    .prod-card {
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 4px 16px rgba(0,0,0,.08);
+      padding: 22px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      transition: transform .2s, box-shadow .2s;
+      position: relative;
+    }
+    .prod-card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(21,101,192,.15); }
+
+    .estado-badge {
+      position: absolute;
+      top: 16px; right: 16px;
+      font-size: .72rem; font-weight: 800;
+      padding: 4px 12px; border-radius: 20px;
+    }
+    .estado-pendiente  { background:#fff3e0; color:var(--warn); }
+    .estado-aprobado   { background:#e8f5e9; color:var(--ok); }
+    .estado-rechazado  { background:#ffebee; color:var(--danger); }
+
+    .cat-badge {
+      font-size: .7rem; font-weight: 700;
+      padding: 3px 10px; border-radius: 20px;
+      display: inline-block; margin-bottom: 10px;
+    }
+    .cat-belleza   { background:#fce4ec; color:#c62828; }
+    .cat-higiene   { background:#e0f7fa; color:#00695c; }
+    .cat-alimentos { background:#fff3e0; color:#e65100; }
+    .cat-hogar     { background:#e8eaf6; color:#283593; }
+    .cat-bebes     { background:#f3e5f5; color:#6a1b9a; }
+    .cat-mascotas  { background:#e8f5e9; color:#2e7d32; }
+
+    .prod-nombre { font-size:1rem; font-weight:800; margin-bottom:4px; color:#222; }
+    .prod-tienda { font-size:.78rem; color:#888; margin-bottom:4px; }
+    .prod-desc   { font-size:.82rem; color:#aaa; flex:1; margin-bottom:12px; }
+    .prod-precio { font-size:1.2rem; font-weight:800; color:var(--ok); margin-bottom:14px; }
+
+    /* Historial de verificaciones en la tarjeta */
+    .historial-mini {
+      font-size:.72rem; color:#aaa;
+      border-top:1px solid #f0f0f0;
+      padding-top:8px; margin-bottom:12px;
+    }
+    .historial-mini span { display:block; margin-bottom:2px; }
+
+    .btn-verificar {
+      width:100%; border:none; border-radius:12px;
+      padding:10px; background:var(--brand); color:white;
+      font-weight:700; font-size:.9rem; cursor:pointer;
+      transition: background .2s, transform .15s;
+    }
+    .btn-verificar:hover { background:var(--brand-dark); transform:scale(1.02); }
+
+    /* ── Modal de verificación ── */
+    #modalVerificar .modal-header {
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      color: white; border-radius: 16px 16px 0 0;
+    }
+    #modalVerificar .modal-header .btn-close { filter:invert(1); }
+    #modalVerificar .modal-content { border-radius:16px; border:none; }
+
+    .campo-label {
+      font-size:.78rem; font-weight:700; color:#888;
+      text-transform:uppercase; letter-spacing:.4px; margin-bottom:5px;
+    }
+    .campo-input {
+      width:100%; border:2px solid #eee; border-radius:12px;
+      padding:10px 14px; font-size:.92rem; background:#fafafa;
+      transition: border-color .3s;
+    }
+    .campo-input:focus { border-color:var(--brand); outline:none; box-shadow:0 0 0 3px rgba(21,101,192,.12); }
+    .campo-input.error { border-color:var(--danger); }
+
+    /* Preview foto */
+    .foto-preview-wrap {
+      border: 2px dashed #ddd; border-radius:14px;
+      padding:20px; text-align:center; cursor:pointer;
+      transition: border-color .3s, background .3s;
+      background:#fafafa;
+      position: relative;
+    }
+    .foto-preview-wrap:hover { border-color:var(--brand); background:#f0f4ff; }
+    .foto-preview-wrap input[type="file"] {
+      position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%;
+    }
+    .foto-preview-wrap img { max-height:160px; border-radius:10px; object-fit:cover; display:none; }
+    .foto-placeholder { color:#bbb; font-size:2.2rem; }
+
+    /* Condiciones de verificación */
+    .condicion-item {
+      background:#f8f9fa; border-radius:12px; padding:14px 16px;
+      display:flex; align-items:flex-start; gap:12px; margin-bottom:10px;
+    }
+    .condicion-num {
+      width:28px; height:28px; border-radius:50%;
+      background:var(--brand); color:white;
+      font-weight:800; font-size:.82rem;
+      display:flex; align-items:center; justify-content:center; flex-shrink:0;
+    }
+    .condicion-titulo { font-weight:700; font-size:.88rem; color:#333; margin-bottom:3px; }
+    .condicion-desc   { font-size:.78rem; color:#888; }
+
+    /* Resultado éxito */
+    .verificacion-ok {
+      text-align:center; padding:20px 10px;
+    }
+    .verificacion-ok .check {
+      width:72px; height:72px; border-radius:50%;
+      background:linear-gradient(135deg, #2ecc71, #27ae60);
+      display:flex; align-items:center; justify-content:center;
+      font-size:2rem; margin:0 auto 18px;
+      animation: pop .5s cubic-bezier(.36,.07,.19,.97);
+    }
+    @keyframes pop { 0%{transform:scale(0);opacity:0} 80%{transform:scale(1.12)} 100%{transform:scale(1);opacity:1} }
+
+    /* Resumen stats */
+    .stats-bar {
+      display:flex; flex-wrap:wrap; gap:10px;
+      justify-content:center; margin-bottom:28px;
+    }
+    .stat-chip {
+      background:white; border-radius:12px;
+      padding:10px 20px; box-shadow:0 2px 8px rgba(0,0,0,.07);
+      text-align:center;
+    }
+    .stat-chip .num { font-size:1.4rem; font-weight:800; color:var(--brand); }
+    .stat-chip .lbl { font-size:.72rem; color:#888; font-weight:700; display:block; }
+
+    .sin-resultados { text-align:center; padding:60px 20px; color:#bbb; }
+    .sin-resultados span { font-size:3rem; display:block; margin-bottom:10px; }
+  </style>
 </head>
 <body>
-    <div class="panel">
-        <h2>Tienda Virtual 3D</h2>
-        
-        <p>
-        Con el mouse puedes girar la camara y con wasd o las flechas puedes moverte.
-        </p>
-        
-        <p>
-        Mira el círculo del centro de la pantalla y apunta a los productos.
-        </p>
-        
-        <p>
-        Productos seleccionados:
-        <span id="contador">0</span>
-        </p>
-        
-        </div>
-        <a-scene>
 
-            <!-- CAMARA CON CURSOR -->
-            <a-entity position="0 1.6 10">
-        
-                <a-camera>
-        
-                    <!-- CURSOR -->
-                    <a-cursor
-                        color="black"
-                        fuse="true"
-                        fuse-timeout="700">
-                    </a-cursor>
-        
-                </a-camera>
-        
-            </a-entity>
-        
-            <!-- PISO -->
-            <a-plane
-                rotation="-90 0 0"
-                width="40"
-                height="40"
-                color="#d7d7d7">
-            </a-plane>
-        
-            <!-- PAREDES -->
-            <a-box position="0 4 -15" width="30" height="8" depth="0.5" color="#ffffff"></a-box>
-        
-            <!-- MOSTRADOR -->
-            <a-box position="0 1 -2" width="6" height="2" depth="2" color="#6d4c41"></a-box>
-        
-            <!-- ESTANTERIAS -->
-            <a-box position="-8 2 -8" width="6" height="4" depth="1" color="#8B4513"></a-box>
-            <a-box position="8 2 -8" width="6" height="4" depth="1" color="#8B4513"></a-box>
-        
-            <!-- PRODUCTOS -->
-            <a-box class="producto" position="-10 4 -8" color="red"></a-box>
-            <a-box class="producto" position="-8 4 -8" color="blue"></a-box>
-            <a-box class="producto" position="-6 4 -8" color="green"></a-box>
-             
-            <a-box class="producto" position="10 4 +8" color="red"></a-box>
-            <a-box class="producto" position="8 4 +8" color="blue"></a-box>
-            <a-box class="producto" position="6 4 +8" color="green"></a-box>
-        
-            <a-sphere class="producto" position="-10 2 -8" radius="0.5" color="yellow"></a-sphere>
-            <a-sphere class="producto" position="-8 2 -8" radius="0.5" color="orange"></a-sphere>
-        
-            
-            <a-cylinder class="producto" position="-8 -2 8" radius="0.5" height="1" color="brown"></a-cylinder>
-            <a-cylinder class="producto" position="-10 -2 8" radius="0.5" height="1" color="aquamarine"></a-cylinder>
-        
-            <!-- TEXTO -->
-            <a-text
-                value="SUPERMARKET VR"
-                position="-5 6 -10"
-                scale="3 3 3"
-                color="black">
-            </a-text>
-        
-            <!-- LUCES -->
-            <a-light type="ambient" intensity="1"></a-light>
-            <a-light type="point" intensity="1.5" position="0 8 0"></a-light>
-        
-            <!-- OBJETO ANIMADO -->
-            <a-torus
-                position="0 5 -6"
-                radius="1"
-                radius-tubular="0.1"
-                color="#2196F3"
-                animation="property: rotation; to: 0 360 0; loop: true; dur: 3000">
-            </a-torus>
-        
-        </a-scene>
-        <script src="app.js"></script>
+<div class="page-header">
+  <img src="img/LOGO PRIN.jpg" alt="PRICE NICE" height="70" class="rounded-3 mb-3">
+  <h1>✅ Verificación de Productos</h1>
+  <p id="bienvenida">Cargando sesión…</p>
+</div>
+
+<div class="container pb-5">
+
+  <!-- Stats -->
+  <div class="stats-bar" id="statsBar">
+    <div class="stat-chip"><div class="num" id="statTotal">0</div><span class="lbl">Total</span></div>
+    <div class="stat-chip"><div class="num" id="statPendientes" style="color:var(--warn)">0</div><span class="lbl">Pendientes</span></div>
+    <div class="stat-chip"><div class="num" id="statAprobados" style="color:var(--ok)">0</div><span class="lbl">Aprobados</span></div>
+    <div class="stat-chip"><div class="num" id="statRechazados" style="color:var(--danger)">0</div><span class="lbl">Rechazados</span></div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filtro-bar">
+    <input type="text" id="buscador" placeholder="🔍 Buscar producto, tienda o categoría…">
+    <select id="filtroCategoria">
+      <option value="todas">Todas las categorías</option>
+      <option value="belleza">💄 Belleza</option>
+      <option value="higiene">🧴 Higiene</option>
+      <option value="alimentos">🍎 Alimentos</option>
+      <option value="hogar">🏠 Hogar</option>
+      <option value="bebes">🍼 Bebés</option>
+      <option value="mascotas">🐾 Mascotas</option>
+    </select>
+    <select id="filtroEstado">
+      <option value="todos">Todos los estados</option>
+      <option value="pendiente">⏳ Pendientes</option>
+      <option value="aprobado">✅ Aprobados</option>
+      <option value="rechazado">❌ Rechazados</option>
+    </select>
+  </div>
+
+  <!-- Info resultados -->
+  <div class="text-center mb-3" style="font-size:.85rem;color:#aaa" id="infoResultados"></div>
+
+  <!-- Grid de productos -->
+  <div class="row g-4" id="gridProductos"></div>
+
+  <div class="text-center mt-5">
+    <a href="verificador.html" class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-semibold">
+      ← Volver al panel
+    </a>
+  </div>
+</div>
+
+<!-- ══ MODAL VERIFICACIÓN ══ -->
+<div class="modal fade" id="modalVerificar" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold">✅ Verificar Producto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-4">
+
+        <!-- Info producto -->
+        <div class="p-3 rounded-3 mb-4" style="background:#f0f4ff;">
+          <div class="fw-bold fs-6" id="mNombre">—</div>
+          <div class="text-secondary" style="font-size:.85rem" id="mInfo">—</div>
+        </div>
+
+        <!-- Condiciones obligatorias -->
+        <h6 class="fw-bold mb-3" style="color:var(--brand-dark)">📋 Condiciones de verificación</h6>
+
+        <div class="condicion-item">
+          <div class="condicion-num">1</div>
+          <div>
+            <div class="condicion-titulo">📸 Foto del producto</div>
+            <div class="condicion-desc">Toma o adjunta una foto del producto físico que confirme su estado actual.</div>
+          </div>
+        </div>
+        <div class="condicion-item">
+          <div class="condicion-num">2</div>
+          <div>
+            <div class="condicion-titulo">📝 Descripción física del estado</div>
+            <div class="condicion-desc">Describe el estado del producto: fecha de caducidad, empaque, condición visible, integridad del sello, etc.</div>
+          </div>
+        </div>
+
+        <div class="row g-3 mt-1">
+          <!-- Condición 1: Foto -->
+          <div class="col-12">
+            <label class="campo-label">📸 Foto del producto <span style="color:var(--danger)">*</span></label>
+            <div class="foto-preview-wrap" id="fotoWrap">
+              <input type="file" id="inputFoto" accept="image/*" capture="environment">
+              <div class="foto-placeholder" id="fotoPlaceholder">📷<br><small style="font-size:.78rem;color:#bbb">Toca para fotografiar o subir imagen</small></div>
+              <img id="fotoPreview" alt="Vista previa">
+            </div>
+            <div class="mt-1" style="font-size:.75rem;color:#aaa" id="fotoNombre"></div>
+          </div>
+
+          <!-- Condición 2: Descripción física -->
+          <div class="col-12">
+            <label class="campo-label">📝 Descripción física del estado <span style="color:var(--danger)">*</span></label>
+            <textarea id="inputDescripcion" class="campo-input" rows="4"
+              placeholder="Ej: Fecha de caducidad: 12/2026 — Empaque íntegro sin golpes — Sello de seguridad intacto — Producto en condiciones óptimas de venta."></textarea>
+          </div>
+
+          <!-- Resultado de la verificación -->
+          <div class="col-12">
+            <label class="campo-label">🏷️ Resultado de verificación <span style="color:var(--danger)">*</span></label>
+            <div class="d-flex gap-3">
+              <label class="flex-fill">
+                <input type="radio" name="resultado" value="aprobado" id="rAprobado" class="d-none">
+                <div class="text-center p-3 rounded-3 border-2 border resultado-opcion" id="opAprobado" style="cursor:pointer;border:2px solid #eee;">
+                  <div style="font-size:1.6rem">✅</div>
+                  <div class="fw-bold" style="font-size:.85rem;color:var(--ok)">Aprobado</div>
+                  <div style="font-size:.72rem;color:#aaa">Producto en buen estado</div>
+                </div>
+              </label>
+              <label class="flex-fill">
+                <input type="radio" name="resultado" value="rechazado" id="rRechazado" class="d-none">
+                <div class="text-center p-3 rounded-3 resultado-opcion" id="opRechazado" style="cursor:pointer;border:2px solid #eee;">
+                  <div style="font-size:1.6rem">❌</div>
+                  <div class="fw-bold" style="font-size:.85rem;color:var(--danger)">Rechazado</div>
+                  <div style="font-size:.72rem;color:#aaa">Producto con problemas</div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Error global -->
+          <div class="col-12">
+            <div id="errorModal" class="text-danger fw-semibold" style="font-size:.85rem;display:none"></div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 mt-4">
+          <button class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
+          <button class="btn fw-bold px-5 rounded-pill" id="btnGuardarVerificacion"
+            style="background:var(--brand);color:white;border:none;">
+            💾 Guardar verificación
+          </button>
+        </div>
+
+        <!-- Éxito -->
+        <div id="verificacionExito" style="display:none">
+          <div class="verificacion-ok">
+            <div class="check">✓</div>
+            <h5 class="fw-bold" id="exitoTitulo">Verificación guardada</h5>
+            <p class="text-secondary" id="exitoMsg">El estado del producto ha sido actualizado.</p>
+            <button class="btn rounded-pill px-5 fw-bold mt-2" style="background:var(--brand);color:white;border:none;"
+              id="btnSiguienteProducto">
+              Verificar otro producto →
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer><p>© 2026 PRICE NICE — Todos los derechos reservados</p></footer>
+
+<script src="https://unpkg.com/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script type="module">
+import { auth, db } from "./firebase-config.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+// ── Verificar acceso solo verificador/admin ──
+// Se usa un flag para ignorar el primer disparo null de Firebase
+// (Firebase emite null antes de resolver la sesión persistida)
+let yaResuelto = false;
+
+onAuthStateChanged(auth, async usuario => {
+  if (yaResuelto) return;   // evitar doble ejecución
+  if (!usuario) {
+    // Firebase aún puede estar cargando — esperar 2 s antes de redirigir
+    await new Promise(r => setTimeout(r, 2000));
+    if (!auth.currentUser) {
+      window.location.href = "login.html";
+    }
+    return;
+  }
+  yaResuelto = true;
+
+  try {
+    const snap = await getDoc(doc(db, "usuarios", usuario.uid));
+    const datos = snap.exists() ? snap.data() : {};
+    // Normalizar el rol: trim y minúsculas para evitar diferencias de espacios/mayúsculas
+    const rol = (datos.rol || "usuario").trim().toLowerCase();
+
+    if (rol !== "verificador" && rol !== "admin") {
+      window.location.href = "usuario.html";
+      return;
+    }
+    document.getElementById("bienvenida").textContent =
+      "Verificador: " + (datos.nombre || usuario.email) + " 👋";
+    iniciarApp();
+  } catch (e) {
+    console.error("Error al obtener rol:", e);
+    window.location.href = "login.html";
+  }
+});
+</script>
+<script>
+// ════════════════════════════════════════════════════
+//  DATOS (mismos productos del catálogo)
+// ════════════════════════════════════════════════════
+const CATEGORIAS = {
+  belleza:   { nombre:"Productos de Belleza",    icono:"💄", clase:"cat-belleza" },
+  higiene:   { nombre:"Higiene y Limpieza",      icono:"🧴", clase:"cat-higiene" },
+  alimentos: { nombre:"Alimentos y Bebidas",     icono:"🍎", clase:"cat-alimentos" },
+  hogar:     { nombre:"Productos para el Hogar", icono:"🏠", clase:"cat-hogar" },
+  bebes:     { nombre:"Productos para Bebés",    icono:"🍼", clase:"cat-bebes" },
+  mascotas:  { nombre:"Productos para Mascotas", icono:"🐾", clase:"cat-mascotas" }
+};
+
+const BASE_PRODUCTOS = [
+  { nombre:"Crema Hidratante Facial",    descripcion:"Crema hidratante con ácido hialurónico para todo tipo de piel.",       precio:38900,  tienda:"Droguería Cruz Verde",  categoria:"belleza",   ubicacion:"Bogotá",       barrio:"Chapinero",      vencimiento:"06/2027" },
+  { nombre:"Base de Maquillaje Mate",    descripcion:"Base líquida de cobertura media con acabado mate, larga duración.",    precio:65900,  tienda:"Falabella",             categoria:"belleza",   ubicacion:"Medellín",     barrio:"El Poblado",     vencimiento:"12/2026" },
+  { nombre:"Sérum Vitamina C",           descripcion:"Sérum antioxidante con vitamina C al 15% para luminosidad.",           precio:89900,  tienda:"Linio",                 categoria:"belleza",   ubicacion:"Cali",         barrio:"Granada",        vencimiento:"03/2027" },
+  { nombre:"Labial Líquido Mate",        descripcion:"Labial de larga duración, no transfiere, fórmula vegana.",             precio:29900,  tienda:"Éxito",                 categoria:"belleza",   ubicacion:"Barranquilla", barrio:"El Prado",       vencimiento:"09/2026" },
+  { nombre:"Paleta de Sombras x12",      descripcion:"Paleta con 12 tonos mate y shimmer para ojos.",                        precio:72900,  tienda:"Falabella",             categoria:"belleza",   ubicacion:"Medellín",     barrio:"Laureles",       vencimiento:"01/2028" },
+  { nombre:"Detergente Líquido 3L",      descripcion:"Detergente concentrado para ropa, aroma lavanda.",                     precio:24900,  tienda:"D1",                    categoria:"higiene",   ubicacion:"Bogotá",       barrio:"Kennedy",        vencimiento:"08/2027" },
+  { nombre:"Jabón Antibacterial x3",     descripcion:"Pack de 3 jabones en barra con protección antibacterial.",             precio:8900,   tienda:"Jumbo",                 categoria:"higiene",   ubicacion:"Cali",         barrio:"San Fernando",   vencimiento:"11/2027" },
+  { nombre:"Cloro Desinfectante 2L",     descripcion:"Cloro concentrado para desinfección del hogar.",                       precio:6900,   tienda:"Olímpica",              categoria:"higiene",   ubicacion:"Bucaramanga",  barrio:"Cabecera",       vencimiento:"05/2027" },
+  { nombre:"Pasta Dental Blanqueadora",  descripcion:"Pasta dental con micro-partículas blanqueadoras y flúor.",             precio:12500,  tienda:"Droguería Cruz Verde",  categoria:"higiene",   ubicacion:"Bogotá",       barrio:"Usaquén",        vencimiento:"02/2028" },
+  { nombre:"Shampoo Anticaspa 750ml",    descripcion:"Shampoo con zinc para control de caspa.",                              precio:21900,  tienda:"Carulla",               categoria:"higiene",   ubicacion:"Medellín",     barrio:"Envigado",       vencimiento:"10/2027" },
+  { nombre:"Arroz Grano Largo 1kg",      descripcion:"Arroz blanco de grano largo, ideal para cualquier platillo.",          precio:4200,   tienda:"D1",                    categoria:"alimentos", ubicacion:"Bogotá",       barrio:"Suba",           vencimiento:"12/2026" },
+  { nombre:"Aceite de Oliva 500ml",      descripcion:"Aceite de oliva extra virgen, prensado en frío.",                      precio:28900,  tienda:"PriceSmart",            categoria:"alimentos", ubicacion:"Barranquilla", barrio:"Bello Horizonte", vencimiento:"07/2027" },
+  { nombre:"Leche Entera 1L",            descripcion:"Leche fresca pasteurizada, entera, de origen local.",                  precio:3800,   tienda:"Olímpica",              categoria:"alimentos", ubicacion:"Cali",         barrio:"Ciudad Jardín",  vencimiento:"10/2026" },
+  { nombre:"Café Molido 500g",           descripcion:"Café 100% arábica tostado y molido, intensidad media.",                precio:18900,  tienda:"Jumbo",                 categoria:"alimentos", ubicacion:"Manizales",    barrio:"La Enea",        vencimiento:"06/2027" },
+  { nombre:"Jugo de Naranja 1L",         descripcion:"Jugo natural sin conservadores ni azúcar añadida.",                    precio:7500,   tienda:"Carulla",               categoria:"alimentos", ubicacion:"Bogotá",       barrio:"Teusaquillo",    vencimiento:"09/2026" },
+  { nombre:"Galletas Integrales x6",     descripcion:"Paquete de galletas integrales con avena y miel.",                     precio:9900,   tienda:"Ara",                   categoria:"alimentos", ubicacion:"Pereira",      barrio:"Álamos",         vencimiento:"04/2027" },
+  { nombre:"Almohada Memory Foam",       descripcion:"Almohada ergonómica de espuma viscoelástica, funda lavable.",          precio:89900,  tienda:"Éxito",                 categoria:"hogar",     ubicacion:"Medellín",     barrio:"Belén",          vencimiento:"N/A" },
+  { nombre:"Juego de Sábanas Queen",     descripcion:"Juego de sábanas de microfibra suave, 4 piezas.",                     precio:119900, tienda:"Alkosto",               categoria:"hogar",     ubicacion:"Bogotá",       barrio:"Fontibón",       vencimiento:"N/A" },
+  { nombre:"Foco LED 10W (Pack x4)",     descripcion:"Focos LED ahorradores de 10W, luz blanca cálida.",                    precio:22900,  tienda:"Homecenter",            categoria:"hogar",     ubicacion:"Cali",         barrio:"Menga",          vencimiento:"N/A" },
+  { nombre:"Organizador Multiusos",      descripcion:"Caja organizadora apilable con tapa.",                                 precio:32900,  tienda:"Jumbo",                 categoria:"hogar",     ubicacion:"Bucaramanga",  barrio:"Floridablanca",  vencimiento:"N/A" },
+  { nombre:"Velas Aromáticas x3",        descripcion:"Set de 3 velas de cera de soya con aromas relajantes.",               precio:45900,  tienda:"Miniso",                categoria:"hogar",     ubicacion:"Barranquilla", barrio:"Riomar",         vencimiento:"N/A" },
+  { nombre:"Pañales Etapa 3 (40 pzas)",  descripcion:"Pañales ultra absorbentes con ajuste suave para bebé.",               precio:54900,  tienda:"Droguería Cruz Verde",  categoria:"bebes",     ubicacion:"Bogotá",       barrio:"Bosa",           vencimiento:"03/2028" },
+  { nombre:"Toallitas Húmedas x80",      descripcion:"Toallitas sin alcohol ni fragancias, hipoalergénicas.",                precio:14900,  tienda:"Jumbo",                 categoria:"bebes",     ubicacion:"Medellín",     barrio:"Robledo",        vencimiento:"11/2027" },
+  { nombre:"Fórmula Láctea 900g",        descripcion:"Fórmula infantil enriquecida con hierro y DHA.",                      precio:98900,  tienda:"PriceSmart",            categoria:"bebes",     ubicacion:"Cali",         barrio:"Versalles",      vencimiento:"08/2027" },
+  { nombre:"Biberón Anticólicos 250ml",  descripcion:"Biberón con válvula anticólicos y tetina de silicón.",                 precio:39900,  tienda:"Éxito",                 categoria:"bebes",     ubicacion:"Barranquilla", barrio:"Boston",         vencimiento:"N/A" },
+  { nombre:"Papilla de Frutas x12",      descripcion:"Pack de 12 papillas naturales de frutas sin azúcar añadida.",         precio:42900,  tienda:"Ara",                   categoria:"bebes",     ubicacion:"Pereira",      barrio:"Pinares",        vencimiento:"05/2027" },
+  { nombre:"Croquetas Perro Adulto 5kg", descripcion:"Alimento seco premium para perro adulto, sabor pollo.",               precio:89900,  tienda:"Agrocampo",             categoria:"mascotas",  ubicacion:"Bogotá",       barrio:"Engativá",       vencimiento:"02/2027" },
+  { nombre:"Arena para Gato 10L",        descripcion:"Arena aglutinante con control de olores, bajo polvo.",                precio:28900,  tienda:"Jumbo",                 categoria:"mascotas",  ubicacion:"Medellín",     barrio:"Itagüí",         vencimiento:"N/A" },
+  { nombre:"Juguete Mordedor",           descripcion:"Mordedor de caucho natural resistente para perros medianos.",          precio:19900,  tienda:"Agrocampo",             categoria:"mascotas",  ubicacion:"Cali",         barrio:"Aguablanca",     vencimiento:"N/A" },
+  { nombre:"Snacks para Gato x10",       descripcion:"Pack de 10 sobres de snacks húmedos sabor atún y salmón.",            precio:24900,  tienda:"Olímpica",              categoria:"mascotas",  ubicacion:"Bucaramanga",  barrio:"García Rovira",  vencimiento:"06/2027" },
+  { nombre:"Collar Antipulgas",          descripcion:"Collar con protección hasta 8 meses contra pulgas y garrapatas.",      precio:52900,  tienda:"Droguería Cruz Verde",  categoria:"mascotas",  ubicacion:"Manizales",    barrio:"Chipre",         vencimiento:"N/A" }
+];
+
+// ── Estado local (en producción se guardaría en Firestore) ──
+const KEY = "pn_verificaciones";
+let verificaciones = JSON.parse(localStorage.getItem(KEY) || "{}");
+// Estructura: { [nombre]: { estado, descripcion, fotoUrl, fecha, verificador } }
+
+// ── Estado de filtros ──
+let busqueda = "";
+let filtroCategoria = "todas";
+let filtroEstado = "todos";
+let productoActual = null; // índice en BASE_PRODUCTOS
+
+function getEstado(nombre) {
+  return verificaciones[nombre]?.estado || "pendiente";
+}
+
+function formatCOP(v) {
+  return "$ " + v.toLocaleString("es-CO", { minimumFractionDigits:0, maximumFractionDigits:0 });
+}
+
+function iniciarApp() {
+  renderStats();
+  renderGrid();
+
+  document.getElementById("buscador").addEventListener("input", e => {
+    busqueda = e.target.value.toLowerCase().trim();
+    renderGrid();
+  });
+  document.getElementById("filtroCategoria").addEventListener("change", e => {
+    filtroCategoria = e.target.value;
+    renderGrid();
+  });
+  document.getElementById("filtroEstado").addEventListener("change", e => {
+    filtroEstado = e.target.value;
+    renderGrid();
+  });
+
+  // Opciones de resultado en modal
+  document.getElementById("opAprobado").addEventListener("click", () => seleccionarResultado("aprobado"));
+  document.getElementById("opRechazado").addEventListener("click", () => seleccionarResultado("rechazado"));
+
+  // Preview foto
+  document.getElementById("inputFoto").addEventListener("change", e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    document.getElementById("fotoNombre").textContent = "📎 " + file.name;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = document.getElementById("fotoPreview");
+      img.src = ev.target.result;
+      img.style.display = "block";
+      document.getElementById("fotoPlaceholder").style.display = "none";
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Guardar verificación
+  document.getElementById("btnGuardarVerificacion").addEventListener("click", guardarVerificacion);
+
+  // Siguiente producto
+  document.getElementById("btnSiguienteProducto").addEventListener("click", () => {
+    const modal = bootstrap.Modal.getInstance(document.getElementById("modalVerificar"));
+    modal.hide();
+  });
+}
+
+function seleccionarResultado(valor) {
+  document.getElementById("rAprobado").checked   = valor === "aprobado";
+  document.getElementById("rRechazado").checked  = valor === "rechazado";
+  document.getElementById("opAprobado").style.borderColor  = valor === "aprobado"  ? "var(--ok)"     : "#eee";
+  document.getElementById("opAprobado").style.background   = valor === "aprobado"  ? "#e8f5e9"       : "";
+  document.getElementById("opRechazado").style.borderColor = valor === "rechazado" ? "var(--danger)"  : "#eee";
+  document.getElementById("opRechazado").style.background  = valor === "rechazado" ? "#ffebee"        : "";
+}
+
+function renderStats() {
+  const total     = BASE_PRODUCTOS.length;
+  const aprobados = Object.values(verificaciones).filter(v => v.estado === "aprobado").length;
+  const rechazados= Object.values(verificaciones).filter(v => v.estado === "rechazado").length;
+  const pendientes= total - aprobados - rechazados;
+  document.getElementById("statTotal").textContent     = total;
+  document.getElementById("statPendientes").textContent= pendientes;
+  document.getElementById("statAprobados").textContent = aprobados;
+  document.getElementById("statRechazados").textContent= rechazados;
+}
+
+function productosFiltrados() {
+  return BASE_PRODUCTOS.filter(p => {
+    const estado = getEstado(p.nombre);
+    if (filtroCategoria !== "todas" && p.categoria !== filtroCategoria) return false;
+    if (filtroEstado !== "todos" && estado !== filtroEstado) return false;
+    if (busqueda) {
+      const txt = (p.nombre + " " + p.tienda + " " + p.ubicacion + " " + (CATEGORIAS[p.categoria]?.nombre || "")).toLowerCase();
+      if (!txt.includes(busqueda)) return false;
+    }
+    return true;
+  });
+}
+
+function renderGrid() {
+  const grid = document.getElementById("gridProductos");
+  grid.innerHTML = "";
+  const lista = productosFiltrados();
+
+  const info = document.getElementById("infoResultados");
+  info.textContent = lista.length < BASE_PRODUCTOS.length
+    ? `Mostrando ${lista.length} de ${BASE_PRODUCTOS.length} productos`
+    : "";
+
+  if (!lista.length) {
+    grid.innerHTML = `<div class="sin-resultados col-12"><span>🔍</span><h5>Sin resultados</h5><p>Intenta cambiar los filtros.</p></div>`;
+    return;
+  }
+
+  lista.forEach((p, _) => {
+    const idx = BASE_PRODUCTOS.indexOf(p);
+    const cat    = CATEGORIAS[p.categoria] || { nombre:p.categoria, icono:"📦", clase:"" };
+    const estado = getEstado(p.nombre);
+    const verif  = verificaciones[p.nombre];
+
+    const col = document.createElement("div");
+    col.className = "col-12 col-sm-6 col-lg-4";
+    col.innerHTML = `
+      <div class="prod-card">
+        <span class="estado-badge estado-${estado}">
+          ${ estado === "aprobado" ? "✅ Aprobado" : estado === "rechazado" ? "❌ Rechazado" : "⏳ Pendiente" }
+        </span>
+        <span class="cat-badge ${cat.clase}">${cat.icono} ${cat.nombre}</span>
+        <div class="prod-nombre">${p.nombre}</div>
+        <div class="prod-tienda">🏪 ${p.tienda} · 📍 ${p.ubicacion}, ${p.barrio}</div>
+        <div class="prod-desc">${p.descripcion}</div>
+        <div class="prod-precio">${formatCOP(p.precio)}</div>
+        ${ p.vencimiento !== "N/A" ? `<div style="font-size:.78rem;color:var(--warn);margin-bottom:10px;">📅 Vence: ${p.vencimiento}</div>` : "" }
+        ${ verif ? `<div class="historial-mini">
+          <span>🕐 Última verificación: ${verif.fecha}</span>
+          <span>🗒️ ${verif.descripcion.substring(0,80)}${verif.descripcion.length>80?"…":""}</span>
+        </div>` : "" }
+        <button class="btn-verificar" onclick="abrirModalVerificar(${idx})">
+          🔍 ${estado === "pendiente" ? "Verificar producto" : "Re-verificar"}
+        </button>
+      </div>`;
+    grid.appendChild(col);
+  });
+}
+
+window.abrirModalVerificar = function(idx) {
+  productoActual = idx;
+  const p = BASE_PRODUCTOS[idx];
+  const cat = CATEGORIAS[p.categoria] || { nombre:p.categoria, icono:"📦" };
+
+  // Llenar info del modal
+  document.getElementById("mNombre").textContent = cat.icono + " " + p.nombre;
+  document.getElementById("mInfo").textContent =
+    "🏪 " + p.tienda + " · 📍 " + p.ubicacion + ", " + p.barrio +
+    (p.vencimiento !== "N/A" ? " · 📅 Vence: " + p.vencimiento : "");
+
+  // Resetear formulario
+  document.getElementById("inputFoto").value = "";
+  document.getElementById("fotoPreview").style.display = "none";
+  document.getElementById("fotoPreview").src = "";
+  document.getElementById("fotoPlaceholder").style.display = "";
+  document.getElementById("fotoNombre").textContent = "";
+  document.getElementById("inputDescripcion").value = "";
+  document.getElementById("rAprobado").checked = false;
+  document.getElementById("rRechazado").checked = false;
+  document.getElementById("opAprobado").style.cssText = "cursor:pointer;border:2px solid #eee;";
+  document.getElementById("opRechazado").style.cssText = "cursor:pointer;border:2px solid #eee;";
+  document.getElementById("errorModal").style.display = "none";
+  document.getElementById("btnGuardarVerificacion").style.display = "";
+  document.getElementById("verificacionExito").style.display = "none";
+  document.getElementById("inputDescripcion").classList.remove("error");
+  document.getElementById("fotoWrap").style.borderColor = "";
+
+  // Pre-rellenar si ya fue verificado
+  const verif = verificaciones[p.nombre];
+  if (verif) {
+    document.getElementById("inputDescripcion").value = verif.descripcion || "";
+    if (verif.estado) seleccionarResultado(verif.estado);
+  }
+
+  new bootstrap.Modal(document.getElementById("modalVerificar")).show();
+};
+
+function guardarVerificacion() {
+  const foto        = document.getElementById("inputFoto").files[0];
+  const descripcion = document.getElementById("inputDescripcion").value.trim();
+  const resultado   = document.querySelector('input[name="resultado"]:checked')?.value;
+
+  // Validación: ambas condiciones obligatorias
+  let errores = [];
+  if (!foto) {
+    errores.push("📸 Debes adjuntar una foto del producto.");
+    document.getElementById("fotoWrap").style.borderColor = "var(--danger)";
+  } else {
+    document.getElementById("fotoWrap").style.borderColor = "";
+  }
+  if (!descripcion) {
+    errores.push("📝 La descripción física del estado es obligatoria.");
+    document.getElementById("inputDescripcion").classList.add("error");
+  } else {
+    document.getElementById("inputDescripcion").classList.remove("error");
+  }
+  if (!resultado) {
+    errores.push("🏷️ Selecciona si el producto está aprobado o rechazado.");
+  }
+
+  if (errores.length) {
+    const err = document.getElementById("errorModal");
+    err.innerHTML = errores.map(e => "• " + e).join("<br>");
+    err.style.display = "";
+    return;
+  }
+
+  // Guardar en localStorage (simula Firestore)
+  const p = BASE_PRODUCTOS[productoActual];
+  const ahora = new Date().toLocaleString("es-CO");
+  // Leer dataURL de la foto para el historial
+  const reader = new FileReader();
+  reader.onload = ev => {
+    verificaciones[p.nombre] = {
+      estado: resultado,
+      descripcion,
+      fotoUrl: ev.target.result,
+      fecha: ahora,
+      producto: p.nombre,
+      tienda: p.tienda
+    };
+    localStorage.setItem(KEY, JSON.stringify(verificaciones));
+
+    // Mostrar éxito
+    document.getElementById("btnGuardarVerificacion").style.display = "none";
+    document.getElementById("errorModal").style.display = "none";
+    document.getElementById("exitoTitulo").textContent =
+      resultado === "aprobado" ? "✅ Producto aprobado" : "❌ Producto rechazado";
+    document.getElementById("exitoMsg").textContent =
+      "Verificación de \"" + p.nombre + "\" guardada el " + ahora;
+    document.getElementById("verificacionExito").style.display = "";
+
+    // Actualizar grid y stats sin cerrar modal
+    renderStats();
+    renderGrid();
+  };
+  reader.readAsDataURL(foto);
+}
+</script>
+
 </body>
 </html>
