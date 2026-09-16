@@ -428,7 +428,6 @@
 
 <script src="https://unpkg.com/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script type="module">
-<script type="module">
 import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
@@ -451,7 +450,7 @@ onAuthStateChanged(auth, async usuario => {
     const datos = snap.exists() ? snap.data() : {};
     const rol = (datos.rol || "usuario").trim().toLowerCase();
 
-    if (rol !== "verificador" && rol !== "admin") {
+    if (rol !== "verificador" && rol !== "admin" && rol !== "dueño") {
       document.getElementById("bloqueAcceso").style.display = "";
       return;
     }
@@ -465,7 +464,6 @@ onAuthStateChanged(auth, async usuario => {
     console.error("Error al obtener rol:", e);
     window.location.href = "login.html";
   }
-});
 });
 </script>
 <script>
