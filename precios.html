@@ -6,7 +6,53 @@
   <title>Precios por Categoría | PRICE NICE</title>
   <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <style>
+    /* ── Gráficas ── */
+    .graficas-section {
+      margin-bottom: 36px;
+    }
+    .graficas-section .seccion-titulo-grafica {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #775533;
+      margin-bottom: 18px;
+      padding-bottom: 6px;
+      border-bottom: 3px solid #D4954D;
+      display: inline-block;
+    }
+    .grafica-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      padding: 24px 20px 18px;
+      height: 100%;
+    }
+    .grafica-card canvas {
+      max-height: 280px;
+    }
+    .tabs-grafica {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .tab-btn {
+      border: 2px solid #D4954D;
+      border-radius: 20px;
+      padding: 6px 18px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      background: white;
+      color: #D4954D;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .tab-btn.active, .tab-btn:hover {
+      background: #D4954D;
+      color: white;
+    }
+
     .panel-header {
       background: linear-gradient(135deg, #D4954D, #775533);
       color: white;
@@ -256,6 +302,35 @@
 
   <div class="container pb-5">
 
+    <!-- ══ Gráficas de líneas ══ -->
+    <div class="graficas-section">
+      <div class="text-center mb-3">
+        <span class="seccion-titulo-grafica">📈 Análisis de Precios</span>
+      </div>
+      <div class="tabs-grafica">
+        <button class="tab-btn active" id="tabCategoria" onclick="mostrarTab('categoria')">Por Categoría</button>
+        <button class="tab-btn" id="tabTienda" onclick="mostrarTab('tienda')">Por Tienda</button>
+        <button class="tab-btn" id="tabEvolucion" onclick="mostrarTab('evolucion')">Evolución</button>
+      </div>
+
+      <!-- Tab: promedio por categoría -->
+      <div id="panelCategoria" class="grafica-card">
+        <canvas id="graficaCategoria"></canvas>
+      </div>
+      <!-- Tab: promedio por tienda -->
+      <div id="panelTienda" class="grafica-card" style="display:none">
+        <canvas id="graficaTienda"></canvas>
+      </div>
+      <!-- Tab: evolución de precio por producto seleccionado -->
+      <div id="panelEvolucion" class="grafica-card" style="display:none">
+        <div class="text-center mb-3">
+          <select id="selectProductoEvolucion" class="form-select d-inline-block" style="max-width:340px; border-radius:12px; border:2px solid #D4954D;">
+          </select>
+        </div>
+        <canvas id="graficaEvolucion"></canvas>
+      </div>
+    </div>
+
     <!-- Resumen rápido -->
     <div class="row g-3 mb-4">
       <div class="col-6 col-md-3">
@@ -432,8 +507,12 @@
     renderFiltros();
     poblarTiendas();
     poblarCiudades();
+    poblarSelectEvolucion();
     renderProductos();
     actualizarResumen();
+
+    // Construir gráfica inicial (categoría)
+    construirGraficaCategoria();
 
     // Buscador
     document.getElementById("buscador").addEventListener("input", e => {
@@ -712,6 +791,236 @@
     document.getElementById("totalCategorias").textContent = categorias;
     document.getElementById("totalTiendas").textContent = tiendas;
     document.getElementById("precioPromedio").textContent = formatCOP(promedio);
+  }
+
+  // ════════════════════════════════════════════════
+  //  GRÁFICAS DE LÍNEAS
+  // ════════════════════════════════════════════════
+
+  const PALETA = [
+    "#D4954D", "#775533", "#e74c3c", "#3498db",
+    "#2ecc71", "#9b59b6", "#f39c12", "#1abc9c",
+    "#e67e22", "#34495e", "#27ae60", "#8e44ad"
+  ];
+
+  let chartCategoria = null;
+  let chartTienda = null;
+  let chartEvolucion = null;
+
+  // Genera puntos simulados de evolución histórica (últimos 6 meses) a partir del precio actual
+  function simularEvolucion(precioBase) {
+    const meses = 6;
+    const datos = [];
+    let precio = precioBase * (0.85 + Math.random() * 0.1); // precio inicial ~85-95% del actual
+    for (let i = 0; i < meses; i++) {
+      precio += precio * (Math.random() * 0.06 - 0.02); // variación ±3% por mes
+      datos.push(Math.round(precio));
+    }
+    datos.push(precioBase); // último punto es el precio real actual
+    return datos;
+  }
+
+  const MESES_LABELS = ["Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago"];
+
+  function construirGraficaCategoria() {
+    const ctx = document.getElementById("graficaCategoria").getContext("2d");
+
+    // Promedio por categoría + puntos históricos simulados
+    const datasets = Object.entries(CATEGORIAS).map(([clave, cat], idx) => {
+      const prods = PRODUCTOS.filter(p => p.categoria === clave);
+      const promActual = prods.reduce((s, p) => s + p.precio, 0) / prods.length;
+      const datos = simularEvolucion(promActual);
+
+      return {
+        label: cat.icono + " " + cat.nombre,
+        data: datos,
+        borderColor: PALETA[idx],
+        backgroundColor: PALETA[idx] + "22",
+        borderWidth: 2.5,
+        pointRadius: 4,
+        pointHoverRadius: 7,
+        tension: 0.4,
+        fill: false
+      };
+    });
+
+    if (chartCategoria) chartCategoria.destroy();
+    chartCategoria = new Chart(ctx, {
+      type: "line",
+      data: { labels: MESES_LABELS, datasets },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: "Promedio de precio por categoría — últimos 7 meses (COP $)",
+            font: { size: 14, weight: "bold" },
+            color: "#333"
+          },
+          tooltip: {
+            callbacks: {
+              label: ctx => " " + ctx.dataset.label + ": " + formatCOP(ctx.parsed.y)
+            }
+          },
+          legend: { position: "bottom", labels: { boxWidth: 12, font: { size: 11 } } }
+        },
+        scales: {
+          y: {
+            beginAtZero: false,
+            ticks: {
+              callback: val => "$ " + val.toLocaleString("es-CO"),
+              font: { size: 10 }
+            },
+            grid: { color: "#f0f0f0" }
+          },
+          x: { grid: { color: "#f5f5f5" } }
+        }
+      }
+    });
+  }
+
+  function construirGraficaTienda() {
+    const ctx = document.getElementById("graficaTienda").getContext("2d");
+
+    const tiendas = [...new Set(PRODUCTOS.map(p => p.tienda))].sort();
+
+    const datasets = tiendas.map((tienda, idx) => {
+      const prods = PRODUCTOS.filter(p => p.tienda === tienda);
+      const promActual = prods.reduce((s, p) => s + p.precio, 0) / prods.length;
+      const datos = simularEvolucion(promActual);
+
+      return {
+        label: "🏪 " + tienda,
+        data: datos,
+        borderColor: PALETA[idx % PALETA.length],
+        backgroundColor: PALETA[idx % PALETA.length] + "22",
+        borderWidth: 2.5,
+        pointRadius: 4,
+        pointHoverRadius: 7,
+        tension: 0.4,
+        fill: false
+      };
+    });
+
+    if (chartTienda) chartTienda.destroy();
+    chartTienda = new Chart(ctx, {
+      type: "line",
+      data: { labels: MESES_LABELS, datasets },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: "Promedio de precio por tienda — últimos 7 meses (COP $)",
+            font: { size: 14, weight: "bold" },
+            color: "#333"
+          },
+          tooltip: {
+            callbacks: {
+              label: ctx => " " + ctx.dataset.label + ": " + formatCOP(ctx.parsed.y)
+            }
+          },
+          legend: { position: "bottom", labels: { boxWidth: 12, font: { size: 11 } } }
+        },
+        scales: {
+          y: {
+            beginAtZero: false,
+            ticks: {
+              callback: val => "$ " + val.toLocaleString("es-CO"),
+              font: { size: 10 }
+            },
+            grid: { color: "#f0f0f0" }
+          },
+          x: { grid: { color: "#f5f5f5" } }
+        }
+      }
+    });
+  }
+
+  function construirGraficaEvolucion(nombreProducto) {
+    const ctx = document.getElementById("graficaEvolucion").getContext("2d");
+    const prod = PRODUCTOS.find(p => p.nombre === nombreProducto);
+    if (!prod) return;
+
+    const datos = simularEvolucion(prod.precio);
+
+    if (chartEvolucion) chartEvolucion.destroy();
+    chartEvolucion = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: MESES_LABELS,
+        datasets: [{
+          label: prod.nombre,
+          data: datos,
+          borderColor: "#D4954D",
+          backgroundColor: "rgba(212,149,77,0.10)",
+          borderWidth: 3,
+          pointRadius: 5,
+          pointHoverRadius: 8,
+          tension: 0.4,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: "Evolución de precio: " + prod.nombre + " (🏪 " + prod.tienda + ")",
+            font: { size: 14, weight: "bold" },
+            color: "#333"
+          },
+          tooltip: {
+            callbacks: {
+              label: ctx => " Precio: " + formatCOP(ctx.parsed.y)
+            }
+          },
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            beginAtZero: false,
+            ticks: {
+              callback: val => "$ " + val.toLocaleString("es-CO"),
+              font: { size: 10 }
+            },
+            grid: { color: "#f0f0f0" }
+          },
+          x: { grid: { color: "#f5f5f5" } }
+        }
+      }
+    });
+  }
+
+  // Poblar select de evolución
+  function poblarSelectEvolucion() {
+    const select = document.getElementById("selectProductoEvolucion");
+    PRODUCTOS.forEach(p => {
+      const opt = document.createElement("option");
+      opt.value = p.nombre;
+      opt.textContent = p.nombre + " — " + p.tienda;
+      select.appendChild(opt);
+    });
+    select.addEventListener("change", e => construirGraficaEvolucion(e.target.value));
+  }
+
+  // Tabs de gráficas
+  function mostrarTab(tab) {
+    const paneles = { categoria: "panelCategoria", tienda: "panelTienda", evolucion: "panelEvolucion" };
+    const tabs = { categoria: "tabCategoria", tienda: "tabTienda", evolucion: "tabEvolucion" };
+    Object.entries(paneles).forEach(([k, id]) => {
+      document.getElementById(id).style.display = k === tab ? "" : "none";
+    });
+    Object.entries(tabs).forEach(([k, id]) => {
+      document.getElementById(id).classList.toggle("active", k === tab);
+    });
+    // Construir la gráfica al mostrarla (lazy)
+    if (tab === "categoria" && !chartCategoria) construirGraficaCategoria();
+    if (tab === "tienda" && !chartTienda) construirGraficaTienda();
+    if (tab === "evolucion" && !chartEvolucion) {
+      const sel = document.getElementById("selectProductoEvolucion");
+      construirGraficaEvolucion(sel.value);
+    }
   }
 </script>
 
