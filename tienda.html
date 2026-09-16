@@ -1,116 +1,1228 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alison</title>
-    <link rel="stylesheet" href="style.css">
-   
-    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tienda Virtual | PRICE NICE</title>
+  <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    :root {
+      --brand:     #D4954D;
+      --brand-dark:#775533;
+      --bg:        #f5f3ef;
+    }
+
+    body { background: var(--bg); }
+
+    /* ── Header ── */
+    .store-header {
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      color: white;
+      padding: 36px 20px 28px;
+      text-align: center;
+      border-radius: 0 0 24px 24px;
+      margin-bottom: 32px;
+      position: relative;
+    }
+    .store-header h1 { font-size: 2rem; font-weight: 800; margin-bottom: 6px; }
+    .store-header p  { opacity: .88; margin: 0; }
+
+    /* Botón carrito flotante */
+    #btnCarritoFlotante {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 60px;
+      height: 60px;
+      background: var(--brand);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      box-shadow: 0 6px 20px rgba(212,149,77,.45);
+      cursor: pointer;
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .2s;
+    }
+    #btnCarritoFlotante:hover { transform: scale(1.1); }
+    #badgeCarrito {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: #e74c3c;
+      color: white;
+      font-size: .68rem;
+      font-weight: 800;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ── Barra de búsqueda ── */
+    .buscador-wrap {
+      max-width: 520px;
+      margin: 0 auto 24px;
+    }
+    .buscador-wrap input {
+      border-radius: 30px;
+      padding: 10px 20px;
+      border: 2px solid #ddd;
+      font-size: 1rem;
+      width: 100%;
+      transition: border-color .3s;
+    }
+    .buscador-wrap input:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(212,149,77,.15);
+      outline: none;
+    }
+
+    /* ── Tabs de tienda ── */
+    .store-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+    .store-tab {
+      border: 2px solid #ddd;
+      border-radius: 24px;
+      padding: 8px 22px;
+      font-size: .9rem;
+      font-weight: 700;
+      background: white;
+      cursor: pointer;
+      color: #666;
+      transition: all .25s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .store-tab:hover { border-color: var(--brand); color: var(--brand); }
+    .store-tab.active {
+      background: var(--brand);
+      border-color: var(--brand);
+      color: white;
+      box-shadow: 0 4px 12px rgba(212,149,77,.3);
+    }
+
+    /* ── Cabecera de tienda ── */
+    .store-section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: white;
+      border-radius: 16px;
+      padding: 18px 24px;
+      margin-bottom: 22px;
+      box-shadow: 0 4px 14px rgba(0,0,0,.07);
+    }
+    .store-icon {
+      width: 54px;
+      height: 54px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      flex-shrink: 0;
+    }
+    .store-section-header h2 { font-size: 1.3rem; font-weight: 800; margin: 0; color: #333; }
+    .store-section-header p  { font-size: .85rem; color: #888; margin: 2px 0 0; }
+    .store-badge {
+      margin-left: auto;
+      background: #fff3e0;
+      color: var(--brand);
+      font-size: .78rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    /* ── Tarjeta de producto ── */
+    .prod-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 14px rgba(0,0,0,.07);
+      padding: 20px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .prod-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 28px rgba(212,149,77,.2);
+    }
+    .cat-badge-sm {
+      font-size: .7rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+    .cat-belleza   { background: #fce4ec; color: #c62828; }
+    .cat-higiene   { background: #e0f7fa; color: #00695c; }
+    .cat-alimentos { background: #fff3e0; color: #e65100; }
+    .cat-hogar     { background: #e8eaf6; color: #283593; }
+    .cat-bebes     { background: #f3e5f5; color: #6a1b9a; }
+    .cat-mascotas  { background: #e8f5e9; color: #2e7d32; }
+
+    .prod-nombre { font-size: 1rem; font-weight: 700; margin-bottom: 6px; color: #222; }
+    .prod-desc   { font-size: .82rem; color: #888; flex: 1; margin-bottom: 12px; }
+    .prod-precio { font-size: 1.35rem; font-weight: 800; color: #2e7d32; margin-bottom: 14px; }
+    .prod-ubicacion { font-size: .78rem; color: #aaa; margin-bottom: 14px; }
+
+    .btn-agregar {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      padding: 10px;
+      background: var(--brand);
+      color: white;
+      font-weight: 700;
+      font-size: .9rem;
+      cursor: pointer;
+      transition: background .2s, transform .15s;
+    }
+    .btn-agregar:hover { background: var(--brand-dark); transform: scale(1.02); }
+    .btn-agregar:active { transform: scale(.97); }
+
+    /* ── Sin resultados ── */
+    .sin-resultados {
+      text-align: center;
+      padding: 50px 20px;
+      color: #bbb;
+    }
+    .sin-resultados span { font-size: 3rem; display: block; margin-bottom: 10px; }
+
+    /* ══════════════════════════════════
+       CARRITO — panel lateral (offcanvas)
+    ══════════════════════════════════ */
+    .offcanvas-header { background: linear-gradient(135deg, var(--brand), var(--brand-dark)); color: white; }
+    .offcanvas-header .btn-close { filter: invert(1); }
+
+    .carrito-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .carrito-item-info { flex: 1; }
+    .carrito-item-info .ci-nombre { font-size: .9rem; font-weight: 700; color: #333; }
+    .carrito-item-info .ci-tienda { font-size: .75rem; color: #aaa; }
+    .carrito-item-info .ci-precio { font-size: .95rem; font-weight: 800; color: #2e7d32; }
+
+    .carrito-item-qty {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .qty-btn {
+      width: 28px;
+      height: 28px;
+      border: 2px solid #ddd;
+      border-radius: 50%;
+      background: white;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color .2s, color .2s;
+      color: #555;
+      line-height: 1;
+    }
+    .qty-btn:hover { border-color: var(--brand); color: var(--brand); }
+    .qty-num { font-weight: 700; min-width: 20px; text-align: center; }
+
+    .btn-quitar {
+      border: none;
+      background: none;
+      color: #e74c3c;
+      font-size: 1.1rem;
+      cursor: pointer;
+      padding: 4px;
+      transition: transform .15s;
+    }
+    .btn-quitar:hover { transform: scale(1.2); }
+
+    #carritoVacio {
+      text-align: center;
+      padding: 40px 0;
+      color: #ccc;
+      font-size: 1rem;
+    }
+    #carritoVacio span { font-size: 3rem; display: block; margin-bottom: 10px; }
+
+    .carrito-total-wrap {
+      border-top: 2px solid #eee;
+      padding-top: 14px;
+      margin-top: 4px;
+    }
+    .carrito-total {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--brand-dark);
+    }
+    .btn-pagar {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      color: white;
+      border: none;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: opacity .2s;
+      margin-top: 12px;
+    }
+    .btn-pagar:hover { opacity: .88; }
+    .btn-vaciar {
+      width: 100%;
+      padding: 10px;
+      background: white;
+      color: #e74c3c;
+      border: 2px solid #e74c3c;
+      border-radius: 14px;
+      font-size: .88rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s, color .2s;
+      margin-top: 8px;
+    }
+    .btn-vaciar:hover { background: #e74c3c; color: white; }
+
+    /* ══════════════════════════════════
+       MODAL DE PAGO
+    ══════════════════════════════════ */
+    #modalPago .modal-header {
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      color: white;
+      border-radius: 16px 16px 0 0;
+    }
+    #modalPago .modal-header .btn-close { filter: invert(1); }
+    #modalPago .modal-content { border-radius: 16px; border: none; }
+
+    .paso-indicador {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 28px;
+    }
+    .paso-step {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+    .paso-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid #ddd;
+      background: white;
+      color: #bbb;
+      font-weight: 800;
+      font-size: .88rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .3s;
+    }
+    .paso-num.activo { border-color: var(--brand); background: var(--brand); color: white; }
+    .paso-num.completado { border-color: #2ecc71; background: #2ecc71; color: white; }
+    .paso-linea { width: 48px; height: 2px; background: #ddd; margin: 0 4px; transition: background .3s; }
+    .paso-linea.completada { background: #2ecc71; }
+    .paso-label { font-size: .72rem; color: #aaa; text-align: center; margin-top: 4px; font-weight: 600; }
+    .paso-label.activo { color: var(--brand); }
+
+    .form-pago input, .form-pago select {
+      border-radius: 12px;
+      border: 2px solid #eee;
+      padding: 10px 14px;
+      font-size: .92rem;
+      transition: border-color .3s;
+    }
+    .form-pago input:focus, .form-pago select:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(212,149,77,.12);
+      outline: none;
+    }
+    .form-label-custom {
+      font-size: .78rem;
+      font-weight: 700;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      margin-bottom: 5px;
+    }
+
+    .resumen-compra-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 6px 0;
+      border-bottom: 1px solid #f5f5f5;
+      font-size: .88rem;
+    }
+    .resumen-compra-item:last-child { border-bottom: none; }
+    .resumen-compra-item .item-nombre { color: #444; }
+    .resumen-compra-item .item-precio { font-weight: 700; color: #2e7d32; white-space: nowrap; margin-left: 8px; }
+    .resumen-total-modal {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--brand-dark);
+      padding-top: 10px;
+      border-top: 2px solid #eee;
+    }
+
+    /* Éxito */
+    .pago-exitoso {
+      text-align: center;
+      padding: 20px 10px 10px;
+    }
+    .pago-exitoso .check-circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2ecc71, #27ae60);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      margin: 0 auto 20px;
+      animation: popIn .5s cubic-bezier(.36,.07,.19,.97);
+    }
+    @keyframes popIn {
+      0%   { transform: scale(0); opacity: 0; }
+      80%  { transform: scale(1.12); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .pago-exitoso h4 { font-weight: 800; color: #27ae60; margin-bottom: 8px; }
+    .pago-exitoso p  { color: #888; font-size: .9rem; }
+    .codigo-pedido {
+      display: inline-block;
+      background: #f5f5f5;
+      border-radius: 12px;
+      padding: 10px 20px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: var(--brand-dark);
+      margin: 12px 0 6px;
+    }
+
+    /* Métodos de pago */
+    .metodo-pago-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .metodo-btn {
+      border: 2px solid #eee;
+      border-radius: 12px;
+      padding: 12px 8px;
+      background: white;
+      text-align: center;
+      cursor: pointer;
+      transition: all .25s;
+      font-size: .8rem;
+      font-weight: 700;
+      color: #666;
+    }
+    .metodo-btn:hover { border-color: var(--brand); color: var(--brand); }
+    .metodo-btn.selected { border-color: var(--brand); background: #fff8f0; color: var(--brand-dark); }
+    .metodo-btn .metodo-icon { font-size: 1.5rem; display: block; margin-bottom: 4px; }
+
+    /* Resumen top de la tienda */
+    .resumen-tienda-wrap {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+      justify-content: center;
+    }
+    .resumen-tienda-chip {
+      background: white;
+      border-radius: 12px;
+      padding: 10px 18px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.07);
+      font-size: .88rem;
+      font-weight: 700;
+      color: #555;
+    }
+    .resumen-tienda-chip span { color: var(--brand); font-size: 1.05rem; }
+  </style>
 </head>
 <body>
-    <div class="panel">
-        <h2>Tienda Virtual 3D</h2>
-        
-        <p>
-        Con el mouse puedes girar la camara y con wasd o las flechas puedes moverte.
-        </p>
-        
-        <p>
-        Mira el círculo del centro de la pantalla y apunta a los productos.
-        </p>
-        
-        <p>
-        Productos seleccionados:
-        <span id="contador">0</span>
-        </p>
-        
+
+<!-- ════════════ HEADER ════════════ -->
+<div class="store-header">
+  <img src="img/LOGO PRIN.jpg" alt="PRICE NICE" height="72" class="rounded-3 mb-3">
+  <h1>🛒 Tienda Virtual</h1>
+  <p>Explora productos por tienda y simula tu compra</p>
+</div>
+
+<!-- ════════════ CONTENIDO PRINCIPAL ════════════ -->
+<div class="container pb-5">
+
+  <!-- Resumen global -->
+  <div class="resumen-tienda-wrap" id="resumenGlobal"></div>
+
+  <!-- Buscador -->
+  <div class="buscador-wrap">
+    <input type="text" id="buscador" placeholder="🔍 Buscar producto, categoría...">
+  </div>
+
+  <!-- Tabs de tiendas -->
+  <div class="store-tabs" id="storeTabs"></div>
+
+  <!-- Área de productos -->
+  <div id="areaProductos"></div>
+
+  <!-- Volver -->
+  <div class="text-center mt-5">
+    <a href="usuario.html" class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-semibold">
+      ← Volver al panel
+    </a>
+  </div>
+</div>
+
+<!-- ════════════ BOTÓN CARRITO FLOTANTE ════════════ -->
+<button id="btnCarritoFlotante" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCarrito" aria-label="Ver carrito">
+  🛒
+  <span id="badgeCarrito" style="display:none">0</span>
+</button>
+
+<!-- ════════════ OFFCANVAS CARRITO ════════════ -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasCarrito" style="width:380px; max-width:95vw;">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title fw-bold">🛒 Mi Carrito</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body d-flex flex-column" style="overflow-y:auto;">
+    <div id="carritoVacio"><span>🛒</span>Tu carrito está vacío.<br><small class="text-secondary">Agrega productos para comenzar.</small></div>
+    <div id="listaCarrito"></div>
+    <div id="carritoFooter" style="display:none" class="mt-auto">
+      <div class="carrito-total-wrap">
+        <div class="d-flex justify-content-between align-items-center">
+          <span class="fw-semibold text-secondary">Subtotal</span>
+          <span id="subtotalCarrito" class="text-secondary">$0</span>
         </div>
-        <a-scene>
+        <div class="d-flex justify-content-between align-items-center mt-1">
+          <span class="fw-semibold text-secondary" style="font-size:.85rem">Envío estimado</span>
+          <span class="text-secondary" style="font-size:.85rem" id="envioCarrito">$0</span>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mt-2">
+          <span class="fw-bold fs-6">Total</span>
+          <span class="carrito-total" id="totalCarrito">$0</span>
+        </div>
+      </div>
+      <button class="btn-pagar" id="btnPagar" data-bs-dismiss="offcanvas" data-bs-toggle="modal" data-bs-target="#modalPago">
+        💳 Proceder al pago
+      </button>
+      <button class="btn-vaciar" id="btnVaciar">🗑️ Vaciar carrito</button>
+    </div>
+  </div>
+</div>
 
-            <!-- CAMARA CON CURSOR -->
-            <a-entity position="0 1.6 10">
-        
-                <a-camera>
-        
-                    <!-- CURSOR -->
-                    <a-cursor
-                        color="black"
-                        fuse="true"
-                        fuse-timeout="700">
-                    </a-cursor>
-        
-                </a-camera>
-        
-            </a-entity>
-        
-            <!-- PISO -->
-            <a-plane
-                rotation="-90 0 0"
-                width="40"
-                height="40"
-                color="#d7d7d7">
-            </a-plane>
-        
-            <!-- PAREDES -->
-            <a-box position="0 4 -15" width="30" height="8" depth="0.5" color="#ffffff"></a-box>
-        
-            <!-- MOSTRADOR -->
-            <a-box position="0 1 -2" width="6" height="2" depth="2" color="#6d4c41"></a-box>
-        
-            <!-- ESTANTERIAS -->
-            <a-box position="-8 2 -8" width="6" height="4" depth="1" color="#8B4513"></a-box>
-            <a-box position="8 2 -8" width="6" height="4" depth="1" color="#8B4513"></a-box>
-        
-            <!-- PRODUCTOS -->
-            <a-box class="producto" position="-10 4 -8" color="red"></a-box>
-            <a-box class="producto" position="-8 4 -8" color="blue"></a-box>
-            <a-box class="producto" position="-6 4 -8" color="green"></a-box>
+<!-- ════════════ MODAL PAGO ════════════ -->
+<div class="modal fade" id="modalPago" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold">💳 Simulación de Compra</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-4">
 
-            <a-box class="producto" position="10 4 +8" color="red"></a-box>
-            <a-box class="producto" position="8 4 +8" color="blue"></a-box>
-            <a-box class="producto" position="6 4 +8" color="green"></a-box>
+        <!-- Indicador de pasos -->
+        <div class="paso-indicador" id="pasoIndicador">
+          <div class="paso-step">
+            <div>
+              <div class="paso-num activo" id="pNum1">1</div>
+              <div class="paso-label activo" id="pLbl1">Datos</div>
+            </div>
+            <div class="paso-linea" id="pLinea1"></div>
+          </div>
+          <div class="paso-step">
+            <div>
+              <div class="paso-num" id="pNum2">2</div>
+              <div class="paso-label" id="pLbl2">Pago</div>
+            </div>
+            <div class="paso-linea" id="pLinea2"></div>
+          </div>
+          <div class="paso-step">
+            <div>
+              <div class="paso-num" id="pNum3">3</div>
+              <div class="paso-label" id="pLbl3">Resumen</div>
+            </div>
+          </div>
+        </div>
 
+        <!-- PASO 1 — Datos personales y envío -->
+        <div id="paso1">
+          <h6 class="fw-bold mb-3" style="color:var(--brand-dark)">📦 Datos de entrega</h6>
+          <div class="form-pago row g-3">
+            <div class="col-md-6">
+              <label class="form-label-custom">Nombre completo</label>
+              <input type="text" id="pNombre" placeholder="Ej. Ana García" class="form-control">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom">Teléfono / Celular</label>
+              <input type="tel" id="pTelefono" placeholder="Ej. 300 123 4567" class="form-control">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom">Correo electrónico</label>
+              <input type="email" id="pEmail" placeholder="correo@ejemplo.com" class="form-control">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom">Ciudad</label>
+              <select id="pCiudad" class="form-select">
+                <option value="">— Selecciona ciudad —</option>
+                <option>Bogotá</option><option>Medellín</option><option>Cali</option>
+                <option>Barranquilla</option><option>Bucaramanga</option>
+                <option>Manizales</option><option>Pereira</option><option>Otra</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label-custom">Dirección de entrega</label>
+              <input type="text" id="pDireccion" placeholder="Calle, carrera, número, apartamento..." class="form-control">
+            </div>
+            <div class="col-12">
+              <label class="form-label-custom">Indicaciones adicionales (opcional)</label>
+              <input type="text" id="pIndicaciones" placeholder="Timbre, portería, color de fachada..." class="form-control">
+            </div>
+          </div>
+          <div class="d-flex justify-content-end mt-4">
+            <button class="btn btn-warning fw-bold px-5 py-2 rounded-pill" id="btnPaso1Sig" style="background:var(--brand);color:white;border:none;">
+              Continuar →
+            </button>
+          </div>
+        </div>
 
-        
-            <a-sphere class="producto" position="-10 2 -8" radius="0.5" color="yellow"></a-sphere>
-            <a-sphere class="producto" position="-8 2 -8" radius="0.5" color="orange"></a-sphere>
-        
-            <a-sphere class="producto" position="10 2 +8" radius="0.5" color="yellow"></a-sphere>
-            <a-sphere class="producto" position="8 2 +8" radius="0.5" color="orange"></a-sphere>
-        
-        
-            
-            <a-cylinder class="producto" position="8 2 8" radius="0.5" height="1" color="purple"></a-cylinder>
-            <a-cylinder class="producto" position="10 2 8" radius="0.5" height="1" color="#009688"></a-cylinder>
-            
-            <a-cylinder class="producto" position="8 2 +8" radius="0.5" height="1" color="purple"></a-cylinder>
-            <a-cylinder class="producto" position="10 2 +8" radius="0.5" height="1" color="#009688"></a-cylinder>
-            <!-- TEXTO -->
-        
-            <a-text
-                value="SUPERMARKET VR"
-                position="-5 6 -10"
-                scale="3 3 3"
-                color="black">
-            </a-text>
-        
-            <!-- LUCES -->
-            <a-light type="ambient" intensity="1"></a-light>
-            <a-light type="point" intensity="1.5" position="0 8 0"></a-light>
-        
-            <!-- OBJETO ANIMADO -->
-            <a-torus
-                position="0 5 -6"
-                radius="1"
-                radius-tubular="0.1"
-                color="#2196F3"
-                animation="property: rotation; to: 0 360 0; loop: true; dur: 3000">
-            </a-torus>
-        
-        </a-scene>
+        <!-- PASO 2 — Método de pago -->
+        <div id="paso2" style="display:none">
+          <h6 class="fw-bold mb-3" style="color:var(--brand-dark)">💳 Método de pago</h6>
+          <div class="metodo-pago-grid">
+            <div class="metodo-btn selected" data-metodo="tarjeta">
+              <span class="metodo-icon">💳</span>Tarjeta
+            </div>
+            <div class="metodo-btn" data-metodo="nequi">
+              <span class="metodo-icon">📱</span>Nequi
+            </div>
+            <div class="metodo-btn" data-metodo="daviplata">
+              <span class="metodo-icon">🔵</span>Daviplata
+            </div>
+            <div class="metodo-btn" data-metodo="pse">
+              <span class="metodo-icon">🏦</span>PSE
+            </div>
+            <div class="metodo-btn" data-metodo="efectivo">
+              <span class="metodo-icon">💵</span>Efectivo
+            </div>
+            <div class="metodo-btn" data-metodo="contraentrega">
+              <span class="metodo-icon">🚚</span>Contraentrega
+            </div>
+          </div>
 
-        <script src="app.js"></script>
+          <!-- Formulario dinámico por método -->
+          <div id="formMetodo" class="form-pago row g-3"></div>
+
+          <div class="d-flex justify-content-between mt-4">
+            <button class="btn btn-outline-secondary rounded-pill px-4" id="btnPaso2Ant">← Volver</button>
+            <button class="btn fw-bold px-5 py-2 rounded-pill" id="btnPaso2Sig" style="background:var(--brand);color:white;border:none;">
+              Revisar pedido →
+            </button>
+          </div>
+        </div>
+
+        <!-- PASO 3 — Resumen y confirmar -->
+        <div id="paso3" style="display:none">
+          <h6 class="fw-bold mb-3" style="color:var(--brand-dark)">📋 Resumen del pedido</h6>
+          <div id="resumenPedido"></div>
+          <div class="d-flex justify-content-between mt-4">
+            <button class="btn btn-outline-secondary rounded-pill px-4" id="btnPaso3Ant">← Volver</button>
+            <button class="btn fw-bold px-5 py-2 rounded-pill" id="btnConfirmar" style="background:#2ecc71;color:white;border:none;">
+              ✅ Confirmar compra
+            </button>
+          </div>
+        </div>
+
+        <!-- PASO 4 — Éxito -->
+        <div id="paso4" style="display:none">
+          <div class="pago-exitoso">
+            <div class="check-circle">✓</div>
+            <h4>¡Compra realizada con éxito!</h4>
+            <p>Tu pedido ha sido registrado. Recibirás una confirmación en tu correo.</p>
+            <div class="codigo-pedido" id="codigoPedido">—</div>
+            <p class="text-secondary" style="font-size:.8rem">Guarda este código como referencia.</p>
+            <div id="resumenExito" class="text-start mt-3 p-3 rounded-3" style="background:#f9f9f9;font-size:.85rem;"></div>
+            <button class="btn mt-3 fw-bold rounded-pill px-5" style="background:var(--brand);color:white;border:none;" data-bs-dismiss="modal" id="btnNuevaCompra">
+              🛒 Seguir comprando
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 PRICE NICE — Todos los derechos reservados</p>
+</footer>
+
+<script src="https://unpkg.com/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// ════════════════════════════════════════════════════════
+//  DATOS — mismos productos de precios.html
+// ════════════════════════════════════════════════════════
+const CATEGORIAS = {
+  belleza:   { nombre: "Belleza",         icono: "💄", clase: "cat-belleza" },
+  higiene:   { nombre: "Higiene",         icono: "🧴", clase: "cat-higiene" },
+  alimentos: { nombre: "Alimentos",       icono: "🍎", clase: "cat-alimentos" },
+  hogar:     { nombre: "Hogar",           icono: "🏠", clase: "cat-hogar" },
+  bebes:     { nombre: "Bebés",           icono: "🍼", clase: "cat-bebes" },
+  mascotas:  { nombre: "Mascotas",        icono: "🐾", clase: "cat-mascotas" }
+};
+
+const PRODUCTOS = [
+  // ── Belleza ──
+  { nombre: "Crema Hidratante Facial",    descripcion: "Crema hidratante con ácido hialurónico para todo tipo de piel.",       precio: 38900,  tienda: "Droguería Cruz Verde",  categoria: "belleza",   ubicacion: "Bogotá",       barrio: "Chapinero" },
+  { nombre: "Base de Maquillaje Mate",    descripcion: "Base líquida de cobertura media con acabado mate, larga duración.",    precio: 65900,  tienda: "Falabella",             categoria: "belleza",   ubicacion: "Medellín",     barrio: "El Poblado" },
+  { nombre: "Sérum Vitamina C",           descripcion: "Sérum antioxidante con vitamina C al 15% para luminosidad.",           precio: 89900,  tienda: "Linio",                 categoria: "belleza",   ubicacion: "Cali",         barrio: "Granada" },
+  { nombre: "Labial Líquido Mate",        descripcion: "Labial de larga duración, no transfiere, fórmula vegana.",             precio: 29900,  tienda: "Éxito",                 categoria: "belleza",   ubicacion: "Barranquilla", barrio: "El Prado" },
+  { nombre: "Paleta de Sombras x12",      descripcion: "Paleta con 12 tonos mate y shimmer para ojos.",                        precio: 72900,  tienda: "Falabella",             categoria: "belleza",   ubicacion: "Medellín",     barrio: "Laureles" },
+  // ── Higiene ──
+  { nombre: "Detergente Líquido 3L",      descripcion: "Detergente concentrado para ropa, aroma lavanda.",                     precio: 24900,  tienda: "D1",                    categoria: "higiene",   ubicacion: "Bogotá",       barrio: "Kennedy" },
+  { nombre: "Jabón Antibacterial x3",     descripcion: "Pack de 3 jabones en barra con protección antibacterial.",             precio: 8900,   tienda: "Jumbo",                 categoria: "higiene",   ubicacion: "Cali",         barrio: "San Fernando" },
+  { nombre: "Cloro Desinfectante 2L",     descripcion: "Cloro concentrado para desinfección del hogar.",                       precio: 6900,   tienda: "Olímpica",              categoria: "higiene",   ubicacion: "Bucaramanga",  barrio: "Cabecera" },
+  { nombre: "Pasta Dental Blanqueadora",  descripcion: "Pasta dental con micro-partículas blanqueadoras y flúor.",             precio: 12500,  tienda: "Droguería Cruz Verde",  categoria: "higiene",   ubicacion: "Bogotá",       barrio: "Usaquén" },
+  { nombre: "Shampoo Anticaspa 750ml",    descripcion: "Shampoo con zinc para control de caspa.",                              precio: 21900,  tienda: "Carulla",               categoria: "higiene",   ubicacion: "Medellín",     barrio: "Envigado" },
+  // ── Alimentos ──
+  { nombre: "Arroz Grano Largo 1kg",      descripcion: "Arroz blanco de grano largo, ideal para cualquier platillo.",          precio: 4200,   tienda: "D1",                    categoria: "alimentos", ubicacion: "Bogotá",       barrio: "Suba" },
+  { nombre: "Aceite de Oliva 500ml",      descripcion: "Aceite de oliva extra virgen, prensado en frío.",                      precio: 28900,  tienda: "PriceSmart",            categoria: "alimentos", ubicacion: "Barranquilla", barrio: "Bello Horizonte" },
+  { nombre: "Leche Entera 1L",            descripcion: "Leche fresca pasteurizada, entera, de origen local.",                  precio: 3800,   tienda: "Olímpica",              categoria: "alimentos", ubicacion: "Cali",         barrio: "Ciudad Jardín" },
+  { nombre: "Café Molido 500g",           descripcion: "Café 100% arábica tostado y molido, intensidad media.",                precio: 18900,  tienda: "Jumbo",                 categoria: "alimentos", ubicacion: "Manizales",    barrio: "La Enea" },
+  { nombre: "Jugo de Naranja 1L",         descripcion: "Jugo natural sin conservadores ni azúcar añadida.",                    precio: 7500,   tienda: "Carulla",               categoria: "alimentos", ubicacion: "Bogotá",       barrio: "Teusaquillo" },
+  { nombre: "Galletas Integrales x6",     descripcion: "Paquete de galletas integrales con avena y miel.",                     precio: 9900,   tienda: "Ara",                   categoria: "alimentos", ubicacion: "Pereira",      barrio: "Álamos" },
+  // ── Hogar ──
+  { nombre: "Almohada Memory Foam",       descripcion: "Almohada ergonómica de espuma viscoelástica, funda lavable.",          precio: 89900,  tienda: "Éxito",                 categoria: "hogar",     ubicacion: "Medellín",     barrio: "Belén" },
+  { nombre: "Juego de Sábanas Queen",     descripcion: "Juego de sábanas de microfibra suave, 4 piezas.",                     precio: 119900, tienda: "Alkosto",               categoria: "hogar",     ubicacion: "Bogotá",       barrio: "Fontibón" },
+  { nombre: "Foco LED 10W (Pack x4)",     descripcion: "Focos LED ahorradores de 10W, luz blanca cálida.",                    precio: 22900,  tienda: "Homecenter",            categoria: "hogar",     ubicacion: "Cali",         barrio: "Menga" },
+  { nombre: "Organizador Multiusos",      descripcion: "Caja organizadora apilable con tapa, ideal para closet.",             precio: 32900,  tienda: "Jumbo",                 categoria: "hogar",     ubicacion: "Bucaramanga",  barrio: "Floridablanca" },
+  { nombre: "Velas Aromáticas x3",        descripcion: "Set de 3 velas de cera de soya con aromas relajantes.",               precio: 45900,  tienda: "Miniso",                categoria: "hogar",     ubicacion: "Barranquilla", barrio: "Riomar" },
+  // ── Bebés ──
+  { nombre: "Pañales Etapa 3 (40 pzas)",  descripcion: "Pañales ultra absorbentes con ajuste suave para bebé.",               precio: 54900,  tienda: "Droguería Cruz Verde",  categoria: "bebes",     ubicacion: "Bogotá",       barrio: "Bosa" },
+  { nombre: "Toallitas Húmedas x80",      descripcion: "Toallitas sin alcohol ni fragancias, hipoalergénicas.",                precio: 14900,  tienda: "Jumbo",                 categoria: "bebes",     ubicacion: "Medellín",     barrio: "Robledo" },
+  { nombre: "Fórmula Láctea 900g",        descripcion: "Fórmula infantil de continuación, enriquecida con hierro y DHA.",     precio: 98900,  tienda: "PriceSmart",            categoria: "bebes",     ubicacion: "Cali",         barrio: "Versalles" },
+  { nombre: "Biberón Anticólicos 250ml",  descripcion: "Biberón con válvula anticólicos y tetina de silicón.",                 precio: 39900,  tienda: "Éxito",                 categoria: "bebes",     ubicacion: "Barranquilla", barrio: "Boston" },
+  { nombre: "Papilla de Frutas x12",      descripcion: "Pack de 12 papillas naturales de frutas sin azúcar añadida.",         precio: 42900,  tienda: "Ara",                   categoria: "bebes",     ubicacion: "Pereira",      barrio: "Pinares" },
+  // ── Mascotas ──
+  { nombre: "Croquetas Perro Adulto 5kg", descripcion: "Alimento seco premium para perro adulto, sabor pollo.",               precio: 89900,  tienda: "Agrocampo",             categoria: "mascotas",  ubicacion: "Bogotá",       barrio: "Engativá" },
+  { nombre: "Arena para Gato 10L",        descripcion: "Arena aglutinante con control de olores, bajo polvo.",                precio: 28900,  tienda: "Jumbo",                 categoria: "mascotas",  ubicacion: "Medellín",     barrio: "Itagüí" },
+  { nombre: "Juguete Mordedor",           descripcion: "Mordedor de caucho natural resistente para perros medianos.",          precio: 19900,  tienda: "Agrocampo",             categoria: "mascotas",  ubicacion: "Cali",         barrio: "Aguablanca" },
+  { nombre: "Snacks para Gato x10",       descripcion: "Pack de 10 sobres de snacks húmedos sabor atún y salmón.",            precio: 24900,  tienda: "Olímpica",              categoria: "mascotas",  ubicacion: "Bucaramanga",  barrio: "García Rovira" },
+  { nombre: "Collar Antipulgas",          descripcion: "Collar con protección hasta 8 meses contra pulgas y garrapatas.",      precio: 52900,  tienda: "Droguería Cruz Verde",  categoria: "mascotas",  ubicacion: "Manizales",    barrio: "Chipre" }
+];
+
+// ════════════════════════════════════════════════════════
+//  ICONOS DE TIENDA
+// ════════════════════════════════════════════════════════
+const TIENDA_ICONS = {
+  "D1":                   "🟡",
+  "Jumbo":                "🔵",
+  "Éxito":                "🔴",
+  "Carulla":              "🟢",
+  "Olímpica":             "🟠",
+  "Droguería Cruz Verde": "💚",
+  "Falabella":            "🛍️",
+  "PriceSmart":           "🏭",
+  "Alkosto":              "🔧",
+  "Homecenter":           "🏠",
+  "Linio":                "📦",
+  "Ara":                  "🅰️",
+  "Miniso":               "🎀",
+  "Agrocampo":            "🌿"
+};
+
+// ════════════════════════════════════════════════════════
+//  ESTADO
+// ════════════════════════════════════════════════════════
+let tiendaActiva = "todas";
+let busqueda = "";
+const carrito = []; // [{ producto, cantidad }]
+
+// ════════════════════════════════════════════════════════
+//  INICIALIZACIÓN
+// ════════════════════════════════════════════════════════
+document.addEventListener("DOMContentLoaded", () => {
+  renderResumenGlobal();
+  renderTabs();
+  renderProductos();
+
+  document.getElementById("buscador").addEventListener("input", e => {
+    busqueda = e.target.value.toLowerCase().trim();
+    renderProductos();
+  });
+
+  document.getElementById("btnVaciar").addEventListener("click", vaciarCarrito);
+
+  // Modal pago — lógica de pasos
+  inicializarModalPago();
+});
+
+// ── Formato COP ──
+function formatCOP(v) {
+  return "$ " + v.toLocaleString("es-CO", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+}
+
+// ════════════════════════════════════════════════════════
+//  RESUMEN GLOBAL
+// ════════════════════════════════════════════════════════
+function renderResumenGlobal() {
+  const tiendas = [...new Set(PRODUCTOS.map(p => p.tienda))];
+  const chips = [
+    { label: "Productos", val: PRODUCTOS.length },
+    { label: "Tiendas",   val: tiendas.length },
+    { label: "Ciudades",  val: new Set(PRODUCTOS.map(p => p.ubicacion)).size },
+    { label: "Precio promedio", val: formatCOP(PRODUCTOS.reduce((s, p) => s + p.precio, 0) / PRODUCTOS.length) }
+  ];
+  document.getElementById("resumenGlobal").innerHTML = chips
+    .map(c => `<div class="resumen-tienda-chip"><span>${c.val}</span><br><small style="color:#888;font-size:.72rem;font-weight:600">${c.label}</small></div>`)
+    .join("");
+}
+
+// ════════════════════════════════════════════════════════
+//  TABS DE TIENDA
+// ════════════════════════════════════════════════════════
+function renderTabs() {
+  const tiendas = [...new Set(PRODUCTOS.map(p => p.tienda))].sort();
+  const wrap = document.getElementById("storeTabs");
+  wrap.innerHTML = "";
+
+  // Tab "Todas"
+  const btnTodas = document.createElement("button");
+  btnTodas.className = "store-tab active";
+  btnTodas.dataset.tienda = "todas";
+  btnTodas.innerHTML = "🏬 Todas las tiendas";
+  btnTodas.addEventListener("click", () => seleccionarTab("todas"));
+  wrap.appendChild(btnTodas);
+
+  tiendas.forEach(t => {
+    const btn = document.createElement("button");
+    btn.className = "store-tab";
+    btn.dataset.tienda = t;
+    btn.innerHTML = (TIENDA_ICONS[t] || "🏪") + " " + t;
+    btn.addEventListener("click", () => seleccionarTab(t));
+    wrap.appendChild(btn);
+  });
+}
+
+function seleccionarTab(tienda) {
+  tiendaActiva = tienda;
+  document.querySelectorAll(".store-tab").forEach(b => {
+    b.classList.toggle("active", b.dataset.tienda === tienda);
+  });
+  renderProductos();
+}
+
+// ════════════════════════════════════════════════════════
+//  RENDERIZAR PRODUCTOS
+// ════════════════════════════════════════════════════════
+function productosFiltrados(soloTienda) {
+  return PRODUCTOS.filter(p => {
+    if (soloTienda && soloTienda !== "todas" && p.tienda !== soloTienda) return false;
+    if (busqueda) {
+      const txt = (p.nombre + " " + p.descripcion + " " + p.categoria + " " + (CATEGORIAS[p.categoria]?.nombre || "")).toLowerCase();
+      if (!txt.includes(busqueda)) return false;
+    }
+    return true;
+  });
+}
+
+function renderProductos() {
+  const area = document.getElementById("areaProductos");
+  area.innerHTML = "";
+
+  if (tiendaActiva === "todas") {
+    // Mostrar secciones por tienda
+    const tiendas = [...new Set(PRODUCTOS.map(p => p.tienda))].sort();
+    let alguno = false;
+
+    tiendas.forEach(tienda => {
+      const prods = productosFiltrados(tienda);
+      if (!prods.length) return;
+      alguno = true;
+      area.appendChild(construirSeccionTienda(tienda, prods));
+    });
+
+    if (!alguno) area.innerHTML = sinResultadosHTML();
+  } else {
+    const prods = productosFiltrados(tiendaActiva);
+    if (!prods.length) { area.innerHTML = sinResultadosHTML(); return; }
+    area.appendChild(construirSeccionTienda(tiendaActiva, prods, true));
+  }
+}
+
+function construirSeccionTienda(tienda, prods, expandida = false) {
+  const frag = document.createDocumentFragment();
+
+  // Cabecera de tienda
+  const header = document.createElement("div");
+  header.className = "store-section-header";
+  const promedio = prods.reduce((s, p) => s + p.precio, 0) / prods.length;
+  const ciudades = [...new Set(prods.map(p => p.ubicacion))].join(", ");
+  header.innerHTML = `
+    <div class="store-icon">${TIENDA_ICONS[tienda] || "🏪"}</div>
+    <div>
+      <h2>${tienda}</h2>
+      <p>📍 ${ciudades} &nbsp;·&nbsp; ${prods.length} producto${prods.length !== 1 ? "s" : ""}</p>
+    </div>
+    <div class="store-badge">Prom. ${formatCOP(promedio)}</div>`;
+  frag.appendChild(header);
+
+  // Grid de productos
+  const grid = document.createElement("div");
+  grid.className = "row g-4 mb-5";
+
+  prods.forEach(p => {
+    const cat = CATEGORIAS[p.categoria] || { nombre: p.categoria, icono: "📦", clase: "" };
+    const col = document.createElement("div");
+    col.className = "col-12 col-sm-6 col-lg-4 col-xl-3";
+    col.innerHTML = `
+      <div class="prod-card">
+        <span class="cat-badge-sm ${cat.clase}">${cat.icono} ${cat.nombre}</span>
+        <div class="prod-nombre">${p.nombre}</div>
+        <div class="prod-desc">${p.descripcion}</div>
+        <div class="prod-precio">${formatCOP(p.precio)}</div>
+        <div class="prod-ubicacion">📍 ${p.ubicacion}${p.barrio ? " · " + p.barrio : ""}</div>
+        <button class="btn-agregar" onclick="agregarAlCarrito('${escapar(p.nombre)}')">
+          🛒 Agregar al carrito
+        </button>
+      </div>`;
+    grid.appendChild(col);
+  });
+
+  frag.appendChild(grid);
+  return frag;
+}
+
+function sinResultadosHTML() {
+  return `<div class="sin-resultados"><span>🔍</span><h5>Sin resultados</h5><p class="text-secondary">Intenta con otra búsqueda o cambia de tienda.</p></div>`;
+}
+
+function escapar(str) {
+  return str.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+}
+
+// ════════════════════════════════════════════════════════
+//  CARRITO
+// ════════════════════════════════════════════════════════
+function agregarAlCarrito(nombreProducto) {
+  const prod = PRODUCTOS.find(p => p.nombre === nombreProducto);
+  if (!prod) return;
+
+  const existente = carrito.find(item => item.producto.nombre === nombreProducto);
+  if (existente) {
+    existente.cantidad++;
+  } else {
+    carrito.push({ producto: prod, cantidad: 1 });
+  }
+
+  actualizarCarrito();
+  // Mostrar feedback en botón
+  const btns = document.querySelectorAll(".btn-agregar");
+  btns.forEach(b => {
+    if (b.getAttribute("onclick").includes(escapar(nombreProducto))) {
+      b.textContent = "✔ Agregado";
+      b.style.background = "#2ecc71";
+      setTimeout(() => {
+        b.textContent = "🛒 Agregar al carrito";
+        b.style.background = "";
+      }, 1200);
+    }
+  });
+}
+
+function quitarDelCarrito(idx) {
+  carrito.splice(idx, 1);
+  actualizarCarrito();
+}
+
+function cambiarCantidad(idx, delta) {
+  carrito[idx].cantidad += delta;
+  if (carrito[idx].cantidad <= 0) carrito.splice(idx, 1);
+  actualizarCarrito();
+}
+
+function vaciarCarrito() {
+  carrito.length = 0;
+  actualizarCarrito();
+}
+
+function calcularTotales() {
+  const subtotal = carrito.reduce((s, it) => s + it.producto.precio * it.cantidad, 0);
+  const envio    = subtotal > 0 ? (subtotal > 100000 ? 0 : 8900) : 0;
+  return { subtotal, envio, total: subtotal + envio };
+}
+
+function actualizarCarrito() {
+  const { subtotal, envio, total } = calcularTotales();
+  const totalItems = carrito.reduce((s, it) => s + it.cantidad, 0);
+
+  // Badge
+  const badge = document.getElementById("badgeCarrito");
+  badge.textContent = totalItems;
+  badge.style.display = totalItems > 0 ? "flex" : "none";
+
+  // Lista
+  const lista = document.getElementById("listaCarrito");
+  const vacio = document.getElementById("carritoVacio");
+  const footer = document.getElementById("carritoFooter");
+
+  if (carrito.length === 0) {
+    lista.innerHTML = "";
+    vacio.style.display = "";
+    footer.style.display = "none";
+    return;
+  }
+
+  vacio.style.display = "none";
+  footer.style.display = "";
+
+  lista.innerHTML = "";
+  carrito.forEach((item, idx) => {
+    const div = document.createElement("div");
+    div.className = "carrito-item";
+    div.innerHTML = `
+      <div class="carrito-item-info">
+        <div class="ci-nombre">${item.producto.nombre}</div>
+        <div class="ci-tienda">🏪 ${item.producto.tienda}</div>
+        <div class="ci-precio">${formatCOP(item.producto.precio * item.cantidad)}</div>
+      </div>
+      <div class="carrito-item-qty">
+        <button class="qty-btn" onclick="cambiarCantidad(${idx}, -1)">−</button>
+        <span class="qty-num">${item.cantidad}</span>
+        <button class="qty-btn" onclick="cambiarCantidad(${idx}, +1)">+</button>
+      </div>
+      <button class="btn-quitar" onclick="quitarDelCarrito(${idx})" title="Quitar">🗑️</button>`;
+    lista.appendChild(div);
+  });
+
+  document.getElementById("subtotalCarrito").textContent = formatCOP(subtotal);
+  document.getElementById("envioCarrito").textContent = envio === 0 ? "Gratis 🎉" : formatCOP(envio);
+  document.getElementById("totalCarrito").textContent = formatCOP(total);
+}
+
+// ════════════════════════════════════════════════════════
+//  MODAL DE PAGO — lógica de pasos
+// ════════════════════════════════════════════════════════
+let pasoActual = 1;
+let metodoSeleccionado = "tarjeta";
+
+function inicializarModalPago() {
+  // Al abrir el modal, resetear al paso 1
+  document.getElementById("modalPago").addEventListener("show.bs.modal", () => {
+    pasoActual = 1;
+    mostrarPaso(1);
+  });
+
+  // Al cerrar el modal exitoso, limpiar carrito
+  document.getElementById("btnNuevaCompra").addEventListener("click", () => {
+    vaciarCarrito();
+    pasoActual = 1;
+  });
+
+  // Botones de navegación
+  document.getElementById("btnPaso1Sig").addEventListener("click", () => {
+    if (!validarPaso1()) return;
+    mostrarPaso(2);
+  });
+  document.getElementById("btnPaso2Ant").addEventListener("click", () => mostrarPaso(1));
+  document.getElementById("btnPaso2Sig").addEventListener("click", () => {
+    mostrarResumen();
+    mostrarPaso(3);
+  });
+  document.getElementById("btnPaso3Ant").addEventListener("click", () => mostrarPaso(2));
+  document.getElementById("btnConfirmar").addEventListener("click", confirmarCompra);
+
+  // Métodos de pago
+  document.querySelectorAll(".metodo-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".metodo-btn").forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
+      metodoSeleccionado = btn.dataset.metodo;
+      renderFormMetodo(metodoSeleccionado);
+    });
+  });
+
+  renderFormMetodo("tarjeta");
+}
+
+function mostrarPaso(n) {
+  pasoActual = n;
+  for (let i = 1; i <= 4; i++) {
+    const el = document.getElementById("paso" + i);
+    if (el) el.style.display = i === n ? "" : "none";
+  }
+  actualizarIndicador(n);
+}
+
+function actualizarIndicador(paso) {
+  for (let i = 1; i <= 3; i++) {
+    const num = document.getElementById("pNum" + i);
+    const lbl = document.getElementById("pLbl" + i);
+    if (!num) continue;
+    num.classList.remove("activo", "completado");
+    lbl.classList.remove("activo");
+    if (i < paso) { num.classList.add("completado"); num.textContent = "✓"; }
+    else if (i === paso) { num.classList.add("activo"); num.textContent = i; lbl.classList.add("activo"); }
+    else { num.textContent = i; }
+  }
+  for (let i = 1; i <= 2; i++) {
+    const linea = document.getElementById("pLinea" + i);
+    if (linea) linea.classList.toggle("completada", paso > i);
+  }
+}
+
+function validarPaso1() {
+  const campos = ["pNombre", "pTelefono", "pEmail", "pCiudad", "pDireccion"];
+  let ok = true;
+  campos.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el.value.trim()) { el.style.borderColor = "#e74c3c"; ok = false; }
+    else el.style.borderColor = "";
+  });
+  if (!ok) {
+    campos.forEach(id => {
+      const el = document.getElementById(id);
+      el.addEventListener("input", () => { el.style.borderColor = ""; }, { once: true });
+    });
+  }
+  return ok;
+}
+
+function renderFormMetodo(metodo) {
+  const wrap = document.getElementById("formMetodo");
+  wrap.innerHTML = "";
+
+  const plantillas = {
+    tarjeta: `
+      <div class="col-12"><label class="form-label-custom">Número de tarjeta</label>
+        <input type="text" class="form-control" placeholder="0000 0000 0000 0000" maxlength="19" id="cardNum" oninput="formatCard(this)"></div>
+      <div class="col-md-6"><label class="form-label-custom">Titular</label>
+        <input type="text" class="form-control" placeholder="Como aparece en la tarjeta"></div>
+      <div class="col-md-4"><label class="form-label-custom">Vencimiento</label>
+        <input type="text" class="form-control" placeholder="MM/AA" maxlength="5" oninput="formatExp(this)"></div>
+      <div class="col-md-2"><label class="form-label-custom">CVV</label>
+        <input type="password" class="form-control" placeholder="•••" maxlength="4"></div>`,
+    nequi: `
+      <div class="col-12"><label class="form-label-custom">Número de celular Nequi</label>
+        <input type="tel" class="form-control" placeholder="3XX XXX XXXX" maxlength="10"></div>
+      <div class="col-12"><p class="text-secondary" style="font-size:.82rem">💡 Recibirás una notificación push en tu app Nequi para aprobar el pago.</p></div>`,
+    daviplata: `
+      <div class="col-12"><label class="form-label-custom">Número de celular Daviplata</label>
+        <input type="tel" class="form-control" placeholder="3XX XXX XXXX" maxlength="10"></div>
+      <div class="col-12"><p class="text-secondary" style="font-size:.82rem">💡 Se enviará la solicitud de cobro a tu cuenta Daviplata.</p></div>`,
+    pse: `
+      <div class="col-md-6"><label class="form-label-custom">Banco</label>
+        <select class="form-select">
+          <option value="">— Selecciona —</option>
+          <option>Bancolombia</option><option>Davivienda</option><option>Banco de Bogotá</option>
+          <option>BBVA</option><option>Banco Popular</option><option>Colpatria</option>
+        </select></div>
+      <div class="col-md-6"><label class="form-label-custom">Tipo de persona</label>
+        <select class="form-select"><option>Natural</option><option>Jurídica</option></select></div>`,
+    efectivo: `
+      <div class="col-12"><p class="p-3 rounded-3" style="background:#fff8e1;color:#e65100;font-size:.88rem">
+        💵 Pagas en efectivo al momento de la entrega. Ten el monto exacto disponible.</p></div>`,
+    contraentrega: `
+      <div class="col-12"><p class="p-3 rounded-3" style="background:#e8f5e9;color:#2e7d32;font-size:.88rem">
+        🚚 Pagas con tarjeta o efectivo cuando recibas tu pedido en casa.</p></div>`
+  };
+
+  wrap.innerHTML = `<div class="col-12"></div>${plantillas[metodo] || ""}`;
+}
+
+function formatCard(el) {
+  let v = el.value.replace(/\D/g, "").substring(0, 16);
+  el.value = v.replace(/(.{4})/g, "$1 ").trim();
+}
+function formatExp(el) {
+  let v = el.value.replace(/\D/g, "").substring(0, 4);
+  if (v.length >= 3) v = v.substring(0, 2) + "/" + v.substring(2);
+  el.value = v;
+}
+
+function mostrarResumen() {
+  const { subtotal, envio, total } = calcularTotales();
+  const nombre  = document.getElementById("pNombre").value;
+  const ciudad  = document.getElementById("pCiudad").value;
+  const dir     = document.getElementById("pDireccion").value;
+
+  const iconosMetodo = { tarjeta: "💳", nequi: "📱", daviplata: "🔵", pse: "🏦", efectivo: "💵", contraentrega: "🚚" };
+
+  let html = `
+    <div class="mb-3 p-3 rounded-3" style="background:#f9f9f9;">
+      <p class="mb-1"><strong>📦 Entrega:</strong> ${nombre} — ${ciudad}, ${dir}</p>
+      <p class="mb-0"><strong>💳 Método:</strong> ${iconosMetodo[metodoSeleccionado] || ""} ${metodoSeleccionado.charAt(0).toUpperCase() + metodoSeleccionado.slice(1)}</p>
+    </div>
+    <div class="mb-3">`;
+
+  carrito.forEach(it => {
+    html += `
+      <div class="resumen-compra-item">
+        <span class="item-nombre">${it.producto.nombre} <small style="color:#bbb">x${it.cantidad}</small></span>
+        <span class="item-precio">${formatCOP(it.producto.precio * it.cantidad)}</span>
+      </div>`;
+  });
+
+  html += `</div>
+    <div class="d-flex justify-content-between text-secondary" style="font-size:.88rem">
+      <span>Subtotal</span><span>${formatCOP(subtotal)}</span>
+    </div>
+    <div class="d-flex justify-content-between text-secondary mb-2" style="font-size:.88rem">
+      <span>Envío</span><span>${envio === 0 ? "Gratis 🎉" : formatCOP(envio)}</span>
+    </div>
+    <div class="d-flex justify-content-between resumen-total-modal">
+      <span>Total</span><span>${formatCOP(total)}</span>
+    </div>`;
+
+  document.getElementById("resumenPedido").innerHTML = html;
+}
+
+function confirmarCompra() {
+  const { total } = calcularTotales();
+  const codigo = "PN-" + Date.now().toString(36).toUpperCase().slice(-8);
+  const nombre = document.getElementById("pNombre").value;
+  const ciudad = document.getElementById("pCiudad").value;
+  const iconosMetodo = { tarjeta: "💳", nequi: "📱", daviplata: "🔵", pse: "🏦", efectivo: "💵", contraentrega: "🚚" };
+
+  document.getElementById("codigoPedido").textContent = codigo;
+  document.getElementById("resumenExito").innerHTML = `
+    <p class="mb-1">👤 <strong>${nombre}</strong> — ${ciudad}</p>
+    <p class="mb-1">${iconosMetodo[metodoSeleccionado] || ""} Método: <strong>${metodoSeleccionado}</strong></p>
+    <p class="mb-0">💰 Total pagado: <strong>${formatCOP(total)}</strong></p>`;
+
+  mostrarPaso(4);
+}
+</script>
+
 </body>
 </html>
