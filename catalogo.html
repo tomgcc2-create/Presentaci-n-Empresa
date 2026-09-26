@@ -184,7 +184,9 @@
     .sin-resultados span { font-size:3rem; display:block; margin-bottom:10px; }
   </style>
 </head>
-<body>
+<body class="sin-settings">
+
+<button id="btnVolver" title="Volver" aria-label="Volver a la página anterior" onclick="history.back()">&#8592;</button>
 
 <div class="page-header">
   <img src="img/LOGO PRIN.jpg" alt="PRICE NICE" height="70" class="rounded-3 mb-3">
@@ -229,7 +231,7 @@
   <div class="row g-4" id="gridProductos"></div>
 
   <div class="text-center mt-5">
-    <a href="verificador.html" class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-semibold">
+    <a id="btnVolver" href="usuario.html" class="btn-volver-panel">
       ← Volver al panel
     </a>
   </div>
@@ -351,15 +353,12 @@ import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-// ── Verificar acceso solo verificador/admin ──
-// Se usa un flag para ignorar el primer disparo null de Firebase
-// (Firebase emite null antes de resolver la sesión persistida)
+// Flag para evitar doble ejecución mientras Firebase restaura la sesión
 let yaResuelto = false;
 
 onAuthStateChanged(auth, async usuario => {
-  if (yaResuelto) return;   // evitar doble ejecución
+  if (yaResuelto) return;
   if (!usuario) {
-    // Firebase aún puede estar cargando — esperar 2 s antes de redirigir
     await new Promise(r => setTimeout(r, 2000));
     if (!auth.currentUser) {
       window.location.href = "login.html";
@@ -371,15 +370,44 @@ onAuthStateChanged(auth, async usuario => {
   try {
     const snap = await getDoc(doc(db, "usuarios", usuario.uid));
     const datos = snap.exists() ? snap.data() : {};
-    // Normalizar el rol: trim y minúsculas para evitar diferencias de espacios/mayúsculas
     const rol = (datos.rol || "usuario").trim().toLowerCase();
+    const nombre = datos.nombre || usuario.email;
 
-    if (rol !== "verificador" && rol !== "admin") {
-      window.location.href = "usuario.html";
-      return;
-    }
+    // Todos los usuarios autenticados pueden ver el catálogo.
+    // Solo verificadores y admins pueden verificar productos.
+    const puedeVerificar = ["verificador", "admin", "dueño", "dueno"].includes(rol);
+    window._puedeVerificar = puedeVerificar;
+
     document.getElementById("bienvenida").textContent =
-      "Verificador: " + (datos.nombre || usuario.email) + " 👋";
+      puedeVerificar
+        ? "Verificador: " + nombre + " 👋"
+        : "Hola, " + nombre + " — Catálogo de productos 👋";
+
+    // Mostrar aviso de solo lectura si el usuario no puede verificar
+    if (!puedeVerificar) {
+      const aviso = document.createElement("div");
+      aviso.style.cssText =
+        "background:#fff3e0;border:1px solid #ffe0b2;color:#e65100;" +
+        "border-radius:12px;padding:10px 18px;font-size:.85rem;font-weight:600;" +
+        "text-align:center;margin-bottom:18px;";
+      aviso.textContent = "📋 Estás en modo lectura — solo verificadores pueden aprobar o rechazar productos.";
+      document.querySelector(".container").insertBefore(
+        aviso,
+        document.getElementById("statsBar")
+      );
+    }
+
+    // Apuntar botón "Volver" según el rol
+    const destinos = {
+      verificador: "verificador.html",
+      admin:       "admin.html",
+      vendedor:    "vendedor.html",
+      "dueño":     "dueño.html",
+      dueno:       "dueño.html",
+      patrocinador:"patrocinador.html"
+    };
+    document.getElementById("btnVolver").href = destinos[rol] || "usuario.html";
+
     iniciarApp();
   } catch (e) {
     console.error("Error al obtener rol:", e);
@@ -570,9 +598,15 @@ function renderGrid() {
           <span>🕐 Última verificación: ${verif.fecha}</span>
           <span>🗒️ ${verif.descripcion.substring(0,80)}${verif.descripcion.length>80?"…":""}</span>
         </div>` : "" }
-        <button class="btn-verificar" onclick="abrirModalVerificar(${idx})">
-          🔍 ${estado === "pendiente" ? "Verificar producto" : "Re-verificar"}
-        </button>
+        ${ window._puedeVerificar
+          ? `<button class="btn-verificar" onclick="abrirModalVerificar(${idx})">
+               🔍 ${estado === "pendiente" ? "Verificar producto" : "Re-verificar"}
+             </button>`
+          : `<div style="text-align:center;padding:10px;font-size:.8rem;color:#aaa;
+                         background:#f5f5f5;border-radius:10px;">
+               👁️ ${estado === "pendiente" ? "Sin verificar aún" : (estado === "aprobado" ? "✅ Aprobado" : "❌ Rechazado")}
+             </div>`
+        }
       </div>`;
     grid.appendChild(col);
   });
