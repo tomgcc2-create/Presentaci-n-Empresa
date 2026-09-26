@@ -41,7 +41,8 @@
     ════════════════════════════ */
     #seccion-publicar,
     #seccion-mis-productos,
-    #seccion-resenas { display: none; }
+    #seccion-resenas,
+    #seccion-catalogo-empresa { display: none; }
 
     /* ════════════════════════════
        CABECERA COMPARTIDA DE SECCIONES
@@ -447,8 +448,11 @@
           <div class="card card-opcion p-4 text-center">
             <div class="icono">📊</div>
             <h5 class="fw-bold mb-2">Mis Productos</h5>
-            <p class="text-secondary small">Consulta y gestiona tus productos publicados.</p>
-            <button onclick="mostrarMisProductos()" class="btn btn-success mt-2 fw-semibold">Ver productos</button>
+            <p class="text-secondary small">Gestiona los tuyos o explora el catálogo completo de la empresa.</p>
+            <div class="d-flex gap-2 mt-2 justify-content-center flex-wrap">
+              <button onclick="mostrarMisProductos()" class="btn btn-success fw-semibold">Mis publicaciones</button>
+              <button onclick="mostrarCatalogoEmpresa()" class="btn btn-outline-success fw-semibold">Catálogo empresa</button>
+            </div>
           </div>
         </div>
 
@@ -474,8 +478,8 @@
           <div class="card card-opcion p-4 text-center">
             <div class="icono">💲</div>
             <h5 class="fw-bold mb-2">Precios</h5>
-            <p class="text-secondary small">Consulta los precios de tus productos publicados.</p>
-            <a href="tienda.html" class="btn btn-outline-success mt-2 fw-semibold">Ver precios</a>
+            <p class="text-secondary small">Consulta los precios actuales del catálogo de la plataforma.</p>
+            <a href="precios.html" class="btn btn-outline-success mt-2 fw-semibold">Ver precios</a>
           </div>
         </div>
 
@@ -728,6 +732,60 @@
 
     </div>
   </div><!-- /seccion-mis-productos -->
+
+
+  <!-- ══════════════════════════════════════════
+       SECCIÓN CATÁLOGO DE LA EMPRESA
+  ══════════════════════════════════════════ -->
+  <div id="seccion-catalogo-empresa" style="display:none;">
+    <div class="panel-header">
+      <img src="img/LOGO PRIN.jpg" alt="PRICE NICE" height="70" class="mb-3 rounded-3">
+      <h1>🏪 Panel de Vendedor</h1>
+      <p id="bienvenida-cat">Catálogo de la empresa</p>
+    </div>
+
+    <div class="container pb-5">
+
+      <div class="form-header" style="border-radius:16px 16px 0 0;">
+        <h2>📦 Catálogo de Productos de la Empresa</h2>
+        <p>Todos los productos que la plataforma PRICE NICE ofrece actualmente</p>
+      </div>
+
+      <div style="background:white;border-radius:0 0 16px 16px;box-shadow:0 4px 24px rgba(0,0,0,.10);padding:24px 28px 28px;margin-bottom:24px;">
+        <!-- Filtros -->
+        <div class="row g-3 mb-4 align-items-end">
+          <div class="col-12 col-md-5">
+            <input type="text" id="buscadorCat" class="form-control"
+              placeholder="🔍 Buscar producto, tienda, categoría…"
+              style="border-radius:12px;border:1.5px solid #d0d0d0;">
+          </div>
+          <div class="col-6 col-md-3">
+            <select id="filtroCategoriaCat" class="form-select" style="border-radius:12px;border:1.5px solid #d0d0d0;">
+              <option value="">Todas las categorías</option>
+              <option value="belleza">💄 Belleza</option>
+              <option value="higiene">🧴 Higiene</option>
+              <option value="alimentos">🍎 Alimentos</option>
+              <option value="hogar">🏠 Hogar</option>
+              <option value="bebes">🍼 Bebés</option>
+              <option value="mascotas">🐾 Mascotas</option>
+            </select>
+          </div>
+          <div class="col-6 col-md-2">
+            <button id="btnLimpiarCat" class="btn btn-outline-secondary w-100" style="border-radius:12px;">🗑️ Limpiar</button>
+          </div>
+        </div>
+        <div class="text-muted mb-3" style="font-size:.85rem;" id="infoCat"></div>
+      </div>
+
+      <!-- Grid -->
+      <div class="row g-4" id="gridCatEmpresa"></div>
+
+      <div class="text-center mt-4">
+        <button onclick="volverPanel()" class="btn-volver-panel">← Volver al panel</button>
+      </div>
+
+    </div>
+  </div><!-- /seccion-catalogo-empresa -->
 
 
   <!-- ══════════════════════════════════════════
@@ -1362,7 +1420,7 @@
     let todasResenas = [];
 
     function ocultarTodo() {
-      ["seccion-principal","seccion-publicar","seccion-mis-productos","seccion-resenas"]
+      ["seccion-principal","seccion-publicar","seccion-mis-productos","seccion-resenas","seccion-catalogo-empresa"]
         .forEach(id => document.getElementById(id).style.display = "none");
     }
 
@@ -1532,6 +1590,118 @@
       document.getElementById("filtroEstadoMis").value      = "";
       window.scrollTo({ top: 0, behavior: "smooth" });
     };
+
+    /* ════════════════════════════════════
+       CATÁLOGO DE LA EMPRESA
+    ════════════════════════════════════ */
+    const BASE_PRODUCTOS_EMPRESA = [
+      { nombre:"Crema Hidratante Facial",    categoria:"belleza",   precio:38900,  tienda:"Droguería Cruz Verde",  ubicacion:"Bogotá",       descripcion:"Crema hidratante con ácido hialurónico para todo tipo de piel.",       vencimiento:"06/2027" },
+      { nombre:"Base de Maquillaje Mate",    categoria:"belleza",   precio:65900,  tienda:"Falabella",             ubicacion:"Medellín",     descripcion:"Base líquida de cobertura media con acabado mate.",                     vencimiento:"12/2026" },
+      { nombre:"Sérum Vitamina C",           categoria:"belleza",   precio:89900,  tienda:"Linio",                 ubicacion:"Cali",         descripcion:"Sérum antioxidante con vitamina C al 15%.",                            vencimiento:"03/2027" },
+      { nombre:"Labial Líquido Mate",        categoria:"belleza",   precio:29900,  tienda:"Éxito",                 ubicacion:"Barranquilla", descripcion:"Labial de larga duración, no transfiere.",                             vencimiento:"09/2026" },
+      { nombre:"Paleta de Sombras x12",      categoria:"belleza",   precio:72900,  tienda:"Falabella",             ubicacion:"Medellín",     descripcion:"Paleta con 12 tonos mate y shimmer.",                                  vencimiento:"01/2028" },
+      { nombre:"Detergente Líquido 3L",      categoria:"higiene",   precio:24900,  tienda:"D1",                    ubicacion:"Bogotá",       descripcion:"Detergente concentrado para ropa, aroma lavanda.",                     vencimiento:"08/2027" },
+      { nombre:"Jabón Antibacterial x3",     categoria:"higiene",   precio:8900,   tienda:"Jumbo",                 ubicacion:"Cali",         descripcion:"Pack de 3 jabones con protección antibacterial.",                      vencimiento:"11/2027" },
+      { nombre:"Cloro Desinfectante 2L",     categoria:"higiene",   precio:6900,   tienda:"Olímpica",              ubicacion:"Bucaramanga",  descripcion:"Cloro concentrado para desinfección del hogar.",                       vencimiento:"05/2027" },
+      { nombre:"Pasta Dental Blanqueadora",  categoria:"higiene",   precio:12500,  tienda:"Droguería Cruz Verde",  ubicacion:"Bogotá",       descripcion:"Pasta dental con micro-partículas blanqueadoras.",                     vencimiento:"02/2028" },
+      { nombre:"Shampoo Anticaspa 750ml",    categoria:"higiene",   precio:21900,  tienda:"Carulla",               ubicacion:"Medellín",     descripcion:"Shampoo con zinc para control de caspa.",                              vencimiento:"10/2027" },
+      { nombre:"Arroz Grano Largo 1kg",      categoria:"alimentos", precio:4200,   tienda:"D1",                    ubicacion:"Bogotá",       descripcion:"Arroz blanco de grano largo.",                                         vencimiento:"12/2026" },
+      { nombre:"Aceite de Oliva 500ml",      categoria:"alimentos", precio:28900,  tienda:"PriceSmart",            ubicacion:"Barranquilla", descripcion:"Aceite de oliva extra virgen prensado en frío.",                       vencimiento:"07/2027" },
+      { nombre:"Leche Entera 1L",            categoria:"alimentos", precio:3800,   tienda:"Olímpica",              ubicacion:"Cali",         descripcion:"Leche fresca pasteurizada entera.",                                    vencimiento:"10/2026" },
+      { nombre:"Café Molido 500g",           categoria:"alimentos", precio:18900,  tienda:"Jumbo",                 ubicacion:"Manizales",    descripcion:"Café 100% arábica tostado y molido, intensidad media.",               vencimiento:"06/2027" },
+      { nombre:"Jugo de Naranja 1L",         categoria:"alimentos", precio:7500,   tienda:"Carulla",               ubicacion:"Bogotá",       descripcion:"Jugo natural sin conservadores ni azúcar.",                            vencimiento:"09/2026" },
+      { nombre:"Galletas Integrales x6",     categoria:"alimentos", precio:9900,   tienda:"Ara",                   ubicacion:"Pereira",      descripcion:"Paquete de galletas integrales con avena y miel.",                     vencimiento:"04/2027" },
+      { nombre:"Almohada Memory Foam",       categoria:"hogar",     precio:89900,  tienda:"Éxito",                 ubicacion:"Medellín",     descripcion:"Almohada ergonómica de espuma viscoelástica.",                         vencimiento:"N/A" },
+      { nombre:"Juego de Sábanas Queen",     categoria:"hogar",     precio:119900, tienda:"Alkosto",               ubicacion:"Bogotá",       descripcion:"Juego de sábanas de microfibra suave, 4 piezas.",                      vencimiento:"N/A" },
+      { nombre:"Foco LED 10W (Pack x4)",     categoria:"hogar",     precio:22900,  tienda:"Homecenter",            ubicacion:"Cali",         descripcion:"Focos LED ahorradores de 10W, luz blanca cálida.",                    vencimiento:"N/A" },
+      { nombre:"Organizador Multiusos",      categoria:"hogar",     precio:32900,  tienda:"Jumbo",                 ubicacion:"Bucaramanga",  descripcion:"Caja organizadora apilable con tapa.",                                 vencimiento:"N/A" },
+      { nombre:"Velas Aromáticas x3",        categoria:"hogar",     precio:45900,  tienda:"Miniso",                ubicacion:"Barranquilla", descripcion:"Set de 3 velas de cera de soya con aromas relajantes.",               vencimiento:"N/A" },
+      { nombre:"Pañales Etapa 3 (40 pzas)",  categoria:"bebes",     precio:54900,  tienda:"Droguería Cruz Verde",  ubicacion:"Bogotá",       descripcion:"Pañales ultra absorbentes con ajuste suave.",                          vencimiento:"03/2028" },
+      { nombre:"Toallitas Húmedas x80",      categoria:"bebes",     precio:14900,  tienda:"Jumbo",                 ubicacion:"Medellín",     descripcion:"Toallitas sin alcohol ni fragancias, hipoalergénicas.",               vencimiento:"11/2027" },
+      { nombre:"Fórmula Láctea 900g",        categoria:"bebes",     precio:98900,  tienda:"PriceSmart",            ubicacion:"Cali",         descripcion:"Fórmula infantil enriquecida con hierro y DHA.",                       vencimiento:"08/2027" },
+      { nombre:"Biberón Anticólicos 250ml",  categoria:"bebes",     precio:39900,  tienda:"Éxito",                 ubicacion:"Barranquilla", descripcion:"Biberón con válvula anticólicos y tetina de silicón.",                vencimiento:"N/A" },
+      { nombre:"Papilla de Frutas x12",      categoria:"bebes",     precio:42900,  tienda:"Ara",                   ubicacion:"Pereira",      descripcion:"Pack de 12 papillas naturales de frutas sin azúcar.",                 vencimiento:"05/2027" },
+      { nombre:"Croquetas Perro Adulto 5kg", categoria:"mascotas",  precio:89900,  tienda:"Agrocampo",             ubicacion:"Bogotá",       descripcion:"Alimento seco premium para perro adulto, sabor pollo.",               vencimiento:"02/2027" },
+      { nombre:"Arena para Gato 10L",        categoria:"mascotas",  precio:28900,  tienda:"Jumbo",                 ubicacion:"Medellín",     descripcion:"Arena aglutinante con control de olores, bajo polvo.",                vencimiento:"N/A" },
+      { nombre:"Juguete Mordedor",           categoria:"mascotas",  precio:19900,  tienda:"Agrocampo",             ubicacion:"Cali",         descripcion:"Mordedor de caucho natural resistente para perros medianos.",          vencimiento:"N/A" },
+      { nombre:"Snacks para Gato x10",       categoria:"mascotas",  precio:24900,  tienda:"Olímpica",              ubicacion:"Bucaramanga",  descripcion:"Pack de 10 sobres de snacks húmedos sabor atún y salmón.",            vencimiento:"06/2027" },
+      { nombre:"Collar Antipulgas",          categoria:"mascotas",  precio:52900,  tienda:"Droguería Cruz Verde",  ubicacion:"Manizales",    descripcion:"Collar con protección hasta 8 meses contra pulgas.",                  vencimiento:"N/A" }
+    ];
+
+    const CAT_ICONOS = { belleza:"💄", higiene:"🧴", alimentos:"🍎", hogar:"🏠", bebes:"🍼", mascotas:"🐾" };
+    const CAT_COLORES = {
+      belleza:"#fce4ec,#c62828", higiene:"#e0f7fa,#00695c",
+      alimentos:"#fff3e0,#e65100", hogar:"#e8eaf6,#283593",
+      bebes:"#f3e5f5,#6a1b9a",   mascotas:"#e8f5e9,#2e7d32"
+    };
+
+    function formatCOPv(v) {
+      return "$ " + v.toLocaleString("es-CO", { minimumFractionDigits:0 });
+    }
+
+    window.mostrarCatalogoEmpresa = function () {
+      ocultarTodo();
+      document.getElementById("seccion-catalogo-empresa").style.display = "block";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      renderCatEmpresa();
+    };
+
+    function renderCatEmpresa() {
+      const busq = document.getElementById("buscadorCat").value.toLowerCase().trim();
+      const cat  = document.getElementById("filtroCategoriaCat").value;
+
+      const lista = BASE_PRODUCTOS_EMPRESA.filter(p => {
+        if (cat && p.categoria !== cat) return false;
+        if (busq) {
+          const txt = (p.nombre + " " + p.tienda + " " + p.ubicacion + " " + p.descripcion).toLowerCase();
+          if (!txt.includes(busq)) return false;
+        }
+        return true;
+      });
+
+      document.getElementById("infoCat").textContent = lista.length < BASE_PRODUCTOS_EMPRESA.length
+        ? `Mostrando ${lista.length} de ${BASE_PRODUCTOS_EMPRESA.length} productos`
+        : `${BASE_PRODUCTOS_EMPRESA.length} productos en el catálogo`;
+
+      const grid = document.getElementById("gridCatEmpresa");
+      if (!lista.length) {
+        grid.innerHTML = `<div class="col-12 text-center py-5 text-secondary">
+          <div style="font-size:3rem;">🔍</div><p class="mt-2">Sin resultados. Prueba con otros filtros.</p></div>`;
+        return;
+      }
+
+      grid.innerHTML = lista.map(p => {
+        const [bg, fg] = (CAT_COLORES[p.categoria] || "#f5f5f5,#666").split(",");
+        const icono = CAT_ICONOS[p.categoria] || "📦";
+        return `<div class="col-12 col-sm-6 col-lg-4">
+          <div style="background:white;border-radius:18px;box-shadow:0 4px 16px rgba(0,0,0,.08);
+                      padding:22px;height:100%;display:flex;flex-direction:column;
+                      transition:transform .2s,box-shadow .2s;"
+               onmouseenter="this.style.transform='translateY(-3px)';this.style.boxShadow='0 10px 28px rgba(26,110,60,.15)'"
+               onmouseleave="this.style.transform='';this.style.boxShadow='0 4px 16px rgba(0,0,0,.08)'">
+            <span style="font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:20px;
+                         display:inline-block;margin-bottom:10px;background:${bg};color:${fg};">
+              ${icono} ${p.categoria.charAt(0).toUpperCase() + p.categoria.slice(1)}
+            </span>
+            <div style="font-weight:800;font-size:1rem;margin-bottom:4px;color:#222;">${p.nombre}</div>
+            <div style="font-size:.78rem;color:#888;margin-bottom:4px;">🏪 ${p.tienda} · 📍 ${p.ubicacion}</div>
+            <div style="font-size:.82rem;color:#aaa;flex:1;margin-bottom:12px;">${p.descripcion}</div>
+            <div style="font-size:1.2rem;font-weight:800;color:#2e7d32;margin-bottom:8px;">${formatCOPv(p.precio)}</div>
+            ${p.vencimiento !== "N/A"
+              ? `<div style="font-size:.75rem;color:#e65100;">📅 Vence: ${p.vencimiento}</div>`
+              : ""}
+          </div>
+        </div>`;
+      }).join("");
+    }
+
+    document.getElementById("buscadorCat").addEventListener("input",          renderCatEmpresa);
+    document.getElementById("filtroCategoriaCat").addEventListener("change",  renderCatEmpresa);
+    document.getElementById("btnLimpiarCat").addEventListener("click", () => {
+      document.getElementById("buscadorCat").value         = "";
+      document.getElementById("filtroCategoriaCat").value  = "";
+      renderCatEmpresa();
+    });
 
     /* ─── Utilidad: redimensionar y comprimir imagen antes de guardar ─── */
     // Firestore tiene límite de 1 MB por documento.
