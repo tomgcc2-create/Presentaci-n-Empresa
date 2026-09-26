@@ -85,6 +85,7 @@
   import { auth, db } from "./firebase-config.js";
   import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
   import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+  import { initSettings } from "./settings.js";
 
   let yaResuelto = false;
 
@@ -104,6 +105,7 @@
     const datos = snap.exists() ? snap.data() : {};
     const nombre = datos.nombre || usuario.email;
     document.getElementById("bienvenida").textContent = "Bienvenido, " + nombre + " 👋";
+    initSettings();
   });
 
   document.getElementById("btnCerrarSesion").addEventListener("click", async () => {
