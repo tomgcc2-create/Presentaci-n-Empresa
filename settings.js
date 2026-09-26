@@ -26,6 +26,11 @@ import {
 ════════════════════════════════════════════════════════════ */
 function inyectarPanel() {
   const html = `
+  <!-- ── Botón flecha volver ── -->
+  <button id="btnVolver" title="Volver a la página anterior" aria-label="Volver"
+    onclick="history.back()"
+    style="left:70px;">&#8592;</button>
+
   <!-- ── Botón tuerquita ── -->
   <button id="btnSettings" title="Configuración" aria-label="Abrir configuración"
     style="
