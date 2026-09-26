@@ -15,6 +15,7 @@ import {
     deleteDoc
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 import { observarSesion, obtenerRol, mensajeError } from "./auth.js";
+import { initSettings } from "./settings.js";
 
 const contenido = document.getElementById("contenido");
 const aviso = document.getElementById("aviso");
@@ -224,5 +225,6 @@ observarSesion(async usuario => {
     aviso.hidden = true;
     contenido.hidden = false;
 
+    initSettings();
     await pintarUsuarios();
 });
