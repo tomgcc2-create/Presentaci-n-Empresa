@@ -219,7 +219,7 @@
             <div class="icono">🏠</div>
             <h5 class="fw-bold mb-2">Inicio</h5>
             <p class="text-secondary small">Vuelve a la página principal.</p>
-            <a href="Index.html" class="btn btn-outline-secondary mt-2 fw-semibold">Ir al inicio</a>
+            <a id="btnInicio" href="usuario.html" class="btn btn-outline-secondary mt-2 fw-semibold">🏠 Ir al inicio</a>
           </div>
         </div>
 
@@ -266,32 +266,65 @@
 
       <form id="form-resena" class="resena-wrapper" novalidate>
 
-        <!-- Bloque 1: ¿Qué reseñas? -->
-        <p class="bloque-titulo">🎯 ¿Qué vas a reseñar?</p>
+        <!-- Bloque 0: Destino de la reseña -->
+        <p class="bloque-titulo">🎯 ¿A quién va dirigida tu reseña?</p>
 
-        <div class="row g-3 mb-3">
-          <div class="col-sm-6">
-            <label class="form-label-r">Tipo de reseña <span class="text-danger">*</span></label>
-            <select id="tipo-resena" class="form-control ctrl-resena" required>
-              <option value="">— Seleccionar —</option>
-              <option value="producto">Producto</option>
-              <option value="tienda">Tienda</option>
-              <option value="servicio">Servicio general</option>
-            </select>
-            <div class="invalid-feedback">Selecciona el tipo de reseña.</div>
+        <div class="d-flex gap-3 mb-4" id="destino-btns">
+          <button type="button" id="btn-dest-app" onclick="seleccionarDestino('app')"
+            class="btn flex-fill fw-bold py-3 rounded-3 destino-btn destino-btn-app"
+            style="border:2px solid #D4954D; background:white; color:#D4954D; font-size:.95rem; transition:all .2s;">
+            📱 Reseña a la App
+          </button>
+          <button type="button" id="btn-dest-tienda" onclick="seleccionarDestino('tienda')"
+            class="btn flex-fill fw-bold py-3 rounded-3 destino-btn destino-btn-tienda"
+            style="border:2px solid #1a6e3c; background:white; color:#1a6e3c; font-size:.95rem; transition:all .2s;">
+            🏪 Reseña a una Tienda
+          </button>
+        </div>
+
+        <input type="hidden" id="destino-resena" value="">
+
+        <!-- Campos exclusivos para Tienda (ocultos al inicio) -->
+        <div id="campos-tienda" style="display:none;">
+          <p class="bloque-titulo">🏪 Selecciona la Tienda y el Producto</p>
+          <div class="row g-3 mb-3">
+            <div class="col-sm-6">
+              <label class="form-label-r">Tienda <span class="text-danger">*</span></label>
+              <select id="select-tienda" class="form-control ctrl-resena">
+                <option value="">— Cargando tiendas… —</option>
+              </select>
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label-r">Producto (opcional)</label>
+              <select id="select-producto" class="form-control ctrl-resena">
+                <option value="">— Selecciona primero una tienda —</option>
+              </select>
+            </div>
           </div>
-          <div class="col-sm-6">
-            <label class="form-label-r" id="label-referencia">Nombre del producto / tienda <span class="text-danger">*</span></label>
-            <input type="text" id="referencia" class="form-control ctrl-resena"
-              placeholder="Ej. Crema Hidratante, Droguería Cruz Verde…" required>
-            <div class="invalid-feedback">Ingresa el nombre.</div>
+        </div>
+
+        <!-- Bloque 1: ¿Qué reseñas? (solo para reseña a la App) -->
+        <div id="campos-app" style="display:none;">
+          <p class="bloque-titulo">📋 ¿Qué aspecto vas a reseñar?</p>
+          <div class="mb-3">
+            <label class="form-label-r">Tipo de reseña <span class="text-danger">*</span></label>
+            <select id="tipo-resena" class="form-control ctrl-resena">
+              <option value="servicio">Servicio general de la App</option>
+              <option value="funcionalidad">Funcionalidad / Diseño</option>
+              <option value="soporte">Soporte y atención</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label-r">¿Sobre qué en específico?</label>
+            <input type="text" id="referencia-app" class="form-control ctrl-resena"
+              placeholder="Ej. Búsqueda de productos, pantalla de precios…">
           </div>
         </div>
 
         <!-- Bloque 2: Calificación -->
-        <p class="bloque-titulo">⭐ Calificación</p>
+        <p class="bloque-titulo" id="titulo-calificacion" style="display:none;">⭐ Calificación</p>
 
-        <div class="mb-3">
+        <div class="mb-3" id="bloque-calificacion" style="display:none;">
           <label class="form-label-r d-block mb-2">¿Cuántas estrellas le das? <span class="text-danger">*</span></label>
           <div class="estrellas-input" id="estrellas-contenedor">
             <input type="radio" id="s5" name="calificacion" value="5" required>
@@ -311,12 +344,12 @@
         </div>
 
         <!-- Bloque 3: Comentario -->
-        <p class="bloque-titulo">💬 Tu Opinión</p>
+        <p class="bloque-titulo" id="titulo-opinion" style="display:none;">💬 Tu Opinión</p>
 
-        <div class="mb-3">
+        <div class="mb-3" id="bloque-comentario" style="display:none;">
           <label for="comentario" class="form-label-r">Comentario <span class="text-danger">*</span></label>
           <textarea id="comentario" class="form-control ctrl-resena" rows="4"
-            placeholder="Cuéntanos tu experiencia con el producto o tienda…" required
+            placeholder="Cuéntanos tu experiencia…" required
             maxlength="500"></textarea>
           <div class="d-flex justify-content-between mt-1">
             <div class="invalid-feedback" style="display:block;visibility:hidden;" id="comentario-error">
@@ -327,25 +360,27 @@
         </div>
 
         <!-- Bloque 4: Sugerencias -->
-        <p class="bloque-titulo">💡 Sugerencias (opcional)</p>
+        <p class="bloque-titulo" id="titulo-sugerencia" style="display:none;">💡 Sugerencias (opcional)</p>
 
-        <div class="mb-4">
+        <div class="mb-4" id="bloque-sugerencia" style="display:none;">
           <label for="sugerencia" class="form-label-r">¿Tienes alguna sugerencia o recomendación?</label>
           <textarea id="sugerencia" class="form-control ctrl-resena" rows="3"
-            placeholder="Escribe aquí tus sugerencias para mejorar el producto, la tienda o el servicio…"
+            placeholder="Escribe aquí tus sugerencias…"
             maxlength="300"></textarea>
           <small class="text-muted"><span id="char-count-sug">0</span>/300</small>
         </div>
 
         <!-- Botones -->
-        <hr class="my-4">
-        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-end">
-          <button type="button" class="btn btn-outline-secondary btn-cancelar-r" onclick="volverPanelUsuario()">
-            ← Cancelar y volver
-          </button>
-          <button type="submit" class="btn btn-publicar-resena">
-            ✉️ Publicar reseña
-          </button>
+        <div id="bloque-botones" style="display:none;">
+          <hr class="my-4">
+          <div class="d-flex flex-column flex-sm-row gap-3 justify-content-end">
+            <button type="button" class="btn btn-outline-secondary btn-cancelar-r" onclick="volverPanelUsuario()">
+              ← Cancelar y volver
+            </button>
+            <button type="submit" class="btn btn-publicar-resena">
+              ✉️ Publicar reseña
+            </button>
+          </div>
         </div>
 
       </form>
@@ -360,7 +395,7 @@
 
       <!-- Volver -->
       <div class="text-center mt-4">
-        <button onclick="volverPanelUsuario()" class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-semibold">
+        <button onclick="volverPanelUsuario()" class="btn-volver-panel">
           ← Volver al panel
         </button>
       </div>
@@ -418,8 +453,29 @@
       const snap  = await getDoc(doc(db, "usuarios", usuario.uid));
       const datos = snap.exists() ? snap.data() : {};
       nombreUsuario = datos.nombre || usuario.email;
+      const rol = (datos.rol || "usuario").trim().toLowerCase();
       document.getElementById("bienvenida").textContent     = "Bienvenido, " + nombreUsuario + " 👋";
       document.getElementById("bienvenida-res").textContent = "Hola, " + nombreUsuario;
+
+      // Si es otro rol, mostrar botón "Volver a mi panel" en la sección principal
+      const paginaPorRol = {
+        vendedor:    "vendedor.html",
+        verificador: "verificador.html",
+        patrocinador:"patrocinador.html",
+        "dueño":     "dueño.html",
+        admin:       "admin.html"
+      };
+      if (paginaPorRol[rol]) {
+        const btnVolverPanel = document.createElement("div");
+        btnVolverPanel.className = "text-center mt-3";
+        btnVolverPanel.innerHTML = `<a href="${paginaPorRol[rol]}" class="btn-volver-panel">
+          ← Volver a mi panel (${rol})
+        </a>`;
+        // Insertar justo antes del botón cerrar sesión
+        const btnCerrar = document.getElementById("btnCerrarSesion").parentElement;
+        btnCerrar.parentElement.insertBefore(btnVolverPanel, btnCerrar);
+      }
+
       initSettings();
     });
 
@@ -427,6 +483,75 @@
       await signOut(auth);
       window.location.href = "login.html";
     });
+
+    /* ══════════════════════════════════
+       SELECTOR DE DESTINO (App / Tienda)
+    ══════════════════════════════════ */
+
+    // Cache de tiendas y sus productos cargados de Firestore
+    let tiendasCache = {}; // { "NombreTienda": [{nombre, vendedorId, id}, ...] }
+
+    async function cargarTiendasFirestore() {
+      const selectTienda = document.getElementById("select-tienda");
+      selectTienda.innerHTML = `<option value="">— Cargando tiendas… —</option>`;
+      try {
+        const snap = await getDocs(collection(db, "productos"));
+        tiendasCache = {};
+        snap.forEach(d => {
+          const p = d.data();
+          const t = p.tienda || "Sin tienda";
+          if (!tiendasCache[t]) tiendasCache[t] = [];
+          tiendasCache[t].push({ id: d.id, nombre: p.nombre || "Producto", vendedorId: p.vendedorId || "" });
+        });
+        const nombres = Object.keys(tiendasCache).sort();
+        selectTienda.innerHTML = `<option value="">— Selecciona una tienda —</option>` +
+          nombres.map(n => `<option value="${n}">${n}</option>`).join("");
+      } catch (e) {
+        selectTienda.innerHTML = `<option value="">— Error al cargar tiendas —</option>`;
+      }
+    }
+
+    document.getElementById("select-tienda").addEventListener("change", function () {
+      const selectProd = document.getElementById("select-producto");
+      const tiendaElegida = this.value;
+      if (!tiendaElegida || !tiendasCache[tiendaElegida]) {
+        selectProd.innerHTML = `<option value="">— Selecciona primero una tienda —</option>`;
+        return;
+      }
+      const prods = tiendasCache[tiendaElegida];
+      selectProd.innerHTML = `<option value="" data-vid="">— Sin producto específico —</option>` +
+        prods.map(p => `<option value="${p.nombre}" data-vid="${p.vendedorId}">${p.nombre}</option>`).join("");
+    });
+
+    window.seleccionarDestino = function(dest) {
+      document.getElementById("destino-resena").value = dest;
+      const btnApp    = document.getElementById("btn-dest-app");
+      const btnTienda = document.getElementById("btn-dest-tienda");
+      if (dest === "app") {
+        btnApp.style.background    = "#D4954D";
+        btnApp.style.color         = "white";
+        btnTienda.style.background = "white";
+        btnTienda.style.color      = "#1a6e3c";
+        document.getElementById("campos-app").style.display    = "block";
+        document.getElementById("campos-tienda").style.display = "none";
+      } else {
+        btnTienda.style.background = "#1a6e3c";
+        btnTienda.style.color      = "white";
+        btnApp.style.background    = "white";
+        btnApp.style.color         = "#D4954D";
+        document.getElementById("campos-tienda").style.display = "block";
+        document.getElementById("campos-app").style.display    = "none";
+        cargarTiendasFirestore();
+      }
+      // Mostrar el resto del formulario
+      document.getElementById("titulo-calificacion").style.display = "block";
+      document.getElementById("bloque-calificacion").style.display = "block";
+      document.getElementById("titulo-opinion").style.display      = "block";
+      document.getElementById("bloque-comentario").style.display   = "block";
+      document.getElementById("titulo-sugerencia").style.display   = "block";
+      document.getElementById("bloque-sugerencia").style.display   = "block";
+      document.getElementById("bloque-botones").style.display      = "block";
+    };
 
     /* ══════════════════════════════════
        CONTADOR DE CARACTERES
@@ -438,28 +563,19 @@
       document.getElementById("char-count-sug").textContent = this.value.length;
     });
 
-    /* ── Label dinámico según tipo ── */
-    document.getElementById("tipo-resena").addEventListener("change", function () {
-      const lbl = document.getElementById("label-referencia");
-      const ref = document.getElementById("referencia");
-      if (this.value === "producto") {
-        lbl.textContent = "Nombre del producto *";
-        ref.placeholder = "Ej. Crema Hidratante Facial…";
-      } else if (this.value === "tienda") {
-        lbl.textContent = "Nombre de la tienda *";
-        ref.placeholder = "Ej. Droguería Cruz Verde, Jumbo…";
-      } else {
-        lbl.textContent = "¿Sobre qué? *";
-        ref.placeholder = "Describe brevemente…";
-      }
-    });
-
     /* ══════════════════════════════════
        ENVIAR RESEÑA
     ══════════════════════════════════ */
     document.getElementById("form-resena").addEventListener("submit", async function (e) {
       e.preventDefault();
       this.classList.add("was-validated");
+
+      // Validar que se eligió destino
+      const destino = document.getElementById("destino-resena").value;
+      if (!destino) {
+        alert("Por favor elige si es una reseña a la App o a una Tienda.");
+        return;
+      }
 
       // Validar estrellas manualmente
       const calificacion = document.querySelector('input[name="calificacion"]:checked');
@@ -470,26 +586,40 @@
       // Validar comentario
       const comentario = document.getElementById("comentario").value.trim();
       const errCom     = document.getElementById("comentario-error");
-      if (!comentario) {
-        errCom.style.visibility = "visible";
-        return;
-      }
+      if (!comentario) { errCom.style.visibility = "visible"; return; }
       errCom.style.visibility = "hidden";
 
-      if (!this.checkValidity()) return;
-
       const sugerencia = document.getElementById("sugerencia").value.trim();
-      const tipo       = document.getElementById("tipo-resena").value;
-      const referencia = document.getElementById("referencia").value.trim();
+
+      // Construir campos según destino
+      let tipo, referencia, tiendaNombre = null, productoNombre = null, vendedorId = null;
+
+      if (destino === "tienda") {
+        tiendaNombre = document.getElementById("select-tienda").value;
+        if (!tiendaNombre) { alert("Selecciona una tienda."); return; }
+        const selectProd = document.getElementById("select-producto");
+        productoNombre = selectProd.value || null;
+        // Obtener el vendedorId del producto seleccionado
+        if (productoNombre && selectProd.selectedOptions[0]) {
+          vendedorId = selectProd.selectedOptions[0].dataset.vid || null;
+        }
+        // Si no eligió producto, buscar el vendedorId de cualquier producto de esa tienda
+        if (!vendedorId && tiendasCache[tiendaNombre]?.length > 0) {
+          vendedorId = tiendasCache[tiendaNombre][0].vendedorId || null;
+        }
+        tipo      = productoNombre ? "producto" : "tienda";
+        referencia = productoNombre || tiendaNombre;
+      } else {
+        tipo      = document.getElementById("tipo-resena").value || "servicio";
+        referencia = document.getElementById("referencia-app").value.trim() || "App PRICE NICE";
+      }
 
       // ── Moderación automática ──
       const textoCompleto = comentario + " " + sugerencia + " " + referencia;
       if (contienePalabraOfensiva(textoCompleto)) {
         document.getElementById("alerta-resena-mod").style.display = "flex";
         window.scrollTo({ top: 0, behavior: "smooth" });
-        setTimeout(() => {
-          document.getElementById("alerta-resena-mod").style.display = "none";
-        }, 6000);
+        setTimeout(() => { document.getElementById("alerta-resena-mod").style.display = "none"; }, 6000);
         return;
       }
 
@@ -497,33 +627,43 @@
       btn.disabled = true; btn.textContent = "⏳ Enviando…";
 
       try {
-        await addDoc(collection(db, "resenas"), {
-          usuarioId:    usuarioActual.uid,
+        const docData = {
+          usuarioId:     usuarioActual.uid,
           nombreUsuario: nombreUsuario,
-          tipo:         tipo,
-          referencia:   referencia,
-          calificacion: parseInt(calificacion.value),
-          comentario:   comentario,
-          sugerencia:   sugerencia || null,
-          estado:       "pendiente",   // pendiente | aprobada | rechazada
-          fecha:        serverTimestamp()
-        });
+          destino:       destino,        // "app" | "tienda"
+          tipo:          tipo,           // "producto" | "tienda" | "servicio" | "funcionalidad" | "soporte"
+          referencia:    referencia,
+          tiendaNombre:  tiendaNombre,   // solo si destino="tienda"
+          productoNombre:productoNombre, // solo si eligió producto
+          vendedorId:    vendedorId,     // UID del vendedor dueño de la tienda/producto
+          calificacion:  parseInt(calificacion.value),
+          comentario:    comentario,
+          sugerencia:    sugerencia || null,
+          estado:        "pendiente",
+          fecha:         serverTimestamp()
+        };
+        await addDoc(collection(db, "resenas"), docData);
 
-        // Reset
+        // Reset visual
         this.classList.remove("was-validated");
         this.reset();
+        document.getElementById("destino-resena").value = "";
         document.getElementById("char-count").textContent     = "0";
         document.getElementById("char-count-sug").textContent = "0";
         document.querySelectorAll(".estrellas-input label").forEach(l => l.style.color = "");
         errEst.style.display = "none";
+        // Ocultar bloques dinámicos
+        ["campos-app","campos-tienda","titulo-calificacion","bloque-calificacion",
+         "titulo-opinion","bloque-comentario","titulo-sugerencia","bloque-sugerencia","bloque-botones"]
+          .forEach(id => document.getElementById(id).style.display = "none");
+        document.getElementById("btn-dest-app").style.background    = "white";
+        document.getElementById("btn-dest-app").style.color         = "#D4954D";
+        document.getElementById("btn-dest-tienda").style.background = "white";
+        document.getElementById("btn-dest-tienda").style.color      = "#1a6e3c";
 
         document.getElementById("alerta-resena-ok").style.display = "flex";
         window.scrollTo({ top: 0, behavior: "smooth" });
-        setTimeout(() => {
-          document.getElementById("alerta-resena-ok").style.display = "none";
-        }, 5000);
-
-        // Refrescar lista de mis reseñas
+        setTimeout(() => { document.getElementById("alerta-resena-ok").style.display = "none"; }, 5000);
         cargarMisResenas();
 
       } catch (err) {
@@ -578,7 +718,13 @@
             <div class="card-resena-propia">
               <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
                 <div>
+                  <span style="font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:20px;margin-right:6px;
+                    background:${r.destino==='tienda'?'#e8f5e9':'#fff3e0'};
+                    color:${r.destino==='tienda'?'#1a6e3c':'#D4954D'};">
+                    ${r.destino==='tienda'?'🏪 Tienda':'📱 App'}
+                  </span>
                   <span class="fw-bold">${r.referencia}</span>
+                  ${r.tiendaNombre && r.destino==='tienda' ? `<span class="text-muted ms-1" style="font-size:.8rem;">· ${r.tiendaNombre}</span>` : ''}
                   <span class="text-muted ms-2" style="font-size:0.8rem;">(${r.tipo})</span>
                 </div>
                 <span class="resena-estado-badge ${estadoClass}">${estadoLabel}</span>
@@ -620,9 +766,18 @@
       document.getElementById("seccion-principal").style.display  = "block";
       document.getElementById("form-resena").classList.remove("was-validated");
       document.getElementById("form-resena").reset();
+      document.getElementById("destino-resena").value = "";
       document.getElementById("char-count").textContent     = "0";
       document.getElementById("char-count-sug").textContent = "0";
       document.getElementById("estrellas-error").style.display = "none";
+      // Ocultar bloques dinámicos
+      ["campos-app","campos-tienda","titulo-calificacion","bloque-calificacion",
+       "titulo-opinion","bloque-comentario","titulo-sugerencia","bloque-sugerencia","bloque-botones"]
+        .forEach(id => document.getElementById(id).style.display = "none");
+      document.getElementById("btn-dest-app").style.background    = "white";
+      document.getElementById("btn-dest-app").style.color         = "#D4954D";
+      document.getElementById("btn-dest-tienda").style.background = "white";
+      document.getElementById("btn-dest-tienda").style.color      = "#1a6e3c";
       window.scrollTo({ top: 0, behavior: "smooth" });
     };
   </script>
