@@ -381,6 +381,7 @@
     import { doc, getDoc, collection, addDoc, getDocs,
              query, where, orderBy, serverTimestamp }
       from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+    import { initSettings } from "./settings.js";
 
     /* ── Estado ── */
     let usuarioActual  = null;
@@ -419,6 +420,7 @@
       nombreUsuario = datos.nombre || usuario.email;
       document.getElementById("bienvenida").textContent     = "Bienvenido, " + nombreUsuario + " 👋";
       document.getElementById("bienvenida-res").textContent = "Hola, " + nombreUsuario;
+      initSettings();
     });
 
     document.getElementById("btnCerrarSesion").addEventListener("click", async () => {
