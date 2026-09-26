@@ -151,3 +151,62 @@ body{
     display:block;
     margin:auto; 
 }
+
+/* ════════════════════════════════════════
+   BOTÓN "VOLVER AL PANEL" (en secciones internas)
+════════════════════════════════════════ */
+.btn-volver-panel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 32px;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 50px;
+  border: 2px solid #adb5bd;
+  background: white;
+  color: #495057;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.15s;
+  white-space: nowrap;
+}
+.btn-volver-panel:hover {
+  background: #495057;
+  color: white;
+  border-color: #495057;
+  transform: translateX(-3px);
+}
+
+/* ════════════════════════════════════════
+   BOTÓN FLECHA VOLVER (global)
+════════════════════════════════════════ */
+#btnVolver {
+  position: fixed;
+  top: 16px;
+  left: 70px;          /* a la derecha de la tuerquita (46px + gap) */
+  z-index: 1050;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.92);
+  border: 2px solid rgba(0,0,0,0.12);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.3rem;
+  text-decoration: none;
+  color: #333;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+}
+#btnVolver:hover {
+  transform: translateX(-3px);
+  box-shadow: 0 6px 22px rgba(0,0,0,0.22);
+  background: white;
+  color: #111;
+}
+/* En páginas sin tuerquita, la flecha va pegada a la izquierda */
+body.sin-settings #btnVolver {
+  left: 16px;
+}
