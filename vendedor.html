@@ -1359,8 +1359,10 @@
     /* ════════════════════════════════════
        NAVEGACIÓN ENTRE SECCIONES
     ════════════════════════════════════ */
+    let todasResenas = [];
+
     function ocultarTodo() {
-      ["seccion-principal","seccion-publicar","seccion-mis-productos"]
+      ["seccion-principal","seccion-publicar","seccion-mis-productos","seccion-resenas"]
         .forEach(id => document.getElementById(id).style.display = "none");
     }
 
@@ -1383,7 +1385,140 @@
       await cargarMisProductos();
     };
 
-    window.volverPanel = function () {
+    window.mostrarResenas = async function () {
+      ocultarTodo();
+      document.getElementById("seccion-resenas").style.display = "block";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
+      const grid = document.getElementById("gridResenas");
+      grid.innerHTML = `<div class="col-12 text-center py-5 text-secondary">
+        <div class="spinner-border text-success mb-3" role="status"></div>
+        <p>Cargando reseñas…</p></div>`;
+
+      try {
+        // Cargar reseñas donde el vendedorId coincida con el usuario actual
+        // También cargar reseñas aprobadas de la tienda del vendedor (por nombre)
+        const q = query(
+          collection(db, "resenas"),
+          where("vendedorId", "==", usuarioActual.uid)
+        );
+        const snap = await getDocs(q);
+        todasResenas = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+        // Ordenar por fecha desc en cliente
+        todasResenas.sort((a, b) => {
+          const fa = a.fecha?.toDate?.() || 0;
+          const fb = b.fecha?.toDate?.() || 0;
+          return fb - fa;
+        });
+
+        // Métricas
+        const total     = todasResenas.length;
+        const prom      = total
+          ? (todasResenas.reduce((s, r) => s + (r.calificacion || 0), 0) / total).toFixed(1)
+          : "—";
+        const tiendas   = new Set(todasResenas.filter(r => r.tipo === "tienda").map(r => r.referencia)).size;
+        const productos = new Set(todasResenas.filter(r => r.tipo === "producto").map(r => r.referencia)).size;
+
+        document.getElementById("totalResenas").textContent      = total;
+        document.getElementById("promCalif").textContent         = prom;
+        document.getElementById("totalTiendas").textContent      = tiendas;
+        document.getElementById("totalProductosRes").textContent = productos;
+
+        aplicarFiltrosRes();
+
+      } catch (err) {
+        console.error("Error al cargar reseñas:", err);
+        grid.innerHTML = `<div class="col-12 text-center py-4 text-danger">
+          ❌ No se pudieron cargar las reseñas: ${err.message}</div>`;
+      }
+    };
+
+    function aplicarFiltrosRes() {
+      const busq  = document.getElementById("buscarResenas").value.toLowerCase().trim();
+      const tipo  = document.getElementById("filtroTipoRes").value;
+      const calif = document.getElementById("filtroCalifRes").value;
+
+      const visibles = todasResenas.filter(r => {
+        if (tipo  && r.tipo !== tipo)                          return false;
+        if (calif && r.calificacion !== parseInt(calif))       return false;
+        if (busq) {
+          const texto = [r.referencia, r.nombreUsuario, r.comentario, r.sugerencia, r.tiendaNombre]
+            .join(" ").toLowerCase();
+          if (!texto.includes(busq)) return false;
+        }
+        return true;
+      });
+
+      const info = document.getElementById("infoResenas");
+      info.textContent = visibles.length < todasResenas.length
+        ? `Mostrando ${visibles.length} de ${todasResenas.length} reseñas`
+        : `${todasResenas.length} reseña${todasResenas.length !== 1 ? "s" : ""} recibida${todasResenas.length !== 1 ? "s" : ""}`;
+
+      renderizarResenas(visibles);
+    }
+
+    function renderEstrellas(n) {
+      const llenas = Math.min(Math.max(parseInt(n) || 0, 0), 5);
+      return "★".repeat(llenas) + `<span style="color:#ddd;">${"★".repeat(5 - llenas)}</span>`;
+    }
+
+    function renderizarResenas(lista) {
+      const grid = document.getElementById("gridResenas");
+
+      if (!lista.length) {
+        grid.innerHTML = `<div class="col-12 text-center py-5 text-secondary">
+          <div style="font-size:3rem;">⭐</div>
+          <p class="mt-2">No hay reseñas con esos filtros.</p></div>`;
+        return;
+      }
+
+      grid.innerHTML = lista.map(r => {
+        const fecha = r.fecha?.toDate
+          ? r.fecha.toDate().toLocaleDateString("es-CO", { day:"2-digit", month:"short", year:"numeric" })
+          : "—";
+        const estadoBadge = r.estado === "aprobada"
+          ? `<span style="font-size:.7rem;background:#e8f5e9;color:#2e7d32;padding:2px 8px;border-radius:20px;font-weight:700;">✅ Aprobada</span>`
+          : r.estado === "rechazada"
+          ? `<span style="font-size:.7rem;background:#ffebee;color:#c62828;padding:2px 8px;border-radius:20px;font-weight:700;">❌ Rechazada</span>`
+          : `<span style="font-size:.7rem;background:#fff3e0;color:#e65100;padding:2px 8px;border-radius:20px;font-weight:700;">⏳ Pendiente</span>`;
+        const destinoBadge = r.destino === "tienda"
+          ? `<span style="font-size:.7rem;background:#e8f5e9;color:#1a6e3c;padding:2px 8px;border-radius:20px;font-weight:700;margin-right:4px;">🏪 Tienda</span>`
+          : `<span style="font-size:.7rem;background:#fff3e0;color:#D4954D;padding:2px 8px;border-radius:20px;font-weight:700;margin-right:4px;">📱 App</span>`;
+
+        return `<div class="col-12 col-md-6">
+          <div style="background:white;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.08);
+                      padding:20px;height:100%;display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;">
+              <div>
+                ${destinoBadge}
+                <span style="font-weight:700;font-size:.95rem;">${r.referencia || "—"}</span>
+                ${r.tiendaNombre ? `<span style="font-size:.78rem;color:#888;"> · ${r.tiendaNombre}</span>` : ""}
+              </div>
+              ${estadoBadge}
+            </div>
+            <div style="color:#f59e0b;font-size:1.1rem;">${renderEstrellas(r.calificacion)}</div>
+            <p style="font-size:.9rem;color:#333;margin:0;">${r.comentario || ""}</p>
+            ${r.sugerencia ? `<p style="font-size:.82rem;color:#888;margin:0;">💡 ${r.sugerencia}</p>` : ""}
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:8px;border-top:1px solid #f0f0f0;">
+              <span style="font-size:.8rem;color:#999;">👤 ${r.nombreUsuario || "Anónimo"}</span>
+              <span style="font-size:.75rem;color:#bbb;">📅 ${fecha}</span>
+            </div>
+          </div>
+        </div>`;
+      }).join("");
+    }
+
+    // Listeners filtros reseñas
+    document.getElementById("buscarResenas").addEventListener("input",   aplicarFiltrosRes);
+    document.getElementById("filtroTipoRes").addEventListener("change",  aplicarFiltrosRes);
+    document.getElementById("filtroCalifRes").addEventListener("change", aplicarFiltrosRes);
+    document.getElementById("btnLimpiarRes").addEventListener("click", () => {
+      document.getElementById("buscarResenas").value = "";
+      document.getElementById("filtroTipoRes").value  = "";
+      document.getElementById("filtroCalifRes").value = "";
+      aplicarFiltrosRes();
+    });
       ocultarTodo();
       document.getElementById("seccion-principal").style.display = "block";
       // Limpiar formulario publicar
