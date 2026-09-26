@@ -431,6 +431,7 @@
 import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 import { doc, getDoc, collection, getDocs, setDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { initSettings } from "./settings.js";
 
 // ══════════════════════════════════════════════════════
 //  DATOS
@@ -806,6 +807,7 @@ onAuthStateChanged(auth, async usuario => {
       "Verificador: " + (datos.nombre || usuario.email) + " · Actualización en vivo 👋";
     window._verificadorNombre = datos.nombre || usuario.email;
     await iniciarApp();
+    initSettings();
   } catch (error) {
     console.error("Error al obtener rol o precios:", error);
     document.getElementById("bloqueAcceso").style.display = "";
