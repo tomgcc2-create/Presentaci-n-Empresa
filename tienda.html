@@ -469,7 +469,9 @@
     .resumen-tienda-chip span { color: var(--brand); font-size: 1.05rem; }
   </style>
 </head>
-<body>
+<body class="sin-settings">
+
+<button id="btnVolver" title="Volver" aria-label="Volver a la página anterior" onclick="history.back()">&#8592;</button>
 
 <!-- ════════════ HEADER ════════════ -->
 <div class="store-header">
@@ -497,9 +499,9 @@
 
   <!-- Volver -->
   <div class="text-center mt-5">
-    <a href="usuario.html" class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-semibold">
+    <button onclick="history.back()" class="btn-volver-panel">
       ← Volver al panel
-    </a>
+    </button>
   </div>
 </div>
 
