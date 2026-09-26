@@ -292,7 +292,9 @@
     }
   </style>
 </head>
-<body>
+<body class="sin-settings">
+
+<button id="btnVolver" title="Volver" aria-label="Volver a la página anterior" onclick="history.back()">&#8592;</button>
 
   <div class="panel-header">
     <img src="img/LOGO PRIN.jpg" alt="PRICE NICE" height="80" class="mb-3 rounded-3">
@@ -424,9 +426,9 @@
 
     <!-- Botón volver -->
     <div class="text-center mt-5">
-      <a href="usuario.html" class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-semibold">
+      <button onclick="history.back()" class="btn-volver-panel">
         ← Volver al panel
-      </a>
+      </button>
     </div>
   </div>
 
