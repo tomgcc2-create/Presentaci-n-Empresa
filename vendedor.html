@@ -1005,6 +1005,7 @@
     import { doc, getDoc, collection, addDoc, getDocs,
              updateDoc, deleteDoc, query, where, serverTimestamp }
       from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+    import { initSettings } from "./settings.js";
 
     /* ─── Estado global ─── */
     let usuarioActual  = null;
@@ -1029,6 +1030,7 @@
       document.getElementById("bienvenida-form").textContent = "Hola, " + nombre + " — tu espacio de ventas";
       document.getElementById("bienvenida-mis").textContent  = "Hola, " + nombre + " — tu espacio de ventas";
       document.getElementById("bienvenida-res").textContent  = "Hola, " + nombre + " — tu espacio de ventas";
+      initSettings();
     });
 
     document.getElementById("btnCerrarSesion").addEventListener("click", async () => {
