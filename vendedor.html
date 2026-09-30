@@ -11,7 +11,7 @@
        HEADER
     ════════════════════════════ */
     .panel-header {
-      background: linear-gradient(135deg, #1a6e3c, #0f4226);
+      background: linear-gradient(135deg, #1a237e, #283593);
       color: white;
       padding: 40px 20px;
       text-align: center;
@@ -48,7 +48,7 @@
        CABECERA COMPARTIDA DE SECCIONES
     ════════════════════════════ */
     .form-header {
-      background: linear-gradient(135deg, #1a6e3c, #0f4226);
+      background: linear-gradient(135deg, #1a237e, #283593);
       color: white;
       padding: 28px 20px 20px;
       text-align: center;
@@ -105,7 +105,7 @@
       background: #f8f8f8;
     }
     .btn-publicar, .btn-guardar {
-      background: linear-gradient(135deg, #1a6e3c, #0f4226);
+      background: linear-gradient(135deg, #1a237e, #283593);
       color: white;
       border: none;
       border-radius: 12px;
@@ -319,7 +319,7 @@
        MODAL EDITAR
     ════════════════════════════ */
     .modal-editar .modal-header {
-      background: linear-gradient(135deg, #1a6e3c, #0f4226);
+      background: linear-gradient(135deg, #1a237e, #283593);
       color: white;
       border-radius: 12px 12px 0 0;
     }
@@ -418,6 +418,19 @@
     .sin-resenas span { font-size: 3.5rem; display: block; margin-bottom: 14px; }
     .res-info { font-size: 0.83rem; color: #888; }
     .res-info strong { color: #1a6e3c; }
+      /* Logo agrandado Price Nice */
+    .pn-logo-header {
+      width: 200px;
+      height: 200px;
+      object-fit: contain;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.10);
+      padding: 6px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.30);
+      margin-bottom: 12px;
+      transition: transform .3s ease;
+    }
+    .pn-logo-header:hover { transform: scale(1.06); }
   </style>
 </head>
 <body>
@@ -427,7 +440,7 @@
   ══════════════════════════════════════════ -->
   <div id="seccion-principal">
     <div class="panel-header">
-      <img src="img/logo-dark.png" alt="PRICE NICE" height="80" class="mb-3 rounded-3">
+      <img src="img/logo-dark.png" alt="PRICE NICE" class="pn-logo-header" height="200">
       <h1>🏪 Panel de Vendedor</h1>
       <p id="bienvenida">Bienvenido a tu espacio de ventas</p>
     </div>
@@ -508,7 +521,7 @@
   ══════════════════════════════════════════ -->
   <div id="seccion-publicar">
     <div class="panel-header">
-      <img src="img/logo-dark.png" alt="PRICE NICE" height="70" class="mb-3 rounded-3">
+      <img src="img/logo-dark.png" alt="PRICE NICE" class="pn-logo-header" height="200">
       <h1>🏪 Panel de Vendedor</h1>
       <p id="bienvenida-form">Tu espacio de ventas</p>
     </div>
@@ -657,7 +670,7 @@
   ══════════════════════════════════════════ -->
   <div id="seccion-mis-productos">
     <div class="panel-header">
-      <img src="img/logo-dark.png" alt="PRICE NICE" height="70" class="mb-3 rounded-3">
+      <img src="img/logo-dark.png" alt="PRICE NICE" class="pn-logo-header" height="200">
       <h1>🏪 Panel de Vendedor</h1>
       <p id="bienvenida-mis">Tu espacio de ventas</p>
     </div>
@@ -739,7 +752,7 @@
   ══════════════════════════════════════════ -->
   <div id="seccion-catalogo-empresa" style="display:none;">
     <div class="panel-header">
-      <img src="img/logo-dark.png" alt="PRICE NICE" height="70" class="mb-3 rounded-3">
+      <img src="img/logo-dark.png" alt="PRICE NICE" class="pn-logo-header" height="200">
       <h1>🏪 Panel de Vendedor</h1>
       <p id="bienvenida-cat">Catálogo de la empresa</p>
     </div>
@@ -953,7 +966,7 @@
   ══════════════════════════════════════════ -->
   <div id="seccion-resenas">
     <div class="panel-header">
-      <img src="img/logo-dark.png" alt="PRICE NICE" height="70" class="mb-3 rounded-3">
+      <img src="img/logo-dark.png" alt="PRICE NICE" class="pn-logo-header" height="200">
       <h1>🏪 Panel de Vendedor</h1>
       <p id="bienvenida-res">Tu espacio de ventas</p>
     </div>
