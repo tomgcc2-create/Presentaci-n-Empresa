@@ -8,6 +8,36 @@
 
 <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://unpkg.com/bs-brain@2.0.4/components/registrations/registration-7/assets/css/registration-7.css">
+<style>
+  /* Fondo azul claro para login — logo-light */
+  body.fondo-login {
+    background: linear-gradient(135deg, #0d1e38 0%, #16294a 55%, #1e3a5f 100%) !important;
+    min-height: 100vh;
+  }
+  .pn-logo-wrap {
+    background: linear-gradient(135deg, #16294a, #1e3a5f);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    box-shadow: 0 6px 28px rgba(0,0,0,.45);
+    margin-bottom: 8px;
+  }
+  .pn-logo-wrap img {
+    border-radius: 50%;
+    display: block;
+  }
+
+    /* Card sobre fondo marino */
+    .card {
+      background: rgba(255,255,255,0.97) !important;
+      border: none !important;
+      box-shadow: 0 12px 48px rgba(0,0,0,0.40) !important;
+    }
+    /* Quitar bg-light de la section */
+    .bg-light { background: transparent !important; }
+  </style>
 </head>
 <body class="fondo-login">
 
@@ -23,7 +53,9 @@
                 <div class="mb-4">
                   <div class="text-center mb-4">
                     <a href="#!">
-                      <img src="img/logo-light.png" alt="PRICE NICE Logo" width="175" height="157">
+                      <div class="pn-logo-wrap">
+                        <img src="img/logo-light.png" alt="PRICE NICE Logo" width="240" height="240" style="object-fit:contain;">
+                      </div>
                     </a>
                   </div>
                   <!-- Pestañas Ingresar / Registrar -->
