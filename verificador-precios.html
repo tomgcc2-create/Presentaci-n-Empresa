@@ -228,12 +228,25 @@
       width: 10px; height: 10px; border-radius: 50%;
       background: var(--brand); flex-shrink: 0; margin-top: 4px;
     }
+      /* Logo agrandado Price Nice */
+    .pn-logo-header {
+      width: 200px;
+      height: 200px;
+      object-fit: contain;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.10);
+      padding: 6px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.30);
+      margin-bottom: 12px;
+      transition: transform .3s ease;
+    }
+    .pn-logo-header:hover { transform: scale(1.06); }
   </style>
 </head>
 <body>
 
 <div class="page-header">
-  <img src="img/logo-dark.png" alt="PRICE NICE" height="70" class="rounded-3 mb-3">
+  <img src="img/logo-dark.png" alt="PRICE NICE" class="pn-logo-header" height="200">
   <h1>💲 Actualizar Precios en Vivo</h1>
   <p id="bienvenida">Verificando acceso…</p>
 </div>
