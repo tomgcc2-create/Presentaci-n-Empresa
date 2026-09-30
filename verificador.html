@@ -28,12 +28,25 @@
       box-shadow: 0 8px 24px rgba(21,101,192,0.25);
     }
     .icono { font-size: 2.5rem; margin-bottom: 12px; }
+      /* Logo agrandado Price Nice */
+    .pn-logo-header {
+      width: 200px;
+      height: 200px;
+      object-fit: contain;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.10);
+      padding: 6px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.30);
+      margin-bottom: 12px;
+      transition: transform .3s ease;
+    }
+    .pn-logo-header:hover { transform: scale(1.06); }
   </style>
 </head>
 <body>
 
   <div class="panel-header">
-    <img src="img/logo-dark.png" alt="PRICE NICE" height="80" class="mb-3 rounded-3">
+    <img src="img/logo-dark.png" alt="PRICE NICE" class="pn-logo-header" height="200">
     <h1>🔍 Panel de Verificador</h1>
     <p id="bienvenida">Bienvenido a tu espacio de verificación</p>
   </div>
