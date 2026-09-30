@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="style.css">
   <style>
     :root {
-      --brand:     #D4954D;
+      --brand:     #1a237e;
       --brand-dark:#775533;
       --bg:        #f5f3ef;
     }
@@ -17,7 +17,7 @@
 
     /* ── Header ── */
     .store-header {
-      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      background: linear-gradient(135deg, #1a237e, #283593);
       color: white;
       padding: 36px 20px 28px;
       text-align: center;
@@ -129,7 +129,7 @@
       width: 54px;
       height: 54px;
       border-radius: 14px;
-      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      background: linear-gradient(135deg, #1a237e, #283593);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -210,7 +210,7 @@
     /* ══════════════════════════════════
        CARRITO — panel lateral (offcanvas)
     ══════════════════════════════════ */
-    .offcanvas-header { background: linear-gradient(135deg, var(--brand), var(--brand-dark)); color: white; }
+    .offcanvas-header { background: linear-gradient(135deg, #1a237e, #283593); color: white; }
     .offcanvas-header .btn-close { filter: invert(1); }
 
     .carrito-item {
@@ -281,7 +281,7 @@
     .btn-pagar {
       width: 100%;
       padding: 14px;
-      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      background: linear-gradient(135deg, #1a237e, #283593);
       color: white;
       border: none;
       border-radius: 14px;
@@ -311,7 +311,7 @@
        MODAL DE PAGO
     ══════════════════════════════════ */
     #modalPago .modal-header {
-      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      background: linear-gradient(135deg, #1a237e, #283593);
       color: white;
       border-radius: 16px 16px 0 0;
     }
@@ -467,6 +467,19 @@
       color: #555;
     }
     .resumen-tienda-chip span { color: var(--brand); font-size: 1.05rem; }
+      /* Logo agrandado Price Nice */
+    .pn-logo-header {
+      width: 200px;
+      height: 200px;
+      object-fit: contain;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.10);
+      padding: 6px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.30);
+      margin-bottom: 12px;
+      transition: transform .3s ease;
+    }
+    .pn-logo-header:hover { transform: scale(1.06); }
   </style>
 </head>
 <body class="sin-settings">
@@ -475,7 +488,7 @@
 
 <!-- ════════════ HEADER ════════════ -->
 <div class="store-header">
-  <img src="img/logo-dark.png" alt="PRICE NICE" height="72" class="rounded-3 mb-3">
+  <img src="img/logo-dark.png" alt="PRICE NICE" class="pn-logo-header" height="200">
   <h1>🛒 Tienda Virtual</h1>
   <p>Explora productos por tienda y simula tu compra</p>
 </div>
