@@ -8,10 +8,10 @@
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <style>
-    :root { --brand:#b71c1c; --brand-dark:#7f0000; --ok:#2e7d32; --warn:#f57f17; }
+    :root { --brand:#1a237e; --brand-dark:#283593; --ok:#2e7d32; --warn:#f57f17; }
 
     .panel-header {
-      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      background: linear-gradient(135deg, #1a237e, #283593);
       color: white; padding: 40px 20px; text-align: center;
       border-radius: 0 0 20px 20px; margin-bottom: 30px;
     }
@@ -31,7 +31,7 @@
 
     /* ── Modales comunes ── */
     .modal-header-brand {
-      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      background: linear-gradient(135deg, #1a237e, #283593);
       color: white; border-radius: 16px 16px 0 0;
     }
     .modal-header-brand .btn-close { filter: invert(1); }
@@ -130,12 +130,25 @@
     }
     .kpi-chip .kv { font-size:1.3rem; font-weight:800; color:var(--brand); }
     .kpi-chip .kl { font-size:.7rem; color:#aaa; font-weight:700; display:block; }
+      /* Logo agrandado Price Nice */
+    .pn-logo-header {
+      width: 200px;
+      height: 200px;
+      object-fit: contain;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.10);
+      padding: 6px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.30);
+      margin-bottom: 12px;
+      transition: transform .3s ease;
+    }
+    .pn-logo-header:hover { transform: scale(1.06); }
   </style>
 </head>
 <body>
 
   <div class="panel-header">
-    <img src="img/logo-dark.png" alt="PRICE NICE" height="80" class="mb-3 rounded-3">
+    <img src="img/logo-dark.png" alt="PRICE NICE" class="pn-logo-header" height="200">
     <h1>👑 Panel del Dueño</h1>
     <p id="bienvenida">Bienvenido, tienes acceso completo</p>
   </div>
