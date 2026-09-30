@@ -11,7 +11,7 @@
        HEADER
     ════════════════════════════ */
     .panel-header {
-      background: linear-gradient(135deg, #D4954D, #775533);
+      background: linear-gradient(135deg, #1a237e, #283593);
       color: white;
       padding: 40px 20px;
       text-align: center;
@@ -43,7 +43,7 @@
 
     /* ── Cabecera de sección ── */
     .resena-header {
-      background: linear-gradient(135deg, #D4954D, #775533);
+      background: linear-gradient(135deg, #1a237e, #283593);
       color: white;
       padding: 28px 20px 20px;
       text-align: center;
@@ -116,7 +116,7 @@
 
     /* ── Botón publicar ── */
     .btn-publicar-resena {
-      background: linear-gradient(135deg, #D4954D, #775533);
+      background: linear-gradient(135deg, #1a237e, #283593);
       color: white;
       border: none;
       border-radius: 12px;
@@ -159,6 +159,19 @@
     .estado-aprobada   { background: #d4edda; color: #155724; }
     .estado-pendiente  { background: #fff3cd; color: #856404; }
     .estado-rechazada  { background: #f8d7da; color: #721c24; }
+      /* Logo agrandado Price Nice */
+    .pn-logo-header {
+      width: 200px;
+      height: 200px;
+      object-fit: contain;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.10);
+      padding: 6px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.30);
+      margin-bottom: 12px;
+      transition: transform .3s ease;
+    }
+    .pn-logo-header:hover { transform: scale(1.06); }
   </style>
 </head>
 <body>
@@ -169,7 +182,7 @@
   <div id="seccion-principal">
 
     <div class="panel-header">
-      <img src="img/logo-dark.png" alt="PRICE NICE" height="80" class="mb-3 rounded-3">
+      <img src="img/logo-dark.png" alt="PRICE NICE" class="pn-logo-header" height="200">
       <h1>👤 Panel de Usuario</h1>
       <p id="bienvenida">Bienvenido a tu espacio personal</p>
     </div>
@@ -241,7 +254,7 @@
   <div id="seccion-resenas">
 
     <div class="panel-header">
-      <img src="img/logo-dark.png" alt="PRICE NICE" height="70" class="mb-3 rounded-3">
+      <img src="img/logo-dark.png" alt="PRICE NICE" class="pn-logo-header" height="200">
       <h1>👤 Panel de Usuario</h1>
       <p id="bienvenida-res">Tu espacio personal</p>
     </div>
