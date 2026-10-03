@@ -1,86 +1,880 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Mi Empresa VR</title>
-
-<script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-<link rel="stylesheet" href="style.css">
-<script src="script.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PriceNice — Tu brújula de los buenos precios</title>
+  <!-- Fuentes: Inter (textos) + Instrument Serif (títulos) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
-<body>
+<body class="has-navbar">
 
-<header>
-    <img src="img/LOGO PRIN.jpg" alt="Logo de la empresa" class="logo" width="150" height="150">
-    <p>Tu brújula de los buenos precios</p>
+<!-- ════════════════════════════════════════════
+     NAVBAR BLANCA FIJA
+════════════════════════════════════════════ -->
+<header class="pn-navbar" id="pnNavbar">
+  <div class="pn-navbar-main">
+
+    <!-- Logo -->
+    <a href="Index.html" class="pn-logo" aria-label="PriceNice — inicio">
+      <div class="pn-logo-circle">
+        <img src="img/logo-dark.png" alt="PriceNice" loading="eager">
+      </div>
+      <div class="pn-logo-info">
+        <span class="pn-logo-name"><span class="w">Price</span><span class="b">Nice</span></span>
+        <span class="pn-logo-sub">Tu brújula de los buenos precios</span>
+      </div>
+    </a>
+
+    <!-- Menú principal (desktop) -->
+    <nav class="pn-navbar-menu" aria-label="Menú principal">
+      <a href="Index.html"            class="pn-menu-link active">Inicio</a>
+      <a href="tienda.html"           class="pn-menu-link">Tienda</a>
+      <a href="tienda.html?oferta=1"  class="pn-menu-link">Ofertas</a>
+      <a href="tienda.html?nuevo=1"   class="pn-menu-link">Novedades</a>
+      <a href="precios.html"          class="pn-menu-link">Comparar</a>
+      <a href="tiendas-cercanas.html" class="pn-menu-link">Cercanas</a>
+      <a href="vendedor.html"         class="pn-menu-link">Vendedores</a>
+    </nav>
+
+    <!-- Buscador -->
+    <div class="pn-search" id="pnSearch" role="search">
+      <input type="search" id="pnSearchInput"
+        placeholder="Buscar productos, marcas y tiendas..."
+        aria-label="Buscar" autocomplete="off">
+      <button class="pn-search-btn" onclick="ejecutarBusqueda()" aria-label="Buscar">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+
+    <!-- Acciones -->
+    <div class="pn-actions">
+      <!-- Lupa mobile -->
+      <button class="pn-action-btn" id="btnLupaMobile" style="display:none"
+        onclick="toggleSearchMobile()" aria-label="Buscar">
+        <i class="bi bi-search"></i>
+      </button>
+      <!-- Favoritos -->
+      <button class="pn-action-btn" aria-label="Favoritos"
+        onclick="window.location.href='favoritos.html'">
+        <i class="bi bi-heart"></i>
+        <span class="pn-badge" id="badgeFav" style="display:none">0</span>
+      </button>
+      <!-- Carrito -->
+      <button class="pn-action-btn" aria-label="Carrito" onclick="abrirCarrito()">
+        <i class="bi bi-bag"></i>
+        <span class="pn-badge" id="badgeCarritoNav" style="display:none">0</span>
+      </button>
+      <!-- Sesión -->
+      <div id="pnSesionArea">
+        <a href="login.html" class="pn-btn-sesion">
+          <i class="bi bi-person"></i><span>Iniciar sesión</span>
+        </a>
+      </div>
+      <!-- Hamburguesa -->
+      <button class="pn-hamburger" id="btnHamburguesa"
+        onclick="toggleMobileMenu()" aria-label="Menú">
+        <i class="bi bi-list"></i>
+      </button>
+    </div>
+  </div>
 </header>
 
-<nav>
-    <a href="#inicio">Inicio</a>
-    <a href="#vr">Experiencia VR</a>
-    <a href="#servicios">Servicios</a>
-    <a href="#contacto">Contacto</a>
-    <div id="sesion" style="display:inline; margin-left:15px;"></div>
-</nav>
-
-<section class="hero" id="inicio">
-    <h2>Bienvenido A Tu Emprendimiento de Confianza</h2>
-    <p>
-        Compara precios fácilmente y encuentra las mejores ofertas para tu presupuesto.
-    </p>
-</section>
-
-<div class="tabs">
-    <button onclick="cargar('tienda.html')">
-        Tienda
-    </button>
-    <button onclick="cargar('showroom.html')">
-        Showroom
-    </button>
-    <button onclick="cargar('catalogo.html')">
-        Catálogo
-    </button>
-    <button onclick="cargar('recorrido360.html')">
-        Recorrido 360°
-    </button>
-    <!-- Botón para cargar la página de tiendas cercanas con mapa -->
-    <button onclick="cargar('tiendas-cercanas.html')">
-        📍 Tiendas Cercanas
-    </button>
+<!-- Menú mobile drawer -->
+<div class="pn-mobile-menu" id="mobileMenu">
+  <div class="pn-mobile-menu-overlay" onclick="toggleMobileMenu()"></div>
+  <div class="pn-mobile-menu-panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+      <span class="pn-logo-name" style="font-size:22px"><span class="w">Price</span><span class="b">Nice</span></span>
+      <button onclick="toggleMobileMenu()" style="background:none;border:none;font-size:22px;color:var(--text-2)" aria-label="Cerrar">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+    <nav style="display:flex;flex-direction:column;gap:4px">
+      <a href="Index.html"            class="pn-cat-panel-link active">🏠 Inicio</a>
+      <a href="tienda.html"           class="pn-cat-panel-link">🛒 Tienda</a>
+      <a href="tienda.html?oferta=1"  class="pn-cat-panel-link">🏷️ Ofertas</a>
+      <a href="tienda.html?nuevo=1"   class="pn-cat-panel-link">✨ Novedades</a>
+      <a href="precios.html"          class="pn-cat-panel-link">📊 Comparar precios</a>
+      <a href="tiendas-cercanas.html" class="pn-cat-panel-link">📍 Tiendas cercanas</a>
+      <a href="vendedor.html"         class="pn-cat-panel-link">🏪 Vendedores</a>
+    </nav>
+    <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border)">
+      <a href="login.html" class="pn-btn-primary" style="width:100%;justify-content:center;display:flex">
+        <i class="bi bi-person"></i> Iniciar sesión
+      </a>
+    </div>
+  </div>
 </div>
 
-<iframe
-    id="visor"
-    src="tienda.html">
-</iframe>
 
-<section class="servicios" id="servicios">
+<!-- ════════════════════════════════════════════
+     HERO — DOS COLUMNAS ESTILO SHOPERA
+════════════════════════════════════════════ -->
+<section class="pn-hero" aria-label="Oferta principal">
+  <div class="pn-hero-slides" id="heroSlides">
 
-    <div class="card">
-        <h3>Realidad Virtual</h3>
-        <p>Experiencias inmersivas para clientes y empresas.</p>
+    <!-- ── Slide 1: Moda ── -->
+    <div class="pn-hero-slide">
+      <div class="pn-hero-inner">
+        <div class="pn-hero-left">
+          <span class="pn-eyebrow">hasta 50% de descuento</span>
+          <h1 class="pn-hero-title">
+            Moda que no<br>
+            rompe el <span class="accent">bolsillo.</span>
+          </h1>
+          <p class="pn-hero-desc">
+            Compara ropa y calzado de Falabella, Éxito, Linio y más.
+            Siempre el precio más bajo en un solo lugar.
+          </p>
+          <div class="pn-hero-btns">
+            <a href="tienda.html?cat=moda" class="pn-btn-primary">
+              Ver ofertas <i class="bi bi-arrow-right"></i>
+            </a>
+            <a href="tienda.html" class="pn-btn-secondary">
+              Explorar todo <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+          <div class="pn-hero-benefits">
+            <div class="pn-hero-benefit">
+              <i class="bi bi-bar-chart-line pn-hero-benefit-icon"></i>
+              <div class="pn-hero-benefit-text">
+                <strong>Compara precios</strong>
+                <span>14 tiendas</span>
+              </div>
+            </div>
+            <div class="pn-hero-benefit">
+              <i class="bi bi-geo-alt pn-hero-benefit-icon"></i>
+              <div class="pn-hero-benefit-text">
+                <strong>Tiendas cercanas</strong>
+                <span>7 ciudades</span>
+              </div>
+            </div>
+            <div class="pn-hero-benefit">
+              <i class="bi bi-star pn-hero-benefit-icon"></i>
+              <div class="pn-hero-benefit-text">
+                <strong>Reseñas reales</strong>
+                <span>De compradores</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pn-hero-right">
+          <div class="pn-hero-photo-wrap">
+            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=85&auto=format"
+              alt="Zapatillas de moda" loading="eager">
+          </div>
+          <div class="pn-hero-social-proof">
+            <div class="pn-hero-avatars">
+              <div class="pn-hero-avatar-item">A</div>
+              <div class="pn-hero-avatar-item">M</div>
+              <div class="pn-hero-avatar-item">C</div>
+            </div>
+            <div class="pn-hero-social-text">
+              <strong>+500 compradores</strong>
+              <span>satisfechos esta semana</span>
+            </div>
+            <span class="pn-hero-star">★</span>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="card">
-        <h3>Desarrollo Web</h3>
-        <p>Sitios modernos y adaptables para cualquier dispositivo.</p>
+    <!-- ── Slide 2: Tecnología ── -->
+    <div class="pn-hero-slide">
+      <div class="pn-hero-inner">
+        <div class="pn-hero-left">
+          <span class="pn-eyebrow">nueva colección</span>
+          <h1 class="pn-hero-title">
+            Tecnología al<br>
+            mejor <span class="accent">precio.</span>
+          </h1>
+          <p class="pn-hero-desc">
+            Encuentra los últimos gadgets comparando precios de todas
+            las tiendas en un solo lugar. Sin sorpresas.
+          </p>
+          <div class="pn-hero-btns">
+            <a href="tienda.html?cat=tecnologia" class="pn-btn-primary">
+              Ver productos <i class="bi bi-arrow-right"></i>
+            </a>
+            <a href="precios.html" class="pn-btn-secondary">
+              Comparar precios <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+          <div class="pn-hero-benefits">
+            <div class="pn-hero-benefit">
+              <i class="bi bi-shield-check pn-hero-benefit-icon"></i>
+              <div class="pn-hero-benefit-text">
+                <strong>Precio verificado</strong>
+                <span>0 sobreprecios</span>
+              </div>
+            </div>
+            <div class="pn-hero-benefit">
+              <i class="bi bi-shop pn-hero-benefit-icon"></i>
+              <div class="pn-hero-benefit-text">
+                <strong>Tiendas reales</strong>
+                <span>Físicas y online</span>
+              </div>
+            </div>
+            <div class="pn-hero-benefit">
+              <i class="bi bi-graph-down-arrow pn-hero-benefit-icon"></i>
+              <div class="pn-hero-benefit-text">
+                <strong>Ahorra siempre</strong>
+                <span>Alertas de precio</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pn-hero-right">
+          <div class="pn-hero-photo-wrap">
+            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=85&auto=format"
+              alt="Audífonos bluetooth" loading="lazy">
+          </div>
+          <div class="pn-hero-social-proof">
+            <div class="pn-hero-avatars">
+              <div class="pn-hero-avatar-item">J</div>
+              <div class="pn-hero-avatar-item">L</div>
+              <div class="pn-hero-avatar-item">R</div>
+            </div>
+            <div class="pn-hero-social-text">
+              <strong>+1.2k compradores</strong>
+              <span>confían en PriceNice</span>
+            </div>
+            <span class="pn-hero-star">★</span>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="card">
-        <h3>Innovación Digital</h3>
-        <p>Transformación digital para tu negocio.</p>
+    <!-- ── Slide 3: Mercado ── -->
+    <div class="pn-hero-slide">
+      <div class="pn-hero-inner">
+        <div class="pn-hero-left">
+          <span class="pn-eyebrow">mercado inteligente</span>
+          <h1 class="pn-hero-title">
+            Tu mercado,<br>
+            el precio más <span class="accent">bajo.</span>
+          </h1>
+          <p class="pn-hero-desc">
+            Compara alimentos, higiene y hogar entre D1, Jumbo,
+            Éxito y Carulla. Ahorra en cada compra.
+          </p>
+          <div class="pn-hero-btns">
+            <a href="tienda.html?cat=mercado" class="pn-btn-primary">
+              Ir al mercado <i class="bi bi-arrow-right"></i>
+            </a>
+            <a href="tiendas-cercanas.html" class="pn-btn-secondary">
+              <i class="bi bi-geo-alt"></i> Tiendas cercanas
+            </a>
+          </div>
+          <div class="pn-hero-benefits">
+            <div class="pn-hero-benefit">
+              <i class="bi bi-cart-check pn-hero-benefit-icon"></i>
+              <div class="pn-hero-benefit-text">
+                <strong>8 supermercados</strong>
+                <span>Comparados en vivo</span>
+              </div>
+            </div>
+            <div class="pn-hero-benefit">
+              <i class="bi bi-geo-alt pn-hero-benefit-icon"></i>
+              <div class="pn-hero-benefit-text">
+                <strong>7 ciudades</strong>
+                <span>Colombia</span>
+              </div>
+            </div>
+            <div class="pn-hero-benefit">
+              <i class="bi bi-patch-check pn-hero-benefit-icon"></i>
+              <div class="pn-hero-benefit-text">
+                <strong>100% verificado</strong>
+                <span>Precios reales</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pn-hero-right">
+          <div class="pn-hero-photo-wrap">
+            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=85&auto=format"
+              alt="Smartwatch producto" loading="lazy">
+          </div>
+          <div class="pn-hero-social-proof">
+            <div class="pn-hero-avatars">
+              <div class="pn-hero-avatar-item">P</div>
+              <div class="pn-hero-avatar-item">S</div>
+              <div class="pn-hero-avatar-item">F</div>
+            </div>
+            <div class="pn-hero-social-text">
+              <strong>31+ productos</strong>
+              <span>comparados hoy</span>
+            </div>
+            <span class="pn-hero-star">★</span>
+          </div>
+        </div>
+      </div>
     </div>
 
+  </div><!-- /slides -->
+
+  <!-- Flechas -->
+  <button class="pn-hero-arrow pn-hero-arrow-left"
+    onclick="cambiarSlide(-1)" aria-label="Slide anterior">
+    <i class="bi bi-chevron-left"></i>
+  </button>
+  <button class="pn-hero-arrow pn-hero-arrow-right"
+    onclick="cambiarSlide(1)" aria-label="Siguiente slide">
+    <i class="bi bi-chevron-right"></i>
+  </button>
+
+  <!-- Dots indicadores -->
+  <div class="pn-hero-dots" id="heroDots"
+    role="tablist" aria-label="Indicadores de slide"></div>
 </section>
 
-<footer id="contacto">
-    <h3>Contáctanos</h3>
-    <p>correo@empresa.com</p>
-    <p>+57 300 000 0000</p>
+
+<!-- ════════════════════════════════════════════
+     EXPLORA POR CATEGORÍAS
+════════════════════════════════════════════ -->
+<section class="pn-section bg-white" id="categorias" aria-labelledby="titCat">
+  <div class="pn-container">
+    <div class="pn-section-head fade-up" style="flex-direction:column;align-items:center;text-align:center">
+      <span class="pn-eyebrow">categorías</span>
+      <h2 class="pn-section-title" id="titCat">Explora por categorías</h2>
+      <p class="pn-section-sub">Todo lo que necesitas, organizado para ti</p>
+    </div>
+    <div class="pn-cats-row" role="list">
+      <a href="tienda.html?cat=moda"       class="pn-cat-circle fade-up" role="listitem">
+        <div class="pn-cat-circle-img"><img src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=200&q=80" alt="Moda" loading="lazy"></div>
+        <span class="pn-cat-circle-name">Moda</span>
+      </a>
+      <a href="tienda.html?cat=tecnologia" class="pn-cat-circle fade-up" role="listitem">
+        <div class="pn-cat-circle-img"><img src="https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=200&q=80" alt="Tecnología" loading="lazy"></div>
+        <span class="pn-cat-circle-name">Tecnología</span>
+      </a>
+      <a href="tienda.html?cat=hogar"      class="pn-cat-circle fade-up" role="listitem">
+        <div class="pn-cat-circle-img"><img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=200&q=80" alt="Hogar" loading="lazy"></div>
+        <span class="pn-cat-circle-name">Hogar</span>
+      </a>
+      <a href="tienda.html?cat=mercado"    class="pn-cat-circle fade-up" role="listitem">
+        <div class="pn-cat-circle-img"><img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=200&q=80" alt="Mercado" loading="lazy"></div>
+        <span class="pn-cat-circle-name">Mercado</span>
+      </a>
+      <a href="tienda.html?cat=belleza"    class="pn-cat-circle fade-up" role="listitem">
+        <div class="pn-cat-circle-img"><img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=200&q=80" alt="Belleza" loading="lazy"></div>
+        <span class="pn-cat-circle-name">Belleza</span>
+      </a>
+      <a href="tienda.html?cat=deportes"   class="pn-cat-circle fade-up" role="listitem">
+        <div class="pn-cat-circle-img"><img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=200&q=80" alt="Deportes" loading="lazy"></div>
+        <span class="pn-cat-circle-name">Deportes</span>
+      </a>
+      <a href="tienda.html?cat=juguetes"   class="pn-cat-circle fade-up" role="listitem">
+        <div class="pn-cat-circle-img" style="font-size:30px">🧸</div>
+        <span class="pn-cat-circle-name">Juguetes</span>
+      </a>
+      <a href="tienda.html?cat=drogueria"  class="pn-cat-circle fade-up" role="listitem">
+        <div class="pn-cat-circle-img" style="font-size:30px">💊</div>
+        <span class="pn-cat-circle-name">Droguería</span>
+      </a>
+      <a href="tienda.html?cat=mascotas"   class="pn-cat-circle fade-up" role="listitem">
+        <div class="pn-cat-circle-img" style="font-size:30px">🐾</div>
+        <span class="pn-cat-circle-name">Mascotas</span>
+      </a>
+      <a href="tienda.html?cat=automotriz" class="pn-cat-circle fade-up" role="listitem">
+        <div class="pn-cat-circle-img" style="font-size:30px">🚗</div>
+        <span class="pn-cat-circle-name">Automotriz</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     // LO MÁS COMPRADO // TENDENCIAS
+════════════════════════════════════════════ -->
+<section class="pn-section" aria-labelledby="titTend">
+  <div class="pn-container">
+    <div class="pn-section-head fade-up">
+      <div>
+        <span class="pn-eyebrow">lo más comprado</span>
+        <h2 class="pn-section-title" id="titTend"><em>Tendencias</em></h2>
+        <p class="pn-section-sub">Lo que todos están comprando esta semana</p>
+      </div>
+      <a href="tienda.html" class="pn-section-link">
+        Ver todo <i class="bi bi-arrow-right"></i>
+      </a>
+    </div>
+
+    <!-- Grid con skeletons iniciales -->
+    <div class="pn-product-grid" id="gridTendencias">
+      <div class="pn-skeleton-card"><div class="pn-skeleton pn-skeleton-img"></div><div class="pn-skeleton-body"><div class="pn-skeleton pn-skeleton-line"></div><div class="pn-skeleton pn-skeleton-line w-75"></div><div class="pn-skeleton pn-skeleton-line w-40 tall"></div></div></div>
+      <div class="pn-skeleton-card"><div class="pn-skeleton pn-skeleton-img"></div><div class="pn-skeleton-body"><div class="pn-skeleton pn-skeleton-line"></div><div class="pn-skeleton pn-skeleton-line w-75"></div><div class="pn-skeleton pn-skeleton-line w-40 tall"></div></div></div>
+      <div class="pn-skeleton-card"><div class="pn-skeleton pn-skeleton-img"></div><div class="pn-skeleton-body"><div class="pn-skeleton pn-skeleton-line"></div><div class="pn-skeleton pn-skeleton-line w-75"></div><div class="pn-skeleton pn-skeleton-line w-40 tall"></div></div></div>
+      <div class="pn-skeleton-card"><div class="pn-skeleton pn-skeleton-img"></div><div class="pn-skeleton-body"><div class="pn-skeleton pn-skeleton-line"></div><div class="pn-skeleton pn-skeleton-line w-75"></div><div class="pn-skeleton pn-skeleton-line w-40 tall"></div></div></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     BANNERS DE OFERTAS
+════════════════════════════════════════════ -->
+<section class="pn-section bg-white" style="padding-top:0" aria-label="Ofertas destacadas">
+  <div class="pn-container">
+    <div class="pn-banners-grid">
+
+      <a href="tienda.html?oferta=1" class="pn-banner-card fade-up" style="text-decoration:none">
+        <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&q=80" alt="Oferta temporada" loading="lazy">
+        <div class="pn-banner-overlay"></div>
+        <div class="pn-banner-content">
+          <p class="pn-banner-tag">// temporada //</p>
+          <h3 class="pn-banner-title">
+            <em>vendidos</em><br>más
+          </h3>
+          <span class="pn-banner-btn">Ver ofertas <i class="bi bi-arrow-right"></i></span>
+        </div>
+      </a>
+
+      <a href="tiendas-cercanas.html" class="pn-banner-card fade-up" style="text-decoration:none">
+        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80" alt="Tiendas cercanas" loading="lazy">
+        <div class="pn-banner-overlay"></div>
+        <div class="pn-banner-content">
+          <p class="pn-banner-tag">// cerca de ti //</p>
+          <h3 class="pn-banner-title">
+            <em>tiendas</em><br>cercanas
+          </h3>
+          <span class="pn-banner-btn">Explorar <i class="bi bi-arrow-right"></i></span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     COLECCIONES DESTACADAS
+════════════════════════════════════════════ -->
+<section class="pn-section" aria-labelledby="titCol">
+  <div class="pn-container">
+    <div class="pn-section-head fade-up">
+      <div>
+        <span class="pn-eyebrow">colecciones</span>
+        <h2 class="pn-section-title" id="titCol">Colecciones <span class="accent">destacadas</span></h2>
+        <p class="pn-section-sub">Selecciones cuidadosas para cada estilo de vida</p>
+      </div>
+      <a href="tienda.html" class="pn-section-link">Ver todo <i class="bi bi-arrow-right"></i></a>
+    </div>
+    <div class="pn-collections-grid">
+      <a href="tienda.html?cat=moda" class="pn-collection-card fade-up" style="text-decoration:none">
+        <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&q=80" alt="Outfits elegantes" loading="lazy">
+        <div class="pn-collection-overlay"></div>
+        <div class="pn-collection-name">
+          <em>Outfits elegantes</em>
+          <div class="pn-collection-sub">Explora el estilo</div>
+        </div>
+      </a>
+      <a href="tienda.html?cat=belleza" class="pn-collection-card fade-up" style="text-decoration:none">
+        <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600&q=80" alt="Esenciales de belleza" loading="lazy">
+        <div class="pn-collection-overlay"></div>
+        <div class="pn-collection-name">
+          <em>Esenciales belleza</em>
+          <div class="pn-collection-sub">Luce cada día</div>
+        </div>
+      </a>
+      <a href="tienda.html?cat=tecnologia" class="pn-collection-card fade-up" style="text-decoration:none">
+        <img src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=600&q=80" alt="Gaming y tech" loading="lazy">
+        <div class="pn-collection-overlay"></div>
+        <div class="pn-collection-name">
+          <em>Gaming & Tech</em>
+          <div class="pn-collection-sub">Nivel tu experiencia</div>
+        </div>
+      </a>
+      <a href="tienda.html?cat=hogar" class="pn-collection-card fade-up" style="text-decoration:none">
+        <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&q=80" alt="Hogar moderno" loading="lazy">
+        <div class="pn-collection-overlay"></div>
+        <div class="pn-collection-name">
+          <em>Hogar moderno</em>
+          <div class="pn-collection-sub">Tu espacio, tu estilo</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     FRANJA BENEFICIOS (azul marino)
+════════════════════════════════════════════ -->
+<div class="pn-benefits fade-up" aria-label="Beneficios de PriceNice">
+  <div class="pn-container">
+    <div class="pn-benefits-grid">
+      <div class="pn-benefit-item">
+        <div class="pn-benefit-icon"><i class="bi bi-bar-chart-line"></i></div>
+        <div>
+          <div class="pn-benefit-title">Comparación de precios</div>
+          <div class="pn-benefit-sub">Un solo lugar, todas las tiendas</div>
+        </div>
+      </div>
+      <div class="pn-benefit-item">
+        <div class="pn-benefit-icon"><i class="bi bi-geo-alt"></i></div>
+        <div>
+          <div class="pn-benefit-title">Tiendas cercanas</div>
+          <div class="pn-benefit-sub">Encuentra dónde comprar cerca a ti</div>
+        </div>
+      </div>
+      <div class="pn-benefit-item">
+        <div class="pn-benefit-icon"><i class="bi bi-star"></i></div>
+        <div>
+          <div class="pn-benefit-title">Reseñas reales</div>
+          <div class="pn-benefit-sub">Opiniones verificadas de compradores</div>
+        </div>
+      </div>
+      <div class="pn-benefit-item">
+        <div class="pn-benefit-icon"><i class="bi bi-shield-check"></i></div>
+        <div>
+          <div class="pn-benefit-title">Compra segura</div>
+          <div class="pn-benefit-sub">Precios verificados, sin sorpresas</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════
+     FOOTER (azul marino)
+════════════════════════════════════════════ -->
+<footer class="pn-footer" aria-label="Pie de página">
+  <div class="pn-container">
+    <div class="pn-footer-grid">
+
+      <!-- Marca -->
+      <div class="pn-footer-brand">
+        <div class="pn-footer-logo">
+          <div class="pn-footer-logo-circle">
+            <img src="img/logo-dark.png" alt="PriceNice" loading="lazy">
+          </div>
+          <span class="pn-footer-logo-name"><span class="w">Price</span><span class="b">Nice</span></span>
+        </div>
+        <p>Tu brújula de los buenos precios. Comparamos precios de todas las tiendas para que siempre pagues lo justo.</p>
+        <div class="pn-footer-social" aria-label="Redes sociales">
+          <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+          <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+          <a href="#" aria-label="TikTok"><i class="bi bi-tiktok"></i></a>
+          <a href="#" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+        </div>
+      </div>
+
+      <!-- Navegar -->
+      <div class="pn-footer-col">
+        <h4>Navegar</h4>
+        <a href="Index.html">Inicio</a>
+        <a href="tienda.html">Tienda virtual</a>
+        <a href="catalogo.html">Catálogo</a>
+        <a href="precios.html">Comparar precios</a>
+        <a href="tiendas-cercanas.html">Tiendas cercanas</a>
+      </div>
+
+      <!-- Cuenta -->
+      <div class="pn-footer-col">
+        <h4>Mi cuenta</h4>
+        <a href="login.html">Iniciar sesión</a>
+        <a href="login.html#registro">Registrarse</a>
+        <a href="favoritos.html">Mis favoritos</a>
+        <a href="vendedor.html">Panel vendedor</a>
+        <a href="usuario.html">Panel usuario</a>
+      </div>
+
+      <!-- Contacto -->
+      <div class="pn-footer-col">
+        <h4>Contacto</h4>
+        <a href="mailto:hola@pricenice.co"><i class="bi bi-envelope me-2"></i>hola@pricenice.co</a>
+        <a href="tel:+573001234567"><i class="bi bi-telephone me-2"></i>+57 300 123 4567</a>
+        <a href="#"><i class="bi bi-geo-alt me-2"></i>Colombia</a>
+      </div>
+
+    </div>
+    <div class="pn-footer-bottom">
+      <span>© 2026 PriceNice. Todos los derechos reservados.</span>
+      <span>Hecho con ❤️ en Colombia</span>
+    </div>
+  </div>
 </footer>
+
+
+<!-- ════════════════════════════════════════════
+     CARRITO LATERAL
+════════════════════════════════════════════ -->
+<div class="pn-cart-overlay" id="cartOverlay" onclick="cerrarCarrito()"></div>
+<aside class="pn-cart-panel" id="cartPanel" role="dialog" aria-label="Carrito de compras">
+  <div class="pn-cart-header">
+    <h2><i class="bi bi-bag me-2"></i>Mi carrito</h2>
+    <button class="pn-cart-close" onclick="cerrarCarrito()" aria-label="Cerrar carrito">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+  <div class="pn-cart-body" id="cartBody">
+    <div class="pn-cart-empty" id="cartEmpty">
+      <span class="icon">🛍️</span>
+      <strong style="color:var(--text-2)">Tu carrito está vacío</strong>
+      <p style="font-size:13px;margin-top:6px">Agrega productos para comenzar.</p>
+    </div>
+    <div id="cartItems"></div>
+  </div>
+  <div class="pn-cart-footer" id="cartFooter" style="display:none">
+    <div class="pn-cart-totals">
+      <div class="pn-cart-total-row"><span>Subtotal</span><span id="cartSubtotal">$0</span></div>
+      <div class="pn-cart-total-row"><span>Envío estimado</span><span id="cartEnvio">$0</span></div>
+      <div class="pn-cart-total-row main"><span>Total</span><span id="cartTotal">$0</span></div>
+    </div>
+    <button class="pn-btn-checkout" onclick="window.location.href='tienda.html'">
+      <i class="bi bi-credit-card me-2"></i>Proceder al pago
+    </button>
+    <button class="pn-btn-vaciar" onclick="vaciarCarrito()">
+      <i class="bi bi-trash me-2"></i>Vaciar carrito
+    </button>
+  </div>
+</aside>
+
+<!-- Toast -->
+<div class="pn-toast" id="pnToast" role="alert" aria-live="polite">
+  <i class="bi bi-check-circle-fill" style="color:#16A34A"></i>
+  <span id="pnToastMsg">Producto agregado</span>
+</div>
+
+<!-- Scroll top -->
+<button id="pn-scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">
+  <i class="bi bi-chevron-up"></i>
+</button>
+
+
+<!-- ════════════════════════════════════════════
+     SCRIPTS
+════════════════════════════════════════════ -->
 <script type="module" src="archivo sesión.js"></script>
+<script type="module" src="script.js"></script>
+
+<script>
+/* ── Datos de productos ── */
+const PRODUCTOS_DATA = [
+  {id:1,  nombre:"Crema Hidratante Facial",      precio:38900,  tienda:"Cruz Verde", cat:"belleza",    estrellas:4.5, resenas:128, imagen:"https://images.unsplash.com/photo-1556228841-a3c527ebefe5?w=400&q=80", desde:true},
+  {id:2,  nombre:"Audífonos Bluetooth Pro",       precio:129900, tienda:"Alkosto",    cat:"tecnologia", estrellas:4.7, resenas:342, imagen:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80", desde:false},
+  {id:3,  nombre:"Zapatillas Running CloudX",     precio:189900, tienda:"Éxito",      cat:"moda",       estrellas:4.3, resenas:89,  imagen:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80", desde:true, mejorPrecio:true},
+  {id:4,  nombre:"Sábanas Microfibra Queen",      precio:119900, tienda:"Alkosto",    cat:"hogar",      estrellas:4.6, resenas:201, imagen:"https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&q=80", desde:false},
+  {id:5,  nombre:"Aceite de Oliva Extra Virgen",  precio:28900,  tienda:"PriceSmart", cat:"mercado",    estrellas:4.8, resenas:412, imagen:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400&q=80", desde:true},
+  {id:6,  nombre:"Sérum Vitamina C 30ml",         precio:89900,  tienda:"Linio",      cat:"belleza",    estrellas:4.9, resenas:576, imagen:"https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=400&q=80", desde:true, mejorPrecio:true},
+  {id:7,  nombre:"Smartwatch Fitness Pro",        precio:249900, tienda:"Falabella",  cat:"tecnologia", estrellas:4.4, resenas:234, imagen:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80", desde:false},
+  {id:8,  nombre:"Detergente Líquido 3L",         precio:24900,  tienda:"D1",         cat:"mercado",    estrellas:4.2, resenas:67,  imagen:"https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=400&q=80", desde:true}
+];
+
+/* ── Carrusel ── */
+let slideActual = 0, autoTimer;
+const totalSlides = document.querySelectorAll('.pn-hero-slide').length;
+
+function iniciarCarrusel() {
+  const dots = document.getElementById('heroDots');
+  for (let i = 0; i < totalSlides; i++) {
+    const d = document.createElement('button');
+    d.className = 'pn-hero-dot' + (i===0?' active':'');
+    d.setAttribute('aria-label', `Ir al slide ${i+1}`);
+    d.onclick = () => { reiniciarAuto(); irASlide(i); };
+    dots.appendChild(d);
+  }
+  autoTimer = setInterval(() => irASlide(slideActual+1), 5000);
+}
+
+function irASlide(n) {
+  slideActual = (n + totalSlides) % totalSlides;
+  document.getElementById('heroSlides').style.transform = `translateX(-${slideActual*100}%)`;
+  document.querySelectorAll('.pn-hero-dot').forEach((d,i) => d.classList.toggle('active', i===slideActual));
+}
+function cambiarSlide(dir) { reiniciarAuto(); irASlide(slideActual+dir); }
+function reiniciarAuto()   { clearInterval(autoTimer); autoTimer = setInterval(() => irASlide(slideActual+1), 5000); }
+
+/* Swipe touch */
+let txStart = 0;
+const heroEl = document.querySelector('.pn-hero');
+if (heroEl) {
+  heroEl.addEventListener('touchstart', e => { txStart = e.touches[0].clientX; }, {passive:true});
+  heroEl.addEventListener('touchend',   e => {
+    const d = txStart - e.changedTouches[0].clientX;
+    if (Math.abs(d) > 50) cambiarSlide(d > 0 ? 1 : -1);
+  });
+}
+
+/* ── Navbar scroll ── */
+window.addEventListener('scroll', () => {
+  document.getElementById('pnNavbar').classList.toggle('scrolled', window.scrollY > 10);
+  document.getElementById('pn-scroll-top').classList.toggle('show', window.scrollY > 400);
+}, {passive:true});
+
+/* ── Buscador ── */
+function ejecutarBusqueda() {
+  const q = document.getElementById('pnSearchInput').value.trim();
+  if (q) window.location.href = `tienda.html?q=${encodeURIComponent(q)}`;
+}
+document.getElementById('pnSearchInput')?.addEventListener('keydown', e => {
+  if (e.key === 'Enter') ejecutarBusqueda();
+});
+function toggleSearchMobile() {
+  document.getElementById('pnSearch').classList.toggle('mobile-open');
+}
+
+/* ── Menú mobile ── */
+function toggleMobileMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+  document.body.style.overflow = document.getElementById('mobileMenu').classList.contains('open') ? 'hidden' : '';
+}
+
+/* ── Renderizar tarjetas ── */
+function fmtPrecio(n)  { return '$'+n.toLocaleString('es-CO'); }
+function renderStars(v) {
+  return [...Array(5)].map((_,i) =>
+    `<i class="bi bi-star${i<Math.floor(v)?'-fill':i-v<1&&v%1?'-half':''}"
+       style="color:var(--yellow)"></i>`).join('');
+}
+
+function crearTarjeta(p) {
+  const favs  = JSON.parse(localStorage.getItem('pn_favoritos')||'[]');
+  const isFav = favs.includes(p.id);
+  return `
+  <article class="pn-product-card fade-up" data-id="${p.id}">
+    <div class="pn-product-img">
+      ${p.mejorPrecio ? '<span class="pn-best-badge">Mejor precio</span>' : ''}
+      <img src="${p.imagen}" alt="${p.nombre}" loading="lazy">
+      <button class="pn-fav-btn ${isFav?'active':''}" data-id="${p.id}"
+        onclick="toggleFav(this,${p.id})"
+        aria-label="Favorito" aria-pressed="${isFav}">
+        <i class="bi bi-heart${isFav?'-fill':''}"></i>
+      </button>
+    </div>
+    <div class="pn-product-body">
+      <h3 class="pn-product-name">${p.nombre}</h3>
+      <div class="pn-stars">${renderStars(p.estrellas)} <span>(${p.resenas})</span></div>
+      <div class="pn-product-price">${fmtPrecio(p.precio)}</div>
+      ${p.desde
+        ? `<div class="pn-product-store">Desde ${fmtPrecio(p.precio)} en ${p.tienda}</div>`
+        : `<div class="pn-product-from">${p.tienda}</div>`}
+      <button class="pn-add-btn" onclick="agregarCarrito(${p.id})"
+        aria-label="Agregar ${p.nombre} al carrito">
+        <i class="bi bi-bag-plus"></i> Agregar al carrito
+      </button>
+    </div>
+  </article>`;
+}
+
+function cargarTendencias() {
+  setTimeout(() => {
+    document.getElementById('gridTendencias').innerHTML =
+      PRODUCTOS_DATA.map(crearTarjeta).join('');
+    observarFadeUp();
+  }, 650);
+}
+
+/* ── Carrito ── */
+function getCarrito() { return JSON.parse(localStorage.getItem('pn_carrito')||'[]'); }
+function setCarrito(c) { localStorage.setItem('pn_carrito', JSON.stringify(c)); }
+
+function actualizarBadges() {
+  const total = getCarrito().reduce((a,i) => a+i.qty, 0);
+  const b = document.getElementById('badgeCarritoNav');
+  if (b) {
+    if (total > 0) { b.textContent = total>99?'99+':total; b.style.display='flex'; b.classList.add('bounce'); setTimeout(()=>b.classList.remove('bounce'),400); }
+    else b.style.display = 'none';
+  }
+  const fTotal = JSON.parse(localStorage.getItem('pn_favoritos')||'[]').length;
+  const bf = document.getElementById('badgeFav');
+  if (bf) { if(fTotal>0){bf.textContent=fTotal;bf.style.display='flex';}else bf.style.display='none'; }
+}
+
+function renderCarrito() {
+  const c = getCarrito();
+  const items  = document.getElementById('cartItems');
+  const empty  = document.getElementById('cartEmpty');
+  const footer = document.getElementById('cartFooter');
+  if (!items) return;
+  if (c.length === 0) { empty.style.display='block'; items.innerHTML=''; footer.style.display='none'; return; }
+  empty.style.display = 'none'; footer.style.display = 'block';
+  items.innerHTML = c.map(i => `
+    <div class="pn-cart-item">
+      <div class="pn-cart-item-img"><img src="${i.imagen||'img/logo-dark.png'}" alt="${i.nombre}" loading="lazy"></div>
+      <div class="pn-cart-item-info">
+        <div class="pn-cart-item-name">${i.nombre}</div>
+        <div class="pn-cart-item-store">${i.tienda||''}</div>
+        <div class="pn-cart-item-price">${fmtPrecio(i.precio*i.qty)}</div>
+        <div class="pn-qty-ctrl">
+          <button class="pn-qty-btn" onclick="qtyCarrito(${i.id},-1)">−</button>
+          <span class="pn-qty-num">${i.qty}</span>
+          <button class="pn-qty-btn" onclick="qtyCarrito(${i.id},1)">+</button>
+        </div>
+      </div>
+      <button class="pn-cart-item-del" onclick="quitarCarrito(${i.id})" aria-label="Eliminar">
+        <i class="bi bi-trash"></i>
+      </button>
+    </div>`).join('');
+  const sub = c.reduce((a,i) => a+i.precio*i.qty, 0);
+  document.getElementById('cartSubtotal').textContent = fmtPrecio(sub);
+  document.getElementById('cartEnvio').textContent    = sub >= 150000 ? 'Gratis' : fmtPrecio(9900);
+  document.getElementById('cartTotal').textContent    = fmtPrecio(sub >= 150000 ? sub : sub+9900);
+}
+
+function agregarCarrito(id) {
+  const p = PRODUCTOS_DATA.find(x => x.id===id); if (!p) return;
+  const c = getCarrito(); const e = c.find(i => i.id===id);
+  if (e) e.qty++; else c.push({id:p.id,nombre:p.nombre,precio:p.precio,tienda:p.tienda,imagen:p.imagen,qty:1});
+  setCarrito(c); actualizarBadges(); renderCarrito(); mostrarToast('Producto agregado al carrito');
+}
+function qtyCarrito(id,d) { const c=getCarrito();const i=c.find(x=>x.id===id);if(!i)return;i.qty=Math.max(1,i.qty+d);setCarrito(c);actualizarBadges();renderCarrito(); }
+function quitarCarrito(id) { setCarrito(getCarrito().filter(i=>i.id!==id));actualizarBadges();renderCarrito(); }
+function vaciarCarrito()   { if(!confirm('¿Vaciar carrito?'))return;setCarrito([]);actualizarBadges();renderCarrito(); }
+function abrirCarrito()    { document.getElementById('cartPanel').classList.add('open');document.getElementById('cartOverlay').classList.add('open');document.body.style.overflow='hidden';renderCarrito(); }
+function cerrarCarrito()   { document.getElementById('cartPanel').classList.remove('open');document.getElementById('cartOverlay').classList.remove('open');document.body.style.overflow=''; }
+
+/* ── Favoritos ── */
+function getFavs()  { return JSON.parse(localStorage.getItem('pn_favoritos')||'[]'); }
+function setFavs(f) { localStorage.setItem('pn_favoritos',JSON.stringify(f)); }
+function toggleFav(btn,id) {
+  let f=getFavs(); const idx=f.indexOf(id);
+  if(idx===-1){ f.push(id);btn.innerHTML='<i class="bi bi-heart-fill"></i>';btn.classList.add('active');mostrarToast('Guardado en favoritos'); }
+  else        { f.splice(idx,1);btn.innerHTML='<i class="bi bi-heart"></i>';btn.classList.remove('active'); }
+  btn.classList.add('heartbeat'); setTimeout(()=>btn.classList.remove('heartbeat'),400);
+  setFavs(f); actualizarBadges();
+}
+
+/* ── Toast ── */
+let toastT;
+function mostrarToast(msg) {
+  const t = document.getElementById('pnToast');
+  document.getElementById('pnToastMsg').textContent = msg;
+  t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+/* ── Fade-up ── */
+function observarFadeUp() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, {threshold:0.07});
+  document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+}
+
+/* ── Mobile lupa ── */
+function setupMobileNav() {
+  const b = document.getElementById('btnLupaMobile');
+  if (b) { b.style.display = window.innerWidth<=768?'flex':'none'; }
+  window.addEventListener('resize',()=>{ if(b) b.style.display=window.innerWidth<=768?'flex':'none'; });
+}
+
+/* ── Init ── */
+document.addEventListener('DOMContentLoaded', () => {
+  iniciarCarrusel();
+  cargarTendencias();
+  actualizarBadges();
+  observarFadeUp();
+  setupMobileNav();
+});
+</script>
 
 </body>
 </html>

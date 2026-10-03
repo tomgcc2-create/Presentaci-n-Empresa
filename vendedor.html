@@ -3,1750 +3,929 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel Vendedor | PRICE NICE</title>
-  <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <title>Panel Vendedor | PriceNice</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <style>
-    /* ════════════════════════════
-       HEADER
-    ════════════════════════════ */
-    .panel-header {
-      background: linear-gradient(135deg, #1a237e, #283593);
-      color: white;
-      padding: 40px 20px;
+    /* ── Layout del panel vendedor ── */
+    .pn-vendor-page { padding: 32px 0 64px; }
+
+    /* Cards de menú principal */
+    .pn-vendor-menu-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-bottom: 40px;
+    }
+    @media(max-width:900px){ .pn-vendor-menu-grid { grid-template-columns: repeat(2,1fr); } }
+    @media(max-width:480px){ .pn-vendor-menu-grid { grid-template-columns: 1fr; } }
+
+    .pn-vendor-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-xl);
+      padding: 28px 24px;
       text-align: center;
-      border-radius: 0 0 20px 20px;
-      margin-bottom: 30px;
+      transition: background var(--t), border-color var(--t), transform var(--t), box-shadow var(--t);
+      cursor: pointer;
     }
-    .panel-header h1 { font-size: 2rem; margin-bottom: 8px; }
-    .panel-header p  { opacity: 0.9; }
-
-    /* ════════════════════════════
-       CARDS MENÚ PRINCIPAL
-    ════════════════════════════ */
-    .card-opcion {
-      border: none;
-      border-radius: 16px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.10);
-      transition: transform 0.2s, box-shadow 0.2s;
+    .pn-vendor-card:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(74,144,226,.4);
+      transform: translateY(-5px);
+      box-shadow: 0 12px 36px rgba(0,0,0,.3), 0 0 20px rgba(74,144,226,.12);
     }
-    .card-opcion:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(26,110,60,0.25);
-    }
-    .icono { font-size: 2.5rem; margin-bottom: 12px; }
-
-    /* ════════════════════════════
-       SECCIONES (ocultas por defecto)
-    ════════════════════════════ */
-    #seccion-publicar,
-    #seccion-mis-productos,
-    #seccion-resenas,
-    #seccion-catalogo-empresa { display: none; }
-
-    /* ════════════════════════════
-       CABECERA COMPARTIDA DE SECCIONES
-    ════════════════════════════ */
-    .form-header {
-      background: linear-gradient(135deg, #1a237e, #283593);
-      color: white;
-      padding: 28px 20px 20px;
-      text-align: center;
-      border-radius: 16px 16px 0 0;
-    }
-    .form-header h2 { font-size: 1.6rem; margin-bottom: 4px; }
-    .form-header p  { opacity: 0.85; font-size: 0.92rem; }
-
-    .form-wrapper {
-      background: white;
-      border-radius: 0 0 16px 16px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
-      padding: 32px 36px 36px;
-    }
-
-    /* ════════════════════════════
-       FORMULARIO
-    ════════════════════════════ */
-    .seccion-titulo {
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #1a6e3c;
-      border-bottom: 2px solid #d4edda;
-      padding-bottom: 6px;
-      margin-bottom: 18px;
-      margin-top: 8px;
-    }
-    .form-label {
-      font-weight: 600;
-      font-size: 0.88rem;
-      color: #333;
-      margin-bottom: 4px;
-    }
-    .form-control, .form-select {
-      border-radius: 10px;
-      border: 1.5px solid #d0d0d0;
-      font-size: 0.93rem;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .form-control:focus, .form-select:focus {
-      border-color: #1a6e3c;
-      box-shadow: 0 0 0 3px rgba(26,110,60,0.13);
-    }
-    #preview-imagen, #edit-preview-imagen {
-      display: none;
-      width: 100%;
-      max-height: 220px;
-      object-fit: contain;
-      border-radius: 10px;
-      border: 1.5px solid #d0d0d0;
-      margin-top: 8px;
-      background: #f8f8f8;
-    }
-    .btn-publicar, .btn-guardar {
-      background: linear-gradient(135deg, #1a237e, #283593);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      padding: 12px 36px;
-      font-size: 1rem;
-      font-weight: 700;
-      transition: opacity 0.2s, transform 0.15s;
-    }
-    .btn-publicar:hover, .btn-guardar:hover {
-      opacity: 0.9;
-      transform: translateY(-1px);
-      color: white;
-    }
-    .btn-cancelar {
-      border-radius: 12px;
-      padding: 12px 28px;
-      font-size: 0.95rem;
-      font-weight: 600;
-    }
-    #alerta-publicado, #alerta-guardado {
-      display: none;
-      border-radius: 12px;
-    }
-
-    /* ════════════════════════════
-       MIS PRODUCTOS — barra superior
-    ════════════════════════════ */
-    .mis-prod-header {
-      background: white;
-      border-radius: 0 0 16px 16px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-      padding: 24px 28px 20px;
-      margin-bottom: 20px;
-    }
-    .buscador-prod {
-      border-radius: 30px;
-      border: 1.5px solid #d0d0d0;
-      padding: 10px 18px;
-      font-size: 0.93rem;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .buscador-prod:focus {
-      border-color: #1a6e3c;
-      box-shadow: 0 0 0 3px rgba(26,110,60,0.12);
-      outline: none;
-    }
-    .filtro-select-prod {
-      border-radius: 10px;
-      border: 1.5px solid #d0d0d0;
-      padding: 9px 14px;
-      font-size: 0.9rem;
-      background: #fafafa;
-      transition: border-color 0.2s;
-    }
-    .filtro-select-prod:focus {
-      border-color: #1a6e3c;
-      box-shadow: 0 0 0 3px rgba(26,110,60,0.12);
-      outline: none;
-    }
-    .info-resultados {
-      font-size: 0.83rem;
-      color: #888;
-    }
-    .info-resultados strong { color: #1a6e3c; }
-
-    /* ════════════════════════════
-       TARJETAS DE PRODUCTO
-    ════════════════════════════ */
-    .prod-card {
-      border: none;
-      border-radius: 16px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.09);
-      overflow: hidden;
-      transition: transform 0.2s, box-shadow 0.2s;
-      background: white;
-      display: flex;
-      flex-direction: column;
-    }
-    .prod-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 24px rgba(26,110,60,0.18);
-    }
-    .prod-card-img {
-      width: 100%;
-      height: 160px;
-      object-fit: cover;
-      background: #f4f4f4;
-    }
-    .prod-card-img-placeholder {
-      width: 100%;
-      height: 160px;
-      background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 3rem;
-    }
-    .prod-card-body {
-      padding: 16px 18px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-    .prod-nombre {
-      font-weight: 700;
-      font-size: 1rem;
-      color: #1a1a1a;
-      margin-bottom: 4px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .prod-descripcion {
-      font-size: 0.82rem;
-      color: #777;
-      margin-bottom: 10px;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-    .prod-meta {
-      font-size: 0.8rem;
-      color: #555;
-      margin-bottom: 3px;
-    }
-    .prod-precio {
-      font-size: 1.25rem;
-      font-weight: 800;
-      color: #1a6e3c;
-      margin: 8px 0 4px;
-    }
-    .badge-estado {
-      font-size: 0.72rem;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 20px;
-      display: inline-block;
-      margin-bottom: 10px;
-    }
-    .estado-nuevo         { background: #d4edda; color: #155724; }
-    .estado-como_nuevo    { background: #cce5ff; color: #004085; }
-    .estado-buen_estado   { background: #fff3cd; color: #856404; }
-    .estado-aceptable     { background: #fde8d8; color: #7d3c10; }
-    .estado-reacondicionado { background: #e2d9f3; color: #4a235a; }
-
-    .prod-acciones {
-      display: flex;
-      gap: 8px;
-      margin-top: auto;
-      padding-top: 12px;
-      border-top: 1px solid #f0f0f0;
-    }
-    .btn-editar {
-      flex: 1;
-      border-radius: 10px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      padding: 8px;
-      border: 1.5px solid #1a6e3c;
-      color: #1a6e3c;
-      background: white;
-      transition: all 0.2s;
-    }
-    .btn-editar:hover {
-      background: #1a6e3c;
-      color: white;
-    }
-    .btn-eliminar {
-      flex: 1;
-      border-radius: 10px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      padding: 8px;
-      border: 1.5px solid #dc3545;
-      color: #dc3545;
-      background: white;
-      transition: all 0.2s;
-    }
-    .btn-eliminar:hover {
-      background: #dc3545;
-      color: white;
-    }
-
-    /* ════════════════════════════
-       ESTADO VACÍO
-    ════════════════════════════ */
-    .sin-productos {
-      text-align: center;
-      padding: 60px 20px;
-      color: #999;
-    }
-    .sin-productos span { font-size: 3.5rem; display: block; margin-bottom: 14px; }
-
-    /* ════════════════════════════
-       MODAL CONFIRMACIÓN ELIMINAR
-    ════════════════════════════ */
-    .modal-confirmar .modal-header {
-      background: linear-gradient(135deg, #dc3545, #a71d2a);
-      color: white;
-      border-radius: 12px 12px 0 0;
-    }
-    .modal-confirmar .modal-content {
-      border-radius: 12px;
-      border: none;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-    }
-    .modal-confirmar .btn-close { filter: invert(1); }
-
-    /* ════════════════════════════
-       MODAL EDITAR
-    ════════════════════════════ */
-    .modal-editar .modal-header {
-      background: linear-gradient(135deg, #1a237e, #283593);
-      color: white;
-      border-radius: 12px 12px 0 0;
-    }
-    .modal-editar .modal-content {
-      border-radius: 12px;
-      border: none;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-    }
-    .modal-editar .modal-title { font-weight: 700; }
-    .modal-editar .btn-close { filter: invert(1); }
-    .modal-editar .form-label { font-weight: 600; font-size: 0.87rem; color: #333; }
-    .modal-editar .form-control,
-    .modal-editar .form-select {
-      border-radius: 10px;
-      border: 1.5px solid #d0d0d0;
-      font-size: 0.92rem;
-    }
-    .modal-editar .form-control:focus,
-    .modal-editar .form-select:focus {
-      border-color: #1a6e3c;
-      box-shadow: 0 0 0 3px rgba(26,110,60,0.13);
-    }
-    .modal-editar .seccion-titulo {
-      font-size: 0.74rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #1a6e3c;
-      border-bottom: 2px solid #d4edda;
-      padding-bottom: 5px;
+    .pn-vendor-card-icon {
+      font-size: 2.2rem;
       margin-bottom: 14px;
-      margin-top: 6px;
+      display: block;
+    }
+    .pn-vendor-card h3 { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .pn-vendor-card p  { font-size: .8rem; color: var(--text-55); margin-bottom: 16px; line-height: 1.5; }
+
+    /* Secciones (ocultas por defecto) */
+    .pn-vendor-section { display: none; }
+    .pn-vendor-section.active { display: block; }
+
+    /* Breadcrumb / cabecera sección */
+    .pn-section-header {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 28px; flex-wrap: wrap;
+    }
+    .pn-section-header h2 { font-size: 1.4rem; font-weight: 700; color: var(--text); }
+    .pn-back-btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 8px 16px;
+      background: var(--bg-card); border: 1px solid var(--border-card);
+      border-radius: var(--radius-pill); color: var(--text-80);
+      font-size: .82rem; font-weight: 600;
+      transition: border-color var(--t-fast), color var(--t-fast);
+    }
+    .pn-back-btn:hover { border-color: var(--accent); color: var(--accent-light); }
+
+    /* Alerta */
+    .pn-alert {
+      display: none; padding: 14px 18px;
+      border-radius: var(--radius); margin-bottom: 20px;
+      font-size: .88rem; font-weight: 600;
+      align-items: center; gap: 10px;
+    }
+    .pn-alert.show { display: flex; }
+    .pn-alert-success {
+      background: rgba(34,197,94,.12);
+      border: 1px solid rgba(34,197,94,.3);
+      color: var(--green);
+    }
+    .pn-alert-error {
+      background: rgba(239,68,68,.1);
+      border: 1px solid rgba(239,68,68,.3);
+      color: var(--red);
     }
 
-    /* ════════════════════════════
-       SECCIÓN RESEÑAS DEL VENDEDOR
-    ════════════════════════════ */
-    .res-filtros-bar {
-      background: white;
-      border-radius: 0 0 16px 16px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-      padding: 22px 28px 18px;
-      margin-bottom: 20px;
+    /* Vista previa tarjeta */
+    .pn-preview-card {
+      background: var(--bg-card); border: 1px solid var(--border-card);
+      border-radius: var(--radius-xl); overflow: hidden; max-width: 280px;
     }
-    .res-filtros-bar .form-control,
-    .res-filtros-bar .form-select {
-      border-radius: 10px;
-      border: 1.5px solid #d0d0d0;
-      font-size: 0.9rem;
+    .pn-preview-img {
+      aspect-ratio: 1/1; background: var(--bg-mid);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem; color: var(--text-30);
+      overflow: hidden; position: relative;
     }
-    .res-filtros-bar .form-control:focus,
-    .res-filtros-bar .form-select:focus {
-      border-color: #1a6e3c;
-      box-shadow: 0 0 0 3px rgba(26,110,60,0.12);
+    .pn-preview-img img { width: 100%; height: 100%; object-fit: cover; display: none; }
+    .pn-preview-body { padding: 14px; }
+    .pn-preview-name { font-size: .9rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .pn-preview-price { font-size: 1.1rem; font-weight: 800; color: var(--accent-light); margin-bottom: 4px; }
+    .pn-preview-tienda { font-size: .73rem; color: var(--green); }
+    .pn-preview-cat { font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-55); margin-bottom: 6px; }
+
+    /* Grid mis productos */
+    .pn-misprod-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+    @media(max-width:900px){ .pn-misprod-grid { grid-template-columns: repeat(2,1fr); } }
+    @media(max-width:480px){ .pn-misprod-grid { grid-template-columns: 1fr; } }
+
+    .pn-misprod-card {
+      background: var(--bg-card); border: 1px solid var(--border-card);
+      border-radius: var(--radius-xl); overflow: hidden;
+      transition: transform var(--t), border-color var(--t), box-shadow var(--t);
     }
-    .card-resena {
-      border: none;
-      border-radius: 14px;
-      box-shadow: 0 3px 14px rgba(0,0,0,0.08);
-      background: white;
-      padding: 20px 22px;
-      transition: transform 0.18s, box-shadow 0.18s;
+    .pn-misprod-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(74,144,226,.4);
+      box-shadow: 0 10px 30px rgba(0,0,0,.3);
     }
-    .card-resena:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(26,110,60,0.14);
+    .pn-misprod-img { aspect-ratio: 1/1; background: var(--bg-mid); overflow: hidden; }
+    .pn-misprod-img img { width: 100%; height: 100%; object-fit: cover; }
+    .pn-misprod-img-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+    .pn-misprod-body { padding: 14px 16px; }
+    .pn-misprod-nombre { font-size: .9rem; font-weight: 700; color: var(--text); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pn-misprod-precio { font-size: 1rem; font-weight: 800; color: var(--accent-light); margin-bottom: 10px; }
+    .pn-misprod-acciones { display: flex; gap: 8px; }
+    .pn-btn-edit {
+      flex: 1; padding: 8px; border-radius: var(--radius-sm);
+      background: none; border: 1.5px solid var(--border-card);
+      color: var(--text-80); font-size: .8rem; font-weight: 600;
+      transition: all var(--t-fast);
     }
-    .estrellas-display-v { color: #f5a623; font-size: 1.05rem; letter-spacing: 1px; }
-    .estrellas-display-v .vacia { color: #ddd; }
-    .res-tipo-badge {
-      font-size: 0.72rem;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 20px;
-      background: #d4edda;
-      color: #155724;
+    .pn-btn-edit:hover { border-color: var(--accent); color: var(--accent-light); background: rgba(74,144,226,.08); }
+    .pn-btn-del {
+      flex: 1; padding: 8px; border-radius: var(--radius-sm);
+      background: none; border: 1.5px solid rgba(239,68,68,.3);
+      color: var(--red); font-size: .8rem; font-weight: 600;
+      transition: all var(--t-fast);
     }
-    .res-prom-box {
-      background: white;
-      border-radius: 14px;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-      padding: 20px 24px;
-      text-align: center;
+    .pn-btn-del:hover { background: rgba(239,68,68,.12); border-color: var(--red); }
+
+    /* Búsqueda mis productos */
+    .pn-misprod-toolbar { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: flex-end; }
+
+    /* Estado vacío */
+    .pn-empty-state { text-align: center; padding: 60px 20px; color: var(--text-55); }
+    .pn-empty-state .icon { font-size: 3rem; display: block; margin-bottom: 14px; }
+
+    /* Colores y tallas dinámicas */
+    .pn-color-input-wrap { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 6px; }
+    .pn-color-chip {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 2px solid var(--border-card); cursor: pointer; position: relative;
+      transition: transform var(--t-fast), border-color var(--t-fast);
     }
-    .res-prom-num {
-      font-size: 2.4rem;
-      font-weight: 800;
-      color: #1a6e3c;
-      line-height: 1;
+    .pn-color-chip:hover { transform: scale(1.15); border-color: var(--accent); }
+    .pn-color-chip .remove-color {
+      position: absolute; top: -5px; right: -5px; width: 14px; height: 14px;
+      background: var(--red); border-radius: 50%; color: white;
+      font-size: .55rem; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; border: none;
     }
-    .sin-resenas {
-      text-align: center;
-      padding: 60px 20px;
-      color: #999;
+
+    /* Modal confirmación eliminar */
+    .pn-confirm-modal {
+      position: fixed; inset: 0; background: rgba(0,0,0,.75);
+      backdrop-filter: blur(6px); z-index: 2000;
+      display: none; align-items: center; justify-content: center; padding: 20px;
     }
-    .sin-resenas span { font-size: 3.5rem; display: block; margin-bottom: 14px; }
-    .res-info { font-size: 0.83rem; color: #888; }
-    .res-info strong { color: #1a6e3c; }
-      /* Logo agrandado Price Nice */
-    .pn-logo-header {
-      width: 200px;
-      height: 200px;
-      object-fit: contain;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.10);
-      padding: 6px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.30);
-      margin-bottom: 12px;
-      transition: transform .3s ease;
+    .pn-confirm-modal.open { display: flex; }
+    .pn-confirm-box {
+      background: var(--bg-mid); border: 1px solid var(--border-card);
+      border-radius: var(--radius-xl); padding: 32px;
+      max-width: 420px; width: 100%; text-align: center;
+      animation: modalIn .25s ease;
     }
-    .pn-logo-header:hover { transform: scale(1.06); }
+    @keyframes modalIn { from{opacity:0;transform:scale(.92)} to{opacity:1;transform:scale(1)} }
+    .pn-confirm-icon { font-size: 2.5rem; margin-bottom: 14px; display: block; }
+    .pn-confirm-title { font-size: 1.15rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .pn-confirm-desc  { font-size: .85rem; color: var(--text-55); margin-bottom: 24px; }
+    .pn-confirm-btns  { display: flex; gap: 10px; justify-content: center; }
+
+    /* Upload fotos */
+    .pn-foto-upload-wrap {
+      border: 2px dashed var(--border-card); border-radius: var(--radius-lg);
+      padding: 20px; text-align: center; cursor: pointer;
+      transition: border-color var(--t-fast), background var(--t-fast);
+    }
+    .pn-foto-upload-wrap:hover { border-color: var(--accent); background: rgba(74,144,226,.04); }
+    .pn-fotos-preview { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .pn-foto-item {
+      width: 78px; height: 78px; border-radius: var(--radius-sm);
+      overflow: hidden; position: relative; border: 1px solid var(--border-card);
+    }
+    .pn-foto-item img { width: 100%; height: 100%; object-fit: cover; }
+    .pn-foto-remove {
+      position: absolute; top: 3px; right: 3px; width: 18px; height: 18px;
+      background: rgba(0,0,0,.75); border-radius: 50%; color: white;
+      font-size: .6rem; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; border: none;
+    }
   </style>
 </head>
-<body>
+<body class="has-navbar">
 
-  <!-- ══════════════════════════════════════════
-       SECCIÓN PRINCIPAL — Menú del panel
-  ══════════════════════════════════════════ -->
-  <div id="seccion-principal">
-    <div class="panel-header">
-      <img src="img/logo-dark.png" alt="PRICE NICE" class="pn-logo-header" height="200">
-      <h1>🏪 Panel de Vendedor</h1>
-      <p id="bienvenida">Bienvenido a tu espacio de ventas</p>
+<!-- ═══════════════════════════════════════════════════ NAVBAR ═══ -->
+<header class="pn-navbar" id="pnNavbar">
+  <div class="pn-navbar-main">
+    <a href="Index.html" class="pn-logo">
+      <div class="pn-logo-circle"><img src="img/logo-dark.png" alt="PriceNice" loading="eager"></div>
+      <div>
+        <span class="pn-logo-name"><span class="white">Price</span><span class="blue">Nice</span></span>
+        <span class="pn-logo-sub">Tu brújula de los buenos precios</span>
+      </div>
+    </a>
+    <div class="pn-actions" style="margin-left:auto">
+      <div id="pnSesionArea"><a href="login.html" class="pn-btn-sesion"><i class="bi bi-person"></i><span>Iniciar sesión</span></a></div>
     </div>
+  </div>
+  <nav class="pn-navbar-menu">
+    <div class="pn-menu-inner">
+      <a href="Index.html"  class="pn-menu-link"><i class="bi bi-house"></i> Inicio</a>
+      <a href="tienda.html" class="pn-menu-link"><i class="bi bi-shop"></i> Tienda</a>
+      <a href="vendedor.html" class="pn-menu-link active"><i class="bi bi-person-badge"></i> Vendedores</a>
+    </div>
+  </nav>
+</header>
 
-    <div class="container pb-5">
-      <div class="row g-4 justify-content-center">
+<!-- Header -->
+<div class="pn-vendor-header">
+  <div class="pn-container">
+    <div style="display:flex;align-items:center;gap:14px;justify-content:center;margin-bottom:10px">
+      <div class="pn-logo-circle" style="width:64px;height:64px;box-shadow:0 0 0 4px rgba(74,144,226,0.3),0 6px 24px rgba(0,0,0,0.5)">
+        <img src="img/logo-dark.png" alt="PriceNice" loading="eager" style="width:88%;height:88%;object-fit:contain">
+      </div>
+      <div style="text-align:left">
+        <h1>Panel de <span style="color:var(--accent-light)">Vendedor</span></h1>
+        <p id="vendedorBienvenida">Bienvenido a tu espacio de ventas</p>
+      </div>
+    </div>
+  </div>
+</div>
 
-        <div class="col-12 col-sm-6 col-lg-4">
-          <div class="card card-opcion p-4 text-center">
-            <div class="icono">➕</div>
-            <h5 class="fw-bold mb-2">Publicar Producto</h5>
-            <p class="text-secondary small">Agrega nuevos productos al catálogo.</p>
-            <button onclick="mostrarFormulario()" class="btn btn-success mt-2 fw-semibold">Publicar</button>
-          </div>
+<!-- ═══════════════════════════════════════════════════ CONTENIDO ═══ -->
+<div class="pn-vendor-page">
+  <div class="pn-container">
+
+    <!-- ══ MENÚ PRINCIPAL ══ -->
+    <div id="seccionPrincipal">
+      <div class="pn-vendor-menu-grid">
+
+        <div class="pn-vendor-card fade-up" onclick="mostrarSeccion('seccionPublicar')">
+          <span class="pn-vendor-card-icon">➕</span>
+          <h3>Publicar Producto</h3>
+          <p>Agrega nuevos productos al catálogo de PriceNice.</p>
+          <button class="pn-btn-primary" style="font-size:.85rem;padding:9px 20px">Publicar</button>
         </div>
 
-        <div class="col-12 col-sm-6 col-lg-4">
-          <div class="card card-opcion p-4 text-center">
-            <div class="icono">📊</div>
-            <h5 class="fw-bold mb-2">Mis Productos</h5>
-            <p class="text-secondary small">Gestiona los tuyos o explora el catálogo completo de la empresa.</p>
-            <div class="d-flex gap-2 mt-2 justify-content-center flex-wrap">
-              <button onclick="mostrarMisProductos()" class="btn btn-success fw-semibold">Mis publicaciones</button>
-              <button onclick="mostrarCatalogoEmpresa()" class="btn btn-outline-success fw-semibold">Catálogo empresa</button>
-            </div>
-          </div>
+        <div class="pn-vendor-card fade-up" onclick="mostrarSeccion('seccionMisProductos')">
+          <span class="pn-vendor-card-icon">📊</span>
+          <h3>Mis Productos</h3>
+          <p>Gestiona, edita o elimina tus publicaciones.</p>
+          <button class="pn-btn-primary" style="font-size:.85rem;padding:9px 20px">Gestionar</button>
         </div>
 
-        <div class="col-12 col-sm-6 col-lg-4">
-          <div class="card card-opcion p-4 text-center">
-            <div class="icono">🛒</div>
-            <h5 class="fw-bold mb-2">Tienda</h5>
-            <p class="text-secondary small">Revisa la tienda como la ven los clientes.</p>
-            <a href="tienda.html" class="btn btn-outline-secondary mt-2 fw-semibold">Ver tienda</a>
-          </div>
+        <div class="pn-vendor-card fade-up" onclick="window.location.href='tienda.html'">
+          <span class="pn-vendor-card-icon">🛒</span>
+          <h3>Ver Tienda</h3>
+          <p>Revisa la tienda como la ven los clientes.</p>
+          <button class="pn-btn-outline" style="font-size:.85rem;padding:9px 20px">Ver tienda</button>
         </div>
 
-        <div class="col-12 col-sm-6 col-lg-4">
-          <div class="card card-opcion p-4 text-center">
-            <div class="icono">⭐</div>
-            <h5 class="fw-bold mb-2">Reseñas de mi Tienda</h5>
-            <p class="text-secondary small">Consulta lo que los usuarios opinan de tus productos.</p>
-            <button onclick="mostrarResenas()" class="btn btn-success mt-2 fw-semibold">Ver reseñas</button>
-          </div>
+        <div class="pn-vendor-card fade-up" onclick="mostrarSeccion('seccionResenas')">
+          <span class="pn-vendor-card-icon">⭐</span>
+          <h3>Reseñas</h3>
+          <p>Consulta las opiniones de los compradores.</p>
+          <button class="pn-btn-primary" style="font-size:.85rem;padding:9px 20px">Ver reseñas</button>
         </div>
 
-        <div class="col-12 col-sm-6 col-lg-4">
-          <div class="card card-opcion p-4 text-center">
-            <div class="icono">💲</div>
-            <h5 class="fw-bold mb-2">Precios</h5>
-            <p class="text-secondary small">Consulta los precios actuales del catálogo de la plataforma.</p>
-            <a href="precios.html" class="btn btn-outline-success mt-2 fw-semibold">Ver precios</a>
-          </div>
+        <div class="pn-vendor-card fade-up" onclick="window.location.href='precios.html'">
+          <span class="pn-vendor-card-icon">💲</span>
+          <h3>Comparar Precios</h3>
+          <p>Consulta los precios actuales del catálogo.</p>
+          <button class="pn-btn-outline" style="font-size:.85rem;padding:9px 20px">Ver precios</button>
         </div>
 
-        <div class="col-12 col-sm-6 col-lg-4">
-          <div class="card card-opcion p-4 text-center">
-            <div class="icono">🏠</div>
-            <h5 class="fw-bold mb-2">Inicio</h5>
-            <p class="text-secondary small">Accede al panel de usuario: tienda, catálogo, precios y reseñas.</p>
-            <a href="usuario.html" class="btn btn-success mt-2 fw-semibold">🏠 Panel de usuario</a>
-          </div>
+        <div class="pn-vendor-card fade-up" onclick="window.location.href='usuario.html'">
+          <span class="pn-vendor-card-icon">🏠</span>
+          <h3>Panel Usuario</h3>
+          <p>Accede a tienda, catálogo, precios y reseñas.</p>
+          <button class="pn-btn-outline" style="font-size:.85rem;padding:9px 20px">Panel usuario</button>
         </div>
 
       </div>
 
-      <div class="text-center mt-5">
-        <button id="btnCerrarSesion" class="btn btn-danger px-4 py-2 rounded-pill fw-semibold">
-          🚪 Cerrar sesión
+      <div style="text-align:center;margin-top:8px">
+        <button id="btnCerrarSesionVendedor" onclick="cerrarSesionVendedor()"
+          style="display:none;padding:10px 28px;background:rgba(239,68,68,.12);border:1.5px solid rgba(239,68,68,.3);border-radius:var(--radius-pill);color:var(--red);font-size:.85rem;font-weight:600">
+          <i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión
         </button>
       </div>
     </div>
-  </div><!-- /seccion-principal -->
 
-
-  <!-- ══════════════════════════════════════════
-       SECCIÓN PUBLICAR PRODUCTO
-  ══════════════════════════════════════════ -->
-  <div id="seccion-publicar">
-    <div class="panel-header">
-      <img src="img/logo-dark.png" alt="PRICE NICE" class="pn-logo-header" height="200">
-      <h1>🏪 Panel de Vendedor</h1>
-      <p id="bienvenida-form">Tu espacio de ventas</p>
-    </div>
-
-    <div class="container pb-5" style="max-width: 780px;">
-
-      <div id="alerta-publicado" class="alert alert-success d-flex align-items-center gap-2 mb-4" role="alert">
-        <span style="font-size:1.3rem;">✅</span>
-        <div><strong>¡Producto publicado!</strong> Tu producto fue registrado correctamente en el catálogo.</div>
+    <!-- ══ SECCIÓN PUBLICAR ══ -->
+    <div class="pn-vendor-section" id="seccionPublicar">
+      <div class="pn-section-header">
+        <button class="pn-back-btn" onclick="volverPanel()"><i class="bi bi-arrow-left"></i> Volver</button>
+        <h2>➕ Publicar Producto</h2>
       </div>
 
-      <div class="form-header">
-        <h2>➕ Publicar Nuevo Producto</h2>
-        <p>Completa todos los campos para agregar tu producto al catálogo</p>
+      <div id="alertaPublicado" class="pn-alert pn-alert-success">
+        <i class="bi bi-check-circle-fill"></i>
+        <span>¡Producto publicado con éxito! Ya está visible en el catálogo.</span>
       </div>
 
-      <form id="form-producto" class="form-wrapper" novalidate>
+      <div style="display:grid;grid-template-columns:1fr auto;gap:32px;align-items:start">
+        <form id="formPublicar" class="pn-form-card" novalidate onsubmit="publicarProducto(event)">
 
-        <p class="seccion-titulo">📋 Información General</p>
+          <!-- Info general -->
+          <div class="pn-form-section-title">📋 Información general</div>
 
-        <div class="mb-3">
-          <label for="nombre" class="form-label">Nombre del producto <span class="text-danger">*</span></label>
-          <input type="text" id="nombre" class="form-control" placeholder="Ej. Auriculares Bluetooth Pro" required>
-          <div class="invalid-feedback">Por favor ingresa el nombre del producto.</div>
-        </div>
-
-        <div class="mb-3">
-          <label for="descripcion" class="form-label">Descripción <span class="text-danger">*</span></label>
-          <textarea id="descripcion" class="form-control" rows="3"
-            placeholder="Describe las características principales del producto..." required></textarea>
-          <div class="invalid-feedback">Por favor ingresa una descripción.</div>
-        </div>
-
-        <div class="row g-3 mb-3">
-          <div class="col-sm-6">
-            <label for="categoria" class="form-label">Categoría <span class="text-danger">*</span></label>
-            <select id="categoria" class="form-select" required>
-              <option value="">— Seleccionar categoría —</option>
-              <option>Electrónica</option>
-              <option>Ropa y Moda</option>
-              <option>Hogar y Decoración</option>
-              <option>Alimentos y Bebidas</option>
-              <option>Deportes y Fitness</option>
-              <option>Salud y Belleza</option>
-              <option>Juguetes y Juegos</option>
-              <option>Libros y Papelería</option>
-              <option>Herramientas y Ferretería</option>
-              <option>Mascotas</option>
-              <option>Automotriz</option>
-              <option>Otro</option>
-            </select>
-            <div class="invalid-feedback">Selecciona una categoría.</div>
+          <div style="margin-bottom:16px">
+            <label class="pn-form-label">Nombre del producto <span style="color:var(--red)">*</span></label>
+            <input type="text" id="pub_nombre" class="pn-form-control" placeholder="Ej. Audífonos Bluetooth Pro" required
+              oninput="actualizarVistaPreviaFormulario()">
+            <div class="pn-form-error" id="err_nombre">El nombre es obligatorio.</div>
           </div>
-          <div class="col-sm-6">
-            <label for="marca" class="form-label">Marca</label>
-            <input type="text" id="marca" class="form-control" placeholder="Ej. Samsung, Nike, Genérico…">
+
+          <div style="margin-bottom:16px">
+            <label class="pn-form-label">Descripción <span style="color:var(--red)">*</span></label>
+            <textarea id="pub_descripcion" class="pn-form-control" rows="3"
+              placeholder="Describe las características principales..." required style="resize:vertical;min-height:80px"></textarea>
+            <div class="pn-form-error" id="err_descripcion">La descripción es obligatoria.</div>
           </div>
-        </div>
 
-        <p class="seccion-titulo">💰 Precio y Disponibilidad</p>
-
-        <div class="row g-3 mb-3">
-          <div class="col-sm-6">
-            <label for="precio" class="form-label">Precio (COP) <span class="text-danger">*</span></label>
-            <div class="input-group">
-              <span class="input-group-text" style="border-radius:10px 0 0 10px; border:1.5px solid #d0d0d0;">$</span>
-              <input type="number" id="precio" class="form-control" placeholder="0"
-                min="0" step="1" style="border-radius:0 10px 10px 0;" required>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
+            <div>
+              <label class="pn-form-label">Categoría <span style="color:var(--red)">*</span></label>
+              <select id="pub_categoria" class="pn-form-control" required onchange="actualizarCamposCondicionales();actualizarVistaPreviaFormulario()">
+                <option value="">— Seleccionar —</option>
+                <option value="tecnologia">💻 Tecnología</option>
+                <option value="moda">👗 Ropa y Moda</option>
+                <option value="calzado">👟 Calzado</option>
+                <option value="hogar">🏠 Hogar y Decoración</option>
+                <option value="mercado">🛒 Alimentos y Bebidas</option>
+                <option value="deportes">⚽ Deportes y Fitness</option>
+                <option value="belleza">💄 Salud y Belleza</option>
+                <option value="juguetes">🧸 Juguetes y Juegos</option>
+                <option value="mascotas">🐾 Mascotas</option>
+                <option value="higiene">🧴 Higiene</option>
+                <option value="bebes">🍼 Bebés</option>
+                <option value="otro">📦 Otro</option>
+              </select>
+              <div class="pn-form-error" id="err_categoria">Selecciona una categoría.</div>
             </div>
-            <div class="invalid-feedback">Ingresa un precio válido.</div>
+            <div>
+              <label class="pn-form-label">Marca</label>
+              <input type="text" id="pub_marca" class="pn-form-control" placeholder="Ej. Samsung, Nike…">
+            </div>
           </div>
-          <div class="col-sm-6">
-            <label for="cantidad" class="form-label">Cantidad disponible <span class="text-danger">*</span></label>
-            <input type="number" id="cantidad" class="form-control" placeholder="Ej. 50" min="0" step="1" required>
-            <div class="invalid-feedback">Ingresa la cantidad disponible.</div>
+
+          <!-- Precio y disponibilidad -->
+          <div class="pn-form-section-title">💰 Precio y disponibilidad</div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
+            <div>
+              <label class="pn-form-label">Precio COP <span style="color:var(--red)">*</span></label>
+              <div style="position:relative">
+                <span style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--text-55);font-weight:600">$</span>
+                <input type="number" id="pub_precio" class="pn-form-control" placeholder="0"
+                  min="0" step="1" required style="padding-left:28px"
+                  oninput="actualizarVistaPreviaFormulario()">
+              </div>
+              <div class="pn-form-error" id="err_precio">Ingresa un precio válido.</div>
+            </div>
+            <div>
+              <label class="pn-form-label">Cantidad disponible <span style="color:var(--red)">*</span></label>
+              <input type="number" id="pub_cantidad" class="pn-form-control" placeholder="Ej. 50" min="0" required>
+              <div class="pn-form-error" id="err_cantidad">Ingresa la cantidad.</div>
+            </div>
           </div>
-        </div>
 
-        <div class="mb-3">
-          <label for="estado" class="form-label">Estado del producto <span class="text-danger">*</span></label>
-          <select id="estado" class="form-select" required>
-            <option value="">— Seleccionar estado —</option>
-            <option value="nuevo">Nuevo</option>
-            <option value="como_nuevo">Como nuevo</option>
-            <option value="buen_estado">Buen estado</option>
-            <option value="aceptable">Aceptable</option>
-            <option value="reacondicionado">Reacondicionado</option>
-          </select>
-          <div class="invalid-feedback">Selecciona el estado del producto.</div>
-        </div>
-
-        <p class="seccion-titulo">🏬 Tienda o Establecimiento</p>
-
-        <div class="mb-3">
-          <label for="tienda" class="form-label">Nombre de tu tienda <span class="text-danger">*</span></label>
-          <input type="text" id="tienda" class="form-control" placeholder="Ej. Electrónica Central, Boutique Moda…" required>
-          <div class="invalid-feedback">Ingresa el nombre de tu tienda.</div>
-        </div>
-
-        <div class="row g-3 mb-3">
-          <div class="col-sm-6">
-            <label for="ubicacion" class="form-label">Ciudad <span class="text-danger">*</span></label>
-            <select id="ubicacion" class="form-select" required>
-              <option value="">— Seleccionar ciudad —</option>
-              <option>Bogotá</option><option>Medellín</option><option>Cali</option>
-              <option>Barranquilla</option><option>Bucaramanga</option><option>Manizales</option>
-              <option>Pereira</option><option>Cartagena</option><option>Cúcuta</option>
-              <option>Ibagué</option><option>Santa Marta</option><option>Villavicencio</option>
-              <option>Otra</option>
-            </select>
-            <div class="invalid-feedback">Selecciona la ciudad.</div>
-          </div>
-          <div class="col-sm-6">
-            <label for="barrio" class="form-label">Barrio o sector</label>
-            <input type="text" id="barrio" class="form-control" placeholder="Ej. Chapinero, El Poblado…">
-            <div class="form-text text-muted">Ayuda a los clientes a encontrarte más fácil.</div>
-          </div>
-        </div>
-
-        <p class="seccion-titulo">🖼️ Imagen del Producto</p>
-
-        <div class="mb-4">
-          <label for="imagen" class="form-label">Subir imagen</label>
-          <input type="file" id="imagen" class="form-control" accept="image/*">
-          <div class="form-text text-muted">Formatos: JPG, PNG, WEBP. Recomendado: 800×800 px.</div>
-          <img id="preview-imagen" src="#" alt="Vista previa">
-        </div>
-
-        <hr class="my-4">
-        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-end">
-          <button type="button" class="btn btn-outline-secondary btn-cancelar" onclick="volverPanel()">
-            ← Cancelar y volver
-          </button>
-          <button type="submit" class="btn btn-publicar">
-            🚀 Publicar producto
-          </button>
-        </div>
-
-      </form>
-    </div>
-  </div><!-- /seccion-publicar -->
-
-
-  <!-- ══════════════════════════════════════════
-       SECCIÓN MIS PRODUCTOS
-  ══════════════════════════════════════════ -->
-  <div id="seccion-mis-productos">
-    <div class="panel-header">
-      <img src="img/logo-dark.png" alt="PRICE NICE" class="pn-logo-header" height="200">
-      <h1>🏪 Panel de Vendedor</h1>
-      <p id="bienvenida-mis">Tu espacio de ventas</p>
-    </div>
-
-    <div class="container pb-5">
-
-      <!-- Cabecera + búsqueda + filtros -->
-      <div class="form-header" style="border-radius:16px 16px 0 0;">
-        <h2>📊 Mis Productos</h2>
-        <p>Gestiona, edita o elimina tus productos publicados</p>
-      </div>
-
-      <div class="mis-prod-header">
-        <div class="row g-3 align-items-end">
-          <!-- Buscador -->
-          <div class="col-12 col-md-5">
-            <label class="form-label mb-1" style="font-size:0.82rem;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.05em;">🔍 Buscar</label>
-            <input type="text" id="buscadorMisProductos" class="form-control buscador-prod"
-              placeholder="Nombre, marca, tienda…">
-          </div>
-          <!-- Filtro categoría -->
-          <div class="col-6 col-md-3">
-            <label class="form-label mb-1" style="font-size:0.82rem;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.05em;">📂 Categoría</label>
-            <select id="filtroCatMis" class="form-select filtro-select-prod">
-              <option value="">Todas</option>
-              <option>Electrónica</option><option>Ropa y Moda</option>
-              <option>Hogar y Decoración</option><option>Alimentos y Bebidas</option>
-              <option>Deportes y Fitness</option><option>Salud y Belleza</option>
-              <option>Juguetes y Juegos</option><option>Libros y Papelería</option>
-              <option>Herramientas y Ferretería</option><option>Mascotas</option>
-              <option>Automotriz</option><option>Otro</option>
-            </select>
-          </div>
-          <!-- Filtro estado -->
-          <div class="col-6 col-md-3">
-            <label class="form-label mb-1" style="font-size:0.82rem;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.05em;">📦 Estado</label>
-            <select id="filtroEstadoMis" class="form-select filtro-select-prod">
-              <option value="">Todos</option>
+          <div style="margin-bottom:16px">
+            <label class="pn-form-label">Estado del producto <span style="color:var(--red)">*</span></label>
+            <select id="pub_estado" class="pn-form-control" required>
+              <option value="">— Seleccionar —</option>
               <option value="nuevo">Nuevo</option>
               <option value="como_nuevo">Como nuevo</option>
               <option value="buen_estado">Buen estado</option>
               <option value="aceptable">Aceptable</option>
               <option value="reacondicionado">Reacondicionado</option>
             </select>
+            <div class="pn-form-error" id="err_estado">Selecciona el estado.</div>
           </div>
-          <!-- Botón limpiar -->
-          <div class="col-12 col-md-1 d-flex align-items-end">
-            <button id="btnLimpiarMis" class="btn btn-outline-secondary w-100" title="Limpiar filtros"
-              style="border-radius:10px;font-size:0.85rem;padding:9px;">🗑️</button>
-          </div>
-        </div>
 
-        <!-- Info resultados -->
-        <div class="info-resultados mt-3" id="infoResultadosMis"></div>
-      </div>
-
-      <!-- Alerta de guardado -->
-      <div id="alerta-guardado" class="alert alert-success d-flex align-items-center gap-2 mb-4" role="alert">
-        <span style="font-size:1.3rem;">✅</span>
-        <div><strong>¡Cambios guardados!</strong> El producto fue actualizado correctamente.</div>
-      </div>
-
-      <!-- Grid de productos -->
-      <div id="gridMisProductos" class="row g-4 mb-4"></div>
-
-      <!-- Botón volver -->
-      <div class="text-center mt-2">
-        <button onclick="volverPanel()" class="btn-volver-panel">
-          ← Volver al panel
-        </button>
-      </div>
-
-    </div>
-  </div><!-- /seccion-mis-productos -->
-
-
-  <!-- ══════════════════════════════════════════
-       SECCIÓN CATÁLOGO DE LA EMPRESA
-  ══════════════════════════════════════════ -->
-  <div id="seccion-catalogo-empresa" style="display:none;">
-    <div class="panel-header">
-      <img src="img/logo-dark.png" alt="PRICE NICE" class="pn-logo-header" height="200">
-      <h1>🏪 Panel de Vendedor</h1>
-      <p id="bienvenida-cat">Catálogo de la empresa</p>
-    </div>
-
-    <div class="container pb-5">
-
-      <div class="form-header" style="border-radius:16px 16px 0 0;">
-        <h2>📦 Catálogo de Productos de la Empresa</h2>
-        <p>Todos los productos que la plataforma PRICE NICE ofrece actualmente</p>
-      </div>
-
-      <div style="background:white;border-radius:0 0 16px 16px;box-shadow:0 4px 24px rgba(0,0,0,.10);padding:24px 28px 28px;margin-bottom:24px;">
-        <!-- Filtros -->
-        <div class="row g-3 mb-4 align-items-end">
-          <div class="col-12 col-md-5">
-            <input type="text" id="buscadorCat" class="form-control"
-              placeholder="🔍 Buscar producto, tienda, categoría…"
-              style="border-radius:12px;border:1.5px solid #d0d0d0;">
-          </div>
-          <div class="col-6 col-md-3">
-            <select id="filtroCategoriaCat" class="form-select" style="border-radius:12px;border:1.5px solid #d0d0d0;">
-              <option value="">Todas las categorías</option>
-              <option value="belleza">💄 Belleza</option>
-              <option value="higiene">🧴 Higiene</option>
-              <option value="alimentos">🍎 Alimentos</option>
-              <option value="hogar">🏠 Hogar</option>
-              <option value="bebes">🍼 Bebés</option>
-              <option value="mascotas">🐾 Mascotas</option>
-            </select>
-          </div>
-          <div class="col-6 col-md-2">
-            <button id="btnLimpiarCat" class="btn btn-outline-secondary w-100" style="border-radius:12px;">🗑️ Limpiar</button>
-          </div>
-        </div>
-        <div class="text-muted mb-3" style="font-size:.85rem;" id="infoCat"></div>
-      </div>
-
-      <!-- Grid -->
-      <div class="row g-4" id="gridCatEmpresa"></div>
-
-      <div class="text-center mt-4">
-        <button onclick="volverPanel()" class="btn-volver-panel">← Volver al panel</button>
-      </div>
-
-    </div>
-  </div><!-- /seccion-catalogo-empresa -->
-
-
-  <!-- ══════════════════════════════════════════
-       MODAL — EDITAR PRODUCTO
-  ══════════════════════════════════════════ -->
-  <div class="modal fade modal-editar" id="modalEditar" tabindex="-1" aria-labelledby="tituloEditar" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="tituloEditar">✏️ Editar Producto</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-        </div>
-        <div class="modal-body p-4">
-
-          <form id="form-editar" novalidate>
-            <input type="hidden" id="edit-id">
-
-            <p class="seccion-titulo">📋 Información General</p>
-
-            <div class="mb-3">
-              <label for="edit-nombre" class="form-label">Nombre del producto <span class="text-danger">*</span></label>
-              <input type="text" id="edit-nombre" class="form-control" required>
-              <div class="invalid-feedback">Ingresa el nombre del producto.</div>
-            </div>
-
-            <div class="mb-3">
-              <label for="edit-descripcion" class="form-label">Descripción <span class="text-danger">*</span></label>
-              <textarea id="edit-descripcion" class="form-control" rows="3" required></textarea>
-              <div class="invalid-feedback">Ingresa una descripción.</div>
-            </div>
-
-            <div class="row g-3 mb-3">
-              <div class="col-sm-6">
-                <label for="edit-categoria" class="form-label">Categoría <span class="text-danger">*</span></label>
-                <select id="edit-categoria" class="form-select" required>
-                  <option value="">— Seleccionar —</option>
-                  <option>Electrónica</option><option>Ropa y Moda</option>
-                  <option>Hogar y Decoración</option><option>Alimentos y Bebidas</option>
-                  <option>Deportes y Fitness</option><option>Salud y Belleza</option>
-                  <option>Juguetes y Juegos</option><option>Libros y Papelería</option>
-                  <option>Herramientas y Ferretería</option><option>Mascotas</option>
-                  <option>Automotriz</option><option>Otro</option>
-                </select>
-                <div class="invalid-feedback">Selecciona una categoría.</div>
+          <!-- Campos condicionales: ropa/calzado -->
+          <div id="camposRopa" style="display:none">
+            <div class="pn-form-section-title">👗 Variantes (Ropa / Calzado)</div>
+            <div style="margin-bottom:16px">
+              <label class="pn-form-label">Colores disponibles</label>
+              <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+                <input type="color" id="colorPicker" value="#4A90E2" style="width:40px;height:36px;border:none;background:none;cursor:pointer;padding:0">
+                <button type="button" onclick="agregarColor()" class="pn-btn-outline" style="padding:6px 14px;font-size:.8rem">
+                  <i class="bi bi-plus"></i> Agregar color
+                </button>
               </div>
-              <div class="col-sm-6">
-                <label for="edit-marca" class="form-label">Marca</label>
-                <input type="text" id="edit-marca" class="form-control">
+              <div class="pn-color-input-wrap" id="coloresWrap"></div>
+            </div>
+            <div style="margin-bottom:16px">
+              <label class="pn-form-label">Tallas disponibles</label>
+              <div style="display:flex;flex-wrap:wrap;gap:8px" id="tallasWrap">
+                <label style="display:flex;align-items:center;gap:5px;font-size:.82rem;color:var(--text-80)"><input type="checkbox" value="XS"> XS</label>
+                <label style="display:flex;align-items:center;gap:5px;font-size:.82rem;color:var(--text-80)"><input type="checkbox" value="S"> S</label>
+                <label style="display:flex;align-items:center;gap:5px;font-size:.82rem;color:var(--text-80)"><input type="checkbox" value="M" checked> M</label>
+                <label style="display:flex;align-items:center;gap:5px;font-size:.82rem;color:var(--text-80)"><input type="checkbox" value="L" checked> L</label>
+                <label style="display:flex;align-items:center;gap:5px;font-size:.82rem;color:var(--text-80)"><input type="checkbox" value="XL"> XL</label>
+                <label style="display:flex;align-items:center;gap:5px;font-size:.82rem;color:var(--text-80)"><input type="checkbox" value="XXL"> XXL</label>
+                <label style="display:flex;align-items:center;gap:5px;font-size:.82rem;color:var(--text-80)"><input type="checkbox" value="36"> 36</label>
+                <label style="display:flex;align-items:center;gap:5px;font-size:.82rem;color:var(--text-80)"><input type="checkbox" value="37"> 37</label>
+                <label style="display:flex;align-items:center;gap:5px;font-size:.82rem;color:var(--text-80)"><input type="checkbox" value="38"> 38</label>
+                <label style="display:flex;align-items:center;gap:5px;font-size:.82rem;color:var(--text-80)"><input type="checkbox" value="39"> 39</label>
+                <label style="display:flex;align-items:center;gap:5px;font-size:.82rem;color:var(--text-80)"><input type="checkbox" value="40"> 40</label>
+                <label style="display:flex;align-items:center;gap:5px;font-size:.82rem;color:var(--text-80)"><input type="checkbox" value="41"> 41</label>
+                <label style="display:flex;align-items:center;gap:5px;font-size:.82rem;color:var(--text-80)"><input type="checkbox" value="42"> 42</label>
+                <label style="display:flex;align-items:center;gap:5px;font-size:.82rem;color:var(--text-80)"><input type="checkbox" value="43"> 43</label>
               </div>
             </div>
+          </div>
 
-            <p class="seccion-titulo">💰 Precio y Disponibilidad</p>
+          <!-- Tienda y ubicación -->
+          <div class="pn-form-section-title">🏬 Tienda y ubicación</div>
 
-            <div class="row g-3 mb-3">
-              <div class="col-sm-6">
-                <label for="edit-precio" class="form-label">Precio (COP) <span class="text-danger">*</span></label>
-                <div class="input-group">
-                  <span class="input-group-text" style="border-radius:10px 0 0 10px;border:1.5px solid #d0d0d0;">$</span>
-                  <input type="number" id="edit-precio" class="form-control" min="0" step="1"
-                    style="border-radius:0 10px 10px 0;" required>
-                </div>
-                <div class="invalid-feedback">Ingresa un precio válido.</div>
-              </div>
-              <div class="col-sm-6">
-                <label for="edit-cantidad" class="form-label">Cantidad disponible <span class="text-danger">*</span></label>
-                <input type="number" id="edit-cantidad" class="form-control" min="0" step="1" required>
-                <div class="invalid-feedback">Ingresa la cantidad.</div>
-              </div>
-            </div>
+          <div style="margin-bottom:16px">
+            <label class="pn-form-label">Nombre de tu tienda <span style="color:var(--red)">*</span></label>
+            <input type="text" id="pub_tienda" class="pn-form-control" placeholder="Ej. Electrónica Central, Boutique Moda…"
+              required oninput="actualizarVistaPreviaFormulario()">
+            <div class="pn-form-error" id="err_tienda">El nombre de la tienda es obligatorio.</div>
+          </div>
 
-            <div class="mb-3">
-              <label for="edit-estado" class="form-label">Estado <span class="text-danger">*</span></label>
-              <select id="edit-estado" class="form-select" required>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
+            <div>
+              <label class="pn-form-label">Ciudad <span style="color:var(--red)">*</span></label>
+              <select id="pub_ciudad" class="pn-form-control" required>
                 <option value="">— Seleccionar —</option>
-                <option value="nuevo">Nuevo</option>
-                <option value="como_nuevo">Como nuevo</option>
-                <option value="buen_estado">Buen estado</option>
-                <option value="aceptable">Aceptable</option>
-                <option value="reacondicionado">Reacondicionado</option>
+                <option>Bogotá</option><option>Medellín</option><option>Cali</option>
+                <option>Barranquilla</option><option>Bucaramanga</option><option>Manizales</option>
+                <option>Pereira</option><option>Cartagena</option><option>Cúcuta</option>
+                <option>Ibagué</option><option>Santa Marta</option><option>Villavicencio</option>
+                <option>Otra</option>
               </select>
-              <div class="invalid-feedback">Selecciona el estado.</div>
+              <div class="pn-form-error" id="err_ciudad">Selecciona la ciudad.</div>
             </div>
-
-            <p class="seccion-titulo">🏬 Tienda o Establecimiento</p>
-
-            <div class="mb-3">
-              <label for="edit-tienda" class="form-label">Nombre de tu tienda <span class="text-danger">*</span></label>
-              <input type="text" id="edit-tienda" class="form-control" required>
-              <div class="invalid-feedback">Ingresa el nombre de tu tienda.</div>
+            <div>
+              <label class="pn-form-label">Barrio / Sector</label>
+              <input type="text" id="pub_barrio" class="pn-form-control" placeholder="Ej. Chapinero, El Poblado…">
             </div>
+          </div>
 
-            <div class="row g-3 mb-3">
-              <div class="col-sm-6">
-                <label for="edit-ubicacion" class="form-label">Ciudad <span class="text-danger">*</span></label>
-                <select id="edit-ubicacion" class="form-select" required>
-                  <option value="">— Seleccionar —</option>
-                  <option>Bogotá</option><option>Medellín</option><option>Cali</option>
-                  <option>Barranquilla</option><option>Bucaramanga</option><option>Manizales</option>
-                  <option>Pereira</option><option>Cartagena</option><option>Cúcuta</option>
-                  <option>Ibagué</option><option>Santa Marta</option><option>Villavicencio</option>
-                  <option>Otra</option>
-                </select>
-                <div class="invalid-feedback">Selecciona la ciudad.</div>
-              </div>
-              <div class="col-sm-6">
-                <label for="edit-barrio" class="form-label">Barrio o sector</label>
-                <input type="text" id="edit-barrio" class="form-control" placeholder="Ej. Chapinero, El Poblado…">
-              </div>
+          <!-- Venta presencial -->
+          <div style="margin-bottom:16px">
+            <label style="display:flex;align-items:center;gap:9px;cursor:pointer;font-size:.88rem;color:var(--text-80)">
+              <input type="checkbox" id="pub_presencial" onchange="toggleDireccion()"
+                style="width:16px;height:16px;accent-color:var(--accent)">
+              Ofrezco venta <strong>presencial</strong> (los clientes pueden ir a mi tienda física)
+            </label>
+          </div>
+          <div id="camposDireccion" style="display:none;margin-bottom:16px">
+            <label class="pn-form-label">Dirección <span style="color:var(--red)">*</span></label>
+            <input type="text" id="pub_direccion" class="pn-form-control"
+              placeholder="Calle, carrera, número, local…">
+            <div class="pn-form-error" id="err_direccion">La dirección es obligatoria para venta presencial.</div>
+          </div>
+
+          <!-- Fotos -->
+          <div class="pn-form-section-title">🖼️ Fotos del producto</div>
+
+          <div class="pn-foto-upload-wrap" onclick="document.getElementById('pub_fotos').click()">
+            <i class="bi bi-cloud-arrow-up" style="font-size:1.8rem;color:var(--accent-light);margin-bottom:8px;display:block"></i>
+            <div style="font-size:.85rem;color:var(--text-80);font-weight:600">Haz clic para subir fotos</div>
+            <div style="font-size:.75rem;color:var(--text-55);margin-top:4px">Mínimo 1, máximo 6 · JPG, PNG, WEBP · Recomendado: 800×800 px</div>
+          </div>
+          <input type="file" id="pub_fotos" accept="image/*" multiple style="display:none" onchange="previewFotos(this)">
+          <div class="pn-form-error" id="err_fotos" style="margin-top:6px">Sube al menos una foto del producto.</div>
+          <div class="pn-fotos-preview" id="fotosPrevPublicar"></div>
+
+          <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:24px;flex-wrap:wrap">
+            <button type="button" onclick="volverPanel()" class="pn-btn-outline">
+              ← Cancelar
+            </button>
+            <button type="submit" class="pn-btn-primary">
+              <i class="bi bi-rocket-takeoff me-1"></i> Publicar producto
+            </button>
+          </div>
+
+        </form>
+
+        <!-- Vista previa -->
+        <div style="position:sticky;top:130px">
+          <div style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-55);margin-bottom:10px;text-align:center">
+            Vista previa
+          </div>
+          <div class="pn-preview-card">
+            <div class="pn-preview-img">
+              <span id="prevImgIcon">📦</span>
+              <img id="prevImg" src="" alt="Vista previa">
             </div>
-
-            <p class="seccion-titulo">🖼️ Imagen del Producto</p>
-
-            <div class="mb-2">
-              <label for="edit-imagen" class="form-label">Cambiar imagen</label>
-              <input type="file" id="edit-imagen" class="form-control" accept="image/*">
-              <div class="form-text text-muted">Deja vacío para conservar la imagen actual.</div>
-              <img id="edit-preview-imagen" src="#" alt="Vista previa edición">
+            <div class="pn-preview-body">
+              <div class="pn-preview-cat" id="prevCat">CATEGORÍA</div>
+              <div class="pn-preview-name" id="prevNombre">Nombre del producto</div>
+              <div class="pn-preview-price" id="prevPrecio">$0</div>
+              <div class="pn-preview-tienda" id="prevTienda">Tu tienda</div>
             </div>
-
-          </form>
+          </div>
+          <div style="font-size:.73rem;color:var(--text-55);text-align:center;margin-top:10px">
+            Así se verá tu tarjeta
+          </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-secondary rounded-pill px-4"
-            data-bs-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-guardar px-4" id="btnGuardarEdicion">
-            💾 Guardar cambios
-          </button>
-        </div>
+
       </div>
-    </div>
-  </div>
+    </div><!-- /seccionPublicar -->
 
-
-  <!-- ══════════════════════════════════════════
-       MODAL — CONFIRMAR ELIMINAR
-  ══════════════════════════════════════════ -->
-  <div class="modal fade modal-confirmar" id="modalEliminar" tabindex="-1" aria-labelledby="tituloEliminar" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title fw-bold" id="tituloEliminar">🗑️ Eliminar producto</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-        </div>
-        <div class="modal-body text-center py-4">
-          <div style="font-size:3rem;margin-bottom:12px;">⚠️</div>
-          <p class="fw-semibold fs-5 mb-1">¿Estás seguro?</p>
-          <p class="text-secondary" style="font-size:0.92rem;">
-            Vas a eliminar <strong id="nombreProductoEliminar"></strong>.<br>
-            Esta acción no se puede deshacer.
-          </p>
-        </div>
-        <div class="modal-footer justify-content-center gap-3">
-          <button type="button" class="btn btn-outline-secondary rounded-pill px-4"
-            data-bs-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-danger rounded-pill px-4 fw-semibold"
-            id="btnConfirmarEliminar">Sí, eliminar</button>
-        </div>
+    <!-- ══ SECCIÓN MIS PRODUCTOS ══ -->
+    <div class="pn-vendor-section" id="seccionMisProductos">
+      <div class="pn-section-header">
+        <button class="pn-back-btn" onclick="volverPanel()"><i class="bi bi-arrow-left"></i> Volver</button>
+        <h2>📊 Mis Productos</h2>
       </div>
-    </div>
-  </div>
-
-
-  <!-- ══════════════════════════════════════════
-       SECCIÓN RESEÑAS DEL VENDEDOR
-  ══════════════════════════════════════════ -->
-  <div id="seccion-resenas">
-    <div class="panel-header">
-      <img src="img/logo-dark.png" alt="PRICE NICE" class="pn-logo-header" height="200">
-      <h1>🏪 Panel de Vendedor</h1>
-      <p id="bienvenida-res">Tu espacio de ventas</p>
-    </div>
-
-    <div class="container pb-5">
-
-      <!-- Cabecera -->
-      <div class="form-header" style="border-radius:16px 16px 0 0;">
-        <h2>⭐ Reseñas de mi Tienda</h2>
-        <p>Opiniones y calificaciones que los usuarios dejaron sobre tus productos y tienda</p>
+      <div id="alertaGuardado" class="pn-alert pn-alert-success">
+        <i class="bi bi-check-circle-fill"></i>
+        <span>Cambios guardados correctamente.</span>
       </div>
-
-      <!-- Resumen + filtros -->
-      <div class="res-filtros-bar">
-
-        <!-- Resumen numérico -->
-        <div class="row g-3 mb-4" id="resumenResenas">
-          <div class="col-6 col-md-3">
-            <div class="res-prom-box">
-              <div class="res-prom-num" id="totalResenas">0</div>
-              <small class="text-secondary fw-semibold">Reseñas totales</small>
-            </div>
-          </div>
-          <div class="col-6 col-md-3">
-            <div class="res-prom-box">
-              <div class="res-prom-num" id="promCalif">—</div>
-              <small class="text-secondary fw-semibold">Calificación promedio</small>
-            </div>
-          </div>
-          <div class="col-6 col-md-3">
-            <div class="res-prom-box">
-              <div class="res-prom-num" id="totalTiendas">0</div>
-              <small class="text-secondary fw-semibold">Tiendas mencionadas</small>
-            </div>
-          </div>
-          <div class="col-6 col-md-3">
-            <div class="res-prom-box">
-              <div class="res-prom-num" id="totalProductosRes">0</div>
-              <small class="text-secondary fw-semibold">Productos mencionados</small>
-            </div>
-          </div>
+      <div class="pn-misprod-toolbar">
+        <div style="position:relative;flex:1;min-width:200px">
+          <input type="text" id="buscarMisProductos" class="pn-form-control"
+            placeholder="🔍 Buscar mis productos…" oninput="renderMisProductos()" style="padding-right:12px">
         </div>
-
-        <!-- Filtros -->
-        <div class="row g-3 align-items-end">
-          <div class="col-12 col-md-4">
-            <label class="form-label mb-1" style="font-size:0.8rem;font-weight:700;color:#555;text-transform:uppercase;">🔍 Buscar</label>
-            <input type="text" id="buscarResenas" class="form-control"
-              placeholder="Producto, tienda, usuario…">
-          </div>
-          <div class="col-6 col-md-3">
-            <label class="form-label mb-1" style="font-size:0.8rem;font-weight:700;color:#555;text-transform:uppercase;">📂 Tipo</label>
-            <select id="filtroTipoRes" class="form-select">
-              <option value="">Todos</option>
-              <option value="producto">Producto</option>
-              <option value="tienda">Tienda</option>
-              <option value="servicio">Servicio general</option>
-            </select>
-          </div>
-          <div class="col-6 col-md-3">
-            <label class="form-label mb-1" style="font-size:0.8rem;font-weight:700;color:#555;text-transform:uppercase;">⭐ Calificación</label>
-            <select id="filtroCalifRes" class="form-select">
-              <option value="">Todas</option>
-              <option value="5">★★★★★ (5)</option>
-              <option value="4">★★★★☆ (4)</option>
-              <option value="3">★★★☆☆ (3)</option>
-              <option value="2">★★☆☆☆ (2)</option>
-              <option value="1">★☆☆☆☆ (1)</option>
-            </select>
-          </div>
-          <div class="col-12 col-md-2 d-flex align-items-end gap-2">
-            <button id="btnLimpiarRes" class="btn btn-outline-secondary w-100"
-              style="border-radius:10px;font-size:0.85rem;padding:9px;" title="Limpiar filtros">🗑️ Limpiar</button>
-          </div>
-        </div>
-
-        <div class="res-info mt-3" id="infoResenas"></div>
-      </div>
-
-      <!-- Grid de reseñas -->
-      <div id="gridResenas" class="row g-4 mb-4"></div>
-
-      <!-- Volver -->
-      <div class="text-center mt-2">
-        <button onclick="volverPanel()" class="btn-volver-panel">
-          ← Volver al panel
+        <select id="filtroCategoriaMis" class="pn-form-control" onchange="renderMisProductos()" style="max-width:180px">
+          <option value="">Todas las categorías</option>
+          <option value="tecnologia">Tecnología</option>
+          <option value="moda">Moda</option>
+          <option value="hogar">Hogar</option>
+          <option value="mercado">Mercado</option>
+          <option value="belleza">Belleza</option>
+          <option value="deportes">Deportes</option>
+          <option value="otro">Otro</option>
+        </select>
+        <button onclick="mostrarSeccion('seccionPublicar')" class="pn-btn-primary" style="font-size:.82rem;padding:9px 18px;white-space:nowrap">
+          <i class="bi bi-plus me-1"></i>Nuevo producto
         </button>
       </div>
+      <div class="pn-misprod-grid" id="gridMisProductos"></div>
+      <div class="pn-empty-state" id="emptyMisProductos" style="display:none">
+        <span class="icon">📦</span>
+        <strong style="font-size:1rem;color:var(--text-80)">No tienes productos publicados aún</strong>
+        <p style="font-size:.85rem;margin-top:6px">Agrega tu primer producto para comenzar a vender.</p>
+        <button onclick="mostrarSeccion('seccionPublicar')" class="pn-btn-primary" style="margin-top:16px">
+          <i class="bi bi-plus me-1"></i>Publicar primer producto
+        </button>
+      </div>
+    </div><!-- /seccionMisProductos -->
 
+    <!-- ══ SECCIÓN RESEÑAS ══ -->
+    <div class="pn-vendor-section" id="seccionResenas">
+      <div class="pn-section-header">
+        <button class="pn-back-btn" onclick="volverPanel()"><i class="bi bi-arrow-left"></i> Volver</button>
+        <h2>⭐ Reseñas de mi tienda</h2>
+      </div>
+      <div class="pn-empty-state">
+        <span class="icon">⭐</span>
+        <strong style="font-size:1rem;color:var(--text-80)">Las reseñas aparecerán aquí</strong>
+        <p style="font-size:.85rem;margin-top:6px">Cuando los compradores califiquen tus productos, podrás verlas en esta sección.</p>
+        <a href="tienda.html" class="pn-btn-primary" style="display:inline-flex;align-items:center;gap:7px;margin-top:16px;text-decoration:none">
+          <i class="bi bi-shop"></i> Ver tienda como cliente
+        </a>
+      </div>
+    </div><!-- /seccionResenas -->
+
+  </div><!-- /container -->
+</div><!-- /vendor-page -->
+
+<!-- Modal confirmación eliminar -->
+<div class="pn-confirm-modal" id="confirmModal">
+  <div class="pn-confirm-box">
+    <span class="pn-confirm-icon">🗑️</span>
+    <div class="pn-confirm-title">¿Eliminar producto?</div>
+    <div class="pn-confirm-desc">Esta acción no se puede deshacer. El producto dejará de estar visible en el catálogo.</div>
+    <div class="pn-confirm-btns">
+      <button onclick="cerrarConfirm()" class="pn-btn-outline">Cancelar</button>
+      <button id="btnConfirmEliminar" class="pn-btn-primary" style="background:var(--red);box-shadow:none">
+        <i class="bi bi-trash me-1"></i>Eliminar
+      </button>
     </div>
-  </div><!-- /seccion-resenas -->
-
-
-  <footer>
-    <p>© 2026 PRICE NICE — Todos los derechos reservados</p>
-  </footer>
-
-
-  <!-- ══════════════════════════════════════════
-       SCRIPTS
-  ══════════════════════════════════════════ -->
-  <script src="https://unpkg.com/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script type="module">
-    import { auth, db } from "./firebase-config.js";
-    import { onAuthStateChanged, signOut }
-      from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-    import { doc, getDoc, collection, addDoc, getDocs,
-             updateDoc, deleteDoc, query, where, serverTimestamp }
-      from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-    import { initSettings } from "./settings.js";
-
-    /* ─── Estado global ─── */
-    let usuarioActual  = null;
-    let todosProductos = [];          // cache local de productos del vendedor
-    let idEliminar     = null;        // id del doc a borrar
-    let imagenEditBase64 = null;      // nueva imagen en edición (base64)
-
-    /* ─── Instancias de modales Bootstrap ─── */
-    const modalEditar   = new bootstrap.Modal(document.getElementById("modalEditar"));
-    const modalEliminar = new bootstrap.Modal(document.getElementById("modalEliminar"));
-
-    /* ─── Auth ─── */
-    onAuthStateChanged(auth, async usuario => {
-      if (!usuario) { window.location.href = "login.html"; return; }
-      usuarioActual = usuario;
-
-      const snap  = await getDoc(doc(db, "usuarios", usuario.uid));
-      const datos = snap.exists() ? snap.data() : {};
-      const nombre = datos.nombre || usuario.email;
-
-      document.getElementById("bienvenida").textContent     = "Bienvenido, " + nombre + " 👋";
-      document.getElementById("bienvenida-form").textContent = "Hola, " + nombre + " — tu espacio de ventas";
-      document.getElementById("bienvenida-mis").textContent  = "Hola, " + nombre + " — tu espacio de ventas";
-      document.getElementById("bienvenida-res").textContent  = "Hola, " + nombre + " — tu espacio de ventas";
-      initSettings();
-    });
-
-    document.getElementById("btnCerrarSesion").addEventListener("click", async () => {
-      await signOut(auth);
-      window.location.href = "login.html";
-    });
-
-    /* ════════════════════════════════════
-       PUBLICAR PRODUCTO
-    ════════════════════════════════════ */
-    document.getElementById("imagen").addEventListener("change", function () {
-      const preview = document.getElementById("preview-imagen");
-      const archivo = this.files[0];
-      if (archivo) {
-        const reader = new FileReader();
-        reader.onload = e => { preview.src = e.target.result; preview.style.display = "block"; };
-        reader.readAsDataURL(archivo);
-      } else { preview.style.display = "none"; }
-    });
-
-    document.getElementById("form-producto").addEventListener("submit", async function (e) {
-      e.preventDefault();
-      this.classList.add("was-validated");
-      if (!this.checkValidity()) return;
-
-      const btn = this.querySelector(".btn-publicar");
-      btn.disabled = true; btn.textContent = "⏳ Publicando…";
-
-      try {
-        // Leer imagen como base64 si se seleccionó
-        let imagenBase64 = null;
-        const archivoImg = document.getElementById("imagen").files[0];
-        if (archivoImg) {
-          imagenBase64 = await comprimirImagen(archivoImg);
-        }
-
-        const producto = {
-          nombre:      document.getElementById("nombre").value.trim(),
-          descripcion: document.getElementById("descripcion").value.trim(),
-          categoria:   document.getElementById("categoria").value,
-          marca:       document.getElementById("marca").value.trim(),
-          precio:      parseFloat(document.getElementById("precio").value),
-          cantidad:    parseInt(document.getElementById("cantidad").value),
-          estado:      document.getElementById("estado").value,
-          tienda:      document.getElementById("tienda").value.trim(),
-          ubicacion:   document.getElementById("ubicacion").value,
-          barrio:      document.getElementById("barrio").value.trim(),
-          imagenBase64: imagenBase64,
-          vendedorId:  usuarioActual.uid,
-          fechaPublicacion: serverTimestamp()
-        };
-
-        await addDoc(collection(db, "productos"), producto);
-
-        document.getElementById("alerta-publicado").style.display = "flex";
-        this.classList.remove("was-validated");
-        this.reset();
-        document.getElementById("preview-imagen").style.display = "none";
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        setTimeout(() => { document.getElementById("alerta-publicado").style.display = "none"; }, 5000);
-
-      } catch (err) {
-        console.error("Error al publicar:", err);
-        let msg = "❌ No se pudo publicar el producto.";
-        if (err.code === "permission-denied")          msg += " Sin permiso en Firestore. Revisa las reglas de seguridad.";
-        else if (err.code === "resource-exhausted")    msg += " Cuota de Firestore agotada.";
-        else if (err.message && err.message.includes("exceeds")) msg += " El documento es demasiado grande (imagen muy pesada).";
-        else                                           msg += " " + (err.message || "Error desconocido.");
-        alert(msg);
-      } finally {
-        btn.disabled = false; btn.textContent = "🚀 Publicar producto";
-      }
-    });
-
-    /* ════════════════════════════════════
-       MIS PRODUCTOS — cargar y renderizar
-    ════════════════════════════════════ */
-    async function cargarMisProductos() {
-      if (!usuarioActual) return;
-      try {
-        const q = query(
-          collection(db, "productos"),
-          where("vendedorId", "==", usuarioActual.uid)
-        );
-        const snap = await getDocs(q);
-        todosProductos = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      } catch (err) {
-        console.error("Error al cargar productos:", err);
-        todosProductos = [];
-      }
-      aplicarFiltrosMis();
-    }
-
-    function aplicarFiltrosMis() {
-      const busq   = document.getElementById("buscadorMisProductos").value.toLowerCase().trim();
-      const cat    = document.getElementById("filtroCatMis").value;
-      const estado = document.getElementById("filtroEstadoMis").value;
-
-      const visibles = todosProductos.filter(p => {
-        if (cat    && p.categoria !== cat)   return false;
-        if (estado && p.estado   !== estado) return false;
-        if (busq) {
-          const texto = [p.nombre, p.marca, p.tienda, p.descripcion].join(" ").toLowerCase();
-          if (!texto.includes(busq)) return false;
-        }
-        return true;
-      });
-
-      renderizarMisProductos(visibles);
-    }
-
-    function renderizarMisProductos(lista) {
-      const grid = document.getElementById("gridMisProductos");
-      const info = document.getElementById("infoResultadosMis");
-      grid.innerHTML = "";
-
-      if (todosProductos.length === 0) {
-        grid.innerHTML = `
-          <div class="col-12">
-            <div class="sin-productos">
-              <span>📦</span>
-              <h5>Aún no tienes productos publicados</h5>
-              <p class="text-secondary">Usa la opción <strong>Publicar Producto</strong> para agregar tu primer producto.</p>
-              <button onclick="mostrarFormulario()" class="btn btn-success mt-2 px-4 rounded-pill fw-semibold">
-                ➕ Publicar ahora
-              </button>
-            </div>
-          </div>`;
-        info.innerHTML = "";
-        return;
-      }
-
-      if (lista.length === 0) {
-        grid.innerHTML = `
-          <div class="col-12">
-            <div class="sin-productos">
-              <span>🔍</span>
-              <h5>No hay productos que coincidan</h5>
-              <p class="text-secondary">Prueba con otros términos o limpia los filtros.</p>
-            </div>
-          </div>`;
-      } else {
-        lista.forEach(p => {
-          const col = document.createElement("div");
-          col.className = "col-12 col-sm-6 col-lg-4";
-
-          const estadoLabel = {
-            nuevo: "Nuevo", como_nuevo: "Como nuevo",
-            buen_estado: "Buen estado", aceptable: "Aceptable",
-            reacondicionado: "Reacondicionado"
-          }[p.estado] || p.estado || "—";
-
-          const imgHTML = p.imagenBase64
-            ? `<img src="${p.imagenBase64}" class="prod-card-img" alt="${p.nombre}">`
-            : `<div class="prod-card-img-placeholder">📦</div>`;
-
-          col.innerHTML = `
-            <div class="prod-card h-100">
-              ${imgHTML}
-              <div class="prod-card-body">
-                <div class="d-flex justify-content-between align-items-start mb-1">
-                  <div class="prod-nombre flex-grow-1 me-2">${p.nombre}</div>
-                  <span class="badge-estado estado-${p.estado || 'nuevo'}">${estadoLabel}</span>
-                </div>
-                <p class="prod-descripcion">${p.descripcion || '—'}</p>
-                <div class="prod-meta">📂 <strong>${p.categoria || '—'}</strong></div>
-                ${p.marca    ? `<div class="prod-meta">🏷️ ${p.marca}</div>` : ''}
-                <div class="prod-meta">🏪 ${p.tienda || '—'}</div>
-                <div class="prod-meta">📍 ${p.ubicacion || '—'}${p.barrio ? ' · ' + p.barrio : ''}</div>
-                <div class="prod-meta">📦 Stock: <strong>${p.cantidad ?? '—'}</strong> unidades</div>
-                <div class="prod-precio">$ ${(p.precio || 0).toLocaleString("es-CO")}</div>
-                <div class="prod-acciones">
-                  <button class="btn-editar" onclick="abrirEditar('${p.id}')">✏️ Editar</button>
-                  <button class="btn-eliminar" onclick="pedirEliminar('${p.id}', '${p.nombre.replace(/'/g, "\\'")}')">🗑️ Eliminar</button>
-                </div>
-              </div>
-            </div>`;
-          grid.appendChild(col);
-        });
-      }
-
-      // Info de resultados
-      if (lista.length === todosProductos.length) {
-        info.innerHTML = `<strong>${todosProductos.length}</strong> producto${todosProductos.length !== 1 ? 's' : ''} publicado${todosProductos.length !== 1 ? 's' : ''}`;
-      } else {
-        info.innerHTML = `Mostrando <strong>${lista.length}</strong> de <strong>${todosProductos.length}</strong> productos`;
-      }
-    }
-
-    /* ════════════════════════════════════
-       EDITAR PRODUCTO
-    ════════════════════════════════════ */
-    window.abrirEditar = function (id) {
-      const p = todosProductos.find(x => x.id === id);
-      if (!p) return;
-
-      imagenEditBase64 = p.imagenBase64 || null;
-
-      document.getElementById("edit-id").value          = id;
-      document.getElementById("edit-nombre").value      = p.nombre      || "";
-      document.getElementById("edit-descripcion").value = p.descripcion || "";
-      document.getElementById("edit-categoria").value   = p.categoria   || "";
-      document.getElementById("edit-marca").value       = p.marca       || "";
-      document.getElementById("edit-precio").value      = p.precio      ?? "";
-      document.getElementById("edit-cantidad").value    = p.cantidad    ?? "";
-      document.getElementById("edit-estado").value      = p.estado      || "";
-      document.getElementById("edit-tienda").value      = p.tienda      || "";
-      document.getElementById("edit-ubicacion").value   = p.ubicacion   || "";
-      document.getElementById("edit-barrio").value      = p.barrio      || "";
-
-      const editPreview = document.getElementById("edit-preview-imagen");
-      if (p.imagenBase64) {
-        editPreview.src = p.imagenBase64;
-        editPreview.style.display = "block";
-      } else {
-        editPreview.style.display = "none";
-      }
-
-      document.getElementById("form-editar").classList.remove("was-validated");
-      document.getElementById("edit-imagen").value = "";
-      modalEditar.show();
-    };
-
-    // Vista previa en edición
-    document.getElementById("edit-imagen").addEventListener("change", async function () {
-      const archivo = this.files[0];
-      const preview = document.getElementById("edit-preview-imagen");
-      if (archivo) {
-        imagenEditBase64 = await comprimirImagen(archivo);
-        preview.src = imagenEditBase64;
-        preview.style.display = "block";
-      }
-    });
-
-    document.getElementById("btnGuardarEdicion").addEventListener("click", async () => {
-      const form = document.getElementById("form-editar");
-      form.classList.add("was-validated");
-      if (!form.checkValidity()) return;
-
-      const btn = document.getElementById("btnGuardarEdicion");
-      btn.disabled = true; btn.textContent = "⏳ Guardando…";
-
-      try {
-        const id = document.getElementById("edit-id").value;
-        const datos = {
-          nombre:       document.getElementById("edit-nombre").value.trim(),
-          descripcion:  document.getElementById("edit-descripcion").value.trim(),
-          categoria:    document.getElementById("edit-categoria").value,
-          marca:        document.getElementById("edit-marca").value.trim(),
-          precio:       parseFloat(document.getElementById("edit-precio").value),
-          cantidad:     parseInt(document.getElementById("edit-cantidad").value),
-          estado:       document.getElementById("edit-estado").value,
-          tienda:       document.getElementById("edit-tienda").value.trim(),
-          ubicacion:    document.getElementById("edit-ubicacion").value,
-          barrio:       document.getElementById("edit-barrio").value.trim(),
-          imagenBase64: imagenEditBase64,
-          fechaActualizacion: serverTimestamp()
-        };
-
-        await updateDoc(doc(db, "productos", id), datos);
-
-        // Actualizar cache local
-        const idx = todosProductos.findIndex(x => x.id === id);
-        if (idx !== -1) todosProductos[idx] = { id, ...datos };
-
-        modalEditar.hide();
-        aplicarFiltrosMis();
-
-        document.getElementById("alerta-guardado").style.display = "flex";
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        setTimeout(() => { document.getElementById("alerta-guardado").style.display = "none"; }, 5000);
-
-      } catch (err) {
-        console.error("Error al guardar:", err);
-        let msg = "❌ No se pudo guardar el producto.";
-        if (err.code === "permission-denied")       msg += " Sin permiso en Firestore.";
-        else if (err.message && err.message.includes("exceeds")) msg += " El documento es demasiado grande.";
-        else                                        msg += " " + (err.message || "Error desconocido.");
-        alert(msg);
-      } finally {
-        btn.disabled = false; btn.textContent = "💾 Guardar cambios";
-      }
-    });
-
-    /* ════════════════════════════════════
-       ELIMINAR PRODUCTO
-    ════════════════════════════════════ */
-    window.pedirEliminar = function (id, nombre) {
-      idEliminar = id;
-      document.getElementById("nombreProductoEliminar").textContent = nombre;
-      modalEliminar.show();
-    };
-
-    document.getElementById("btnConfirmarEliminar").addEventListener("click", async () => {
-      if (!idEliminar) return;
-      const btn = document.getElementById("btnConfirmarEliminar");
-      btn.disabled = true; btn.textContent = "⏳ Eliminando…";
-
-      try {
-        await deleteDoc(doc(db, "productos", idEliminar));
-        todosProductos = todosProductos.filter(p => p.id !== idEliminar);
-        idEliminar = null;
-        modalEliminar.hide();
-        aplicarFiltrosMis();
-      } catch (err) {
-        console.error("Error al eliminar:", err);
-        alert("❌ No se pudo eliminar. Intenta de nuevo.");
-      } finally {
-        btn.disabled = false; btn.textContent = "Sí, eliminar";
-      }
-    });
-
-    /* ════════════════════════════════════
-       FILTROS EN MIS PRODUCTOS
-    ════════════════════════════════════ */
-    document.getElementById("buscadorMisProductos").addEventListener("input",  aplicarFiltrosMis);
-    document.getElementById("filtroCatMis").addEventListener("change",         aplicarFiltrosMis);
-    document.getElementById("filtroEstadoMis").addEventListener("change",      aplicarFiltrosMis);
-    document.getElementById("btnLimpiarMis").addEventListener("click", () => {
-      document.getElementById("buscadorMisProductos").value = "";
-      document.getElementById("filtroCatMis").value         = "";
-      document.getElementById("filtroEstadoMis").value      = "";
-      aplicarFiltrosMis();
-    });
-
-    /* ════════════════════════════════════
-       NAVEGACIÓN ENTRE SECCIONES
-    ════════════════════════════════════ */
-    let todasResenas = [];
-
-    function ocultarTodo() {
-      ["seccion-principal","seccion-publicar","seccion-mis-productos","seccion-resenas","seccion-catalogo-empresa"]
-        .forEach(id => document.getElementById(id).style.display = "none");
-    }
-
-    window.mostrarFormulario = function () {
-      ocultarTodo();
-      document.getElementById("seccion-publicar").style.display = "block";
-      document.getElementById("alerta-publicado").style.display = "none";
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    };
-
-    window.mostrarMisProductos = async function () {      ocultarTodo();
-      document.getElementById("seccion-mis-productos").style.display = "block";
-      document.getElementById("alerta-guardado").style.display       = "none";
-      document.getElementById("gridMisProductos").innerHTML =
-        `<div class="col-12 text-center py-5 text-secondary">
-           <div class="spinner-border text-success mb-3" role="status"></div>
-           <p>Cargando tus productos…</p>
-         </div>`;
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      await cargarMisProductos();
-    };
-
-    window.mostrarResenas = async function () {
-      ocultarTodo();
-      document.getElementById("seccion-resenas").style.display = "block";
-      window.scrollTo({ top: 0, behavior: "smooth" });
-
-      const grid = document.getElementById("gridResenas");
-      grid.innerHTML = `<div class="col-12 text-center py-5 text-secondary">
-        <div class="spinner-border text-success mb-3" role="status"></div>
-        <p>Cargando reseñas…</p></div>`;
-
-      try {
-        // Cargar reseñas donde el vendedorId coincida con el usuario actual
-        // También cargar reseñas aprobadas de la tienda del vendedor (por nombre)
-        const q = query(
-          collection(db, "resenas"),
-          where("vendedorId", "==", usuarioActual.uid)
-        );
-        const snap = await getDocs(q);
-        todasResenas = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-
-        // Ordenar por fecha desc en cliente
-        todasResenas.sort((a, b) => {
-          const fa = a.fecha?.toDate?.() || 0;
-          const fb = b.fecha?.toDate?.() || 0;
-          return fb - fa;
-        });
-
-        // Métricas
-        const total     = todasResenas.length;
-        const prom      = total
-          ? (todasResenas.reduce((s, r) => s + (r.calificacion || 0), 0) / total).toFixed(1)
-          : "—";
-        const tiendas   = new Set(todasResenas.filter(r => r.tipo === "tienda").map(r => r.referencia)).size;
-        const productos = new Set(todasResenas.filter(r => r.tipo === "producto").map(r => r.referencia)).size;
-
-        document.getElementById("totalResenas").textContent      = total;
-        document.getElementById("promCalif").textContent         = prom;
-        document.getElementById("totalTiendas").textContent      = tiendas;
-        document.getElementById("totalProductosRes").textContent = productos;
-
-        aplicarFiltrosRes();
-
-      } catch (err) {
-        console.error("Error al cargar reseñas:", err);
-        grid.innerHTML = `<div class="col-12 text-center py-4 text-danger">
-          ❌ No se pudieron cargar las reseñas: ${err.message}</div>`;
-      }
-    };
-
-    function aplicarFiltrosRes() {
-      const busq  = document.getElementById("buscarResenas").value.toLowerCase().trim();
-      const tipo  = document.getElementById("filtroTipoRes").value;
-      const calif = document.getElementById("filtroCalifRes").value;
-
-      const visibles = todasResenas.filter(r => {
-        if (tipo  && r.tipo !== tipo)                          return false;
-        if (calif && r.calificacion !== parseInt(calif))       return false;
-        if (busq) {
-          const texto = [r.referencia, r.nombreUsuario, r.comentario, r.sugerencia, r.tiendaNombre]
-            .join(" ").toLowerCase();
-          if (!texto.includes(busq)) return false;
-        }
-        return true;
-      });
-
-      const info = document.getElementById("infoResenas");
-      info.textContent = visibles.length < todasResenas.length
-        ? `Mostrando ${visibles.length} de ${todasResenas.length} reseñas`
-        : `${todasResenas.length} reseña${todasResenas.length !== 1 ? "s" : ""} recibida${todasResenas.length !== 1 ? "s" : ""}`;
-
-      renderizarResenas(visibles);
-    }
-
-    function renderEstrellas(n) {
-      const llenas = Math.min(Math.max(parseInt(n) || 0, 0), 5);
-      return "★".repeat(llenas) + `<span style="color:#ddd;">${"★".repeat(5 - llenas)}</span>`;
-    }
-
-    function renderizarResenas(lista) {
-      const grid = document.getElementById("gridResenas");
-
-      if (!lista.length) {
-        grid.innerHTML = `<div class="col-12 text-center py-5 text-secondary">
-          <div style="font-size:3rem;">⭐</div>
-          <p class="mt-2">No hay reseñas con esos filtros.</p></div>`;
-        return;
-      }
-
-      grid.innerHTML = lista.map(r => {
-        const fecha = r.fecha?.toDate
-          ? r.fecha.toDate().toLocaleDateString("es-CO", { day:"2-digit", month:"short", year:"numeric" })
-          : "—";
-        const estadoBadge = r.estado === "aprobada"
-          ? `<span style="font-size:.7rem;background:#e8f5e9;color:#2e7d32;padding:2px 8px;border-radius:20px;font-weight:700;">✅ Aprobada</span>`
-          : r.estado === "rechazada"
-          ? `<span style="font-size:.7rem;background:#ffebee;color:#c62828;padding:2px 8px;border-radius:20px;font-weight:700;">❌ Rechazada</span>`
-          : `<span style="font-size:.7rem;background:#fff3e0;color:#e65100;padding:2px 8px;border-radius:20px;font-weight:700;">⏳ Pendiente</span>`;
-        const destinoBadge = r.destino === "tienda"
-          ? `<span style="font-size:.7rem;background:#e8f5e9;color:#1a6e3c;padding:2px 8px;border-radius:20px;font-weight:700;margin-right:4px;">🏪 Tienda</span>`
-          : `<span style="font-size:.7rem;background:#fff3e0;color:#D4954D;padding:2px 8px;border-radius:20px;font-weight:700;margin-right:4px;">📱 App</span>`;
-
-        return `<div class="col-12 col-md-6">
-          <div style="background:white;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.08);
-                      padding:20px;height:100%;display:flex;flex-direction:column;gap:8px;">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;">
-              <div>
-                ${destinoBadge}
-                <span style="font-weight:700;font-size:.95rem;">${r.referencia || "—"}</span>
-                ${r.tiendaNombre ? `<span style="font-size:.78rem;color:#888;"> · ${r.tiendaNombre}</span>` : ""}
-              </div>
-              ${estadoBadge}
-            </div>
-            <div style="color:#f59e0b;font-size:1.1rem;">${renderEstrellas(r.calificacion)}</div>
-            <p style="font-size:.9rem;color:#333;margin:0;">${r.comentario || ""}</p>
-            ${r.sugerencia ? `<p style="font-size:.82rem;color:#888;margin:0;">💡 ${r.sugerencia}</p>` : ""}
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:8px;border-top:1px solid #f0f0f0;">
-              <span style="font-size:.8rem;color:#999;">👤 ${r.nombreUsuario || "Anónimo"}</span>
-              <span style="font-size:.75rem;color:#bbb;">📅 ${fecha}</span>
-            </div>
-          </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="pn-toast" id="pnToast" role="alert" aria-live="polite">
+  <i class="bi bi-check-circle-fill" style="color:var(--green)"></i>
+  <span id="pnToastMsg">Listo</span>
+</div>
+
+<button id="pn-scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">
+  <i class="bi bi-chevron-up"></i>
+</button>
+
+<!-- ═══════════════════════════════════════════════════ SCRIPTS ═══ -->
+<script type="module" src="archivo sesión.js"></script>
+<script type="module" src="script.js"></script>
+
+<script>
+/* ══════════════════════════════════
+   ESTADO
+══════════════════════════════════ */
+let fotosPublicar = [];
+let coloresSeleccionados = [];
+let misProductos = JSON.parse(localStorage.getItem('pn_mis_productos') || '[]');
+let idEliminarPendiente = null;
+
+/* ══════════════════════════════════
+   NAVEGACIÓN SECCIONES
+══════════════════════════════════ */
+function mostrarSeccion(id) {
+  document.getElementById('seccionPrincipal').style.display = 'none';
+  document.querySelectorAll('.pn-vendor-section').forEach(s => s.classList.remove('active'));
+  const sec = document.getElementById(id);
+  if (sec) sec.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (id === 'seccionMisProductos') renderMisProductos();
+}
+
+function volverPanel() {
+  document.getElementById('seccionPrincipal').style.display = 'block';
+  document.querySelectorAll('.pn-vendor-section').forEach(s => s.classList.remove('active'));
+  ocultarAlerta('alertaPublicado');
+  ocultarAlerta('alertaGuardado');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ══════════════════════════════════
+   FORMULARIO PUBLICAR
+══════════════════════════════════ */
+function actualizarCamposCondicionales() {
+  const cat = document.getElementById('pub_categoria').value;
+  const esRopa = cat === 'moda' || cat === 'calzado';
+  document.getElementById('camposRopa').style.display = esRopa ? 'block' : 'none';
+}
+
+function toggleDireccion() {
+  const presencial = document.getElementById('pub_presencial').checked;
+  document.getElementById('camposDireccion').style.display = presencial ? 'block' : 'none';
+}
+
+/* Colores */
+function agregarColor() {
+  const color = document.getElementById('colorPicker').value;
+  if (coloresSeleccionados.includes(color)) return;
+  coloresSeleccionados.push(color);
+  renderColores();
+}
+
+function renderColores() {
+  const wrap = document.getElementById('coloresWrap');
+  wrap.innerHTML = coloresSeleccionados.map((c, i) => `
+    <div class="pn-color-chip" style="background:${c}">
+      <button type="button" class="remove-color" onclick="quitarColor(${i})" aria-label="Quitar color">×</button>
+    </div>`).join('');
+}
+
+function quitarColor(i) { coloresSeleccionados.splice(i, 1); renderColores(); }
+
+/* Fotos */
+function previewFotos(input) {
+  const files = [...input.files].slice(0, 6);
+  fotosPublicar = files;
+  const wrap = document.getElementById('fotosPrevPublicar');
+  wrap.innerHTML = '';
+  files.forEach((f, i) => {
+    const r = new FileReader();
+    r.onload = e => {
+      wrap.innerHTML += `
+        <div class="pn-foto-item">
+          <img src="${e.target.result}" alt="Foto ${i+1}">
+          <button type="button" class="pn-foto-remove" onclick="quitarFotoPublicar(${i})" aria-label="Quitar">×</button>
         </div>`;
-      }).join("");
-    }
-
-    // Listeners filtros reseñas
-    document.getElementById("buscarResenas").addEventListener("input",   aplicarFiltrosRes);
-    document.getElementById("filtroTipoRes").addEventListener("change",  aplicarFiltrosRes);
-    document.getElementById("filtroCalifRes").addEventListener("change", aplicarFiltrosRes);
-    document.getElementById("btnLimpiarRes").addEventListener("click", () => {
-      document.getElementById("buscarResenas").value = "";
-      document.getElementById("filtroTipoRes").value  = "";
-      document.getElementById("filtroCalifRes").value = "";
-      aplicarFiltrosRes();
-    });
-      ocultarTodo();
-      document.getElementById("seccion-principal").style.display = "block";
-      // Limpiar formulario publicar
-      const fp = document.getElementById("form-producto");
-      fp.classList.remove("was-validated");
-      fp.reset();
-      document.getElementById("preview-imagen").style.display = "none";
-      // Limpiar filtros mis productos
-      document.getElementById("buscadorMisProductos").value = "";
-      document.getElementById("filtroCatMis").value         = "";
-      document.getElementById("filtroEstadoMis").value      = "";
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    };
-
-    /* ════════════════════════════════════
-       CATÁLOGO DE LA EMPRESA
-    ════════════════════════════════════ */
-    const BASE_PRODUCTOS_EMPRESA = [
-      { nombre:"Crema Hidratante Facial",    categoria:"belleza",   precio:38900,  tienda:"Droguería Cruz Verde",  ubicacion:"Bogotá",       descripcion:"Crema hidratante con ácido hialurónico para todo tipo de piel.",       vencimiento:"06/2027" },
-      { nombre:"Base de Maquillaje Mate",    categoria:"belleza",   precio:65900,  tienda:"Falabella",             ubicacion:"Medellín",     descripcion:"Base líquida de cobertura media con acabado mate.",                     vencimiento:"12/2026" },
-      { nombre:"Sérum Vitamina C",           categoria:"belleza",   precio:89900,  tienda:"Linio",                 ubicacion:"Cali",         descripcion:"Sérum antioxidante con vitamina C al 15%.",                            vencimiento:"03/2027" },
-      { nombre:"Labial Líquido Mate",        categoria:"belleza",   precio:29900,  tienda:"Éxito",                 ubicacion:"Barranquilla", descripcion:"Labial de larga duración, no transfiere.",                             vencimiento:"09/2026" },
-      { nombre:"Paleta de Sombras x12",      categoria:"belleza",   precio:72900,  tienda:"Falabella",             ubicacion:"Medellín",     descripcion:"Paleta con 12 tonos mate y shimmer.",                                  vencimiento:"01/2028" },
-      { nombre:"Detergente Líquido 3L",      categoria:"higiene",   precio:24900,  tienda:"D1",                    ubicacion:"Bogotá",       descripcion:"Detergente concentrado para ropa, aroma lavanda.",                     vencimiento:"08/2027" },
-      { nombre:"Jabón Antibacterial x3",     categoria:"higiene",   precio:8900,   tienda:"Jumbo",                 ubicacion:"Cali",         descripcion:"Pack de 3 jabones con protección antibacterial.",                      vencimiento:"11/2027" },
-      { nombre:"Cloro Desinfectante 2L",     categoria:"higiene",   precio:6900,   tienda:"Olímpica",              ubicacion:"Bucaramanga",  descripcion:"Cloro concentrado para desinfección del hogar.",                       vencimiento:"05/2027" },
-      { nombre:"Pasta Dental Blanqueadora",  categoria:"higiene",   precio:12500,  tienda:"Droguería Cruz Verde",  ubicacion:"Bogotá",       descripcion:"Pasta dental con micro-partículas blanqueadoras.",                     vencimiento:"02/2028" },
-      { nombre:"Shampoo Anticaspa 750ml",    categoria:"higiene",   precio:21900,  tienda:"Carulla",               ubicacion:"Medellín",     descripcion:"Shampoo con zinc para control de caspa.",                              vencimiento:"10/2027" },
-      { nombre:"Arroz Grano Largo 1kg",      categoria:"alimentos", precio:4200,   tienda:"D1",                    ubicacion:"Bogotá",       descripcion:"Arroz blanco de grano largo.",                                         vencimiento:"12/2026" },
-      { nombre:"Aceite de Oliva 500ml",      categoria:"alimentos", precio:28900,  tienda:"PriceSmart",            ubicacion:"Barranquilla", descripcion:"Aceite de oliva extra virgen prensado en frío.",                       vencimiento:"07/2027" },
-      { nombre:"Leche Entera 1L",            categoria:"alimentos", precio:3800,   tienda:"Olímpica",              ubicacion:"Cali",         descripcion:"Leche fresca pasteurizada entera.",                                    vencimiento:"10/2026" },
-      { nombre:"Café Molido 500g",           categoria:"alimentos", precio:18900,  tienda:"Jumbo",                 ubicacion:"Manizales",    descripcion:"Café 100% arábica tostado y molido, intensidad media.",               vencimiento:"06/2027" },
-      { nombre:"Jugo de Naranja 1L",         categoria:"alimentos", precio:7500,   tienda:"Carulla",               ubicacion:"Bogotá",       descripcion:"Jugo natural sin conservadores ni azúcar.",                            vencimiento:"09/2026" },
-      { nombre:"Galletas Integrales x6",     categoria:"alimentos", precio:9900,   tienda:"Ara",                   ubicacion:"Pereira",      descripcion:"Paquete de galletas integrales con avena y miel.",                     vencimiento:"04/2027" },
-      { nombre:"Almohada Memory Foam",       categoria:"hogar",     precio:89900,  tienda:"Éxito",                 ubicacion:"Medellín",     descripcion:"Almohada ergonómica de espuma viscoelástica.",                         vencimiento:"N/A" },
-      { nombre:"Juego de Sábanas Queen",     categoria:"hogar",     precio:119900, tienda:"Alkosto",               ubicacion:"Bogotá",       descripcion:"Juego de sábanas de microfibra suave, 4 piezas.",                      vencimiento:"N/A" },
-      { nombre:"Foco LED 10W (Pack x4)",     categoria:"hogar",     precio:22900,  tienda:"Homecenter",            ubicacion:"Cali",         descripcion:"Focos LED ahorradores de 10W, luz blanca cálida.",                    vencimiento:"N/A" },
-      { nombre:"Organizador Multiusos",      categoria:"hogar",     precio:32900,  tienda:"Jumbo",                 ubicacion:"Bucaramanga",  descripcion:"Caja organizadora apilable con tapa.",                                 vencimiento:"N/A" },
-      { nombre:"Velas Aromáticas x3",        categoria:"hogar",     precio:45900,  tienda:"Miniso",                ubicacion:"Barranquilla", descripcion:"Set de 3 velas de cera de soya con aromas relajantes.",               vencimiento:"N/A" },
-      { nombre:"Pañales Etapa 3 (40 pzas)",  categoria:"bebes",     precio:54900,  tienda:"Droguería Cruz Verde",  ubicacion:"Bogotá",       descripcion:"Pañales ultra absorbentes con ajuste suave.",                          vencimiento:"03/2028" },
-      { nombre:"Toallitas Húmedas x80",      categoria:"bebes",     precio:14900,  tienda:"Jumbo",                 ubicacion:"Medellín",     descripcion:"Toallitas sin alcohol ni fragancias, hipoalergénicas.",               vencimiento:"11/2027" },
-      { nombre:"Fórmula Láctea 900g",        categoria:"bebes",     precio:98900,  tienda:"PriceSmart",            ubicacion:"Cali",         descripcion:"Fórmula infantil enriquecida con hierro y DHA.",                       vencimiento:"08/2027" },
-      { nombre:"Biberón Anticólicos 250ml",  categoria:"bebes",     precio:39900,  tienda:"Éxito",                 ubicacion:"Barranquilla", descripcion:"Biberón con válvula anticólicos y tetina de silicón.",                vencimiento:"N/A" },
-      { nombre:"Papilla de Frutas x12",      categoria:"bebes",     precio:42900,  tienda:"Ara",                   ubicacion:"Pereira",      descripcion:"Pack de 12 papillas naturales de frutas sin azúcar.",                 vencimiento:"05/2027" },
-      { nombre:"Croquetas Perro Adulto 5kg", categoria:"mascotas",  precio:89900,  tienda:"Agrocampo",             ubicacion:"Bogotá",       descripcion:"Alimento seco premium para perro adulto, sabor pollo.",               vencimiento:"02/2027" },
-      { nombre:"Arena para Gato 10L",        categoria:"mascotas",  precio:28900,  tienda:"Jumbo",                 ubicacion:"Medellín",     descripcion:"Arena aglutinante con control de olores, bajo polvo.",                vencimiento:"N/A" },
-      { nombre:"Juguete Mordedor",           categoria:"mascotas",  precio:19900,  tienda:"Agrocampo",             ubicacion:"Cali",         descripcion:"Mordedor de caucho natural resistente para perros medianos.",          vencimiento:"N/A" },
-      { nombre:"Snacks para Gato x10",       categoria:"mascotas",  precio:24900,  tienda:"Olímpica",              ubicacion:"Bucaramanga",  descripcion:"Pack de 10 sobres de snacks húmedos sabor atún y salmón.",            vencimiento:"06/2027" },
-      { nombre:"Collar Antipulgas",          categoria:"mascotas",  precio:52900,  tienda:"Droguería Cruz Verde",  ubicacion:"Manizales",    descripcion:"Collar con protección hasta 8 meses contra pulgas.",                  vencimiento:"N/A" }
-    ];
-
-    const CAT_ICONOS = { belleza:"💄", higiene:"🧴", alimentos:"🍎", hogar:"🏠", bebes:"🍼", mascotas:"🐾" };
-    const CAT_COLORES = {
-      belleza:"#fce4ec,#c62828", higiene:"#e0f7fa,#00695c",
-      alimentos:"#fff3e0,#e65100", hogar:"#e8eaf6,#283593",
-      bebes:"#f3e5f5,#6a1b9a",   mascotas:"#e8f5e9,#2e7d32"
-    };
-
-    function formatCOPv(v) {
-      return "$ " + v.toLocaleString("es-CO", { minimumFractionDigits:0 });
-    }
-
-    window.mostrarCatalogoEmpresa = function () {
-      ocultarTodo();
-      document.getElementById("seccion-catalogo-empresa").style.display = "block";
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      renderCatEmpresa();
-    };
-
-    function renderCatEmpresa() {
-      const busq = document.getElementById("buscadorCat").value.toLowerCase().trim();
-      const cat  = document.getElementById("filtroCategoriaCat").value;
-
-      const lista = BASE_PRODUCTOS_EMPRESA.filter(p => {
-        if (cat && p.categoria !== cat) return false;
-        if (busq) {
-          const txt = (p.nombre + " " + p.tienda + " " + p.ubicacion + " " + p.descripcion).toLowerCase();
-          if (!txt.includes(busq)) return false;
-        }
-        return true;
-      });
-
-      document.getElementById("infoCat").textContent = lista.length < BASE_PRODUCTOS_EMPRESA.length
-        ? `Mostrando ${lista.length} de ${BASE_PRODUCTOS_EMPRESA.length} productos`
-        : `${BASE_PRODUCTOS_EMPRESA.length} productos en el catálogo`;
-
-      const grid = document.getElementById("gridCatEmpresa");
-      if (!lista.length) {
-        grid.innerHTML = `<div class="col-12 text-center py-5 text-secondary">
-          <div style="font-size:3rem;">🔍</div><p class="mt-2">Sin resultados. Prueba con otros filtros.</p></div>`;
-        return;
+      /* Actualizar vista previa con la primera foto */
+      if (i === 0) {
+        document.getElementById('prevImg').src = e.target.result;
+        document.getElementById('prevImg').style.display = 'block';
+        document.getElementById('prevImgIcon').style.display = 'none';
       }
+    };
+    r.readAsDataURL(f);
+  });
+}
 
-      grid.innerHTML = lista.map(p => {
-        const [bg, fg] = (CAT_COLORES[p.categoria] || "#f5f5f5,#666").split(",");
-        const icono = CAT_ICONOS[p.categoria] || "📦";
-        return `<div class="col-12 col-sm-6 col-lg-4">
-          <div style="background:white;border-radius:18px;box-shadow:0 4px 16px rgba(0,0,0,.08);
-                      padding:22px;height:100%;display:flex;flex-direction:column;
-                      transition:transform .2s,box-shadow .2s;"
-               onmouseenter="this.style.transform='translateY(-3px)';this.style.boxShadow='0 10px 28px rgba(26,110,60,.15)'"
-               onmouseleave="this.style.transform='';this.style.boxShadow='0 4px 16px rgba(0,0,0,.08)'">
-            <span style="font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:20px;
-                         display:inline-block;margin-bottom:10px;background:${bg};color:${fg};">
-              ${icono} ${p.categoria.charAt(0).toUpperCase() + p.categoria.slice(1)}
-            </span>
-            <div style="font-weight:800;font-size:1rem;margin-bottom:4px;color:#222;">${p.nombre}</div>
-            <div style="font-size:.78rem;color:#888;margin-bottom:4px;">🏪 ${p.tienda} · 📍 ${p.ubicacion}</div>
-            <div style="font-size:.82rem;color:#aaa;flex:1;margin-bottom:12px;">${p.descripcion}</div>
-            <div style="font-size:1.2rem;font-weight:800;color:#2e7d32;margin-bottom:8px;">${formatCOPv(p.precio)}</div>
-            ${p.vencimiento !== "N/A"
-              ? `<div style="font-size:.75rem;color:#e65100;">📅 Vence: ${p.vencimiento}</div>`
-              : ""}
-          </div>
-        </div>`;
-      }).join("");
-    }
+function quitarFotoPublicar(i) {
+  fotosPublicar.splice(i, 1);
+  if (fotosPublicar.length === 0) {
+    document.getElementById('prevImg').style.display = 'none';
+    document.getElementById('prevImgIcon').style.display = 'block';
+  }
+  const dt = new DataTransfer();
+  fotosPublicar.forEach(f => dt.items.add(f));
+  document.getElementById('pub_fotos').files = dt.files;
+  previewFotos({ files: fotosPublicar });
+}
 
-    document.getElementById("buscadorCat").addEventListener("input",          renderCatEmpresa);
-    document.getElementById("filtroCategoriaCat").addEventListener("change",  renderCatEmpresa);
-    document.getElementById("btnLimpiarCat").addEventListener("click", () => {
-      document.getElementById("buscadorCat").value         = "";
-      document.getElementById("filtroCategoriaCat").value  = "";
-      renderCatEmpresa();
+/* Vista previa en tiempo real */
+function actualizarVistaPreviaFormulario() {
+  const nombre = document.getElementById('pub_nombre').value || 'Nombre del producto';
+  const precio = parseFloat(document.getElementById('pub_precio').value) || 0;
+  const tienda = document.getElementById('pub_tienda').value || 'Tu tienda';
+  const cat    = document.getElementById('pub_categoria').value || '';
+  document.getElementById('prevNombre').textContent = nombre.length > 40 ? nombre.slice(0, 40) + '…' : nombre;
+  document.getElementById('prevPrecio').textContent = '$' + precio.toLocaleString('es-CO');
+  document.getElementById('prevTienda').textContent = tienda;
+  document.getElementById('prevCat').textContent    = cat ? cat.toUpperCase() : 'CATEGORÍA';
+}
+
+/* Publicar */
+function publicarProducto(e) {
+  e.preventDefault();
+  let valido = true;
+
+  const campos = [
+    { id: 'pub_nombre',     err: 'err_nombre',      check: v => v.trim().length > 0 },
+    { id: 'pub_descripcion',err: 'err_descripcion',  check: v => v.trim().length > 0 },
+    { id: 'pub_categoria',  err: 'err_categoria',    check: v => v !== '' },
+    { id: 'pub_precio',     err: 'err_precio',       check: v => parseFloat(v) > 0 },
+    { id: 'pub_cantidad',   err: 'err_cantidad',     check: v => parseInt(v) >= 0 },
+    { id: 'pub_estado',     err: 'err_estado',       check: v => v !== '' },
+    { id: 'pub_tienda',     err: 'err_tienda',       check: v => v.trim().length > 0 },
+    { id: 'pub_ciudad',     err: 'err_ciudad',       check: v => v !== '' },
+  ];
+
+  campos.forEach(({ id, err, check }) => {
+    const el = document.getElementById(id);
+    const ok = check(el.value);
+    el.classList.toggle('invalid', !ok);
+    const errEl = document.getElementById(err);
+    if (errEl) errEl.classList.toggle('show', !ok);
+    if (!ok) valido = false;
+  });
+
+  if (document.getElementById('pub_presencial').checked) {
+    const dir = document.getElementById('pub_direccion').value.trim();
+    const ok  = dir.length > 0;
+    document.getElementById('pub_direccion').classList.toggle('invalid', !ok);
+    document.getElementById('err_direccion').classList.toggle('show', !ok);
+    if (!ok) valido = false;
+  }
+
+  if (fotosPublicar.length === 0) {
+    document.getElementById('err_fotos').classList.add('show');
+    valido = false;
+  } else {
+    document.getElementById('err_fotos').classList.remove('show');
+  }
+
+  if (!valido) { mostrarToast('Completa los campos obligatorios'); return; }
+
+  /* Guardar en localStorage (en producción → Firebase Firestore) */
+  const nuevo = {
+    id: Date.now(),
+    nombre:      document.getElementById('pub_nombre').value.trim(),
+    descripcion: document.getElementById('pub_descripcion').value.trim(),
+    categoria:   document.getElementById('pub_categoria').value,
+    marca:       document.getElementById('pub_marca').value.trim(),
+    precio:      parseFloat(document.getElementById('pub_precio').value),
+    cantidad:    parseInt(document.getElementById('pub_cantidad').value),
+    estado:      document.getElementById('pub_estado').value,
+    tienda:      document.getElementById('pub_tienda').value.trim(),
+    ciudad:      document.getElementById('pub_ciudad').value,
+    barrio:      document.getElementById('pub_barrio').value.trim(),
+    presencial:  document.getElementById('pub_presencial').checked,
+    direccion:   document.getElementById('pub_direccion').value.trim(),
+    colores:     [...coloresSeleccionados],
+    tallas:      [...document.querySelectorAll('#tallasWrap input:checked')].map(c => c.value),
+    imagenPreview: document.getElementById('prevImg').src || '',
+    fecha: new Date().toISOString(),
+  };
+
+  misProductos.unshift(nuevo);
+  localStorage.setItem('pn_mis_productos', JSON.stringify(misProductos));
+
+  /* Resetear */
+  document.getElementById('formPublicar').reset();
+  fotosPublicar = []; coloresSeleccionados = [];
+  document.getElementById('fotosPrevPublicar').innerHTML = '';
+  document.getElementById('prevImg').style.display = 'none';
+  document.getElementById('prevImgIcon').style.display = 'block';
+  actualizarVistaPreviaFormulario();
+  document.querySelectorAll('.pn-form-control.invalid').forEach(el => el.classList.remove('invalid'));
+  document.querySelectorAll('.pn-form-error.show').forEach(el => el.classList.remove('show'));
+  document.getElementById('camposRopa').style.display = 'none';
+  document.getElementById('camposDireccion').style.display = 'none';
+
+  mostrarAlerta('alertaPublicado');
+  mostrarToast('¡Producto publicado con éxito!');
+  setTimeout(() => { mostrarSeccion('seccionMisProductos'); ocultarAlerta('alertaPublicado'); }, 2500);
+}
+
+/* ══════════════════════════════════
+   MIS PRODUCTOS
+══════════════════════════════════ */
+function renderMisProductos() {
+  const q   = (document.getElementById('buscarMisProductos')?.value || '').toLowerCase();
+  const cat = document.getElementById('filtroCategoriaMis')?.value || '';
+  let lista = misProductos.filter(p => {
+    if (cat && p.categoria !== cat) return false;
+    if (q && !p.nombre.toLowerCase().includes(q) && !p.tienda.toLowerCase().includes(q)) return false;
+    return true;
+  });
+
+  const grid  = document.getElementById('gridMisProductos');
+  const empty = document.getElementById('emptyMisProductos');
+
+  if (lista.length === 0) {
+    grid.innerHTML = ''; empty.style.display = 'block'; return;
+  }
+  empty.style.display = 'none';
+  grid.innerHTML = lista.map(p => `
+    <div class="pn-misprod-card fade-up">
+      <div class="pn-misprod-img">
+        ${p.imagenPreview
+          ? `<img src="${p.imagenPreview}" alt="${p.nombre}" loading="lazy">`
+          : `<div class="pn-misprod-img-placeholder">📦</div>`}
+      </div>
+      <div class="pn-misprod-body">
+        <div class="pn-misprod-nombre" title="${p.nombre}">${p.nombre}</div>
+        <div style="font-size:.73rem;color:var(--text-55);margin-bottom:4px">${p.tienda} · ${p.ciudad}</div>
+        <div class="pn-misprod-precio">$${p.precio.toLocaleString('es-CO')}</div>
+        <div class="pn-misprod-acciones">
+          <button class="pn-btn-edit" onclick="editarProducto(${p.id})"><i class="bi bi-pencil me-1"></i>Editar</button>
+          <button class="pn-btn-del"  onclick="pedirEliminar(${p.id})"><i class="bi bi-trash me-1"></i>Eliminar</button>
+        </div>
+      </div>
+    </div>`).join('');
+
+  observarFadeUp();
+}
+
+function editarProducto(id) {
+  const p = misProductos.find(x => x.id === id);
+  if (!p) return;
+  mostrarSeccion('seccionPublicar');
+  /* Llenar formulario con datos del producto */
+  setTimeout(() => {
+    ['nombre','descripcion','marca','tienda','barrio','direccion'].forEach(f => {
+      const el = document.getElementById('pub_'+f); if(el) el.value = p[f]||'';
     });
-
-    /* ─── Utilidad: redimensionar y comprimir imagen antes de guardar ─── */
-    // Firestore tiene límite de 1 MB por documento.
-    // Reducimos la imagen a máx. 600px y calidad 0.7 para quedar bien por debajo.
-    function comprimirImagen(archivo, maxPx = 600, calidad = 0.7) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onerror = reject;
-        reader.onload = e => {
-          const img = new Image();
-          img.onerror = reject;
-          img.onload = () => {
-            // Calcular nuevo tamaño manteniendo proporción
-            let w = img.width;
-            let h = img.height;
-            if (w > maxPx || h > maxPx) {
-              if (w >= h) { h = Math.round(h * maxPx / w); w = maxPx; }
-              else        { w = Math.round(w * maxPx / h); h = maxPx; }
-            }
-            const canvas = document.createElement("canvas");
-            canvas.width  = w;
-            canvas.height = h;
-            canvas.getContext("2d").drawImage(img, 0, 0, w, h);
-            resolve(canvas.toDataURL("image/jpeg", calidad));
-          };
-          img.src = e.target.result;
-        };
-        reader.readAsDataURL(archivo);
-      });
+    ['categoria','ciudad','estado'].forEach(f => {
+      const el = document.getElementById('pub_'+f); if(el) el.value = p[f]||'';
+    });
+    document.getElementById('pub_precio').value   = p.precio  || '';
+    document.getElementById('pub_cantidad').value = p.cantidad|| '';
+    document.getElementById('pub_presencial').checked = !!p.presencial;
+    toggleDireccion();
+    actualizarCamposCondicionales();
+    if (p.imagenPreview) {
+      document.getElementById('prevImg').src           = p.imagenPreview;
+      document.getElementById('prevImg').style.display = 'block';
+      document.getElementById('prevImgIcon').style.display = 'none';
     }
+    actualizarVistaPreviaFormulario();
+    mostrarToast('Editando: ' + p.nombre);
+  }, 100);
+}
 
-  </script>
+function pedirEliminar(id) { idEliminarPendiente = id; document.getElementById('confirmModal').classList.add('open'); }
+function cerrarConfirm() { document.getElementById('confirmModal').classList.remove('open'); idEliminarPendiente = null; }
+
+document.getElementById('btnConfirmEliminar').onclick = () => {
+  if (!idEliminarPendiente) return;
+  misProductos = misProductos.filter(p => p.id !== idEliminarPendiente);
+  localStorage.setItem('pn_mis_productos', JSON.stringify(misProductos));
+  cerrarConfirm();
+  renderMisProductos();
+  mostrarToast('Producto eliminado');
+};
+
+/* ══════════════════════════════════
+   UTILIDADES
+══════════════════════════════════ */
+function mostrarAlerta(id)  { const el = document.getElementById(id); if(el){ el.classList.add('show'); setTimeout(()=>el.classList.remove('show'), 4000); } }
+function ocultarAlerta(id)  { const el = document.getElementById(id); if(el) el.classList.remove('show'); }
+
+let toastT;
+function mostrarToast(msg) {
+  const t = document.getElementById('pnToast');
+  document.getElementById('pnToastMsg').textContent = msg;
+  t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function observarFadeUp() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.07 });
+  document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+}
+
+/* Cerrar modal confirm con Escape */
+document.addEventListener('keydown', e => { if(e.key === 'Escape') cerrarConfirm(); });
+
+window.addEventListener('scroll', () => {
+  document.getElementById('pnNavbar').classList.toggle('scrolled', window.scrollY > 20);
+  document.getElementById('pn-scroll-top').classList.toggle('show', window.scrollY > 400);
+}, { passive: true });
+
+/* Exponer para módulo sesión */
+window.setPnUser = (user) => {
+  if (!user) { window.location.href = 'login.html'; return; }
+  const bienvenida = document.getElementById('vendedorBienvenida');
+  if (bienvenida) bienvenida.textContent = `Hola, ${user.displayName || user.email}`;
+  const btnCerrar = document.getElementById('btnCerrarSesionVendedor');
+  if (btnCerrar) btnCerrar.style.display = 'inline-flex';
+};
+
+window.cerrarSesionVendedor = async () => {
+  const { cerrarSesion } = await import('./auth.js');
+  await cerrarSesion();
+  window.location.href = 'login.html';
+};
+
+/* Init */
+document.addEventListener('DOMContentLoaded', () => {
+  observarFadeUp();
+  actualizarVistaPreviaFormulario();
+});
+</script>
 
 </body>
 </html>
