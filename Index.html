@@ -4,16 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PriceNice — Tu brújula de los buenos precios</title>
-  <!-- Fuentes: Inter (textos) + Instrument Serif (títulos) -->
+  <!-- Fuentes: Inter y Instrument Serif (resto del sitio) + Bricolage Grotesque y DM Sans (tema crema y azul) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=DM+Sans:opsz,wght@9..40,400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="tiendas-cercanas.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Tema visual crema + azul (se carga al final para sobrescribir los colores) -->
+  <link rel="stylesheet" href="tema-crema-azul.css">
 </head>
-<body class="has-navbar">
+<body class="has-navbar pn-tema">
 
 <!-- ════════════════════════════════════════════
      NAVBAR BLANCA FIJA
@@ -134,7 +137,7 @@
             Siempre el precio más bajo en un solo lugar.
           </p>
           <div class="pn-hero-btns">
-            <a href="tienda.html?cat=moda" class="pn-btn-primary">
+            <a href="tienda.html?cat=moda" class="pn-btn-primary pn-btn-oro">
               Ver ofertas <i class="bi bi-arrow-right"></i>
             </a>
             <a href="tienda.html" class="pn-btn-secondary">
@@ -200,7 +203,7 @@
             las tiendas en un solo lugar. Sin sorpresas.
           </p>
           <div class="pn-hero-btns">
-            <a href="tienda.html?cat=tecnologia" class="pn-btn-primary">
+            <a href="tienda.html?cat=tecnologia" class="pn-btn-primary pn-btn-oro">
               Ver productos <i class="bi bi-arrow-right"></i>
             </a>
             <a href="precios.html" class="pn-btn-secondary">
@@ -266,7 +269,7 @@
             Éxito y Carulla. Ahorra en cada compra.
           </p>
           <div class="pn-hero-btns">
-            <a href="tienda.html?cat=mercado" class="pn-btn-primary">
+            <a href="tienda.html?cat=mercado" class="pn-btn-primary pn-btn-oro">
               Ir al mercado <i class="bi bi-arrow-right"></i>
             </a>
             <a href="#tiendas-cerca" class="pn-btn-secondary">
@@ -337,14 +340,77 @@
 
 
 <!-- ════════════════════════════════════════════
+     BENEFICIOS (debajo de la portada)
+════════════════════════════════════════════ -->
+<section class="pn-perks" aria-label="Beneficios de PriceNice">
+  <div class="pn-container">
+    <ul class="pn-perks-grid">
+      <li class="pn-perk">
+        <span class="pn-perk-icon"><i class="bi bi-bar-chart-line"></i></span>
+        <strong>Comparación de precios</strong>
+        <span>Un solo lugar, todas las tiendas</span>
+      </li>
+      <li class="pn-perk">
+        <span class="pn-perk-icon"><i class="bi bi-geo-alt"></i></span>
+        <strong>Tiendas cercanas</strong>
+        <span>Encuentra dónde comprar cerca de ti</span>
+      </li>
+      <li class="pn-perk">
+        <span class="pn-perk-icon"><i class="bi bi-star"></i></span>
+        <strong>Reseñas reales</strong>
+        <span>Opiniones verificadas de compradores</span>
+      </li>
+      <li class="pn-perk">
+        <span class="pn-perk-icon"><i class="bi bi-shield-check"></i></span>
+        <strong>Compra segura</strong>
+        <span>Precios verificados, sin sorpresas</span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     LOS MEJORES PRECIOS DE HOY (cinta que corre)
+════════════════════════════════════════════ -->
+<section class="pn-ofertas" aria-labelledby="titOfertas">
+  <div class="pn-ofertas-head">
+    <div>
+      <h2 id="titOfertas">Buenos precios de hoy</h2>
+      <p>Un vistazo a lo que puedes comparar ahora mismo. Pasa el cursor por encima para detener la cinta.</p>
+    </div>
+    <a href="tienda.html?oferta=1" class="pn-btn-primary pn-btn-oro">
+      Ver todas las ofertas <i class="bi bi-arrow-right"></i>
+    </a>
+  </div>
+  <div class="pn-marquee" style="--dur:58s">
+    <div class="pn-marquee-track" id="trackOfertas"></div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     TIENDAS QUE COMPARAMOS (cinta en sentido contrario)
+════════════════════════════════════════════ -->
+<section class="pn-stores-strip" aria-label="Tiendas que comparamos">
+  <p class="pn-stores-label">Comparamos precios en</p>
+  <div class="pn-marquee reverse" style="--dur:70s">
+    <div class="pn-marquee-track" id="trackTiendas"></div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
      EXPLORA POR CATEGORÍAS
 ════════════════════════════════════════════ -->
-<section class="pn-section bg-white" id="categorias" aria-labelledby="titCat">
+<section class="pn-section" id="categorias" aria-labelledby="titCat">
   <div class="pn-container">
-    <div class="pn-section-head fade-up" style="flex-direction:column;align-items:center;text-align:center">
-      <span class="pn-eyebrow">categorías</span>
-      <h2 class="pn-section-title" id="titCat">Explora por categorías</h2>
-      <p class="pn-section-sub">Todo lo que necesitas, organizado para ti</p>
+    <div class="pn-section-head fade-up">
+      <div>
+        <h2 class="pn-section-title" id="titCat">Explora por categorías</h2>
+        <p class="pn-section-sub">Todo lo que necesitas, organizado para ti</p>
+      </div>
+      <a href="tienda.html" class="pn-section-link">Ver todo <i class="bi bi-arrow-right"></i></a>
     </div>
     <div class="pn-cats-row" role="list">
       <a href="tienda.html?cat=moda"       class="pn-cat-circle fade-up" role="listitem">
@@ -399,17 +465,20 @@
   <div class="pn-container">
     <div class="pn-section-head fade-up">
       <div>
-        <span class="pn-eyebrow">lo más comprado</span>
-        <h2 class="pn-section-title" id="titTend"><em>Tendencias</em></h2>
+        <h2 class="pn-section-title" id="titTend">Tendencias</h2>
         <p class="pn-section-sub">Lo que todos están comprando esta semana</p>
       </div>
-      <a href="tienda.html" class="pn-section-link">
-        Ver todo <i class="bi bi-arrow-right"></i>
-      </a>
+      <div class="pn-rail-ctrl">
+        <button type="button" class="pn-rail-btn" id="railPrev" aria-label="Productos anteriores"><i class="bi bi-arrow-left"></i></button>
+        <button type="button" class="pn-rail-btn" id="railNext" aria-label="Productos siguientes"><i class="bi bi-arrow-right"></i></button>
+        <a href="tienda.html" class="pn-section-link">
+          Ver todo <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
     </div>
 
-    <!-- Grid con skeletons iniciales -->
-    <div class="pn-product-grid" id="gridTendencias">
+    <!-- Carril horizontal con esqueletos iniciales -->
+    <div class="pn-rail" id="gridTendencias" role="region" aria-label="Productos en tendencia" tabindex="0">
       <div class="pn-skeleton-card"><div class="pn-skeleton pn-skeleton-img"></div><div class="pn-skeleton-body"><div class="pn-skeleton pn-skeleton-line"></div><div class="pn-skeleton pn-skeleton-line w-75"></div><div class="pn-skeleton pn-skeleton-line w-40 tall"></div></div></div>
       <div class="pn-skeleton-card"><div class="pn-skeleton pn-skeleton-img"></div><div class="pn-skeleton-body"><div class="pn-skeleton pn-skeleton-line"></div><div class="pn-skeleton pn-skeleton-line w-75"></div><div class="pn-skeleton pn-skeleton-line w-40 tall"></div></div></div>
       <div class="pn-skeleton-card"><div class="pn-skeleton pn-skeleton-img"></div><div class="pn-skeleton-body"><div class="pn-skeleton pn-skeleton-line"></div><div class="pn-skeleton pn-skeleton-line w-75"></div><div class="pn-skeleton pn-skeleton-line w-40 tall"></div></div></div>
@@ -422,18 +491,15 @@
 <!-- ════════════════════════════════════════════
      BANNERS DE OFERTAS
 ════════════════════════════════════════════ -->
-<section class="pn-section bg-white" style="padding-top:0" aria-label="Ofertas destacadas">
+<section class="pn-section" style="padding-top:8px" aria-label="Ofertas destacadas">
   <div class="pn-container">
     <div class="pn-banners-grid">
 
       <a href="tienda.html?oferta=1" class="pn-banner-card fade-up" style="text-decoration:none">
-        <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&q=80" alt="Oferta temporada" loading="lazy">
+        <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&q=80" alt="Oferta de temporada" loading="lazy">
         <div class="pn-banner-overlay"></div>
         <div class="pn-banner-content">
-          <p class="pn-banner-tag">// temporada //</p>
-          <h3 class="pn-banner-title">
-            <em>vendidos</em><br>más
-          </h3>
+          <h3 class="pn-banner-title">Lo más vendido de la temporada</h3>
           <span class="pn-banner-btn">Ver ofertas <i class="bi bi-arrow-right"></i></span>
         </div>
       </a>
@@ -442,11 +508,8 @@
         <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80" alt="Tiendas cercanas" loading="lazy">
         <div class="pn-banner-overlay"></div>
         <div class="pn-banner-content">
-          <p class="pn-banner-tag">// cerca de ti //</p>
-          <h3 class="pn-banner-title">
-            <em>tiendas</em><br>cercanas
-          </h3>
-          <span class="pn-banner-btn">Explorar <i class="bi bi-arrow-right"></i></span>
+          <h3 class="pn-banner-title">Encuentra tiendas cerca de ti</h3>
+          <span class="pn-banner-btn">Abrir el mapa <i class="bi bi-arrow-right"></i></span>
         </div>
       </a>
 
@@ -458,12 +521,11 @@
 <!-- ════════════════════════════════════════════
      COLECCIONES DESTACADAS
 ════════════════════════════════════════════ -->
-<section class="pn-section" aria-labelledby="titCol">
+<section class="pn-section pn-colecciones" aria-labelledby="titCol">
   <div class="pn-container">
     <div class="pn-section-head fade-up">
       <div>
-        <span class="pn-eyebrow">colecciones</span>
-        <h2 class="pn-section-title" id="titCol">Colecciones <span class="accent">destacadas</span></h2>
+        <h2 class="pn-section-title" id="titCol">Colecciones destacadas</h2>
         <p class="pn-section-sub">Selecciones cuidadosas para cada estilo de vida</p>
       </div>
       <a href="tienda.html" class="pn-section-link">Ver todo <i class="bi bi-arrow-right"></i></a>
@@ -622,42 +684,28 @@
 
 
 <!-- ════════════════════════════════════════════
-     FRANJA BENEFICIOS (azul marino)
+     INVITACIONES: crear cuenta / registrar tienda
 ════════════════════════════════════════════ -->
-<div class="pn-benefits fade-up" aria-label="Beneficios de PriceNice">
-  <div class="pn-container">
-    <div class="pn-benefits-grid">
-      <div class="pn-benefit-item">
-        <div class="pn-benefit-icon"><i class="bi bi-bar-chart-line"></i></div>
-        <div>
-          <div class="pn-benefit-title">Comparación de precios</div>
-          <div class="pn-benefit-sub">Un solo lugar, todas las tiendas</div>
-        </div>
-      </div>
-      <div class="pn-benefit-item">
-        <div class="pn-benefit-icon"><i class="bi bi-geo-alt"></i></div>
-        <div>
-          <div class="pn-benefit-title">Tiendas cercanas</div>
-          <div class="pn-benefit-sub">Encuentra dónde comprar cerca a ti</div>
-        </div>
-      </div>
-      <div class="pn-benefit-item">
-        <div class="pn-benefit-icon"><i class="bi bi-star"></i></div>
-        <div>
-          <div class="pn-benefit-title">Reseñas reales</div>
-          <div class="pn-benefit-sub">Opiniones verificadas de compradores</div>
-        </div>
-      </div>
-      <div class="pn-benefit-item">
-        <div class="pn-benefit-icon"><i class="bi bi-shield-check"></i></div>
-        <div>
-          <div class="pn-benefit-title">Compra segura</div>
-          <div class="pn-benefit-sub">Precios verificados, sin sorpresas</div>
-        </div>
-      </div>
+<section class="pn-section pn-cta-band" aria-label="Únete a PriceNice">
+  <div class="pn-container" style="max-width:1320px">
+    <div class="pn-cta-grid">
+
+      <article class="pn-cta pn-cta-claro fade-up">
+        <h3>Guarda tus favoritos y compara cuando quieras</h3>
+        <p>Crea tu cuenta y encuentra tus productos y tiendas en un solo lugar.</p>
+        <a href="login.html#registro" class="pn-btn-primary">Crear mi cuenta <i class="bi bi-arrow-right"></i></a>
+      </article>
+
+      <article class="pn-cta pn-cta-oscuro fade-up">
+        <h3>¿Tienes una tienda? Que te encuentren cerca</h3>
+        <p>Registra tu tienda para que los compradores de tu zona vean tus precios.</p>
+        <a href="vendedor.html" class="pn-btn-primary pn-btn-oro">Registrar mi tienda <i class="bi bi-arrow-right"></i></a>
+        <img class="pn-cta-deco" src="img/logo-dark.png" alt="" loading="lazy">
+      </article>
+
     </div>
   </div>
-</div>
+</section>
 
 
 <!-- ════════════════════════════════════════════
@@ -865,7 +913,7 @@ function crearTarjeta(p) {
   const favs  = JSON.parse(localStorage.getItem('pn_favoritos')||'[]');
   const isFav = favs.includes(p.id);
   return `
-  <article class="pn-product-card fade-up" data-id="${p.id}">
+  <article class="pn-product-card" data-id="${p.id}">
     <div class="pn-product-img">
       ${p.mejorPrecio ? '<span class="pn-best-badge">Mejor precio</span>' : ''}
       <img src="${p.imagen}" alt="${p.nombre}" loading="lazy">
@@ -896,6 +944,72 @@ function cargarTendencias() {
       PRODUCTOS_DATA.map(crearTarjeta).join('');
     observarFadeUp();
   }, 650);
+}
+
+/* ── Cinta "Buenos precios de hoy" (corre sola y se detiene al pasar el cursor) ── */
+function chipOferta(p, oculto) {
+  const a11y = oculto ? 'aria-hidden="true"' : '';
+  const tab  = oculto ? 'tabindex="-1"' : '';
+  return `
+  <div class="pn-chip" ${a11y}>
+    <div class="pn-chip-media">
+      ${p.mejorPrecio ? '<span class="pn-chip-tag">Mejor precio</span>' : ''}
+      <div class="pn-chip-img"><img src="${p.imagen}" alt="${oculto ? '' : p.nombre}" loading="lazy"></div>
+      <button type="button" class="pn-chip-add" ${tab}
+        onclick="agregarCarrito(${p.id})"
+        aria-label="Agregar ${p.nombre} al carrito">
+        <i class="bi bi-plus-lg"></i>
+      </button>
+    </div>
+    <div class="pn-chip-name">${p.nombre}</div>
+    <div class="pn-chip-store">${p.tienda}</div>
+    <div class="pn-chip-price">${fmtPrecio(p.precio)}</div>
+  </div>`;
+}
+
+/* Cada cinta lleva dos grupos iguales: al mover la mitad, el bucle no se nota.
+   Se repiten los productos para que el grupo siempre sea más ancho que la pantalla. */
+function llenarCinta(trackId, itemFn, items, repeticiones) {
+  const track = document.getElementById(trackId);
+  if (!track) return;
+  const grupo = (oculto) => {
+    let html = '';
+    for (let r = 0; r < repeticiones; r++) {
+      html += items.map(it => itemFn(it, oculto || r > 0)).join('');
+    }
+    return `<div class="pn-marquee-group"${oculto ? ' aria-hidden="true"' : ''}>${html}</div>`;
+  };
+  track.innerHTML = grupo(false) + grupo(true);
+}
+
+function renderCintas() {
+  llenarCinta('trackOfertas', chipOferta, PRODUCTOS_DATA, 2);
+
+  const TIENDAS = ['Éxito','Alkosto','Falabella','D1','Jumbo','Linio','PriceSmart','Cruz Verde','Carulla'];
+  llenarCinta('trackTiendas',
+    (nombre, oculto) => `<span class="pn-store-pill"${oculto ? ' aria-hidden="true"' : ''}>${nombre}</span>`,
+    TIENDAS, 2);
+}
+
+/* ── Carril de tendencias: flechas ── */
+function iniciarCarril() {
+  const rail = document.getElementById('gridTendencias');
+  const prev = document.getElementById('railPrev');
+  const next = document.getElementById('railNext');
+  if (!rail || !prev || !next) return;
+
+  const paso = () => Math.max(rail.clientWidth * 0.8, 240);
+  const actualizar = () => {
+    prev.disabled = rail.scrollLeft <= 4;
+    next.disabled = rail.scrollLeft + rail.clientWidth >= rail.scrollWidth - 4;
+  };
+  prev.addEventListener('click', () => rail.scrollBy({ left: -paso(), behavior: 'smooth' }));
+  next.addEventListener('click', () => rail.scrollBy({ left:  paso(), behavior: 'smooth' }));
+  rail.addEventListener('scroll', actualizar, { passive: true });
+  window.addEventListener('resize', actualizar);
+  /* las tarjetas llegan después de los esqueletos: revisar de nuevo */
+  new MutationObserver(actualizar).observe(rail, { childList: true });
+  actualizar();
 }
 
 /* ── Carrito ── */
@@ -994,6 +1108,8 @@ function setupMobileNav() {
 /* ── Init ── */
 document.addEventListener('DOMContentLoaded', () => {
   iniciarCarrusel();
+  renderCintas();
+  iniciarCarril();
   cargarTendencias();
   actualizarBadges();
   observarFadeUp();
