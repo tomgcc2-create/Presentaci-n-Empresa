@@ -3,614 +3,292 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tiendas Cercanas | PRICE NICE</title>
-
-  <!-- Leaflet CSS — librería de mapas gratuita, sin clave de API -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-
-  <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-  <style>
-    /* ══════════════════════════════════════
-       ESTILOS GENERALES
-    ══════════════════════════════════════ */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
-
-    body {
-      background: #f5f3ef;
-      color: #333;
-    }
-
-    /* ── Encabezado de la página ── */
-    .page-header {
-      background: linear-gradient(135deg, #1a237e, #283593);
-      color: white;
-      padding: 28px 20px 22px;
-      text-align: center;
-      border-radius: 0 0 24px 24px;
-      margin-bottom: 24px;
-    }
-    .page-header h1 {
-      font-size: 1.6rem;
-      font-weight: 800;
-      margin-bottom: 4px;
-    }
-    .page-header p {
-      opacity: .85;
-      font-size: .95rem;
-    }
-
-    /* ── Contenedor principal ── */
-    .contenedor {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 0 16px 40px;
-    }
-
-    /* ── Mapa ── */
-    #mapa {
-      width: 100%;
-      height: 450px;
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0,0,0,.12);
-      margin-bottom: 24px;
-      z-index: 1;            /* evita conflictos con otros elementos */
-    }
-
-    /* ── Estado de carga / error ── */
-    .estado {
-      text-align: center;
-      padding: 40px 20px;
-      font-size: 1.1rem;
-      color: #555;
-    }
-    .estado .emoji {
-      font-size: 2.5rem;
-      display: block;
-      margin-bottom: 12px;
-    }
-
-    /* ── Mensaje de error cuando se deniega la ubicación ── */
-    .error-permiso {
-      background: #fff3cd;
-      border: 2px solid #ffc107;
-      border-radius: 14px;
-      padding: 28px 24px;
-      text-align: center;
-      max-width: 600px;
-      margin: 40px auto;
-    }
-    .error-permiso h2 {
-      color: #856404;
-      margin-bottom: 12px;
-      font-size: 1.3rem;
-    }
-    .error-permiso p {
-      color: #664d03;
-      line-height: 1.6;
-      margin-bottom: 8px;
-    }
-    .error-permiso .pasos {
-      text-align: left;
-      background: #fff;
-      border-radius: 10px;
-      padding: 16px 20px;
-      margin-top: 16px;
-    }
-    .error-permiso .pasos li {
-      margin-bottom: 8px;
-      color: #333;
-    }
-
-    /* ── Lista de tiendas cercanas ── */
-    .lista-tiendas h2 {
-      font-size: 1.3rem;
-      margin-bottom: 14px;
-      color: #1a237e;
-    }
-    .tienda-item {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      background: white;
-      padding: 14px 18px;
-      border-radius: 12px;
-      margin-bottom: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,.06);
-      transition: transform .15s;
-    }
-    .tienda-item:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 14px rgba(0,0,0,.1);
-    }
-    .tienda-icono {
-      font-size: 1.8rem;
-      flex-shrink: 0;
-    }
-    .tienda-info {
-      flex: 1;
-    }
-    .tienda-nombre {
-      font-weight: 700;
-      color: #1a237e;
-      font-size: 1rem;
-    }
-    .tienda-direccion {
-      font-size: .85rem;
-      color: #777;
-      margin-top: 2px;
-    }
-    .tienda-dist {
-      font-weight: 700;
-      color: #d4954d;
-      white-space: nowrap;
-      font-size: .95rem;
-    }
-
-    /* ── Sin resultados ── */
-    .sin-tiendas {
-      text-align: center;
-      padding: 30px;
-      color: #888;
-      font-size: 1rem;
-    }
-  </style>
+  <title>Tiendas Cerca de Ti | PriceNice Bogotá</title>
+  <!-- Fuentes: Inter (textos) + Instrument Serif (títulos) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <!-- Leaflet CSS (Mapas 100% gratuitos sin API key) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="tiendas-cercanas.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
-<body>
+<body class="has-navbar">
 
-  <!-- ═══════ Encabezado ═══════ -->
-  <div class="page-header">
-    <h1>📍 Tiendas Cercanas</h1>
-    <p>Encuentra tiendas a tu alrededor en un radio de 2 km</p>
-  </div>
+<!-- ════════════════════════════════════════════
+     NAVBAR BLANCA FIJA
+════════════════════════════════════════════ -->
+<header class="pn-navbar" id="pnNavbar">
+  <div class="pn-navbar-main">
 
-  <div class="contenedor">
-
-    <!-- Estado de carga mientras se obtiene la ubicación -->
-    <div id="estadoCarga" class="estado">
-      <span class="emoji">📡</span>
-      Solicitando tu ubicación…
-    </div>
-
-    <!-- Mapa (oculto hasta tener coordenadas) -->
-    <div id="mapa" style="display:none;"></div>
-
-    <!-- Contenedor para error de permisos (oculto por defecto) -->
-    <div id="errorPermiso" style="display:none;"></div>
-
-    <!-- Lista de tiendas (se rellena dinámicamente) -->
-    <div id="listaTiendas"></div>
-
-  </div>
-
-<script>
-// ══════════════════════════════════════════════════════════
-//  CONSTANTES
-// ══════════════════════════════════════════════════════════
-
-/** Radio de búsqueda en metros */
-const RADIO_METROS = 2000;
-
-/** URL del servicio Overpass (consulta datos de OpenStreetMap) */
-const OVERPASS_URL = "https://overpass-api.de/api/interpreter";
-
-// ══════════════════════════════════════════════════════════
-//  1. SOLICITAR UBICACIÓN AL USUARIO
-// ══════════════════════════════════════════════════════════
-
-/**
- * Comprueba si el navegador soporta geolocalización y la solicita.
- * - Si el usuario concede el permiso → inicializa el mapa.
- * - Si lo deniega o hay error → muestra instrucciones de ayuda.
- */
-function solicitarUbicacion() {
-  // Verificar que el navegador soporte la API de Geolocation
-  if (!navigator.geolocation) {
-    mostrarErrorPermiso("Tu navegador no soporta geolocalización.");
-    return;
-  }
-
-  // Pedir la ubicación al usuario (dispara el diálogo nativo de permiso)
-  navigator.geolocation.getCurrentPosition(
-    posicionObtenida,   // Callback de éxito
-    errorUbicacion,     // Callback de error
-    {
-      enableHighAccuracy: true,   // Pedir la mayor precisión posible
-      timeout: 15000,             // Esperar máximo 15 segundos
-      maximumAge: 0               // No usar caché, siempre ubicación fresca
-    }
-  );
-}
-
-// ══════════════════════════════════════════════════════════
-//  2. CUANDO SE OBTIENE LA UBICACIÓN
-// ══════════════════════════════════════════════════════════
-
-/**
- * Callback que se ejecuta cuando el usuario concede el permiso
- * y el navegador devuelve sus coordenadas.
- *
- * @param {GeolocationPosition} pos - Objeto con las coordenadas
- */
-function posicionObtenida(pos) {
-  // Extraer latitud y longitud
-  const lat = pos.coords.latitude;
-  const lng = pos.coords.longitude;
-
-  // Ocultar el mensaje de "Solicitando ubicación…"
-  document.getElementById("estadoCarga").style.display = "none";
-
-  // Mostrar el contenedor del mapa
-  document.getElementById("mapa").style.display = "block";
-
-  // Inicializar el mapa centrado en la posición del usuario
-  inicializarMapa(lat, lng);
-
-  // Buscar tiendas cercanas con la API de Overpass
-  buscarTiendasCercanas(lat, lng);
-}
-
-// ══════════════════════════════════════════════════════════
-//  3. MANEJO DE ERRORES DE UBICACIÓN
-// ══════════════════════════════════════════════════════════
-
-/**
- * Callback que se ejecuta si el usuario deniega el permiso
- * o si ocurre algún error al obtener la ubicación.
- *
- * @param {GeolocationPositionError} err - Objeto con el código de error
- */
-function errorUbicacion(err) {
-  // Ocultar el spinner de carga
-  document.getElementById("estadoCarga").style.display = "none";
-
-  // Determinar el mensaje según el tipo de error
-  let mensaje = "";
-  switch (err.code) {
-    case err.PERMISSION_DENIED:
-      mensaje = "Has denegado el permiso de ubicación.";
-      break;
-    case err.POSITION_UNAVAILABLE:
-      mensaje = "No se pudo determinar tu ubicación. Verifica tu conexión o GPS.";
-      break;
-    case err.TIMEOUT:
-      mensaje = "La solicitud de ubicación tardó demasiado. Intenta de nuevo.";
-      break;
-    default:
-      mensaje = "Ocurrió un error desconocido al obtener tu ubicación.";
-  }
-
-  mostrarErrorPermiso(mensaje);
-}
-
-/**
- * Muestra un panel con instrucciones para activar la ubicación
- * según el navegador y dispositivo del usuario.
- *
- * @param {string} mensaje - Descripción del error
- */
-function mostrarErrorPermiso(mensaje) {
-  const contenedor = document.getElementById("errorPermiso");
-  contenedor.style.display = "block";
-  contenedor.innerHTML = `
-    <div class="error-permiso">
-      <h2>⚠️ No pudimos acceder a tu ubicación</h2>
-      <p>${mensaje}</p>
-      <p>Para usar esta función necesitas permitir el acceso a tu ubicación. Sigue estos pasos:</p>
-      <ul class="pasos">
-        <li>🔒 <strong>Google Chrome:</strong> Haz clic en el icono de candado 🔒 en la barra de dirección → Permisos → Ubicación → Permitir → Recarga la página.</li>
-        <li>🦊 <strong>Firefox:</strong> Haz clic en el icono de candado → Permisos → Ubicación → Permitir → Recarga la página.</li>
-        <li>🧭 <strong>Safari:</strong> Ve a Preferencias → Sitios web → Ubicación → Permitir para este sitio.</li>
-        <li>📱 <strong>Celular (Android/iOS):</strong> Ve a Configuración → Permisos de la app / navegador → Ubicación → Activar.</li>
-      </ul>
-      <p style="margin-top:16px;">Después de activarlo, <strong>recarga esta página</strong> para ver las tiendas cercanas.</p>
-    </div>
-  `;
-}
-
-// ══════════════════════════════════════════════════════════
-//  4. INICIALIZAR EL MAPA CON LEAFLET
-// ══════════════════════════════════════════════════════════
-
-/** Variable global para la instancia del mapa */
-let mapa = null;
-
-/**
- * Crea el mapa de Leaflet centrado en las coordenadas del usuario,
- * añade las capas de OpenStreetMap y coloca un marcador "Estás aquí".
- *
- * @param {number} lat - Latitud del usuario
- * @param {number} lng - Longitud del usuario
- */
-function inicializarMapa(lat, lng) {
-  // Crear el mapa dentro del div #mapa, centrado en la posición del usuario
-  mapa = L.map("mapa").setView([lat, lng], 15);
-
-  // Añadir la capa de tiles de OpenStreetMap (gratuita, sin API key)
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    maxZoom: 19
-  }).addTo(mapa);
-
-  // Crear un icono personalizado para el marcador del usuario
-  const iconoUsuario = L.divIcon({
-    html: '<div style="background:#1a237e;color:white;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 2px 10px rgba(0,0,0,.3);border:3px solid white;">📍</div>',
-    className: "",       // Evitar estilos por defecto de Leaflet
-    iconSize: [36, 36],
-    iconAnchor: [18, 18] // Centrar el icono en la coordenada
-  });
-
-  // Colocar el marcador "Estás aquí" en la posición del usuario
-  L.marker([lat, lng], { icon: iconoUsuario })
-    .addTo(mapa)
-    .bindPopup("<strong>📍 ¡Estás aquí!</strong>")
-    .openPopup();
-
-  // Dibujar un círculo que representa el radio de búsqueda (2 km)
-  L.circle([lat, lng], {
-    radius: RADIO_METROS,
-    color: "#1a237e",
-    fillColor: "#1a237e",
-    fillOpacity: 0.06,
-    weight: 2,
-    dashArray: "8 4"
-  }).addTo(mapa);
-}
-
-// ══════════════════════════════════════════════════════════
-//  5. BUSCAR TIENDAS CERCANAS CON OVERPASS API
-// ══════════════════════════════════════════════════════════
-
-/**
- * Realiza una consulta a la Overpass API de OpenStreetMap
- * para obtener tiendas (nodos con tag "shop") dentro de
- * un radio de 2 km alrededor de las coordenadas dadas.
- *
- * @param {number} lat - Latitud del usuario
- * @param {number} lng - Longitud del usuario
- */
-async function buscarTiendasCercanas(lat, lng) {
-  // Mostrar mensaje de carga en la lista
-  document.getElementById("listaTiendas").innerHTML = `
-    <div class="estado">
-      <span class="emoji">🔍</span>
-      Buscando tiendas cercanas…
-    </div>
-  `;
-
-  // Consulta Overpass QL:
-  // - Busca nodos con la etiqueta "shop" (cualquier tipo de tienda)
-  // - Dentro de un radio de 2000 metros desde la posición del usuario
-  // - "out body;" devuelve los datos completos de cada nodo
-  const query = `
-    [out:json][timeout:25];
-    (
-      node["shop"](around:${RADIO_METROS},${lat},${lng});
-    );
-    out body;
-  `;
-
-  try {
-    // Hacer la petición POST a la Overpass API
-    const respuesta = await fetch(OVERPASS_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: "data=" + encodeURIComponent(query)
-    });
-
-    // Parsear la respuesta como JSON
-    const datos = await respuesta.json();
-
-    // Procesar y mostrar los resultados
-    mostrarTiendas(datos.elements, lat, lng);
-
-  } catch (error) {
-    // Si falla la petición (sin conexión, servidor caído, etc.)
-    console.error("Error al consultar Overpass API:", error);
-    document.getElementById("listaTiendas").innerHTML = `
-      <div class="estado">
-        <span class="emoji">😕</span>
-        No se pudieron cargar las tiendas. Revisa tu conexión a internet.
+    <!-- Logo -->
+    <a href="Index.html" class="pn-logo" aria-label="PriceNice — inicio">
+      <div class="pn-logo-circle">
+        <img src="img/logo-dark.png" alt="PriceNice" loading="eager">
       </div>
-    `;
-  }
-}
-
-// ══════════════════════════════════════════════════════════
-//  6. MOSTRAR TIENDAS EN EL MAPA Y EN LA LISTA
-// ══════════════════════════════════════════════════════════
-
-/**
- * Recibe los elementos de la Overpass API, calcula la distancia
- * de cada tienda al usuario, las ordena de más cercana a más lejana,
- * las muestra como marcadores en el mapa y como lista HTML debajo.
- *
- * @param {Array} elementos - Nodos devueltos por Overpass
- * @param {number} latUsuario - Latitud del usuario
- * @param {number} lngUsuario - Longitud del usuario
- */
-function mostrarTiendas(elementos, latUsuario, lngUsuario) {
-  // Filtrar solo elementos que tengan un nombre asignado
-  let tiendas = elementos
-    .filter(el => el.tags && el.tags.name)
-    .map(el => {
-      // Calcular la distancia desde el usuario hasta la tienda
-      const distKm = calcularDistancia(latUsuario, lngUsuario, el.lat, el.lon);
-      return {
-        nombre: el.tags.name,
-        tipo: el.tags.shop,                         // Tipo de tienda (supermarket, clothes, etc.)
-        direccion: el.tags["addr:street"] || "",     // Dirección si existe
-        lat: el.lat,
-        lon: el.lon,
-        distancia: distKm                            // Distancia en kilómetros
-      };
-    });
-
-  // Ordenar de la más cercana a la más lejana
-  tiendas.sort((a, b) => a.distancia - b.distancia);
-
-  // ── Colocar marcadores de tiendas en el mapa ──
-  const iconoTienda = L.divIcon({
-    html: '<div style="background:#d4954d;color:white;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 2px 8px rgba(0,0,0,.25);border:2px solid white;">🏪</div>',
-    className: "",
-    iconSize: [30, 30],
-    iconAnchor: [15, 15]
-  });
-
-  tiendas.forEach(tienda => {
-    // Añadir un marcador por cada tienda encontrada
-    L.marker([tienda.lat, tienda.lon], { icon: iconoTienda })
-      .addTo(mapa)
-      .bindPopup(`
-        <strong>🏪 ${tienda.nombre}</strong><br>
-        📏 ${tienda.distancia.toFixed(2)} km<br>
-        ${tienda.direccion ? "📫 " + tienda.direccion : ""}
-      `);
-  });
-
-  // ── Construir la lista HTML debajo del mapa ──
-  const contenedorLista = document.getElementById("listaTiendas");
-
-  // Si no se encontraron tiendas con nombre
-  if (tiendas.length === 0) {
-    contenedorLista.innerHTML = `
-      <div class="sin-tiendas">
-        🔍 No se encontraron tiendas con nombre registrado en un radio de 2 km.<br>
-        <small>Puede que la zona no tenga datos completos en OpenStreetMap.</small>
+      <div class="pn-logo-info">
+        <span class="pn-logo-name"><span class="w">Price</span><span class="b">Nice</span></span>
+        <span class="pn-logo-sub">Tu brújula de los buenos precios</span>
       </div>
-    `;
-    return;
-  }
+    </a>
 
-  // Generar las tarjetas de cada tienda
-  let html = `<div class="lista-tiendas">
-    <h2>🏪 ${tiendas.length} tienda${tiendas.length > 1 ? "s" : ""} encontrada${tiendas.length > 1 ? "s" : ""} cerca de ti</h2>`;
+    <!-- Menú principal (desktop) -->
+    <nav class="pn-navbar-menu" aria-label="Menú principal">
+      <a href="Index.html"            class="pn-menu-link">Inicio</a>
+      <a href="tienda.html"           class="pn-menu-link">Tienda</a>
+      <a href="tienda.html?oferta=1"  class="pn-menu-link">Ofertas</a>
+      <a href="tienda.html?nuevo=1"   class="pn-menu-link">Novedades</a>
+      <a href="precios.html"          class="pn-menu-link">Comparar</a>
+      <a href="tiendas-cercanas.html" class="pn-menu-link active">Cercanas</a>
+      <a href="vendedor.html"         class="pn-menu-link">Vendedores</a>
+    </nav>
 
-  tiendas.forEach((tienda, indice) => {
-    // Elegir un emoji según el tipo de tienda
-    const emoji = obtenerEmojiTienda(tienda.tipo);
+    <!-- Buscador -->
+    <div class="pn-search" id="pnSearch" role="search">
+      <input type="search" id="pnSearchInput"
+        placeholder="Buscar productos, marcas y tiendas..."
+        aria-label="Buscar" autocomplete="off">
+      <button class="pn-search-btn" onclick="ejecutarBusqueda()" aria-label="Buscar">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
 
-    html += `
-      <div class="tienda-item">
-        <span class="tienda-icono">${emoji}</span>
-        <div class="tienda-info">
-          <div class="tienda-nombre">${tienda.nombre}</div>
-          <div class="tienda-direccion">
-            ${tienda.tipo ? capitalizar(tienda.tipo.replace(/_/g, " ")) : "Tienda"}
-            ${tienda.direccion ? " · " + tienda.direccion : ""}
+    <!-- Acciones -->
+    <div class="pn-actions">
+      <!-- Favoritos -->
+      <button class="pn-action-btn" aria-label="Favoritos" onclick="window.location.href='favoritos.html'">
+        <i class="bi bi-heart"></i>
+        <span class="pn-badge" id="badgeFav" style="display:none">0</span>
+      </button>
+      <!-- Carrito -->
+      <button class="pn-action-btn" aria-label="Carrito" onclick="abrirCarrito()">
+        <i class="bi bi-bag"></i>
+        <span class="pn-badge" id="badgeCarritoNav" style="display:none">0</span>
+      </button>
+      <!-- Sesión -->
+      <div id="pnSesionArea">
+        <a href="login.html" class="pn-btn-sesion">
+          <i class="bi bi-person"></i><span>Iniciar sesión</span>
+        </a>
+      </div>
+      <!-- Hamburguesa -->
+      <button class="pn-hamburger" id="btnHamburguesa" onclick="toggleMobileMenu()" aria-label="Menú">
+        <i class="bi bi-list"></i>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Menú mobile drawer -->
+<div class="pn-mobile-menu" id="mobileMenu">
+  <div class="pn-mobile-menu-overlay" onclick="toggleMobileMenu()"></div>
+  <div class="pn-mobile-menu-panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+      <span class="pn-logo-name" style="font-size:22px"><span class="w">Price</span><span class="b">Nice</span></span>
+      <button onclick="toggleMobileMenu()" style="background:none;border:none;font-size:22px;color:var(--text-2)" aria-label="Cerrar">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+    <nav style="display:flex;flex-direction:column;gap:4px">
+      <a href="Index.html"            class="pn-cat-panel-link">🏠 Inicio</a>
+      <a href="tienda.html"           class="pn-cat-panel-link">🛒 Tienda</a>
+      <a href="tienda.html?oferta=1"  class="pn-cat-panel-link">🏷️ Ofertas</a>
+      <a href="tienda.html?nuevo=1"   class="pn-cat-panel-link">✨ Novedades</a>
+      <a href="precios.html"          class="pn-cat-panel-link">📊 Comparar precios</a>
+      <a href="tiendas-cercanas.html" class="pn-cat-panel-link active">📍 Tiendas cercanas</a>
+      <a href="vendedor.html"         class="pn-cat-panel-link">🏪 Vendedores</a>
+    </nav>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SECCIÓN: TIENDAS CERCA DE TI
+════════════════════════════════════════════ -->
+<section class="pn-section pn-map-section" id="tiendas-cerca" aria-labelledby="titTiendasCerca" style="padding-top:40px;">
+  <div class="pn-container">
+
+    <!-- Encabezado de la sección -->
+    <div class="pn-map-header">
+      <div class="pn-map-title-row">
+        <div>
+          <span class="pn-eyebrow">ubicación en bogotá</span>
+          <h1 class="pn-section-title" id="titTiendasCerca" style="margin-top:4px;">Tiendas <em>cerca de ti</em></h1>
+          <p class="pn-section-sub">Descubre tiendas aliadas con ofertas exclusivas y comercios a tu alrededor en Bogotá</p>
+        </div>
+
+        <!-- Leyenda de colores de pines -->
+        <div class="pn-map-legend" aria-label="Leyenda de pines">
+          <div class="pn-legend-item">
+            <span class="pn-legend-dot aliada"></span>
+            <span>Tiendas aliadas (Precios y ofertas)</span>
+          </div>
+          <div class="pn-legend-item">
+            <span class="pn-legend-dot google"></span>
+            <span>Tiendas cercanas (OpenStreetMap)</span>
+          </div>
+          <div class="pn-legend-item">
+            <span class="pn-legend-dot usuario"></span>
+            <span>Tu ubicación</span>
           </div>
         </div>
-        <span class="tienda-dist">${tienda.distancia.toFixed(2)} km</span>
       </div>
-    `;
+    </div>
+
+    <!-- Barra de filtros opcional: Buscar por nombre de producto -->
+    <div class="pn-map-filter-bar">
+      <div class="pn-filter-input-wrap">
+        <i class="bi bi-search"></i>
+        <input type="text" id="pnFiltroProductoInput" class="pn-filter-input"
+          placeholder="Buscar producto en tiendas aliadas (ej: zapatillas, café, audífonos, detergente, crema)..."
+          autocomplete="off">
+        <button id="pnFilterClear" class="pn-filter-clear" aria-label="Limpiar filtro">
+          <i class="bi bi-x-circle-fill"></i>
+        </button>
+      </div>
+
+      <div class="pn-filter-pills" role="tablist">
+        <button class="pn-pill-btn active" data-cat="">Todos los productos</button>
+        <button class="pn-pill-btn" data-cat="zapatillas">👟 Zapatillas Running</button>
+        <button class="pn-pill-btn" data-cat="audífonos">🎧 Audífonos Bluetooth</button>
+        <button class="pn-pill-btn" data-cat="smartwatch">⌚ Smartwatch Pro</button>
+        <button class="pn-pill-btn" data-cat="café">☕ Café Premium</button>
+        <button class="pn-pill-btn" data-cat="detergente">🧼 Detergente Líquido</button>
+        <button class="pn-pill-btn" data-cat="crema">✨ Crema Facial</button>
+        <button class="pn-pill-btn" data-cat="aceite">🫒 Aceite de Oliva</button>
+      </div>
+
+      <div class="pn-filter-status" id="pnFilterStatus"></div>
+    </div>
+
+    <!-- Contenedor del Mapa y Panel Lateral -->
+    <div class="pn-map-wrapper" id="pnMapWrapper" style="height: 640px;">
+      <!-- Mapa Leaflet / OpenStreetMap -->
+      <div id="pnGoogleMap" role="region" aria-label="Mapa interactivo de Bogotá"></div>
+
+      <!-- Botón flotante para recentrar el mapa en la ubicación del usuario -->
+      <button class="pn-map-floating-recenter" id="pnFloatingRecenter" style="display:none;" aria-label="Recentrar en mi ubicación">
+        <i class="bi bi-crosshair"></i> Mi ubicación
+      </button>
+
+      <!-- Overlay inicial: "Comparte tu ubicación para ver tiendas cerca de ti" -->
+      <div class="pn-map-overlay-card" id="pnMapOverlayCard">
+        <!-- Estado Inicial: Diálogo de Geolocation API -->
+        <div id="pnOverlayPrompt">
+          <div class="pn-overlay-icon-wrap">
+            <i class="bi bi-geo-alt-fill"></i>
+          </div>
+          <h3 class="pn-overlay-title">Comparte tu ubicación para ver tiendas cerca de ti</h3>
+          <p class="pn-overlay-desc">
+            Descubre en segundos las tiendas aliadas con mejores precios y comercios cercanos en Bogotá a menos de 1.5 km.
+          </p>
+          <button class="pn-btn-location" id="pnBtnDarUbicacion">
+            <i class="bi bi-crosshair"></i> Dar mi ubicación
+          </button>
+          <button class="pn-overlay-manual-link" id="pnLinkManualSearch">
+            O escribir mi dirección o barrio
+          </button>
+        </div>
+
+        <!-- Estado si niega el permiso: Campo manual con Nominatim -->
+        <div class="pn-manual-search-box" id="pnOverlayManual">
+          <div class="pn-manual-alert" id="pnManualAlert">
+            Ingresa tu dirección o barrio para ubicarte en Bogotá:
+          </div>
+          <div class="pn-manual-input-wrap">
+            <i class="bi bi-geo-alt"></i>
+            <input type="text" id="pnInputDireccion" class="pn-manual-input"
+              placeholder="Ej: Chapinero, Calle 72 #10, Cedritos..." autocomplete="off">
+          </div>
+          <button class="pn-btn-location" id="pnBtnBuscarDireccion" style="margin-top:8px;">
+            <i class="bi bi-search"></i> Explorar tiendas en este sector
+          </button>
+        </div>
+      </div>
+
+      <!-- Backdrop para móvil -->
+      <div class="pn-store-backdrop" id="pnStoreBackdrop" onclick="window.pnCerrarPanelTienda()"></div>
+
+      <!-- Panel lateral / Bottom Sheet responsive -->
+      <aside class="pn-store-panel" id="pnStorePanel" role="dialog" aria-label="Información de la tienda"></aside>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════ -->
+<footer class="pn-footer" aria-label="Pie de página">
+  <div class="pn-container">
+    <div class="pn-footer-grid">
+      <div class="pn-footer-brand">
+        <div class="pn-footer-logo">
+          <div class="pn-footer-logo-circle">
+            <img src="img/logo-dark.png" alt="PriceNice" loading="lazy">
+          </div>
+          <span class="pn-footer-logo-name"><span class="w">Price</span><span class="b">Nice</span></span>
+        </div>
+        <p>Tu brújula de los buenos precios. Comparamos precios de todas las tiendas para que siempre pagues lo justo.</p>
+      </div>
+
+      <div class="pn-footer-col">
+        <h4>Navegar</h4>
+        <a href="Index.html">Inicio</a>
+        <a href="tienda.html">Tienda virtual</a>
+        <a href="catalogo.html">Catálogo</a>
+        <a href="precios.html">Comparar precios</a>
+        <a href="tiendas-cercanas.html">Tiendas cercanas</a>
+      </div>
+
+      <div class="pn-footer-col">
+        <h4>Mi cuenta</h4>
+        <a href="login.html">Iniciar sesión</a>
+        <a href="favoritos.html">Mis favoritos</a>
+        <a href="vendedor.html">Panel vendedor</a>
+      </div>
+
+      <div class="pn-footer-col">
+        <h4>Contacto</h4>
+        <a href="mailto:hola@pricenice.co"><i class="bi bi-envelope me-2"></i>hola@pricenice.co</a>
+        <a href="tel:+573001234567"><i class="bi bi-telephone me-2"></i>+57 300 123 4567</a>
+        <a href="#"><i class="bi bi-geo-alt me-2"></i>Bogotá, Colombia</a>
+      </div>
+    </div>
+    <div class="pn-footer-bottom">
+      <span>© 2026 PriceNice. Todos los derechos reservados.</span>
+      <span>Hecho con ❤️ en Colombia</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Toast -->
+<div class="pn-toast" id="pnToast" role="alert" aria-live="polite">
+  <i class="bi bi-check-circle-fill" style="color:#16A34A"></i>
+  <span id="pnToastMsg">Acción completada</span>
+</div>
+
+<!-- SCRIPTS -->
+<!-- Leaflet JS (Librería de mapas gratuita, sin API key) -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script type="module" src="archivo sesión.js"></script>
+<script type="module" src="script.js"></script>
+<script type="module">
+  import { inicializarSeccionTiendas } from "./tiendas-cercanas-component.js";
+  document.addEventListener("DOMContentLoaded", () => {
+    inicializarSeccionTiendas();
   });
+</script>
 
-  html += "</div>";
-  contenedorLista.innerHTML = html;
+<script>
+function toggleMobileMenu() {
+  const m = document.getElementById('mobileMenu');
+  if (m) m.classList.toggle('open');
 }
-
-// ══════════════════════════════════════════════════════════
-//  7. FUNCIONES AUXILIARES
-// ══════════════════════════════════════════════════════════
-
-/**
- * Calcula la distancia entre dos puntos geográficos usando
- * la fórmula de Haversine (tiene en cuenta la curvatura de la Tierra).
- *
- * @param {number} lat1 - Latitud del punto 1
- * @param {number} lon1 - Longitud del punto 1
- * @param {number} lat2 - Latitud del punto 2
- * @param {number} lon2 - Longitud del punto 2
- * @returns {number} Distancia en kilómetros
- */
-function calcularDistancia(lat1, lon1, lat2, lon2) {
-  const R = 6371; // Radio de la Tierra en km
-  const dLat = aRadianes(lat2 - lat1);
-  const dLon = aRadianes(lon2 - lon1);
-
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(aRadianes(lat1)) * Math.cos(aRadianes(lat2)) *
-    Math.sin(dLon / 2) * Math.sin(dLon / 2);
-
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c;
+function ejecutarBusqueda() {
+  const q = document.getElementById('pnSearchInput')?.value.trim();
+  if (q) window.location.href = `tienda.html?q=${encodeURIComponent(q)}`;
 }
-
-/**
- * Convierte grados a radianes.
- * @param {number} grados
- * @returns {number} Radianes
- */
-function aRadianes(grados) {
-  return grados * (Math.PI / 180);
-}
-
-/**
- * Devuelve un emoji representativo según el tipo de tienda
- * registrado en OpenStreetMap.
- *
- * @param {string} tipo - Valor del tag "shop" (ej: "supermarket", "clothes")
- * @returns {string} Emoji correspondiente
- */
-function obtenerEmojiTienda(tipo) {
-  const emojis = {
-    supermarket: "🛒",
-    convenience: "🏪",
-    clothes: "👗",
-    shoes: "👟",
-    bakery: "🥖",
-    butcher: "🥩",
-    hardware: "🔧",
-    electronics: "📱",
-    mobile_phone: "📱",
-    beauty: "💄",
-    hairdresser: "💇",
-    pharmacy: "💊",
-    books: "📚",
-    jewelry: "💍",
-    optician: "👓",
-    pet: "🐾",
-    florist: "💐",
-    furniture: "🛋️",
-    car_repair: "🔧",
-    bicycle: "🚲",
-    sports: "⚽",
-    toys: "🧸",
-    alcohol: "🍷",
-    beverages: "🥤",
-    coffee: "☕",
-    greengrocer: "🥬",
-    pastry: "🍰",
-    seafood: "🦐",
-    stationery: "✏️",
-    variety_store: "🎁"
-  };
-
-  return emojis[tipo] || "🏪";
-}
-
-/**
- * Capitaliza la primera letra de un texto.
- * @param {string} texto
- * @returns {string}
- */
-function capitalizar(texto) {
-  if (!texto) return "";
-  return texto.charAt(0).toUpperCase() + texto.slice(1);
-}
-
-// ══════════════════════════════════════════════════════════
-//  INICIAR — Solicitar ubicación al cargar la página
-// ══════════════════════════════════════════════════════════
-
-solicitarUbicacion();
 </script>
 
 </body>

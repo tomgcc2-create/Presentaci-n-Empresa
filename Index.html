@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -9,6 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="tiendas-cercanas.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body class="has-navbar">
@@ -37,7 +39,7 @@
       <a href="tienda.html?oferta=1"  class="pn-menu-link">Ofertas</a>
       <a href="tienda.html?nuevo=1"   class="pn-menu-link">Novedades</a>
       <a href="precios.html"          class="pn-menu-link">Comparar</a>
-      <a href="tiendas-cercanas.html" class="pn-menu-link">Cercanas</a>
+      <a href="#tiendas-cerca"        class="pn-menu-link">Cercanas</a>
       <a href="vendedor.html"         class="pn-menu-link">Vendedores</a>
     </nav>
 
@@ -100,7 +102,7 @@
       <a href="tienda.html?oferta=1"  class="pn-cat-panel-link">🏷️ Ofertas</a>
       <a href="tienda.html?nuevo=1"   class="pn-cat-panel-link">✨ Novedades</a>
       <a href="precios.html"          class="pn-cat-panel-link">📊 Comparar precios</a>
-      <a href="tiendas-cercanas.html" class="pn-cat-panel-link">📍 Tiendas cercanas</a>
+      <a href="#tiendas-cerca"        class="pn-cat-panel-link" onclick="toggleMobileMenu()">📍 Tiendas cercanas</a>
       <a href="vendedor.html"         class="pn-cat-panel-link">🏪 Vendedores</a>
     </nav>
     <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border)">
@@ -267,7 +269,7 @@
             <a href="tienda.html?cat=mercado" class="pn-btn-primary">
               Ir al mercado <i class="bi bi-arrow-right"></i>
             </a>
-            <a href="tiendas-cercanas.html" class="pn-btn-secondary">
+            <a href="#tiendas-cerca" class="pn-btn-secondary">
               <i class="bi bi-geo-alt"></i> Tiendas cercanas
             </a>
           </div>
@@ -436,7 +438,7 @@
         </div>
       </a>
 
-      <a href="tiendas-cercanas.html" class="pn-banner-card fade-up" style="text-decoration:none">
+      <a href="#tiendas-cerca" class="pn-banner-card fade-up" style="text-decoration:none">
         <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80" alt="Tiendas cercanas" loading="lazy">
         <div class="pn-banner-overlay"></div>
         <div class="pn-banner-content">
@@ -500,6 +502,121 @@
         </div>
       </a>
     </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     TIENDAS CERCA DE TI (Google Maps + Places API)
+════════════════════════════════════════════ -->
+<section class="pn-section pn-map-section fade-up" id="tiendas-cerca" aria-labelledby="titTiendasCerca">
+  <div class="pn-container">
+
+    <!-- Encabezado de la sección -->
+    <div class="pn-map-header">
+      <div class="pn-map-title-row">
+        <div>
+          <span class="pn-eyebrow">ubicación en bogotá</span>
+          <h2 class="pn-section-title" id="titTiendasCerca">Tiendas <em>cerca de ti</em></h2>
+          <p class="pn-section-sub">Encuentra tiendas aliadas con ofertas exclusivas y comercios a tu alrededor en Bogotá</p>
+        </div>
+
+        <!-- Leyenda de colores de pines -->
+        <div class="pn-map-legend" aria-label="Leyenda de pines">
+          <div class="pn-legend-item">
+            <span class="pn-legend-dot aliada"></span>
+            <span>Tiendas aliadas (Precios y ofertas)</span>
+          </div>
+          <div class="pn-legend-item">
+            <span class="pn-legend-dot google"></span>
+            <span>Tiendas cercanas (OpenStreetMap)</span>
+          </div>
+          <div class="pn-legend-item">
+            <span class="pn-legend-dot usuario"></span>
+            <span>Tu ubicación</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Barra de filtros opcional: Buscar por nombre de producto -->
+    <div class="pn-map-filter-bar">
+      <div class="pn-filter-input-wrap">
+        <i class="bi bi-search"></i>
+        <input type="text" id="pnFiltroProductoInput" class="pn-filter-input"
+          placeholder="Buscar producto en tiendas aliadas (ej: zapatillas, café, audífonos, detergente, crema)..."
+          autocomplete="off">
+        <button id="pnFilterClear" class="pn-filter-clear" aria-label="Limpiar filtro">
+          <i class="bi bi-x-circle-fill"></i>
+        </button>
+      </div>
+
+      <div class="pn-filter-pills" role="tablist">
+        <button class="pn-pill-btn active" data-cat="">Todos los productos</button>
+        <button class="pn-pill-btn" data-cat="zapatillas">👟 Zapatillas Running</button>
+        <button class="pn-pill-btn" data-cat="audífonos">🎧 Audífonos Bluetooth</button>
+        <button class="pn-pill-btn" data-cat="smartwatch">⌚ Smartwatch Pro</button>
+        <button class="pn-pill-btn" data-cat="café">☕ Café Premium</button>
+        <button class="pn-pill-btn" data-cat="detergente">🧼 Detergente Líquido</button>
+        <button class="pn-pill-btn" data-cat="crema">✨ Crema Facial</button>
+        <button class="pn-pill-btn" data-cat="aceite">🫒 Aceite de Oliva</button>
+      </div>
+
+      <div class="pn-filter-status" id="pnFilterStatus"></div>
+    </div>
+
+    <!-- Contenedor del Mapa y Panel Lateral -->
+    <div class="pn-map-wrapper" id="pnMapWrapper">
+      <!-- Mapa Google -->
+      <div id="pnGoogleMap" role="region" aria-label="Mapa interactivo de Bogotá"></div>
+
+      <!-- Botón flotante para recentrar el mapa en la ubicación del usuario -->
+      <button class="pn-map-floating-recenter" id="pnFloatingRecenter" style="display:none;" aria-label="Recentrar en mi ubicación">
+        <i class="bi bi-crosshair"></i> Mi ubicación
+      </button>
+
+      <!-- Overlay inicial: "Comparte tu ubicación para ver tiendas cerca de ti" -->
+      <div class="pn-map-overlay-card" id="pnMapOverlayCard">
+        <!-- Estado Inicial: Diálogo de Geolocation API -->
+        <div id="pnOverlayPrompt">
+          <div class="pn-overlay-icon-wrap">
+            <i class="bi bi-geo-alt-fill"></i>
+          </div>
+          <h3 class="pn-overlay-title">Comparte tu ubicación para ver tiendas cerca de ti</h3>
+          <p class="pn-overlay-desc">
+            Descubre en segundos las tiendas aliadas con mejores precios y comercios cercanos en Bogotá a menos de 2 km.
+          </p>
+          <button class="pn-btn-location" id="pnBtnDarUbicacion">
+            <i class="bi bi-crosshair"></i> Dar mi ubicación
+          </button>
+          <button class="pn-overlay-manual-link" id="pnLinkManualSearch">
+            O escribir mi dirección o barrio
+          </button>
+        </div>
+
+        <!-- Estado si niega el permiso: Campo manual con Places Autocomplete -->
+        <div class="pn-manual-search-box" id="pnOverlayManual">
+          <div class="pn-manual-alert" id="pnManualAlert">
+            Ingresa tu dirección o barrio para ubicarte en Bogotá:
+          </div>
+          <div class="pn-manual-input-wrap">
+            <i class="bi bi-geo-alt"></i>
+            <input type="text" id="pnInputDireccion" class="pn-manual-input"
+              placeholder="Ej: Chapinero, Calle 72 #10, Cedritos..." autocomplete="off">
+          </div>
+          <button class="pn-btn-location" id="pnBtnBuscarDireccion" style="margin-top:8px;">
+            <i class="bi bi-search"></i> Explorar tiendas en este sector
+          </button>
+        </div>
+      </div>
+
+      <!-- Backdrop para móvil -->
+      <div class="pn-store-backdrop" id="pnStoreBackdrop" onclick="window.pnCerrarPanelTienda()"></div>
+
+      <!-- Panel lateral / Bottom Sheet responsive -->
+      <aside class="pn-store-panel" id="pnStorePanel" role="dialog" aria-label="Información de la tienda"></aside>
+    </div>
+
   </div>
 </section>
 
@@ -653,8 +770,16 @@
 <!-- ════════════════════════════════════════════
      SCRIPTS
 ════════════════════════════════════════════ -->
+<!-- Leaflet JS (Librería de mapas gratuita, sin API key) -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script type="module" src="archivo sesión.js"></script>
 <script type="module" src="script.js"></script>
+<script type="module">
+  import { inicializarSeccionTiendas } from "./tiendas-cercanas-component.js";
+  document.addEventListener("DOMContentLoaded", () => {
+    inicializarSeccionTiendas();
+  });
+</script>
 
 <script>
 /* ── Datos de productos ── */

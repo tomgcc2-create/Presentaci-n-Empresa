@@ -1,0 +1,921 @@
+/* ══════════════════════════════════════════════════════════════
+   PriceNice — tiendas-cercanas.css
+   Estilos de la sección "Tiendas cerca de ti" con Google Maps,
+   pines personalizados, animaciones de pulso y panel responsivo.
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Contenedor principal de la sección ── */
+.pn-map-section {
+  position: relative;
+  background: var(--bg);
+  padding: 56px 0 72px;
+}
+
+.pn-map-header {
+  margin-bottom: 28px;
+}
+
+.pn-map-title-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.pn-map-legend {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  background: var(--bg-white);
+  padding: 8px 16px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-xs);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+}
+
+.pn-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.pn-legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.pn-legend-dot.aliada {
+  background: var(--brand-mid);
+  box-shadow: 0 0 0 3px rgba(59, 79, 216, 0.2);
+}
+
+.pn-legend-dot.google {
+  background: #10B981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+
+.pn-legend-dot.usuario {
+  background: #EF4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+/* ── Barra de filtros de producto ── */
+.pn-map-filter-bar {
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 16px 20px;
+  margin-bottom: 22px;
+  box-shadow: var(--shadow-xs);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pn-filter-input-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.pn-filter-input-wrap i {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-3);
+  font-size: 16px;
+  pointer-events: none;
+}
+
+.pn-filter-input {
+  width: 100%;
+  padding: 11px 44px 11px 44px;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--bg-soft);
+  border: 1.5px solid transparent;
+  border-radius: var(--r-pill);
+  outline: none;
+  transition: all var(--t-fast);
+}
+
+.pn-filter-input:focus {
+  background: #fff;
+  border-color: var(--brand-mid);
+  box-shadow: 0 0 0 3px rgba(59, 79, 216, 0.12);
+}
+
+.pn-filter-clear {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-3);
+  font-size: 14px;
+  display: none;
+  padding: 4px;
+}
+
+.pn-filter-clear.visible {
+  display: block;
+}
+
+.pn-filter-pills {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+}
+
+.pn-pill-btn {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  padding: 6px 14px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-2);
+  white-space: nowrap;
+  transition: all var(--t-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.pn-pill-btn:hover {
+  background: #fff;
+  color: var(--brand);
+  border-color: var(--brand-mid);
+}
+
+.pn-pill-btn.active {
+  background: var(--brand);
+  color: #fff;
+  border-color: var(--brand);
+  box-shadow: 0 2px 8px rgba(30, 42, 128, 0.25);
+}
+
+.pn-filter-status {
+  font-size: 12.5px;
+  color: var(--text-2);
+  display: none;
+  align-items: center;
+  gap: 6px;
+}
+
+.pn-filter-status.active {
+  display: flex;
+}
+
+/* ── Escenario del Mapa (Layout con panel lateral) ── */
+.pn-map-wrapper {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  background: #e5e3df;
+}
+
+/* Div donde se monta Google Maps */
+#pnGoogleMap {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* ── Capa de superposición inicial (Overlay) ── */
+.pn-map-overlay-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: var(--r-xl);
+  padding: 36px 32px;
+  max-width: 440px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(20, 23, 43, 0.2);
+  z-index: 20;
+  transition: all 0.35s ease;
+  animation: pnFadeInUp 0.4s ease;
+}
+
+.pn-map-overlay-card.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -46%) scale(0.96);
+}
+
+.pn-overlay-icon-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--brand-light);
+  color: var(--brand-mid);
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  box-shadow: 0 4px 14px rgba(59, 79, 216, 0.16);
+  animation: pnPulseSoft 2s infinite ease-in-out;
+}
+
+.pn-overlay-title {
+  font-family: var(--font-title);
+  font-size: 26px;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--text);
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+
+.pn-overlay-desc {
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.pn-btn-location {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px 24px;
+  background: var(--brand);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-pill);
+  font-size: 15px;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(30, 42, 128, 0.3);
+  transition: all var(--t);
+}
+
+.pn-btn-location:hover {
+  background: var(--brand-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(30, 42, 128, 0.4);
+}
+
+.pn-btn-location:active {
+  transform: translateY(0);
+}
+
+.pn-overlay-manual-link {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--brand-mid);
+  text-decoration: underline;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+/* ── Formulario de búsqueda manual (si deniega permiso) ── */
+.pn-manual-search-box {
+  display: none;
+  flex-direction: column;
+  gap: 14px;
+  text-align: left;
+}
+
+.pn-manual-search-box.visible {
+  display: flex;
+}
+
+.pn-manual-input-wrap {
+  position: relative;
+}
+
+.pn-manual-input-wrap i {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--brand-mid);
+  font-size: 16px;
+}
+
+.pn-manual-input {
+  width: 100%;
+  padding: 12px 16px 12px 42px;
+  font-size: 14px;
+  color: var(--text);
+  background: #fff;
+  border: 1.5px solid var(--border-2);
+  border-radius: var(--r-pill);
+  outline: none;
+  transition: all var(--t-fast);
+}
+
+.pn-manual-input:focus {
+  border-color: var(--brand-mid);
+  box-shadow: 0 0 0 3px rgba(59, 79, 216, 0.12);
+}
+
+.pn-manual-alert {
+  background: #FEF3C7;
+  border: 1px solid #F59E0B;
+  color: #92400E;
+  padding: 8px 12px;
+  border-radius: var(--r-sm);
+  font-size: 12.5px;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+/* ── Botón flotante para reubicar mapa ── */
+.pn-map-floating-recenter {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  background: #fff;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  border-radius: var(--r-pill);
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  transition: all var(--t-fast);
+  cursor: pointer;
+}
+
+.pn-map-floating-recenter:hover {
+  background: var(--brand-light);
+  color: var(--brand-mid);
+  transform: translateY(-1px);
+}
+
+/* ── Alerta informativa sobre API Key de Google Maps ── */
+.pn-api-key-banner {
+  display: none;
+  background: #EFF6FF;
+  border: 1px solid #BFDBFE;
+  color: #1E40AF;
+  padding: 10px 16px;
+  border-radius: var(--r);
+  font-size: 13px;
+  margin-bottom: 16px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.pn-api-key-banner.show {
+  display: flex;
+}
+
+/* ── PANEL LATERAL DE TIENDA (Desktop) ── */
+.pn-store-panel {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  bottom: 16px;
+  width: 410px;
+  max-width: calc(100% - 32px);
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+  z-index: 25;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(440px);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+  overflow: hidden;
+}
+
+.pn-store-panel.open {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Cabecera del panel */
+.pn-panel-top-bar {
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  background: #fff;
+  position: relative;
+}
+
+.pn-panel-close-btn {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-2);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all var(--t-fast);
+  flex-shrink: 0;
+}
+
+.pn-panel-close-btn:hover {
+  background: var(--red-bg);
+  color: var(--red);
+  border-color: #FECACA;
+}
+
+.pn-panel-type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.pn-panel-type-badge.aliada {
+  background: var(--brand-light);
+  color: var(--brand-mid);
+}
+
+.pn-panel-type-badge.google {
+  background: #D1FAE5;
+  color: #065F46;
+}
+
+.pn-panel-store-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.25;
+  margin-bottom: 4px;
+}
+
+.pn-panel-store-meta {
+  font-size: 13px;
+  color: var(--text-2);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.pn-panel-distance {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  color: #2563EB;
+}
+
+/* Cuerpo con scroll */
+.pn-panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  scrollbar-width: thin;
+}
+
+/* Detalle Google Maps */
+.pn-google-detail-box {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pn-google-rating-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.pn-google-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: var(--r-pill);
+}
+
+.pn-google-status-pill.open {
+  background: var(--green-bg);
+  color: var(--green);
+}
+
+.pn-google-status-pill.closed {
+  background: var(--red-bg);
+  color: var(--red);
+}
+
+.pn-google-notice {
+  font-size: 12.5px;
+  color: var(--text-2);
+  background: #fff;
+  border-radius: var(--r-sm);
+  padding: 10px 12px;
+  border-left: 3px solid #10B981;
+  line-height: 1.45;
+}
+
+.pn-btn-directions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 18px;
+  background: #10B981;
+  color: #fff;
+  border: none;
+  border-radius: var(--r-pill);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+  transition: all var(--t-fast);
+}
+
+.pn-btn-directions:hover {
+  background: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.4);
+}
+
+/* Sección de productos de tienda aliada */
+.pn-panel-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pn-panel-product-card {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  transition: all var(--t-fast);
+  position: relative;
+}
+
+.pn-panel-product-card:hover {
+  border-color: var(--brand-mid);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+.pn-panel-product-card.matched-product {
+  border-color: #22C55E;
+  background: #F0FDF4;
+}
+
+.pn-panel-product-img {
+  width: 76px;
+  height: 76px;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  background: var(--bg-soft);
+  flex-shrink: 0;
+}
+
+.pn-panel-product-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pn-panel-product-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.pn-panel-product-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+
+.pn-panel-prices-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.pn-panel-price-current {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.pn-panel-price-old {
+  font-size: 12px;
+  color: var(--text-3);
+  text-decoration: line-through;
+}
+
+.pn-panel-discount-tag {
+  background: var(--red-bg);
+  color: var(--red);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: var(--r-xs);
+}
+
+.pn-panel-add-btn {
+  align-self: flex-start;
+  background: var(--brand-light);
+  color: var(--brand-mid);
+  border: 1px solid rgba(59, 79, 216, 0.2);
+  border-radius: var(--r-pill);
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all var(--t-fast);
+}
+
+.pn-panel-add-btn:hover {
+  background: var(--brand-mid);
+  color: #fff;
+}
+
+/* ── MARCADORES PERSONALIZADOS EN GOOGLE MAPS ── */
+/* Marcador de usuario con ondas de radar */
+.pn-user-location-marker {
+  position: relative;
+  width: 24px;
+  height: 24px;
+}
+
+.pn-user-location-dot {
+  width: 16px;
+  height: 16px;
+  background: #3B4FD8;
+  border: 3px solid #FFFFFF;
+  border-radius: 50%;
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+}
+
+.pn-user-location-pulse {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(59, 79, 216, 0.25);
+  animation: pnRadarRipple 2s infinite ease-out;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Pin de tienda aliada */
+.pn-marker-bubble {
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.2s ease, filter 0.2s ease;
+  user-select: none;
+}
+
+.pn-marker-bubble:hover {
+  transform: scale(1.15) translateY(-4px);
+  z-index: 100 !important;
+}
+
+.pn-marker-bubble.highlighted {
+  animation: pnBouncePin 1s infinite alternate ease-in-out;
+  z-index: 101 !important;
+}
+
+.pn-marker-pin-svg {
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.25));
+}
+
+/* ── Animaciones ── */
+@keyframes pnRadarRipple {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+@keyframes pnPulseSoft {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+@keyframes pnBouncePin {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes pnFadeInUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -44%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* ── Backdrop para móvil ── */
+.pn-store-backdrop {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 23, 43, 0.4);
+  backdrop-filter: blur(2px);
+  z-index: 24;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.pn-store-backdrop.visible {
+  display: block;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Indicador de arrastre para Bottom Sheet en móvil */
+.pn-sheet-handle {
+  display: none;
+  width: 44px;
+  height: 5px;
+  background: var(--border-2);
+  border-radius: 4px;
+  margin: 10px auto 4px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE: ADAPTACIÓN A DISPOSITIVOS MÓVILES (<= 900px)
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .pn-map-wrapper {
+    height: 540px;
+    border-radius: var(--r-lg);
+  }
+
+  .pn-store-panel {
+    position: fixed;
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: 100%;
+    max-height: 80vh;
+    border-radius: 24px 24px 0 0;
+    transform: translateY(105%);
+    z-index: 3000;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.2);
+  }
+
+  .pn-store-panel.open {
+    transform: translateY(0);
+  }
+
+  .pn-sheet-handle {
+    display: block;
+  }
+
+  .pn-panel-top-bar {
+    padding: 10px 18px 14px;
+  }
+
+  .pn-panel-body {
+    padding: 14px 18px 28px;
+  }
+
+  .pn-map-overlay-card {
+    padding: 28px 20px;
+    width: 92%;
+  }
+
+  .pn-overlay-title {
+    font-size: 22px;
+  }
+}
+
+
+/* ── Leaflet adaptaciones ── */
+.pn-leaflet-custom-marker,
+.pn-leaflet-pin-wrap {
+  background: transparent !important;
+  border: none !important;
+}
+
+.leaflet-container {
+  font-family: var(--font-body) !important;
+}
+
+.leaflet-control-zoom {
+  border-radius: var(--r-sm) !important;
+  overflow: hidden !important;
+  box-shadow: var(--shadow) !important;
+  border: 1px solid var(--border) !important;
+  margin-bottom: 18px !important;
+  margin-right: 18px !important;
+}
+
+.leaflet-control-zoom a {
+  background: #fff !important;
+  color: var(--text) !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: var(--bg-soft) !important;
+  color: var(--brand) !important;
+}
+
+.leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(4px) !important;
+  font-size: 11px !important;
+  color: var(--text-3) !important;
+  padding: 3px 8px !important;
+  border-radius: var(--r-xs) 0 0 0 !important;
+}
