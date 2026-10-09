@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -7,74 +7,112 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=DM+Sans:opsz,wght@9..40,400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="tema-crema-azul.css">
+  <link rel="stylesheet" href="carrito.css">
   <style>
-    /* ── Estilos específicos de la tienda ── */
-
-    /* Header de página */
-    .pn-store-hero {
-      background: var(--bg-white);
-      border-bottom: 1px solid var(--border);
-      padding: 40px 0 32px;
-      margin-bottom: 0;
-    }
-    .pn-store-hero h1 {
-      font-family: var(--font-title);
-      font-style: italic;
-      font-size: 40px;
-      font-weight: 400;
-      color: var(--text);
-      line-height: 1.1;
-      margin: 8px 0 6px;
-    }
-    .pn-store-hero p { font-size: 15px; color: var(--text-2); }
-
-    /* Chips de estadísticas */
-    .pn-store-stats { display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
-    .pn-store-chip {
-      background: var(--brand-light); border-radius: var(--r-pill);
-      padding: 6px 16px; font-size: 13px; font-weight: 600; color: var(--brand);
-    }
-    .pn-store-chip strong { color: var(--brand); }
-
-    /* Buscador inline */
-    .pn-store-search { position:relative; max-width:360px; margin-bottom:20px; }
-    .pn-store-search input {
-      width:100%; padding:10px 44px 10px 16px;
-      border:1.5px solid var(--border); border-radius:var(--r-pill);
-      font-size:14px; color:var(--text); background:var(--bg-white); outline:none;
-      transition:border-color var(--t-fast), box-shadow var(--t-fast);
-    }
-    .pn-store-search input:focus { border-color:var(--brand-mid); box-shadow:0 0 0 3px rgba(59,79,216,.1); }
-    .pn-store-search input::placeholder { color:var(--text-3); }
-    .pn-store-search-icon { position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--text-3);font-size:15px;pointer-events:none; }
-
-    /* Toolbar */
-    .pn-store-toolbar {
-      display:flex;align-items:center;justify-content:space-between;
-      gap:12px;flex-wrap:wrap;margin-bottom:22px;
-    }
-    .pn-sort-select {
-      border:1.5px solid var(--border);border-radius:var(--r-sm);
-      padding:8px 12px;font-size:14px;color:var(--text);background:#fff;outline:none;
-      transition:border-color var(--t-fast);min-width:190px;
-    }
-    .pn-sort-select:focus { border-color:var(--brand-mid); }
-    .pn-btn-filtros-mobile {
-      display:none;align-items:center;gap:7px;
-      padding:9px 16px;background:#fff;border:1.5px solid var(--border);
-      border-radius:var(--r-sm);color:var(--text-2);font-size:14px;font-weight:600;
-    }
-    @media(max-width:900px){ .pn-btn-filtros-mobile { display:flex; } }
-
-    /* Info resultados */
-    .pn-results-info { font-size:13px;color:var(--text-2);margin-bottom:18px; }
-    .pn-results-info strong { color:var(--brand); }
-
-    /* Sin resultados */
-    .pn-empty-state { text-align:center;padding:64px 20px;color:var(--text-2); }
-    .pn-empty-state .icon { font-size:3rem;display:block;margin-bottom:14px; }
+    /* ══ Tienda · estilo editorial (hero grande, tarjetas grises, botones redondeados) ══ */
+    .st-hero{position:relative;width:var(--panel-w);margin:10px auto 0;height:clamp(270px,33vw,410px);border-radius:44px;overflow:hidden;color:var(--bg);
+      background:radial-gradient(circle at 92% -10%,rgba(47,76,179,.6) 0 270px,transparent 271px),radial-gradient(circle at 3% 110%,rgba(47,76,179,.4) 0 230px,transparent 231px),var(--brand)}
+    .st-hero::before{content:"";position:absolute;inset:-20%;background:url(img/logo-dark.png) 0 0/170px 170px repeat;opacity:.06;transform:rotate(-12deg)}
+    .st-hero h1{position:absolute;left:0;right:0;bottom:-.21em;text-align:center;font-family:var(--font-title);font-weight:800;font-size:clamp(110px,25vw,340px);line-height:1;letter-spacing:-.05em;color:var(--bg);text-shadow:0 8px 40px rgba(0,0,0,.25);pointer-events:none}
+    .st-logo{position:absolute;z-index:1;right:9%;top:10%;width:clamp(120px,15vw,215px);aspect-ratio:1;border-radius:50%;background:var(--brand);border:4px solid var(--oro);box-shadow:0 0 0 10px rgba(228,174,69,.2),0 18px 40px rgba(0,0,0,.3);display:grid;place-items:center;animation:stBob 5s ease-in-out infinite}
+    .st-logo img{width:92%;height:92%;object-fit:contain}
+    .st-fl{position:absolute;z-index:1;font-weight:800;font-size:13px;padding:8px 15px;border-radius:999px;box-shadow:0 8px 22px rgba(0,0,0,.25);animation:stBob 6s ease-in-out infinite;white-space:nowrap}
+    .st-fl.a{left:8%;top:14%;background:var(--oro);color:var(--brand)}
+    .st-fl.b{left:22%;top:34%;background:var(--bg);color:var(--brand);animation-delay:-2s}
+    .st-fl.c{right:30%;top:12%;background:var(--green-bg);color:var(--green);animation-delay:-3.5s}
+    .st-coin{position:absolute;z-index:1;width:46px;height:46px;border-radius:50%;background:var(--oro);color:var(--brand);border:3px solid rgba(255,255,255,.55);display:grid;place-items:center;font-weight:800;font-size:20px;box-shadow:0 8px 18px rgba(0,0,0,.25);animation:stBob 7s ease-in-out infinite}
+    .st-coin.a{right:3.5%;top:56%;animation-delay:-1s}.st-coin.b{left:4%;top:50%;width:34px;height:34px;font-size:15px;animation-delay:-4s}
+    @keyframes stBob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-12px) rotate(2deg)}}
+    @media(prefers-reduced-motion:reduce){.st-logo,.st-fl,.st-coin{animation:none}}
+    .st-search{position:relative;z-index:2;width:var(--cont-w);max-width:1180px;margin:-44px auto 0;background:var(--bg-white);border-radius:26px;box-shadow:var(--shadow-md);padding:18px 26px;display:flex;align-items:center;gap:16px 24px;flex-wrap:wrap;justify-content:space-between}
+    .st-search h2{font-family:var(--font-title);font-weight:800;font-size:26px;letter-spacing:-.03em;color:var(--brand)}
+    .st-sbox{flex:1 1 300px;max-width:520px;display:flex;align-items:center;gap:8px;border:1.5px solid var(--border);border-radius:999px;padding:5px 5px 5px 16px;background:var(--bg-white)}
+    .st-sbox input{flex:1;border:0;outline:0;background:none;font-size:14px;color:var(--text);min-width:0}
+    .st-sbox button{background:var(--brand);color:var(--bg);border:0;border-radius:999px;padding:9px 20px;font-weight:700;font-size:13px}
+    .st-chips{display:flex;gap:8px;flex-wrap:wrap;width:100%}
+    .st-chip{background:var(--brand-light);color:var(--brand);border-radius:999px;padding:5px 14px;font-size:12.5px;font-weight:700}
+    .st-chip.g{background:var(--green-bg);color:var(--green)}
+    .st-main{display:grid;grid-template-columns:240px minmax(0,1fr);gap:36px;align-items:start;margin-top:34px;padding-bottom:20px}
+    .st-side{position:sticky;top:96px;display:flex;flex-direction:column;gap:24px}
+    .st-side h4{font-family:var(--font-title);font-size:18px;font-weight:800;color:var(--brand);margin-bottom:10px;letter-spacing:-.02em}
+    .st-cat{display:flex;align-items:center;gap:10px;width:100%;padding:9px 12px;border-radius:14px;border:0;background:none;font-size:14px;font-weight:600;color:var(--text-2);text-align:left;transition:background .2s}
+    .st-cat:hover,.st-cat.on{background:var(--bg-soft);color:var(--brand)}
+    .st-cat em{margin-left:auto;font-style:normal;font-size:11px;font-weight:700;background:var(--brand);color:var(--bg);border-radius:99px;padding:1px 8px}
+    .st-in{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:12px;font-size:13px;background:var(--bg-white);color:var(--text);outline:none}
+    .st-in:focus{border-color:var(--brand-mid)}
+    .st-fl{display:flex;flex-direction:column;gap:10px}
+    .st-pr{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .st-pills{display:flex;flex-wrap:wrap;gap:6px}
+    .st-pill{border:1.5px solid var(--border-2);background:none;border-radius:99px;padding:5px 11px;font-size:12px;font-weight:600;color:var(--text-2)}
+    .st-pill:hover{border-color:var(--brand);color:var(--brand)}
+    .st-chk{display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--text-2)}
+    .st-geo{width:100%;display:flex;align-items:center;justify-content:center;gap:7px;padding:10px;border-radius:999px;border:1.5px solid var(--brand);background:none;color:var(--brand);font-weight:700;font-size:13px;transition:all .2s}
+    .st-geo:hover{background:var(--brand);color:var(--bg)}
+    .st-link{font-size:12.5px;color:var(--brand-mid);font-weight:600;text-align:center}
+    .st-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+    .st-bar .res{font-size:13.5px;color:var(--text-2)}.st-bar .res b{color:var(--brand)}
+    .st-bar select{border:1.5px solid var(--border);border-radius:999px;padding:8px 14px;font-size:13px;background:var(--bg-white);color:var(--text);outline:none}
+    .st-fbtn{display:none;align-items:center;gap:7px;padding:9px 16px;border-radius:999px;border:1.5px solid var(--brand);background:none;color:var(--brand);font-weight:700;font-size:13px}
+    .st-best{background:var(--bg-soft);border-radius:24px;padding:16px 18px;margin-bottom:22px}
+    .st-best h4{font-family:var(--font-title);font-size:17px;font-weight:800;color:var(--brand);letter-spacing:-.02em}
+    .st-best p{font-size:12.5px;color:var(--text-2);margin:2px 0 12px}
+    .st-best-row{display:flex;gap:10px;flex-wrap:wrap}
+    .st-store{text-align:left;background:var(--bg-white);border:1.5px solid var(--border);border-radius:16px;padding:10px 14px;font-size:12.5px;color:var(--text-2);line-height:1.35;transition:border-color .2s}
+    .st-store b{display:block;font-size:14.5px;color:var(--brand)}.st-store i{color:var(--oro)}
+    .st-store:hover{border-color:var(--brand)}
+    .st-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:26px 22px}
+    .st-card{display:flex;flex-direction:column;gap:11px;min-width:0}
+    .st-tile{position:relative;aspect-ratio:1/1;border-radius:24px;background:#F0EFEA;overflow:hidden;cursor:pointer;display:grid;place-items:center;color:var(--text-3);font-size:38px}
+    .st-tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .4s}
+    .st-card:hover .st-tile img{transform:scale(1.05)}
+    .st-tag{position:absolute;top:12px;right:12px;z-index:2;background:var(--bg-white);color:var(--brand);font-size:11.5px;font-weight:700;padding:4px 12px;border-radius:99px}
+    .st-off{position:absolute;top:12px;left:12px;z-index:2;background:var(--oro);color:var(--brand);font-size:11.5px;font-weight:800;padding:4px 11px;border-radius:99px}
+    .st-tile .pn-fav-btn{top:auto;right:12px;bottom:12px}
+    .st-row{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+    .st-row h3{font-size:15.5px;font-weight:700;color:var(--brand);line-height:1.3;cursor:pointer}
+    .st-price{font-family:var(--font-title);font-size:19px;font-weight:800;color:var(--brand);white-space:nowrap}
+    .st-stars{font-size:12.5px;color:var(--text-2)}.st-stars i{color:var(--oro)}
+    .st-tip{background:var(--green-bg);color:var(--green);border-radius:14px;padding:9px 12px;font-size:12.5px;line-height:1.4}
+    .st-tip small{display:block;opacity:.85;font-size:11.5px}
+    .st-rv{font-size:12.5px;color:var(--text-2);font-style:italic;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .st-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:auto;padding-top:2px}
+    .st-btn{padding:10px 8px;border-radius:999px;border:1.5px solid var(--border-2);background:var(--bg-white);color:var(--brand);font-weight:700;font-size:13px;transition:transform .16s,box-shadow .16s}
+    .st-btn.dark{background:var(--brand);border-color:var(--brand);color:var(--bg)}
+    .st-btn:hover{transform:translateY(-1px);box-shadow:var(--shadow-sm)}
+    .st-pgs{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid var(--border);margin-top:30px;padding-top:18px}
+    .st-pg{background:none;border:0;font-weight:700;font-size:13px;color:var(--brand)}.st-pg[disabled]{opacity:.35;pointer-events:none}
+    .st-pgn{width:34px;height:34px;border-radius:10px;border:0;background:none;font-weight:700;font-size:13px;color:var(--text-2)}.st-pgn.on{background:var(--bg-soft);color:var(--brand)}
+    .st-reco{margin-top:56px}
+    .st-reco-h{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:18px}
+    .st-reco-h h2{font-family:var(--font-title);font-weight:800;font-size:clamp(26px,3vw,38px);letter-spacing:-.03em;color:var(--brand);line-height:1.05}
+    .st-reco-h p{font-size:14px;color:var(--text-2);margin-top:4px}
+    .st-rail{display:flex;gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;padding-bottom:6px}
+    .st-rail::-webkit-scrollbar{display:none}.st-rail>*{flex:0 0 clamp(250px,26vw,320px);scroll-snap-align:start}
+    .st-cta{margin-top:56px;background:var(--brand);color:var(--bg);border-radius:32px;padding:44px 48px;display:flex;flex-wrap:wrap;gap:28px;justify-content:space-between;align-items:center;background-image:radial-gradient(circle at 95% 0,rgba(47,76,179,.55) 0 220px,transparent 221px)}
+    .st-cta h2{font-family:var(--font-title);font-weight:800;font-size:clamp(28px,3.4vw,44px);line-height:1.04;letter-spacing:-.035em;color:var(--bg)}
+    .st-cta p{max-width:360px;font-size:14px;color:rgba(251,247,236,.75);margin-bottom:12px}
+    .st-cta form{display:flex;gap:6px;background:var(--bg-white);border-radius:999px;padding:5px;max-width:380px}
+    .st-cta input{flex:1;min-width:0;border:0;outline:0;background:none;padding:0 14px;font-size:14px;color:var(--text)}
+    .st-cta button{border:0;border-radius:999px;background:var(--oro);color:var(--brand);font-weight:800;padding:10px 20px;font-size:13px}
+    .st-ov{position:fixed;inset:0;background:rgba(20,23,43,.4);backdrop-filter:blur(3px);z-index:1590;display:none}.st-ov.open{display:block}
+    .st-offers{display:flex;flex-direction:column;gap:8px}
+    .st-offer{display:grid;grid-template-columns:1fr auto auto;gap:14px;align-items:center;padding:12px 16px;border:1.5px solid var(--border);border-radius:16px;background:var(--bg-white)}
+    .st-offer.best{border-color:var(--green);background:var(--green-bg)}
+    .st-offer small{display:block;font-size:12px;color:var(--text-2)}
+    .st-offer-p{text-align:right}.st-offer-p b{font-family:var(--font-title);font-size:18px;color:var(--brand)}
+    .st-bt{margin-left:8px;background:var(--green);color:#fff;font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:99px}
+    .st-offer .st-btn{padding:8px 16px}
+    .st-sim{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .st-sim button{text-align:left;border:1.5px solid var(--border);border-radius:16px;background:var(--bg-white);padding:10px;font-size:12.5px;color:var(--text-2)}
+    .st-sim img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;margin-bottom:8px;background:#F0EFEA}
+    .st-sim b{display:block;color:var(--brand);font-size:13px}
+    .pn-empty-state{text-align:center;padding:64px 20px;color:var(--text-2)}.pn-empty-state .icon{font-size:3rem;display:block;margin-bottom:14px}
+    @media(max-width:900px){.st-main{grid-template-columns:1fr}.st-side{position:fixed;z-index:1600;top:0;left:0;bottom:0;width:300px;max-width:86vw;background:var(--bg-white);padding:22px;overflow-y:auto;transform:translateX(-105%);transition:transform .28s;box-shadow:var(--shadow-lg)}.st-side.open{transform:none}.st-fbtn{display:flex}.st-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.st-cta{padding:32px 26px}}
+    @media(max-width:560px){.st-grid{grid-template-columns:1fr}.st-hero{border-radius:30px;height:330px}.st-search{margin-top:-26px}.st-hero h1{font-size:clamp(80px,24vw,150px)}.st-fl.b,.st-fl.c,.st-coin{display:none}.st-fl.a{left:6%;top:12%}.st-logo{right:6%;top:9%}.st-offer{grid-template-columns:1fr auto}.st-offer .st-btn{grid-column:1/-1}.st-sim{grid-template-columns:1fr 1fr}}
 
     /* ── MODAL PRODUCTO ── */
     .pn-modal-overlay {
@@ -159,20 +197,9 @@
     .pn-lightbox-prev { left:16px; }
     .pn-lightbox-next { right:16px; }
 
-    /* Sidebar drawer mobile */
-    .pn-sidebar-drawer { position:fixed;inset:0;z-index:1600;display:none; }
-    .pn-sidebar-drawer.open { display:block; }
-    .pn-sidebar-drawer-overlay { position:absolute;inset:0;background:rgba(20,23,43,.4);backdrop-filter:blur(3px); }
-    .pn-sidebar-drawer-panel {
-      position:absolute;top:0;left:0;bottom:0;width:280px;
-      background:#fff;border-right:1px solid var(--border);
-      overflow-y:auto;padding:20px 0;
-      transform:translateX(-100%);transition:transform .28s ease;
-    }
-    .pn-sidebar-drawer.open .pn-sidebar-drawer-panel { transform:translateX(0); }
   </style>
 </head>
-<body class="has-navbar">
+<body class="has-navbar pn-tema">
 
 <!-- ════════ NAVBAR ════════ -->
 <header class="pn-navbar" id="pnNavbar">
@@ -191,7 +218,6 @@
       <a href="tienda.html"           class="pn-menu-link active">Tienda</a>
       <a href="tienda.html?oferta=1"  class="pn-menu-link">Ofertas</a>
       <a href="tienda.html?nuevo=1"   class="pn-menu-link">Novedades</a>
-      <a href="precios.html"          class="pn-menu-link">Comparar</a>
       <a href="tiendas-cercanas.html" class="pn-menu-link">Cercanas</a>
       <a href="vendedor.html"         class="pn-menu-link">Vendedores</a>
     </nav>
@@ -238,7 +264,6 @@
       <a href="Index.html"            class="pn-cat-panel-link">🏠 Inicio</a>
       <a href="tienda.html"           class="pn-cat-panel-link active">🛒 Tienda</a>
       <a href="tienda.html?oferta=1"  class="pn-cat-panel-link">🏷️ Ofertas</a>
-      <a href="precios.html"          class="pn-cat-panel-link">📊 Comparar precios</a>
       <a href="tiendas-cercanas.html" class="pn-cat-panel-link">📍 Tiendas cercanas</a>
       <a href="vendedor.html"         class="pn-cat-panel-link">🏪 Vendedores</a>
     </nav>
@@ -246,176 +271,110 @@
 </div>
 
 
-<!-- ════════ STORE HERO ════════ -->
-<div class="pn-store-hero">
-  <div class="pn-container">
-    <span class="pn-eyebrow">tienda virtual</span>
-    <h1>Explora y <em style="color:var(--brand)">compara</em></h1>
-    <p>Consulta, compara y encuentra los mejores precios antes de comprar.</p>
-    <div class="pn-store-stats" id="storeStats">
-      <span class="pn-store-chip"><strong id="statProd">31</strong> Productos</span>
-      <span class="pn-store-chip"><strong>14</strong> Tiendas</span>
-      <span class="pn-store-chip"><strong>7</strong> Ciudades</span>
-      <span class="pn-store-chip" style="background:var(--green-bg);color:var(--green)"><strong>$0</strong> Sobreprecios</span>
-    </div>
+<!-- ════════ HERO + BUSCADOR ════════ -->
+<section class="st-hero" aria-label="Tienda virtual">
+  <span class="st-fl a">💲 Mejor precio</span><span class="st-fl b">-19% hoy</span><span class="st-fl c">$0 sobreprecios</span>
+  <span class="st-coin a">$</span><span class="st-coin b">$</span>
+  <div class="st-logo"><img src="img/logo-dark.png" alt="PriceNice"></div>
+  <h1>Tienda</h1>
+</section>
+<div class="st-search">
+  <h2>Encuentra el mejor precio</h2>
+  <div class="st-sbox">
+    <i class="bi bi-search" style="color:var(--text-3)"></i>
+    <input type="text" id="storeBuscador" placeholder="Buscar producto o tienda..." oninput="filtrarProductos()" aria-label="Buscar en la tienda">
+    <button onclick="filtrarProductos()">Buscar</button>
   </div>
+  <div class="st-chips" id="storeStats"></div>
 </div>
-
 
 <!-- ════════ CONTENIDO ════════ -->
-<div style="padding:32px 0 64px">
+<div class="pn-container st-main">
+  <div class="st-ov" id="sideOv" onclick="cerrarSidebarMovil()"></div>
+  <aside class="st-side" id="sidebar" aria-label="Filtros">
+    <div><h4>Categorías</h4><div id="catList"></div></div>
+    <div class="st-fl">
+      <h4>Rango de precio</h4>
+      <div class="st-pr">
+        <input type="number" id="precioMin" class="st-in" placeholder="Mínimo" min="0" oninput="filtrarProductos()">
+        <input type="number" id="precioMax" class="st-in" placeholder="Máximo" min="0" oninput="filtrarProductos()">
+      </div>
+      <div class="st-pills">
+        <button class="st-pill" onclick="setRango(0,30000)">Hasta $30.000</button>
+        <button class="st-pill" onclick="setRango(30000,100000)">$30.000 – $100.000</button>
+        <button class="st-pill" onclick="setRango(100000,0)">Más de $100.000</button>
+      </div>
+    </div>
+    <div class="st-fl">
+      <h4>Tienda</h4>
+      <select id="fTienda" class="st-in" onchange="filtrarProductos()"><option value="">Todas las tiendas</option></select>
+    </div>
+    <div class="st-fl">
+      <h4>¿Dónde en Bogotá?</h4>
+      <select id="fBarrio" class="st-in" onchange="filtrarProductos()"><option value="">Todos los barrios</option></select>
+      <label class="st-chk"><input type="checkbox" id="fOnline" checked onchange="filtrarProductos()"> Incluir tiendas online</label>
+      <button class="st-geo" onclick="usarUbicacion()"><i class="bi bi-crosshair"></i> Tiendas cerca de mí</button>
+      <a class="st-link" href="tiendas-cercanas.html"><i class="bi bi-map"></i> Ver mapa de tiendas</a>
+    </div>
+    <button class="st-pill" style="align-self:flex-start" onclick="limpiarFiltros()"><i class="bi bi-x-circle"></i> Limpiar filtros</button>
+  </aside>
+
+  <main>
+    <div class="st-bar">
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <button class="st-fbtn" onclick="abrirSidebarMovil()"><i class="bi bi-funnel"></i> Filtros</button>
+        <div class="res" id="resultsInfo"></div>
+      </div>
+      <select id="sortSelect" onchange="filtrarProductos()" aria-label="Ordenar">
+        <option value="">Ordenar: relevancia</option><option value="precio-asc">Menor precio</option>
+        <option value="precio-desc">Mayor precio</option><option value="estrellas">Mejor calificados</option>
+        <option value="ahorro">Mayor ahorro entre tiendas</option><option value="cercano">Más cercanos a mí</option><option value="nombre">A → Z</option>
+      </select>
+    </div>
+    <div id="mejoresTiendas"></div>
+    <div class="st-grid" id="gridProductos"></div>
+    <div id="sinResultados" style="display:none" class="pn-empty-state">
+      <span class="icon">🔍</span><strong style="font-size:17px;color:var(--brand)">Sin resultados</strong>
+      <p style="font-size:14px;margin-top:6px">Prueba con otro barrio, tienda o rango de precio.</p>
+      <button onclick="limpiarFiltros()" class="pn-btn-primary" style="margin-top:18px">Limpiar filtros</button>
+    </div>
+    <div class="st-pgs" id="paginacion"></div>
+  </main>
+</div>
+
+<div class="pn-container">
+  <section class="st-reco" aria-label="Recomendaciones">
+    <div class="st-reco-h">
+      <div><h2 id="recoTitulo">Nuestras recomendaciones</h2><p id="recoSub"></p></div>
+      <div class="pn-rail-ctrl">
+        <button class="pn-rail-btn" onclick="document.getElementById('recoRail').scrollBy({left:-320})" aria-label="Anterior"><i class="bi bi-arrow-left"></i></button>
+        <button class="pn-rail-btn" onclick="document.getElementById('recoRail').scrollBy({left:320})" aria-label="Siguiente"><i class="bi bi-arrow-right"></i></button>
+      </div>
+    </div>
+    <div class="st-rail" id="recoRail"></div>
+  </section>
+  <section class="st-cta">
+    <h2>¿Listo para pagar<br>menos por lo mismo?</h2>
+    <div><p>Te avisamos cuando un producto baje de precio en las tiendas de Bogotá.</p>
+      <form onsubmit="event.preventDefault();mostrarToast('¡Listo! Te avisaremos de las bajadas de precio.');this.reset()"><input type="email" required placeholder="Tu correo"><button>Avisarme</button></form></div>
+  </section>
+</div>
+
+<footer class="pn-footer" aria-label="Pie de página">
   <div class="pn-container">
-
-    <!-- Toolbar: filtros mobile + buscador + ordenar -->
-    <div class="pn-store-toolbar">
-      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-        <button class="pn-btn-filtros-mobile" onclick="abrirSidebarMovil()" aria-label="Filtros">
-          <i class="bi bi-funnel"></i> Filtros
-        </button>
-        <div class="pn-store-search" style="margin:0">
-          <input type="text" id="storeBuscador"
-            placeholder="Buscar en la tienda..."
-            oninput="filtrarProductos()" aria-label="Buscar">
-          <i class="bi bi-search pn-store-search-icon"></i>
-        </div>
+    <div class="pn-footer-grid">
+      <div class="pn-footer-brand">
+        <div class="pn-footer-logo"><div class="pn-footer-logo-circle"><img src="img/logo-dark.png" alt="PriceNice" loading="lazy"></div>
+          <span class="pn-footer-logo-name"><span class="w">Price</span><span class="b">Nice</span></span></div>
+        <p>Tu brújula de los buenos precios. Te mostramos dónde está más barato cada producto en Bogotá.</p>
       </div>
-      <div style="display:flex;align-items:center;gap:10px">
-        <label style="font-size:13px;color:var(--text-2);white-space:nowrap">Ordenar:</label>
-        <select class="pn-sort-select" id="sortSelect" onchange="filtrarProductos()">
-          <option value="">— Relevancia —</option>
-          <option value="precio-asc">Menor precio</option>
-          <option value="precio-desc">Mayor precio</option>
-          <option value="estrellas">Mejor calificados</option>
-          <option value="nombre">A → Z</option>
-        </select>
-      </div>
+      <div class="pn-footer-col"><h4>Navegar</h4><a href="Index.html">Inicio</a><a href="tienda.html">Tienda virtual</a><a href="tiendas-cercanas.html">Tiendas cercanas</a></div>
+      <div class="pn-footer-col"><h4>Mi cuenta</h4><a href="login.html">Iniciar sesión</a><a href="favoritos.html">Mis favoritos</a><a href="vendedor.html">Panel vendedor</a></div>
+      <div class="pn-footer-col"><h4>Contacto</h4><a href="mailto:hola@pricenice.co"><i class="bi bi-envelope me-2"></i>hola@pricenice.co</a><a href="#"><i class="bi bi-geo-alt me-2"></i>Bogotá, Colombia</a></div>
     </div>
-
-    <!-- Layout sidebar + grid -->
-    <div class="pn-store-layout">
-
-      <!-- ── SIDEBAR ── -->
-      <aside class="pn-store-sidebar" aria-label="Filtros">
-        <div class="pn-cat-panel">
-          <div class="pn-cat-panel-title">Categorías</div>
-          <a class="pn-cat-panel-link active" data-cat="" onclick="setCat(this,'')">
-            <span>🛒</span> Todas <i class="bi bi-chevron-right pn-cat-panel-arrow"></i>
-          </a>
-          <a class="pn-cat-panel-link" data-cat="moda"       onclick="setCat(this,'moda')"><span>👗</span> Moda <i class="bi bi-chevron-right pn-cat-panel-arrow"></i></a>
-          <a class="pn-cat-panel-link" data-cat="tecnologia" onclick="setCat(this,'tecnologia')"><span>💻</span> Tecnología <i class="bi bi-chevron-right pn-cat-panel-arrow"></i></a>
-          <a class="pn-cat-panel-link" data-cat="hogar"      onclick="setCat(this,'hogar')"><span>🏠</span> Hogar <i class="bi bi-chevron-right pn-cat-panel-arrow"></i></a>
-          <a class="pn-cat-panel-link" data-cat="mercado"    onclick="setCat(this,'mercado')"><span>🛒</span> Mercado <i class="bi bi-chevron-right pn-cat-panel-arrow"></i></a>
-          <a class="pn-cat-panel-link" data-cat="belleza"    onclick="setCat(this,'belleza')"><span>💄</span> Belleza <i class="bi bi-chevron-right pn-cat-panel-arrow"></i></a>
-          <a class="pn-cat-panel-link" data-cat="higiene"    onclick="setCat(this,'higiene')"><span>🧴</span> Higiene <i class="bi bi-chevron-right pn-cat-panel-arrow"></i></a>
-          <a class="pn-cat-panel-link" data-cat="deportes"   onclick="setCat(this,'deportes')"><span>⚽</span> Deportes <i class="bi bi-chevron-right pn-cat-panel-arrow"></i></a>
-          <a class="pn-cat-panel-link" data-cat="mascotas"   onclick="setCat(this,'mascotas')"><span>🐾</span> Mascotas <i class="bi bi-chevron-right pn-cat-panel-arrow"></i></a>
-          <div class="pn-cat-panel-divider"></div>
-          <a class="pn-cat-panel-link" data-cat="oferta" onclick="setCat(this,'oferta')"><span>🏷️</span> Mejores ofertas <i class="bi bi-chevron-right pn-cat-panel-arrow"></i></a>
-        </div>
-
-        <!-- Filtros de precio, tienda y ciudad -->
-        <div class="pn-cat-panel" style="margin-top:14px">
-          <div class="pn-cat-panel-title">Filtros</div>
-          <div style="padding:10px 18px 16px;display:flex;flex-direction:column;gap:12px">
-            <div class="pn-filter-group">
-              <label>Precio mínimo</label>
-              <input type="number" id="precioMin" class="pn-form-control"
-                placeholder="$0" min="0" oninput="filtrarProductos()"
-                style="padding:8px 10px;font-size:13px">
-            </div>
-            <div class="pn-filter-group">
-              <label>Precio máximo</label>
-              <input type="number" id="precioMax" class="pn-form-control"
-                placeholder="Sin límite" min="0" oninput="filtrarProductos()"
-                style="padding:8px 10px;font-size:13px">
-            </div>
-            <div class="pn-filter-group">
-              <label>Tienda</label>
-              <select id="filtraTienda" class="pn-form-control" onchange="filtrarProductos()" style="padding:8px 10px;font-size:13px">
-                <option value="">Todas las tiendas</option>
-                <option>Éxito</option><option>Jumbo</option><option>D1</option>
-                <option>Ara</option><option>Alkosto</option><option>Linio</option>
-                <option>Falabella</option><option>Cruz Verde</option>
-                <option>Carulla</option><option>Olímpica</option>
-                <option>PriceSmart</option><option>Homecenter</option>
-              </select>
-            </div>
-            <div class="pn-filter-group">
-              <label>Ciudad</label>
-              <select id="filtraCiudad" class="pn-form-control" onchange="filtrarProductos()" style="padding:8px 10px;font-size:13px">
-                <option value="">Todas las ciudades</option>
-                <option>Bogotá</option><option>Medellín</option><option>Cali</option>
-                <option>Barranquilla</option><option>Bucaramanga</option>
-                <option>Manizales</option><option>Pereira</option>
-              </select>
-            </div>
-            <button onclick="limpiarFiltros()" class="pn-filter-clear" style="width:100%;justify-content:center">
-              <i class="bi bi-x-circle"></i> Limpiar filtros
-            </button>
-          </div>
-        </div>
-      </aside>
-
-      <!-- ── ÁREA DE PRODUCTOS ── -->
-      <main>
-        <div class="pn-results-info" id="resultsInfo"></div>
-        <div class="pn-product-grid" id="gridProductos">
-          <!-- Skeletons -->
-          <div class="pn-skeleton-card"><div class="pn-skeleton pn-skeleton-img"></div><div class="pn-skeleton-body"><div class="pn-skeleton pn-skeleton-line"></div><div class="pn-skeleton pn-skeleton-line w-75"></div><div class="pn-skeleton pn-skeleton-line w-40 tall"></div></div></div>
-          <div class="pn-skeleton-card"><div class="pn-skeleton pn-skeleton-img"></div><div class="pn-skeleton-body"><div class="pn-skeleton pn-skeleton-line"></div><div class="pn-skeleton pn-skeleton-line w-75"></div><div class="pn-skeleton pn-skeleton-line w-40 tall"></div></div></div>
-          <div class="pn-skeleton-card"><div class="pn-skeleton pn-skeleton-img"></div><div class="pn-skeleton-body"><div class="pn-skeleton pn-skeleton-line"></div><div class="pn-skeleton pn-skeleton-line w-75"></div><div class="pn-skeleton pn-skeleton-line w-40 tall"></div></div></div>
-          <div class="pn-skeleton-card"><div class="pn-skeleton pn-skeleton-img"></div><div class="pn-skeleton-body"><div class="pn-skeleton pn-skeleton-line"></div><div class="pn-skeleton pn-skeleton-line w-75"></div><div class="pn-skeleton pn-skeleton-line w-40 tall"></div></div></div>
-          <div class="pn-skeleton-card"><div class="pn-skeleton pn-skeleton-img"></div><div class="pn-skeleton-body"><div class="pn-skeleton pn-skeleton-line"></div><div class="pn-skeleton pn-skeleton-line w-75"></div><div class="pn-skeleton pn-skeleton-line w-40 tall"></div></div></div>
-          <div class="pn-skeleton-card"><div class="pn-skeleton pn-skeleton-img"></div><div class="pn-skeleton-body"><div class="pn-skeleton pn-skeleton-line"></div><div class="pn-skeleton pn-skeleton-line w-75"></div><div class="pn-skeleton pn-skeleton-line w-40 tall"></div></div></div>
-          <div class="pn-skeleton-card"><div class="pn-skeleton pn-skeleton-img"></div><div class="pn-skeleton-body"><div class="pn-skeleton pn-skeleton-line"></div><div class="pn-skeleton pn-skeleton-line w-75"></div><div class="pn-skeleton pn-skeleton-line w-40 tall"></div></div></div>
-          <div class="pn-skeleton-card"><div class="pn-skeleton pn-skeleton-img"></div><div class="pn-skeleton-body"><div class="pn-skeleton pn-skeleton-line"></div><div class="pn-skeleton pn-skeleton-line w-75"></div><div class="pn-skeleton pn-skeleton-line w-40 tall"></div></div></div>
-        </div>
-        <div id="sinResultados" style="display:none" class="pn-empty-state">
-          <span class="icon">🔍</span>
-          <strong style="font-size:17px;color:var(--text)">Sin resultados</strong>
-          <p style="font-size:14px;margin-top:6px">Prueba con otros términos o limpia los filtros.</p>
-          <button onclick="limpiarFiltros()" class="pn-btn-primary" style="margin-top:18px">
-            Limpiar filtros
-          </button>
-        </div>
-      </main>
-    </div>
+    <div class="pn-footer-bottom"><span>© 2026 PriceNice. Todos los derechos reservados.</span></div>
   </div>
-</div>
-
-
-<!-- ════════ SIDEBAR DRAWER MOBILE ════════ -->
-<div class="pn-sidebar-drawer" id="sidebarDrawer">
-  <div class="pn-sidebar-drawer-overlay" onclick="cerrarSidebarMovil()"></div>
-  <div class="pn-sidebar-drawer-panel" id="sidebarPanel">
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:0 18px 12px">
-      <span style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-2)">Filtros</span>
-      <button onclick="cerrarSidebarMovil()" style="background:none;border:none;font-size:18px;color:var(--text-2)" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
-    </div>
-    <div class="pn-cat-panel" style="border:none;border-radius:0">
-      <div class="pn-cat-panel-title">Categorías</div>
-      <a class="pn-cat-panel-link active" onclick="setCat(this,'');cerrarSidebarMovil()"><span>🛒</span> Todas</a>
-      <a class="pn-cat-panel-link" onclick="setCat(this,'moda');cerrarSidebarMovil()"><span>👗</span> Moda</a>
-      <a class="pn-cat-panel-link" onclick="setCat(this,'tecnologia');cerrarSidebarMovil()"><span>💻</span> Tecnología</a>
-      <a class="pn-cat-panel-link" onclick="setCat(this,'hogar');cerrarSidebarMovil()"><span>🏠</span> Hogar</a>
-      <a class="pn-cat-panel-link" onclick="setCat(this,'mercado');cerrarSidebarMovil()"><span>🛒</span> Mercado</a>
-      <a class="pn-cat-panel-link" onclick="setCat(this,'belleza');cerrarSidebarMovil()"><span>💄</span> Belleza</a>
-    </div>
-    <div style="padding:12px 18px">
-      <div class="pn-filter-group" style="margin-bottom:12px">
-        <label>Tienda</label>
-        <select id="filtraTiendaM" class="pn-form-control" onchange="sincFiltroMovil()" style="padding:8px 10px;font-size:13px">
-          <option value="">Todas</option>
-          <option>Éxito</option><option>Jumbo</option><option>D1</option>
-          <option>Alkosto</option><option>Linio</option><option>Falabella</option>
-        </select>
-      </div>
-      <button onclick="limpiarFiltros();cerrarSidebarMovil()" class="pn-filter-clear" style="width:100%">
-        <i class="bi bi-x-circle"></i> Limpiar filtros
-      </button>
-    </div>
-  </div>
-</div>
+</footer>
 
 
 <!-- ════════ MODAL PRODUCTO ════════ -->
@@ -425,28 +384,6 @@
   </div>
 </div>
 
-
-<!-- ════════ CARRITO LATERAL ════════ -->
-<div class="pn-cart-overlay" id="cartOverlay" onclick="cerrarCarrito()"></div>
-<aside class="pn-cart-panel" id="cartPanel" role="dialog" aria-label="Carrito">
-  <div class="pn-cart-header">
-    <h2><i class="bi bi-bag me-2"></i>Mi carrito</h2>
-    <button class="pn-cart-close" onclick="cerrarCarrito()" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
-  </div>
-  <div class="pn-cart-body" id="cartBody">
-    <div class="pn-cart-empty" id="cartEmpty"><span class="icon">🛍️</span><strong style="color:var(--text-2)">Tu carrito está vacío</strong><p style="font-size:13px;margin-top:6px">Agrega productos para comenzar.</p></div>
-    <div id="cartItems"></div>
-  </div>
-  <div class="pn-cart-footer" id="cartFooter" style="display:none">
-    <div class="pn-cart-totals">
-      <div class="pn-cart-total-row"><span>Subtotal</span><span id="cartSubtotal">$0</span></div>
-      <div class="pn-cart-total-row"><span>Envío estimado</span><span id="cartEnvio">$0</span></div>
-      <div class="pn-cart-total-row main"><span>Total</span><span id="cartTotal">$0</span></div>
-    </div>
-    <button class="pn-btn-checkout"><i class="bi bi-credit-card me-2"></i>Proceder al pago</button>
-    <button class="pn-btn-vaciar" onclick="vaciarCarrito()"><i class="bi bi-trash me-2"></i>Vaciar carrito</button>
-  </div>
-</aside>
 
 <!-- Toast -->
 <div class="pn-toast" id="pnToast" role="alert" aria-live="polite">
@@ -470,174 +407,189 @@
 <script type="module" src="archivo sesión.js"></script>
 <script type="module" src="script.js"></script>
 
+<script src="carrito-precios.js"></script>
 <script>
-/* ══════════════════════════════════════
-   BASE DE DATOS DE PRODUCTOS
-══════════════════════════════════════ */
-const PRODUCTOS = [
-  {id:1,  nombre:"Crema Hidratante Facial",        precio:38900,  tienda:"Cruz Verde",  cat:"belleza",    estrellas:4.5, resenas:128, ciudad:"Bogotá",       barrio:"Chapinero",  imagen:"https://images.unsplash.com/photo-1556228841-a3c527ebefe5?w=600&q=80",  descripcion:"Crema hidratante con ácido hialurónico para todo tipo de piel.", presencial:true,  direccion:"Cra 13 #67-24", esRopa:false},
-  {id:2,  nombre:"Sérum Vitamina C 30ml",           precio:89900,  tienda:"Linio",       cat:"belleza",    estrellas:4.9, resenas:576, ciudad:"Cali",         barrio:"Granada",    imagen:"https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=600&q=80", descripcion:"Sérum antioxidante con vitamina C al 15% para luminosidad.",     presencial:false, esRopa:false, mejorPrecio:true},
-  {id:3,  nombre:"Base de Maquillaje Mate",         precio:65900,  tienda:"Falabella",   cat:"belleza",    estrellas:4.3, resenas:89,  ciudad:"Medellín",     barrio:"El Poblado", imagen:"https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=600&q=80", descripcion:"Base líquida de cobertura media con acabado mate, larga duración.", presencial:true, direccion:"C.C. El Tesoro L-218", esRopa:false},
-  {id:4,  nombre:"Detergente Líquido 3L",           precio:24900,  tienda:"D1",          cat:"higiene",    estrellas:4.2, resenas:67,  ciudad:"Bogotá",       barrio:"Kennedy",    imagen:"https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=600&q=80", descripcion:"Detergente concentrado para ropa, aroma lavanda.",               presencial:true,  direccion:"Av. 1 de Mayo #51-15", esRopa:false},
-  {id:5,  nombre:"Aceite de Oliva Extra Virgen",    precio:28900,  tienda:"PriceSmart",  cat:"mercado",    estrellas:4.8, resenas:412, ciudad:"Barranquilla", barrio:"Bello Horizonte", imagen:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=600&q=80", descripcion:"Aceite de oliva extra virgen, prensado en frío, D.O.P. España.", presencial:true, direccion:"Km 2 vía al aeropuerto", esRopa:false},
-  {id:6,  nombre:"Café Molido Premium 500g",        precio:18900,  tienda:"Jumbo",       cat:"mercado",    estrellas:4.7, resenas:234, ciudad:"Manizales",    barrio:"La Enea",    imagen:"https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=600&q=80", descripcion:"Café 100% arábica tostado y molido, intensidad media, Colombia.",presencial:true,  direccion:"Av. 12 de Octubre #12-35", esRopa:false},
-  {id:7,  nombre:"Audífonos Bluetooth Pro",         precio:129900, tienda:"Alkosto",     cat:"tecnologia", estrellas:4.7, resenas:342, ciudad:"Bogotá",       barrio:"Fontibón",   imagen:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&q=80", descripcion:"Audífonos inalámbricos con ANC activa y 30h de batería.",         presencial:true,  direccion:"Av. Centenario #18-85", esRopa:false},
-  {id:8,  nombre:"Smartwatch Fitness Pro",          precio:249900, tienda:"Falabella",   cat:"tecnologia", estrellas:4.4, resenas:156, ciudad:"Cali",         barrio:"Granada",    imagen:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=80", descripcion:"Reloj inteligente con GPS, monitor cardíaco y pantalla AMOLED.", presencial:true,  direccion:"C.C. Chipichape L-402", esRopa:false},
-  {id:9,  nombre:"Zapatillas Running CloudX",       precio:189900, tienda:"Éxito",       cat:"moda",       estrellas:4.3, resenas:89,  ciudad:"Bogotá",       barrio:"Suba",       imagen:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80", descripcion:"Zapatillas de running con amortiguación CloudX y suela tracción.", presencial:true, direccion:"C.C. Plaza Imperial L-112", esRopa:true, colores:["#FFFFFF","#1E2A80","#EF4444"], tallas:["38","39","40","41","42","43"], mejorPrecio:true},
-  {id:10, nombre:"Sudadera Oversize Fleece",        precio:79900,  tienda:"Linio",       cat:"moda",       estrellas:4.1, resenas:63,  ciudad:"Medellín",     barrio:"Laureles",   imagen:"https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=600&q=80", descripcion:"Sudadera oversize de polar suave, tela 280g.",                    presencial:false, esRopa:true, colores:["#1A1D2E","#4A90E2","#22C55E"], tallas:["XS","S","M","L","XL","XXL"]},
-  {id:11, nombre:"Sábanas Microfibra Queen",        precio:119900, tienda:"Alkosto",     cat:"hogar",      estrellas:4.6, resenas:201, ciudad:"Bogotá",       barrio:"Fontibón",   imagen:"https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=80", descripcion:"Juego de sábanas de microfibra suave 4 piezas, 200 hilos.",      presencial:true,  direccion:"Av. Centenario #18-85", esRopa:false},
-  {id:12, nombre:"Foco LED 10W Pack x4",            precio:22900,  tienda:"Homecenter",  cat:"hogar",      estrellas:4.5, resenas:88,  ciudad:"Cali",         barrio:"Menga",      imagen:"https://images.unsplash.com/photo-1565814329452-e1efa11c5b89?w=600&q=80", descripcion:"Pack de 4 focos LED ahorradores, luz cálida 3000K, 1000 lúmenes.",presencial:true, direccion:"Calle 25N #2-57", esRopa:false},
-  {id:13, nombre:"Shampoo Anticaspa 750ml",         precio:21900,  tienda:"Carulla",     cat:"higiene",    estrellas:4.0, resenas:41,  ciudad:"Medellín",     barrio:"Envigado",   imagen:"https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=600&q=80", descripcion:"Shampoo con zinc y ketoconazol para control eficaz de caspa.",    presencial:true,  direccion:"Calle 37 Sur #43-49", esRopa:false},
-  {id:14, nombre:"Alimento Premium Perro 15kg",     precio:89900,  tienda:"Éxito",       cat:"mascotas",   estrellas:4.8, resenas:319, ciudad:"Bogotá",       barrio:"Usaquén",    imagen:"https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=600&q=80", descripcion:"Alimento premium para perros adultos, libre de cereales.",        presencial:true,  direccion:"Cra 7 #127-26", esRopa:false}
-];
-
-const COMPARACIONES = {
-  2:  [{tienda:"Linio",     precio:89900, ciudad:"Virtual"},{tienda:"Éxito",     precio:94900,  ciudad:"Bogotá"},{tienda:"Falabella",precio:99900,  ciudad:"Medellín"}],
-  5:  [{tienda:"PriceSmart",precio:28900, ciudad:"Barranquilla"},{tienda:"Jumbo",precio:31900,  ciudad:"Bogotá"},{tienda:"Carulla",  precio:33500,  ciudad:"Cali"}],
-  7:  [{tienda:"Alkosto",   precio:129900,ciudad:"Bogotá"},{tienda:"Falabella",  precio:149900, ciudad:"Medellín"},{tienda:"Linio",  precio:134900, ciudad:"Virtual"}],
-  9:  [{tienda:"Éxito",     precio:189900,ciudad:"Bogotá"},{tienda:"Alkosto",    precio:195000, ciudad:"Bogotá"},{tienda:"Falabella",precio:209900, ciudad:"Medellín"}],
-};
-
+/* ══════════════ DATOS (vienen de carrito-precios.js) ══════════════ */
+const PRODUCTOS = window.PN_PRODUCTOS;
+const BARRIOS   = window.PN_BARRIOS;
+PRODUCTOS.forEach(p => { const b = p.o.reduce((a,x) => x.p < a.p ? x : a); p.precio = b.p; p.tienda = b.t; });
+const COMPARACIONES = window.PN_COMPARACIONES;
 const RESENAS_DEMO = {
   9: [{nombre:"Laura M.",  fecha:"2026-09-15",estrellas:5,comentario:"Las mejores zapatillas que he comprado. Súper cómodas.",fotos:[]},
-      {nombre:"Carlos R.", fecha:"2026-10-01",estrellas:4,comentario:"Muy buenas, talla fiel. El precio en Éxito es el más bajo.",fotos:[]}],
-  2: [{nombre:"Ana P.",    fecha:"2026-08-20",estrellas:5,comentario:"Notables resultados desde la primera semana de uso.",fotos:[]}],
+      {nombre:"Carlos R.", fecha:"2026-10-01",estrellas:4,comentario:"Muy buenas, talla fiel. El precio en Éxito es el más bajo.",fotos:[]}]
 };
+const CATS = [['','Todas','🛒'],['moda','Moda','👗'],['tecnologia','Tecnología','💻'],['hogar','Hogar','🏠'],['mercado','Mercado','🛒'],['belleza','Belleza','💄'],['higiene','Higiene','🧴'],['mascotas','Mascotas','🐾'],['oferta','Mejores ofertas','🏷️']];
+const NOMCAT = Object.fromEntries(CATS.map(c => [c[0], c[1]]));
+const PAGE = 9;
 
-/* ══ Estado ══ */
-let catActual = '';
-let productoActual = null;
-let resenaFotos = [];
-let lbFotos = []; let lbIdx = 0;
-let usuarioSesion = null;
+let cat = '', pagina = 1, userPos = null;
+let productoActual = null, resenaFotos = [], lbFotos = [], lbIdx = 0, usuarioSesion = null;
 
-/* ══ Filtrar y renderizar ══ */
-function filtrarProductos() {
-  const q      = (document.getElementById('storeBuscador')?.value || document.getElementById('pnSearchInput')?.value || '').toLowerCase().trim();
-  const tienda = document.getElementById('filtraTienda')?.value || '';
-  const ciudad = document.getElementById('filtraCiudad')?.value || '';
-  const pMin   = parseFloat(document.getElementById('precioMin')?.value) || 0;
-  const pMax   = parseFloat(document.getElementById('precioMax')?.value) || Infinity;
-  const sort   = document.getElementById('sortSelect')?.value || '';
+/* ══ Utilidades de precio / distancia ══ */
+const ahorroDe = v => Math.max(...v.ofs.map(o => o.p)) - v.best.p;
+const pctOff = o => o.a ? Math.round((1 - o.p / o.a) * 100) : 0;
+function km(a, b) { const R=6371, r=x=>x*Math.PI/180, dLa=r(b[0]-a[0]), dLo=r(b[1]-a[1]);
+  const h = Math.sin(dLa/2)**2 + Math.cos(r(a[0]))*Math.cos(r(b[0]))*Math.sin(dLo/2)**2; return 2*R*Math.asin(Math.sqrt(h)); }
+const distTxt = b => (userPos && BARRIOS[b]) ? ` · ≈ ${km(userPos, BARRIOS[b]).toFixed(1).replace('.',',')} km` : '';
+const distNum = v => userPos ? Math.min(...v.ofs.filter(o => BARRIOS[o.b]).map(o => km(userPos, BARRIOS[o.b])), 99) : 0;
 
-  let lista = PRODUCTOS.filter(p => {
-    if (catActual && p.cat !== catActual) return false;
-    if (tienda && p.tienda !== tienda)    return false;
-    if (ciudad && p.ciudad !== ciudad)    return false;
-    if (p.precio < pMin || p.precio > pMax) return false;
-    if (q && !p.nombre.toLowerCase().includes(q) && !p.tienda.toLowerCase().includes(q)) return false;
-    return true;
-  });
-
-  if (sort === 'precio-asc')  lista.sort((a,b) => a.precio-b.precio);
-  if (sort === 'precio-desc') lista.sort((a,b) => b.precio-a.precio);
-  if (sort === 'estrellas')   lista.sort((a,b) => b.estrellas-a.estrellas);
-  if (sort === 'nombre')      lista.sort((a,b) => a.nombre.localeCompare(b.nombre));
-
-  renderProductos(lista);
+/* ══ Filtros ══ */
+function leerF() {
+  const g = id => document.getElementById(id);
+  return { q: ((g('storeBuscador').value || g('pnSearchInput')?.value || '')).toLowerCase().trim(),
+    tienda: g('fTienda').value, barrio: g('fBarrio').value, online: g('fOnline').checked,
+    min: parseFloat(g('precioMin').value) || 0, max: parseFloat(g('precioMax').value) || Infinity, sort: g('sortSelect').value };
 }
-
-function renderProductos(lista) {
-  const grid  = document.getElementById('gridProductos');
-  const noRes = document.getElementById('sinResultados');
-  const info  = document.getElementById('resultsInfo');
-  if (lista.length === 0) {
-    grid.innerHTML = ''; noRes.style.display = 'block'; info.innerHTML = ''; return;
-  }
+/* Cada producto se evalúa con las ofertas que cumplen tienda/barrio: el "mejor precio" es el de esas ofertas */
+function vistas(F, conPrecio) {
+  return PRODUCTOS.map(pr => {
+    if (cat === 'oferta') { if (!pr.o.some(o => o.a)) return null; }
+    else if (cat === 'nuevo') { if (pr.id < 9) return null; }
+    else if (cat && pr.cat !== cat) return null;
+    if (F.q && !pr.nombre.toLowerCase().includes(F.q) && !pr.o.some(o => o.t.toLowerCase().includes(F.q))) return null;
+    const ofs = pr.o.filter(o => (!F.tienda || o.t === F.tienda) && (!F.barrio || o.b === F.barrio || (o.b === 'Online' && F.online)));
+    if (!ofs.length) return null;
+    const best = ofs.reduce((a, x) => x.p < a.p ? x : a);
+    if (conPrecio && (best.p < F.min || best.p > F.max)) return null;
+    return { pr, ofs, best };
+  }).filter(Boolean);
+}
+function filtrarProductos(keep) {
+  if (keep !== true) pagina = 1;
+  const F = leerF();
+  let lista = vistas(F, true);
+  const s = F.sort;
+  if (s === 'precio-asc')  lista.sort((a,b) => a.best.p - b.best.p);
+  if (s === 'precio-desc') lista.sort((a,b) => b.best.p - a.best.p);
+  if (s === 'estrellas')   lista.sort((a,b) => b.pr.estrellas - a.pr.estrellas);
+  if (s === 'ahorro')      lista.sort((a,b) => ahorroDe(b) - ahorroDe(a));
+  if (s === 'cercano')     lista.sort((a,b) => distNum(a) - distNum(b));
+  if (s === 'nombre')      lista.sort((a,b) => a.pr.nombre.localeCompare(b.pr.nombre));
+  renderLista(lista, F);
+  renderMejoresTiendas(lista);
+  renderReco(F);
+}
+function renderLista(lista, F) {
+  const grid = document.getElementById('gridProductos'), noRes = document.getElementById('sinResultados'), info = document.getElementById('resultsInfo');
+  const nPag = Math.max(1, Math.ceil(lista.length / PAGE)); if (pagina > nPag) pagina = nPag;
+  if (!lista.length) { grid.innerHTML = ''; noRes.style.display = 'block'; info.innerHTML = ''; document.getElementById('paginacion').innerHTML = ''; return; }
   noRes.style.display = 'none';
-  info.innerHTML = `Mostrando <strong>${lista.length}</strong> producto${lista.length!==1?'s':''}${catActual?' en <strong>'+catActual+'</strong>':''}`;
-  grid.innerHTML = lista.map(crearTarjeta).join('');
-  observarFadeUp();
+  info.innerHTML = `Mostrando <b>${lista.length}</b> producto${lista.length!==1?'s':''}${cat?' en <b>'+NOMCAT[cat]+'</b>':''}${F.barrio?' · <b>'+F.barrio+'</b>':''}`;
+  grid.innerHTML = lista.slice((pagina-1)*PAGE, pagina*PAGE).map(v => crearTarjeta(v)).join('');
+  const pg = document.getElementById('paginacion');
+  pg.innerHTML = nPag < 2 ? '' : `<button class="st-pg" ${pagina===1?'disabled':''} onclick="irPag(${pagina-1})"><i class="bi bi-arrow-left"></i> Anterior</button>
+    <div>${Array.from({length:nPag},(_,i)=>`<button class="st-pgn ${i+1===pagina?'on':''}" onclick="irPag(${i+1})">${i+1}</button>`).join('')}</div>
+    <button class="st-pg" ${pagina===nPag?'disabled':''} onclick="irPag(${pagina+1})">Siguiente <i class="bi bi-arrow-right"></i></button>`;
 }
+function irPag(n) { pagina = n; filtrarProductos(true); document.querySelector('.st-bar').scrollIntoView({behavior:'smooth', block:'start'}); }
 
-function crearTarjeta(p) {
-  const isFav = getFavs().includes(p.id);
+/* Tarjeta: precio más bajo + en qué tienda + reseña de un comprador */
+function crearTarjeta(v, etiqueta) {
+  const { pr, best, ofs } = v, isFav = getFavs().includes(pr.id), ah = ahorroDe(v), pct = pctOff(best);
+  const cerca = userPos ? [...ofs].filter(o => BARRIOS[o.b]).sort((a,b) => km(userPos,BARRIOS[a.b]) - km(userPos,BARRIOS[b.b]))[0] : null;
+  const rv = RESENAS_DEMO[pr.id]?.[0] ? [RESENAS_DEMO[pr.id][0].nombre, RESENAS_DEMO[pr.id][0].comentario] : pr.rv;
   return `
-  <article class="pn-product-card fade-up" data-id="${p.id}">
-    <div class="pn-product-img" onclick="abrirModal(${p.id})" style="cursor:pointer">
-      ${p.mejorPrecio ? '<span class="pn-best-badge">Mejor precio</span>' : ''}
-      <img src="${p.imagen}" alt="${p.nombre}" loading="lazy">
-      <button class="pn-fav-btn ${isFav?'active':''}" data-id="${p.id}"
-        onclick="event.stopPropagation();toggleFav(this,${p.id})"
-        aria-label="Favorito" aria-pressed="${isFav}">
-        <i class="bi bi-heart${isFav?'-fill':''}"></i>
-      </button>
+  <article class="st-card">
+    <div class="st-tile" onclick="abrirModal(${pr.id})"><i class="bi bi-image"></i>
+      <img src="${pr.imagen}" alt="${pr.nombre}" loading="lazy" onerror="this.remove()">
+      <span class="st-tag">${NOMCAT[pr.cat]}</span>
+      ${etiqueta ? `<span class="st-off">${etiqueta}</span>` : pct ? `<span class="st-off">-${pct}%</span>` : ''}
+      <button class="pn-fav-btn ${isFav?'active':''}" onclick="event.stopPropagation();toggleFav(this,${pr.id})" aria-label="Favorito"><i class="bi bi-heart${isFav?'-fill':''}"></i></button>
     </div>
-    <div class="pn-product-body">
-      <h3 class="pn-product-name" onclick="abrirModal(${p.id})" style="cursor:pointer">${p.nombre}</h3>
-      <div class="pn-stars">${renderStars(p.estrellas)} <span>(${p.resenas})</span></div>
-      <div class="pn-product-price">${fmtPrecio(p.precio)}</div>
-      <div class="pn-product-store">Desde ${fmtPrecio(p.precio)} en ${p.tienda}</div>
-      <button class="pn-add-btn" onclick="agregarCarrito(${p.id})" aria-label="Agregar ${p.nombre}">
-        <i class="bi bi-bag-plus"></i> Agregar al carrito
-      </button>
-    </div>
+    <div class="st-row"><h3 onclick="abrirModal(${pr.id})">${pr.nombre}</h3><span class="st-price">${fmtPrecio(best.p)}</span></div>
+    <div class="st-stars">${renderStars(pr.estrellas)} <span>${pr.estrellas} (${pr.resenas} reseñas)</span></div>
+    <div class="st-tip"><i class="bi bi-geo-alt-fill"></i> Más barato en <b>${best.t}</b> · ${best.b==='Online'?'online':best.b}${distTxt(best.b)}
+      ${ah ? `<small>Ahorras hasta ${fmtPrecio(ah)} frente a la tienda más cara</small>` : ''}
+      ${cerca && cerca !== best ? `<small>Más cerca de ti: ${cerca.t} (${cerca.b}) · ${fmtPrecio(cerca.p)}</small>` : ''}</div>
+    <p class="st-rv">“${rv[1]}” — ${rv[0]}</p>
+    <div class="st-btns"><button class="st-btn" onclick="agregarCarrito(${pr.id})">Agregar al carrito</button><button class="st-btn dark" onclick="abrirModal(${pr.id})">Ver precios</button></div>
   </article>`;
 }
 
-function setCat(el, cat) {
-  catActual = cat;
-  document.querySelectorAll('.pn-cat-panel-link').forEach(a => a.classList.remove('active'));
-  if (el) el.classList.add('active');
-  filtrarProductos();
+/* Tiendas con mejores precios en la categoría elegida */
+function renderMejoresTiendas(lista) {
+  const el = document.getElementById('mejoresTiendas');
+  if (lista.length < 2) { el.innerHTML = ''; return; }
+  const m = {};
+  lista.forEach(v => { const t = v.best.t, x = m[t] = m[t] || {n:0, ah:0, off:0}; x.n++; x.ah += ahorroDe(v); v.ofs.filter(o => o.t === t).forEach(o => x.off = Math.max(x.off, pctOff(o))); });
+  const top = Object.entries(m).sort((a,b) => b[1].n - a[1].n || b[1].ah - a[1].ah).slice(0,4);
+  el.innerHTML = `<div class="st-best"><h4>${cat && cat!=='oferta' ? 'Mejores precios en '+NOMCAT[cat] : 'Tiendas con más precios bajos hoy'}</h4>
+    <p>Toca una tienda para ver solo sus productos.</p><div class="st-best-row">${top.map(([t,x]) =>
+    `<button class="st-store" onclick="setTienda('${t}')"><b>${t}</b><i class="bi bi-tag-fill"></i> ${x.n} producto${x.n>1?'s':''} más barato${x.n>1?'s':''}<br>Ahorro prom. ${fmtPrecio(Math.round(x.ah/x.n))}${x.off ? ' · hasta -'+x.off+'%' : ''}</button>`).join('')}</div></div>`;
 }
 
+/* Recomendaciones: las que mejor se acercan a tu presupuesto (o las mejor valoradas) */
+function renderReco(F) {
+  const base = vistas(F, false), T = isFinite(F.max) ? F.max : (F.min > 0 ? F.min : 0);
+  let arr, tit, sub;
+  if (T) {
+    arr = base.map(v => ({v, d: v.best.p - T})).sort((a,b) => (a.d<=0 ? -a.d : a.d*2) - (b.d<=0 ? -b.d : b.d*2)).slice(0,8);
+    tit = 'Se ajustan a tu presupuesto'; sub = `Los más cercanos a ${fmtPrecio(T)}, con la tienda donde cuestan menos`;
+  } else {
+    arr = base.map(v => ({v, d: 0, s: v.pr.estrellas * Math.log(v.pr.resenas + 1) + ahorroDe(v) / 8000})).sort((a,b) => b.s - a.s).slice(0,8);
+    tit = 'Nuestras recomendaciones'; sub = 'Los mejor valorados y con más ahorro entre tiendas. Pon un rango de precio y te mostramos los que mejor te quedan.';
+  }
+  document.getElementById('recoTitulo').textContent = tit; document.getElementById('recoSub').textContent = sub;
+  document.getElementById('recoRail').innerHTML = arr.map(x => crearTarjeta(x.v, T ? (x.d <= 0 ? 'Te sobran '+fmtPrecio(-x.d) : '+'+fmtPrecio(x.d)+' del presupuesto') : '')).join('');
+}
+
+/* ══ Controles ══ */
+function construirFiltros() {
+  document.getElementById('catList').innerHTML = CATS.map(([k,n,i]) => {
+    const c = k === 'oferta' ? PRODUCTOS.filter(p => p.o.some(o => o.a)).length : k ? PRODUCTOS.filter(p => p.cat === k).length : PRODUCTOS.length;
+    return `<button class="st-cat ${k===cat?'on':''}" data-cat="${k}" onclick="setCat('${k}')"><span>${i}</span> ${n} <em>${c}</em></button>`; }).join('');
+  const tiendas = [...new Set(PRODUCTOS.flatMap(p => p.o.map(o => o.t)))].sort();
+  document.getElementById('fTienda').innerHTML += tiendas.map(t => `<option>${t}</option>`).join('');
+  document.getElementById('fBarrio').innerHTML += Object.keys(BARRIOS).sort().map(b => `<option>${b}</option>`).join('');
+  document.getElementById('storeStats').innerHTML = `<span class="st-chip">${PRODUCTOS.length} productos</span><span class="st-chip">${tiendas.length} tiendas</span><span class="st-chip">${Object.keys(BARRIOS).length} zonas de Bogotá</span><span class="st-chip g">$0 sobreprecios</span>`;
+}
+function setCat(c) {
+  cat = c; document.querySelectorAll('.st-cat').forEach(b => b.classList.toggle('on', b.dataset.cat === c));
+  cerrarSidebarMovil(); filtrarProductos();
+}
+function setTienda(t) { document.getElementById('fTienda').value = t; filtrarProductos(); }
+function setRango(a, b) { document.getElementById('precioMin').value = a || ''; document.getElementById('precioMax').value = b || ''; filtrarProductos(); }
 function limpiarFiltros() {
-  catActual = '';
-  ['storeBuscador','precioMin','precioMax'].forEach(id => { const e = document.getElementById(id); if(e) e.value=''; });
-  ['filtraTienda','filtraCiudad','sortSelect'].forEach(id => { const e = document.getElementById(id); if(e) e.value=''; });
-  document.querySelectorAll('.pn-cat-panel-link').forEach(a => a.classList.remove('active'));
-  const primero = document.querySelector('.pn-cat-panel-link'); if(primero) primero.classList.add('active');
-  filtrarProductos();
+  ['storeBuscador','precioMin','precioMax','fTienda','fBarrio','sortSelect'].forEach(id => { document.getElementById(id).value = ''; });
+  document.getElementById('fOnline').checked = true; userPos = null; setCat('');
 }
-
-function sincFiltroMovil() {
-  const t = document.getElementById('filtraTiendaM')?.value || '';
-  const ft = document.getElementById('filtraTienda'); if(ft) ft.value = t;
-  filtrarProductos();
+function usarUbicacion() {
+  if (!navigator.geolocation) { mostrarToast('Tu navegador no permite usar la ubicación'); return; }
+  mostrarToast('Buscando tu ubicación…');
+  navigator.geolocation.getCurrentPosition(pos => {
+    userPos = [pos.coords.latitude, pos.coords.longitude];
+    const cerca = Object.keys(BARRIOS).sort((a,b) => km(userPos,BARRIOS[a]) - km(userPos,BARRIOS[b]))[0];
+    document.getElementById('sortSelect').value = 'cercano'; cerrarSidebarMovil(); filtrarProductos();
+    mostrarToast('Listo: ordenado por cercanía. Tu zona más próxima: ' + cerca);
+  }, () => mostrarToast('No pudimos ver tu ubicación. Elige tu barrio en la lista.'), { timeout: 8000 });
 }
 
 /* ══ Modal producto ══ */
 function abrirModal(id) {
   const p    = PRODUCTOS.find(x => x.id===id); if(!p) return;
   productoActual = p;
-  const comp = COMPARACIONES[id] || [];
-  const ress = RESENAS_DEMO[id]  || [];
+  const ress = RESENAS_DEMO[id] || [{nombre:p.rv[0], fecha:'2026-09-20', estrellas:Math.round(p.estrellas), comentario:p.rv[1], fotos:[]}];
   const isFav = getFavs().includes(id);
   const fotos = [p.imagen, p.imagen+'&flip=h', p.imagen+'&grayscale'];
 
-  /* ── Tabla comparar ── */
-  const tablaComp = comp.length ? `
+  /* ── Dónde comprar más barato ── */
+  const ofs = [...p.o].sort((a,b) => a.p - b.p), mejor = ofs[0].p;
+  const ofertasHTML = `
     <div class="pn-modal-section">
-      <div class="pn-modal-section-title"><i class="bi bi-bar-chart"></i> Comparar precios</div>
-      <div style="border-radius:var(--r);overflow:hidden;border:1px solid var(--border)">
-        <table class="pn-compare-table">
-          <thead><tr><th>Tienda</th><th>Ciudad</th><th>Precio</th></tr></thead>
-          <tbody>
-            ${[...comp].sort((a,b)=>a.precio-b.precio).map((r,i)=>`
-              <tr class="${i===0?'pn-compare-best':''}">
-                <td><strong>${r.tienda}</strong>${i===0?'<span class="pn-best-tag">Mejor precio</span>':''}</td>
-                <td>${r.ciudad}</td>
-                <td><strong>${fmtPrecio(r.precio)}</strong></td>
-              </tr>`).join('')}
-          </tbody>
-        </table>
-      </div>
-    </div>` : '';
-
-  /* ── Dónde se vende ── */
-  const dondeVende = `
-    <div class="pn-modal-section">
-      <div class="pn-modal-section-title"><i class="bi bi-shop"></i> Dónde se vende</div>
-      <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px">
-        <div style="font-weight:700;color:var(--text);margin-bottom:4px">${p.tienda}</div>
-        <div style="font-size:13px;color:var(--text-2)"><i class="bi bi-geo-alt"></i> ${p.ciudad}${p.barrio?', '+p.barrio:''}</div>
-        ${p.presencial&&p.direccion?`
-          <div style="font-size:13px;color:var(--text-2);margin-top:4px"><i class="bi bi-pin-map"></i> ${p.direccion}</div>
-          <div class="pn-map-box"><i class="bi bi-map" style="font-size:24px"></i><span>Ver en mapa — ${p.direccion}</span></div>`:
-          '<div style="font-size:13px;color:var(--text-2);margin-top:4px"><i class="bi bi-laptop"></i> Solo venta online</div>'}
-      </div>
+      <div class="pn-modal-section-title"><i class="bi bi-geo-alt"></i> Dónde comprarlo más barato en Bogotá</div>
+      <div class="st-offers">${ofs.map((o,i) => `
+        <div class="st-offer ${i?'':'best'}">
+          <div><strong>${o.t}</strong>${i?'':'<span class="st-bt">Mejor precio</span>'}<small>${o.b==='Online'?'Compra online · envío a Bogotá':'Barrio '+o.b+distTxt(o.b)}</small></div>
+          <div class="st-offer-p"><b>${fmtPrecio(o.p)}</b><small>${i?'+'+fmtPrecio(o.p-mejor)+' vs. el más barato':(o.a?'Antes '+fmtPrecio(o.a):'')}</small></div>
+          <button class="st-btn dark" onclick="agregarCarrito(${p.id},'${o.t}')">Agregar</button>
+        </div>`).join('')}</div>
     </div>`;
+  const sim = PRODUCTOS.filter(x => x.cat === p.cat && x.id !== p.id).sort((a,b) => Math.abs(a.precio-p.precio) - Math.abs(b.precio-p.precio)).slice(0,3);
+  const similaresHTML = sim.length ? `
+    <div class="pn-modal-section">
+      <div class="pn-modal-section-title"><i class="bi bi-stars"></i> Otras opciones cerca de este precio</div>
+      <div class="st-sim">${sim.map(x => `<button onclick="abrirModal(${x.id})"><img src="${x.imagen}" alt="" loading="lazy" onerror="this.remove()"><b>${x.nombre}</b>${fmtPrecio(x.precio)} en ${x.tienda}</button>`).join('')}</div>
+    </div>` : '';
 
   /* ── Variantes ── */
   const variantes = p.esRopa ? `
@@ -708,8 +660,8 @@ function abrirModal(id) {
     </div>
 
     <!-- Secciones inferiores -->
-    ${dondeVende}
-    ${tablaComp}
+    ${ofertasHTML}
+    ${similaresHTML}
 
     <div class="pn-modal-section">
       <div class="pn-modal-section-title"><i class="bi bi-star"></i> Reseñas de clientes</div>
@@ -807,55 +759,23 @@ function cerrarLightbox(){ document.getElementById('lightbox').classList.remove(
 function lightboxNav(dir){ lbIdx=(lbIdx+dir+lbFotos.length)%lbFotos.length;document.getElementById('lightboxImg').src=lbFotos[lbIdx]; }
 
 /* ══ Sidebar mobile ══ */
-function abrirSidebarMovil(){document.getElementById('sidebarDrawer').classList.add('open');document.body.style.overflow='hidden';}
-function cerrarSidebarMovil(){document.getElementById('sidebarDrawer').classList.remove('open');document.body.style.overflow='';}
+function abrirSidebarMovil(){document.getElementById('sidebar').classList.add('open');document.getElementById('sideOv').classList.add('open');}
+function cerrarSidebarMovil(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sideOv').classList.remove('open');}
 
-/* ══ Carrito ══ */
-function getCarrito(){ return JSON.parse(localStorage.getItem('pn_carrito')||'[]'); }
+/* ══ Carrito (la ventanita y la página las maneja carrito.js) ══ */
+function getCarrito(){ try { return JSON.parse(localStorage.getItem('pn_carrito')||'[]'); } catch(e) { return []; } }
 function setCarrito(c){ localStorage.setItem('pn_carrito',JSON.stringify(c)); }
 function actualizarBadges(){
-  const t=getCarrito().reduce((a,i)=>a+i.qty,0);
-  const b=document.getElementById('badgeCarritoNav');
-  if(b){if(t>0){b.textContent=t>99?'99+':t;b.style.display='flex';b.classList.add('bounce');setTimeout(()=>b.classList.remove('bounce'),400);}else b.style.display='none';}
   const ft=getFavs().length; const bf=document.getElementById('badgeFav');
   if(bf){if(ft>0){bf.textContent=ft;bf.style.display='flex';}else bf.style.display='none';}
 }
-function renderCarrito(){
-  const c=getCarrito(); const items=document.getElementById('cartItems'); const empty=document.getElementById('cartEmpty'); const footer=document.getElementById('cartFooter');
-  if(!items)return;
-  if(c.length===0){empty.style.display='block';items.innerHTML='';footer.style.display='none';return;}
-  empty.style.display='none';footer.style.display='block';
-  items.innerHTML=c.map(i=>`
-    <div class="pn-cart-item">
-      <div class="pn-cart-item-img"><img src="${i.imagen||'img/logo-dark.png'}" alt="${i.nombre}" loading="lazy"></div>
-      <div class="pn-cart-item-info">
-        <div class="pn-cart-item-name">${i.nombre}</div>
-        <div class="pn-cart-item-store">${i.tienda||''}</div>
-        <div class="pn-cart-item-price">${fmtPrecio(i.precio*i.qty)}</div>
-        <div class="pn-qty-ctrl">
-          <button class="pn-qty-btn" onclick="qtyCarrito(${i.id},-1)">−</button>
-          <span class="pn-qty-num">${i.qty}</span>
-          <button class="pn-qty-btn" onclick="qtyCarrito(${i.id},1)">+</button>
-        </div>
-      </div>
-      <button class="pn-cart-item-del" onclick="quitarCarrito(${i.id})" aria-label="Eliminar"><i class="bi bi-trash"></i></button>
-    </div>`).join('');
-  const sub=c.reduce((a,i)=>a+i.precio*i.qty,0);
-  document.getElementById('cartSubtotal').textContent=fmtPrecio(sub);
-  document.getElementById('cartEnvio').textContent=sub>=150000?'Gratis':fmtPrecio(9900);
-  document.getElementById('cartTotal').textContent=fmtPrecio(sub>=150000?sub:sub+9900);
+function agregarCarrito(id, tienda){
+  const p=PRODUCTOS.find(x=>x.id===id); if(!p)return;
+  const o=p.o.find(x=>x.t===tienda) || p.o.reduce((a,x)=>x.p<a.p?x:a);
+  const c=getCarrito(); const e=c.find(i=>i.id===id);
+  if(e)e.qty++; else c.push({id:p.id,nombre:p.nombre,precio:o.p,tienda:o.t,imagen:p.imagen,qty:1});
+  setCarrito(c); actualizarBadges();
 }
-function agregarCarrito(id){
-  const p=PRODUCTOS.find(x=>x.id===id);if(!p)return;
-  const c=getCarrito();const e=c.find(i=>i.id===id);
-  if(e)e.qty++;else c.push({id:p.id,nombre:p.nombre,precio:p.precio,tienda:p.tienda,imagen:p.imagen,qty:1});
-  setCarrito(c);actualizarBadges();renderCarrito();mostrarToast('Producto agregado al carrito');
-}
-function qtyCarrito(id,d){const c=getCarrito();const i=c.find(x=>x.id===id);if(!i)return;i.qty=Math.max(1,i.qty+d);setCarrito(c);actualizarBadges();renderCarrito();}
-function quitarCarrito(id){setCarrito(getCarrito().filter(i=>i.id!==id));actualizarBadges();renderCarrito();}
-function vaciarCarrito(){if(!confirm('¿Vaciar carrito?'))return;setCarrito([]);actualizarBadges();renderCarrito();}
-function abrirCarrito(){document.getElementById('cartPanel').classList.add('open');document.getElementById('cartOverlay').classList.add('open');document.body.style.overflow='hidden';renderCarrito();}
-function cerrarCarrito(){document.getElementById('cartPanel').classList.remove('open');document.getElementById('cartOverlay').classList.remove('open');document.body.style.overflow='';}
 
 /* ══ Favoritos ══ */
 function getFavs(){return JSON.parse(localStorage.getItem('pn_favoritos')||'[]');}
@@ -890,12 +810,11 @@ function observarFadeUp(){
 function toggleSearchMobile(){document.getElementById('pnSearch').classList.toggle('mobile-open');}
 function toggleMobileMenu(){document.getElementById('mobileMenu').classList.toggle('open');document.body.style.overflow=document.getElementById('mobileMenu').classList.contains('open')?'hidden':'';}
 
-/* Leer parámetros URL */
+/* Leer parámetros URL (?cat=, ?q=, ?oferta=1, ?nuevo=1) */
 function leerParams(){
   const p=new URLSearchParams(window.location.search);
-  const cat=p.get('cat')||''; const q=p.get('q')||'';
-  if(cat){catActual=cat;const link=document.querySelector(`.pn-cat-panel-link[data-cat="${cat}"]`);if(link){document.querySelectorAll('.pn-cat-panel-link').forEach(a=>a.classList.remove('active'));link.classList.add('active');}}
-  if(q){const sb=document.getElementById('storeBuscador');if(sb)sb.value=q;}
+  const c=p.get('cat')||(p.get('oferta')?'oferta':p.get('nuevo')?'nuevo':''); if(c) cat=c;
+  const q=p.get('q'); if(q) document.getElementById('storeBuscador').value=q;
 }
 
 /* Navbar scroll */
@@ -915,12 +834,12 @@ window.setPnUser = (user) => { usuarioSesion = user; };
 
 /* ══ Init ══ */
 document.addEventListener('DOMContentLoaded', () => {
-  leerParams();
-  setTimeout(() => { filtrarProductos(); observarFadeUp(); }, 600);
+  leerParams(); construirFiltros(); filtrarProductos();
   actualizarBadges();
   setupMobileNav();
 });
 </script>
 
+<script src="carrito.js" defer></script>
 </body>
 </html>
