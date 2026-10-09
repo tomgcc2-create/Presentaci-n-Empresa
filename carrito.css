@@ -1,0 +1,207 @@
+/* ═══════════════════════════════════════════════════════════════
+   PriceNice — carrito.css
+   Estilos del mini-carrito (ventanita) y de la página carrito.html.
+   Es independiente: trae sus propios colores (marino + crema + dorado),
+   así se ve igual en cualquier página, tenga o no la clase "pn-tema".
+   Todas las clases empiezan por "pc-" para no chocar con style.css.
+═══════════════════════════════════════════════════════════════ */
+
+.pc-mini, .pc-mini-bg, .pc-page, .pc-toast {
+  --pc-navy:   #13224F;
+  --pc-blue:   #2F4CB3;
+  --pc-text-2: #4D597B;
+  --pc-text-3: #8A92AB;
+  --pc-cream:  #FBF7EC;
+  --pc-white:  #FFFDF8;
+  --pc-soft:   #F3ECDA;
+  --pc-line:   #E9DFC8;
+  --pc-celeste:#E3EBF8;
+  --pc-gold:   #E4AE45;
+  --pc-gold-h: #EDBD5E;
+  --pc-green:  #1C7C5A;
+  --pc-green-bg:#DDF2E8;
+  --pc-red:    #C0392B;
+  --pc-font:   'DM Sans','Inter',system-ui,sans-serif;
+  --pc-title:  'Bricolage Grotesque','Inter',system-ui,sans-serif;
+  font-family: var(--pc-font);
+  color: var(--pc-navy);
+}
+
+/* ───────────── Botones base ───────────── */
+.pc-btn {
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  font: 700 14px/1 var(--pc-font); padding: 14px 20px; border-radius: 999px;
+  border: 1.5px solid transparent; cursor:pointer; text-decoration:none;
+  transition: transform .15s, background .15s, box-shadow .15s;
+}
+.pc-btn:active { transform: scale(.97); }
+.pc-btn-gold   { background: var(--pc-gold); color: var(--pc-navy); }
+.pc-btn-gold:hover { background: var(--pc-gold-h); box-shadow: 0 6px 18px rgba(228,174,69,.4); }
+.pc-btn-line   { background: transparent; color: var(--pc-navy); border-color: var(--pc-navy); }
+.pc-btn-line:hover { background: var(--pc-navy); color:#fff; }
+.pc-btn-block  { width:100%; }
+
+/* ───────────── Controles de cantidad / iconos ───────────── */
+.pc-icon-btn {
+  width:36px; height:36px; border-radius:11px; border:1px solid var(--pc-line);
+  background: var(--pc-white); color: var(--pc-navy); cursor:pointer;
+  display:inline-flex; align-items:center; justify-content:center; font-size:15px;
+  transition: background .15s, border-color .15s, color .15s;
+}
+.pc-icon-btn:hover { background: var(--pc-celeste); border-color: #cfdcf4; }
+.pc-icon-btn.is-fav { color:#d6336c; }
+.pc-icon-btn:disabled { opacity:.4; cursor:not-allowed; }
+.pc-qty { display:inline-flex; align-items:center; gap:6px; }
+.pc-qty-num { min-width:26px; text-align:center; font-weight:700; font-size:14px; }
+
+/* ───────────── Barra de envío gratis ───────────── */
+.pc-ship { background: var(--pc-celeste); border-radius: 14px; padding: 12px 14px; font-size:13px; color: var(--pc-text-2); }
+.pc-ship strong { color: var(--pc-navy); }
+.pc-ship.is-free { background: var(--pc-green-bg); color: var(--pc-green); }
+.pc-ship-bar { height:6px; background: rgba(19,34,79,.12); border-radius:99px; margin-top:8px; overflow:hidden; }
+.pc-ship-bar i { display:block; height:100%; background: var(--pc-gold); border-radius:99px; transition: width .4s ease; }
+.pc-ship.is-free .pc-ship-bar i { background: var(--pc-green); }
+
+/* ───────────── Totales ───────────── */
+.pc-totals { display:flex; flex-direction:column; gap:10px; }
+.pc-row { display:flex; justify-content:space-between; font-size:15px; color: var(--pc-text-2); }
+.pc-row.is-total { color: var(--pc-navy); font-weight:800; font-size:20px; font-family: var(--pc-title);
+  border-top:1px solid var(--pc-line); padding-top:14px; margin-top:4px; }
+.pc-row .is-free { color: var(--pc-green); font-weight:700; }
+
+/* ═════════════ MINI-CARRITO (ventanita al pasar el mouse) ═════════════ */
+.pc-mini {
+  position:fixed; z-index:1910; top:78px; right:16px;
+  width: 440px; max-width: calc(100vw - 24px);
+  display:flex; flex-direction:column;
+  background: var(--pc-white); border-radius: 24px; border:1px solid var(--pc-line);
+  box-shadow: 0 24px 64px rgba(19,34,79,.28);
+  opacity:0; transform: translateY(-8px) scale(.98); transform-origin: top right;
+  visibility:hidden; pointer-events:none; transition: opacity .2s, transform .2s, visibility 0s .2s;
+}
+.pc-mini.open { opacity:1; transform:none; visibility:visible; pointer-events:auto; transition: opacity .2s, transform .2s; }
+
+.pc-mini-head { display:flex; align-items:center; gap:10px; padding: 20px 24px 14px; border-bottom:1px solid var(--pc-line); }
+.pc-mini-head h2 { margin:0; font: 800 22px var(--pc-title); letter-spacing:-.01em; }
+.pc-count { background: var(--pc-celeste); color: var(--pc-blue); font-size:12px; font-weight:800; padding:3px 9px; border-radius:99px; }
+
+.pc-mini-body { overflow-y:auto; padding: 4px 24px; flex:1; min-height:0; }
+.pc-mini-item { display:grid; grid-template-columns: 92px 1fr; gap:14px; padding:16px 0; border-bottom:1px solid var(--pc-line); }
+.pc-mini-item:last-child { border-bottom:0; }
+.pc-thumb { width:92px; height:78px; border-radius:14px; overflow:hidden; background: var(--pc-soft); }
+.pc-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+.pc-item-top { display:flex; justify-content:space-between; gap:10px; }
+.pc-item-name { font-weight:700; font-size:15px; line-height:1.25; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.pc-item-store { font-size:13px; color: var(--pc-text-3); margin-top:3px; }
+.pc-item-price { font-weight:800; font-size:16px; white-space:nowrap; font-family: var(--pc-title); }
+.pc-item-unit  { font-size:12px; color: var(--pc-text-3); text-align:right; }
+.pc-item-actions { display:flex; align-items:center; justify-content:space-between; margin-top:10px; }
+.pc-item-actions .pc-left { display:flex; gap:8px; }
+
+.pc-mini-foot { padding: 16px 24px 20px; border-top:1px solid var(--pc-line); display:flex; flex-direction:column; gap:14px; }
+.pc-mini-btns { display:grid; grid-template-columns: 1fr 1.25fr; gap:10px; }
+
+.pc-paywith { display:flex; align-items:center; gap:6px; flex-wrap:wrap; justify-content:center; font-size:12px; color: var(--pc-text-3); }
+.pc-chip { font-size:11.5px; font-weight:700; padding:5px 9px; border-radius:8px; background:#fff; border:1px solid var(--pc-line); color: var(--pc-navy); white-space:nowrap; }
+
+/* Vacío */
+.pc-empty { text-align:center; padding: 44px 20px; color: var(--pc-text-2); }
+.pc-empty .pc-empty-ico { width:76px; height:76px; margin:0 auto 16px; border-radius:50%; background: var(--pc-celeste);
+  display:flex; align-items:center; justify-content:center; font-size:32px; color: var(--pc-blue); }
+.pc-empty h3 { margin:0 0 6px; font: 800 20px var(--pc-title); color: var(--pc-navy); }
+.pc-empty p { margin:0 0 20px; font-size:14px; }
+
+/* ═════════════ PÁGINA carrito.html ═════════════ */
+.pc-page { background: var(--pc-cream); min-height: 70vh; padding: 36px 0 80px; }
+.pc-wrap { width: min(calc(100% - 40px), 1180px); margin: 0 auto; }
+.pc-crumbs { font-size:13px; color: var(--pc-text-3); margin-bottom:10px; }
+.pc-crumbs a { color: var(--pc-text-2); text-decoration:none; }
+.pc-crumbs a:hover { color: var(--pc-blue); }
+.pc-title { font: 800 clamp(40px, 6vw, 68px)/1 var(--pc-title); letter-spacing:-.03em; margin: 0 0 6px; }
+.pc-sub { color: var(--pc-text-2); margin: 0 0 30px; font-size:16px; }
+
+.pc-grid { display:grid; grid-template-columns: minmax(0,1fr) 400px; gap: 28px; align-items:start; }
+
+/* Grupo por tienda */
+.pc-group { background: var(--pc-white); border:1px solid var(--pc-line); border-radius: 26px; padding: 8px 24px 6px; margin-bottom:18px; }
+.pc-group-head { display:flex; align-items:center; gap:10px; padding: 16px 0 12px; border-bottom:1px solid var(--pc-line); font-weight:800; font-family: var(--pc-title); font-size:17px; }
+.pc-group-head i { color: var(--pc-blue); }
+.pc-group-head small { margin-left:auto; font: 500 13px var(--pc-font); color: var(--pc-text-3); }
+
+.pc-line { display:grid; grid-template-columns: 150px 1fr auto; gap:20px; padding:20px 0; border-bottom:1px solid var(--pc-line); align-items:center; }
+.pc-line:last-child { border-bottom:0; }
+.pc-line .pc-thumb { width:150px; height:116px; border-radius:18px; }
+.pc-line .pc-item-name { font-size:17px; }
+.pc-line .pc-item-actions { justify-content:flex-start; gap:14px; margin-top:14px; }
+.pc-line-price { text-align:right; }
+.pc-line-price .pc-item-price { font-size:20px; }
+.pc-tag-best { display:inline-block; margin-top:8px; font-size:11.5px; font-weight:700; padding:4px 9px; border-radius:99px; background: var(--pc-green-bg); color: var(--pc-green); }
+
+.pc-cart-tools { display:flex; justify-content:space-between; align-items:center; margin-top:4px; }
+.pc-link { background:none; border:0; cursor:pointer; font: 600 14px var(--pc-font); color: var(--pc-text-2); text-decoration:underline; padding:6px 0; }
+.pc-link:hover { color: var(--pc-red); }
+.pc-link.is-back { text-decoration:none; color: var(--pc-blue); }
+
+/* Resumen lateral */
+.pc-summary { position:sticky; top:96px; background: var(--pc-white); border:1px solid var(--pc-line); border-radius: 26px; padding: 26px; display:flex; flex-direction:column; gap:18px; box-shadow: 0 10px 30px rgba(19,34,79,.07); }
+.pc-summary h2 { margin:0; font: 800 24px var(--pc-title); }
+.pc-summary h3 { margin:0 0 10px; font: 700 14px var(--pc-font); color: var(--pc-text-2); text-transform:uppercase; letter-spacing:.06em; }
+
+/* Métodos de pago */
+.pc-pay-list { display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+.pc-pay { position:relative; cursor:pointer; }
+.pc-pay input { position:absolute; opacity:0; inset:0; cursor:pointer; }
+.pc-pay-card { display:flex; align-items:center; gap:10px; padding: 12px; border-radius:14px; border:1.5px solid var(--pc-line); background:#fff; transition: border-color .15s, background .15s, box-shadow .15s; min-height:58px; }
+.pc-pay:hover .pc-pay-card { border-color: #cfdcf4; }
+.pc-pay input:checked + .pc-pay-card { border-color: var(--pc-navy); background: var(--pc-celeste); box-shadow: 0 0 0 3px rgba(19,34,79,.08); }
+.pc-pay input:focus-visible + .pc-pay-card { outline:2px solid var(--pc-blue); outline-offset:2px; }
+.pc-pay-ico { width:34px; height:34px; border-radius:10px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:16px; flex:none; }
+.pc-pay-name { font-weight:700; font-size:13.5px; line-height:1.15; }
+.pc-pay-name small { display:block; font-weight:500; font-size:11px; color: var(--pc-text-3); margin-top:2px; }
+.pc-pay-error .pc-pay-card { border-color: var(--pc-red); animation: pcShake .35s; }
+@keyframes pcShake { 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+
+.pc-secure { display:flex; gap:8px; align-items:center; justify-content:center; font-size:12.5px; color: var(--pc-text-3); }
+.pc-secure i { color: var(--pc-green); }
+
+/* Toast */
+.pc-toast { position:fixed; left:50%; bottom:28px; z-index:2100; transform: translate(-50%, 30px); opacity:0;
+  background: var(--pc-navy); color:#fff; padding: 13px 20px; border-radius:99px; font-size:14px; font-weight:600;
+  box-shadow: 0 12px 30px rgba(19,34,79,.3); transition: .3s; pointer-events:none; max-width: calc(100vw - 32px); text-align:center; }
+.pc-toast.show { opacity:1; transform: translate(-50%, 0); }
+
+/* ───────────── Responsive ───────────── */
+@media (max-width: 960px) {
+  .pc-grid { grid-template-columns: 1fr; }
+  .pc-summary { position:static; }
+}
+@media (max-width: 640px) {
+  .pc-page { padding-top: 24px; }
+  .pc-group { padding: 4px 16px; border-radius:20px; }
+  .pc-line { grid-template-columns: 96px 1fr; gap:14px; }
+  .pc-line .pc-thumb { width:96px; height:84px; border-radius:14px; }
+  .pc-line-price { grid-column: 1 / -1; display:flex; justify-content:space-between; align-items:center; text-align:left; }
+  .pc-summary { padding:20px; border-radius:22px; }
+  .pc-pay-list { grid-template-columns: 1fr; }
+
+  .pc-mini-item { grid-template-columns: 78px 1fr; }
+  .pc-thumb { width:78px; height:68px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pc-mini, .pc-mini-bg, .pc-toast, .pc-ship-bar i { transition:none; }
+  .pc-pay-error .pc-pay-card { animation:none; }
+}
+
+/* ───────── Descuentos y sugerencias ───────── */
+.pc-price-col { text-align:right; }
+.pc-item-unit s { color: var(--pc-text-3); }
+.pc-sale { display:inline-block; background:#FDECC8; color:#8A5A00; font-weight:800; font-size:11px; padding:2px 7px; border-radius:99px; }
+.pc-tip { display:flex; align-items:center; gap:9px; margin-top:10px; padding:9px 11px; border-radius:12px;
+  background:#FFF4D9; border:1px solid #F3DDA0; font-size:12.5px; line-height:1.35; color: var(--pc-navy); }
+.pc-tip > i { color: var(--pc-gold); font-size:15px; flex:none; }
+.pc-tip > span { flex:1; }
+.pc-tip button { flex:none; background: var(--pc-navy); color:#fff; border:0; border-radius:99px; padding:6px 12px; font: 700 12px var(--pc-font); cursor:pointer; }
+.pc-tip button:hover { background: var(--pc-blue); }
+.pc-mini .pc-tag-best, .pc-line .pc-tag-best { display:inline-flex; align-items:center; gap:5px; margin-top:10px; }
+.pc-save { display:flex; align-items:center; gap:9px; padding:11px 14px; border-radius:14px; background:#FFF4D9; border:1px solid #F3DDA0; font-size:13px; color: var(--pc-navy); }
+.pc-save i { color: var(--pc-gold); font-size:18px; }

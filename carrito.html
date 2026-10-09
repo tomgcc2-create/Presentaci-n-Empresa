@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi carrito | PriceNice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=DM+Sans:opsz,wght@9..40,400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="tema-crema-azul.css">
+  <link rel="stylesheet" href="carrito.css">
+</head>
+<!-- data-pc-no-mini: en esta página no se abre la ventanita, el carrito ya está a la vista -->
+<body class="has-navbar pn-tema" data-pc-no-mini>
+
+<!-- ═════════ NAVBAR (igual que el resto del sitio) ═════════ -->
+<header class="pn-navbar" id="pnNavbar">
+  <div class="pn-navbar-main">
+    <a href="Index.html" class="pn-logo" aria-label="PriceNice — inicio">
+      <div class="pn-logo-circle"><img src="img/logo-dark.png" alt="PriceNice" loading="eager"></div>
+      <div class="pn-logo-info">
+        <span class="pn-logo-name"><span class="w">Price</span><span class="b">Nice</span></span>
+        <span class="pn-logo-sub">Tu brújula de los buenos precios</span>
+      </div>
+    </a>
+
+    <nav class="pn-navbar-menu" aria-label="Menú principal">
+      <a href="Index.html"            class="pn-menu-link">Inicio</a>
+      <a href="tienda.html"           class="pn-menu-link">Tienda</a>
+      <a href="tienda.html?oferta=1"  class="pn-menu-link">Ofertas</a>
+      <a href="tienda.html?nuevo=1"   class="pn-menu-link">Novedades</a>
+      <a href="precios.html"          class="pn-menu-link">Comparar</a>
+      <a href="tiendas-cercanas.html" class="pn-menu-link">Cercanas</a>
+      <a href="vendedor.html"         class="pn-menu-link">Vendedores</a>
+    </nav>
+
+    <div class="pn-search" id="pnSearch" role="search">
+      <input type="search" id="pnSearchInput" placeholder="Buscar productos, marcas y tiendas..." aria-label="Buscar" autocomplete="off"
+        onkeydown="if(event.key==='Enter')ejecutarBusqueda()">
+      <button class="pn-search-btn" onclick="ejecutarBusqueda()" aria-label="Buscar"><i class="bi bi-search"></i></button>
+    </div>
+
+    <div class="pn-actions">
+      <button class="pn-action-btn" aria-label="Favoritos" onclick="window.location.href='favoritos.html'">
+        <i class="bi bi-heart"></i>
+      </button>
+      <button class="pn-action-btn" aria-label="Carrito">
+        <i class="bi bi-bag"></i>
+        <span class="pn-badge" id="badgeCarritoNav" style="display:none">0</span>
+      </button>
+      <div id="pnSesionArea">
+        <a href="login.html" class="pn-btn-sesion"><i class="bi bi-person"></i><span>Iniciar sesión</span></a>
+      </div>
+      <button class="pn-hamburger" onclick="toggleMobileMenu()" aria-label="Menú"><i class="bi bi-list"></i></button>
+    </div>
+  </div>
+</header>
+
+<!-- Menú mobile -->
+<div class="pn-mobile-menu" id="mobileMenu">
+  <div class="pn-mobile-menu-overlay" onclick="toggleMobileMenu()"></div>
+  <div class="pn-mobile-menu-panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+      <span class="pn-logo-name" style="font-size:22px"><span class="w">Price</span><span class="b">Nice</span></span>
+      <button onclick="toggleMobileMenu()" style="background:none;border:none;font-size:22px;color:var(--text-2)" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <nav style="display:flex;flex-direction:column;gap:4px">
+      <a href="Index.html"            class="pn-cat-panel-link">🏠 Inicio</a>
+      <a href="tienda.html"           class="pn-cat-panel-link">🛒 Tienda</a>
+      <a href="tienda.html?oferta=1"  class="pn-cat-panel-link">🏷️ Ofertas</a>
+      <a href="precios.html"          class="pn-cat-panel-link">📊 Comparar precios</a>
+      <a href="tiendas-cercanas.html" class="pn-cat-panel-link">📍 Tiendas cercanas</a>
+      <a href="vendedor.html"         class="pn-cat-panel-link">🏪 Vendedores</a>
+    </nav>
+  </div>
+</div>
+
+<!-- ═════════ CONTENIDO DEL CARRITO ═════════ -->
+<main class="pc-page" aria-labelledby="pcTitulo">
+  <div class="pc-wrap">
+    <div class="pc-crumbs"><a href="Index.html">Inicio</a> / <a href="tienda.html">Tienda</a> / Carrito</div>
+    <h1 class="pc-title" id="pcTitulo">Mi carrito</h1>
+    <p class="pc-sub" id="pcSub">Cargando…</p>
+
+    <!-- carrito.js dibuja aquí los productos, el resumen y los métodos de pago -->
+    <div id="pcContenido" aria-live="polite"></div>
+  </div>
+</main>
+
+<!-- ═════════ FOOTER ═════════ -->
+<footer class="pn-footer" aria-label="Pie de página">
+  <div class="pn-container">
+    <div class="pn-footer-bottom">
+      <span>© 2026 PriceNice. Todos los derechos reservados.</span>
+      <span>Hecho con ❤️ en Colombia</span>
+    </div>
+  </div>
+</footer>
+
+<script src="carrito-precios.js" defer></script>
+<script src="carrito.js" defer></script>
+</body>
+</html>
