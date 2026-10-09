@@ -20,14 +20,14 @@
     .st-hero h1{position:absolute;left:0;right:0;bottom:-.21em;text-align:center;font-family:var(--font-title);font-weight:800;font-size:clamp(110px,25vw,340px);line-height:1;letter-spacing:-.05em;color:var(--bg);text-shadow:0 8px 40px rgba(0,0,0,.25);pointer-events:none}
     .st-logo{position:absolute;z-index:1;right:9%;top:10%;width:clamp(120px,15vw,215px);aspect-ratio:1;border-radius:50%;background:var(--brand);border:4px solid var(--oro);box-shadow:0 0 0 10px rgba(228,174,69,.2),0 18px 40px rgba(0,0,0,.3);display:grid;place-items:center;animation:stBob 5s ease-in-out infinite}
     .st-logo img{width:92%;height:92%;object-fit:contain}
-    .st-fl{position:absolute;z-index:1;font-weight:800;font-size:13px;padding:8px 15px;border-radius:999px;box-shadow:0 8px 22px rgba(0,0,0,.25);animation:stBob 6s ease-in-out infinite;white-space:nowrap}
-    .st-fl.a{left:8%;top:14%;background:var(--oro);color:var(--brand)}
-    .st-fl.b{left:22%;top:34%;background:var(--bg);color:var(--brand);animation-delay:-2s}
-    .st-fl.c{right:30%;top:12%;background:var(--green-bg);color:var(--green);animation-delay:-3.5s}
+    .st-ch{position:absolute;z-index:1;font-weight:800;font-size:13px;padding:8px 15px;border-radius:999px;box-shadow:0 8px 22px rgba(0,0,0,.25);animation:stBob 6s ease-in-out infinite;white-space:nowrap}
+    .st-ch.a{left:8%;top:14%;background:var(--oro);color:var(--brand)}
+    .st-ch.b{left:22%;top:34%;background:var(--bg);color:var(--brand);animation-delay:-2s}
+    .st-ch.c{right:30%;top:12%;background:var(--green-bg);color:var(--green);animation-delay:-3.5s}
     .st-coin{position:absolute;z-index:1;width:46px;height:46px;border-radius:50%;background:var(--oro);color:var(--brand);border:3px solid rgba(255,255,255,.55);display:grid;place-items:center;font-weight:800;font-size:20px;box-shadow:0 8px 18px rgba(0,0,0,.25);animation:stBob 7s ease-in-out infinite}
     .st-coin.a{right:3.5%;top:56%;animation-delay:-1s}.st-coin.b{left:4%;top:50%;width:34px;height:34px;font-size:15px;animation-delay:-4s}
     @keyframes stBob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-12px) rotate(2deg)}}
-    @media(prefers-reduced-motion:reduce){.st-logo,.st-fl,.st-coin{animation:none}}
+    @media(prefers-reduced-motion:reduce){.st-logo,.st-ch,.st-coin{animation:none}}
     .st-search{position:relative;z-index:2;width:var(--cont-w);max-width:1180px;margin:-44px auto 0;background:var(--bg-white);border-radius:26px;box-shadow:var(--shadow-md);padding:18px 26px;display:flex;align-items:center;gap:16px 24px;flex-wrap:wrap;justify-content:space-between}
     .st-search h2{font-family:var(--font-title);font-weight:800;font-size:26px;letter-spacing:-.03em;color:var(--brand)}
     .st-sbox{flex:1 1 300px;max-width:520px;display:flex;align-items:center;gap:8px;border:1.5px solid var(--border);border-radius:999px;padding:5px 5px 5px 16px;background:var(--bg-white)}
@@ -112,7 +112,7 @@
     .st-sim b{display:block;color:var(--brand);font-size:13px}
     .pn-empty-state{text-align:center;padding:64px 20px;color:var(--text-2)}.pn-empty-state .icon{font-size:3rem;display:block;margin-bottom:14px}
     @media(max-width:900px){.st-main{grid-template-columns:1fr}.st-side{position:fixed;z-index:1600;top:0;left:0;bottom:0;width:300px;max-width:86vw;background:var(--bg-white);padding:22px;overflow-y:auto;transform:translateX(-105%);transition:transform .28s;box-shadow:var(--shadow-lg)}.st-side.open{transform:none}.st-fbtn{display:flex}.st-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.st-cta{padding:32px 26px}}
-    @media(max-width:560px){.st-grid{grid-template-columns:1fr}.st-hero{border-radius:30px;height:330px}.st-search{margin-top:-26px}.st-hero h1{font-size:clamp(80px,24vw,150px)}.st-fl.b,.st-fl.c,.st-coin{display:none}.st-fl.a{left:6%;top:12%}.st-logo{right:6%;top:9%}.st-offer{grid-template-columns:1fr auto}.st-offer .st-btn{grid-column:1/-1}.st-sim{grid-template-columns:1fr 1fr}}
+    @media(max-width:560px){.st-grid{grid-template-columns:1fr}.st-hero{border-radius:30px;height:330px}.st-search{margin-top:-26px}.st-hero h1{font-size:clamp(80px,24vw,150px)}.st-ch.b,.st-ch.c,.st-coin{display:none}.st-ch.a{left:6%;top:12%}.st-logo{right:6%;top:9%}.st-offer{grid-template-columns:1fr auto}.st-offer .st-btn{grid-column:1/-1}.st-sim{grid-template-columns:1fr 1fr}}
 
     /* ── MODAL PRODUCTO ── */
     .pn-modal-overlay {
@@ -273,7 +273,7 @@
 
 <!-- ════════ HERO + BUSCADOR ════════ -->
 <section class="st-hero" aria-label="Tienda virtual">
-  <span class="st-fl a">💲 Mejor precio</span><span class="st-fl b">-19% hoy</span><span class="st-fl c">$0 sobreprecios</span>
+  <span class="st-ch a">💲 Mejor precio</span><span class="st-ch b">-19% hoy</span><span class="st-ch c">$0 sobreprecios</span>
   <span class="st-coin a">$</span><span class="st-coin b">$</span>
   <div class="st-logo"><img src="img/logo-dark.png" alt="PriceNice"></div>
   <h1>Tienda</h1>
@@ -408,6 +408,69 @@
 <script type="module" src="script.js"></script>
 
 <script src="carrito-precios.js"></script>
+<script>/* Respaldo: si carrito-precios.js no se actualizó, la tienda usa estos mismos datos */
+if(!window.PN_PRODUCTOS){
+/* ═══════════════════════════════════════════════════════════════
+   PriceNice — carrito-precios.js
+   Catálogo + precios del MISMO producto en varias tiendas de Bogotá.
+   Lo usan la tienda (tienda.html) y el carrito para sugerir
+   "en tal tienda está más barato" y calcular cuánto ahorras.
+
+   Cada oferta:  t = tienda · p = precio · b = barrio ("Online" si es virtual)
+                 a = precio anterior (opcional, para mostrar el descuento)
+   ⚠ Los precios de las otras tiendas son de ejemplo: cámbialos por los reales.
+═══════════════════════════════════════════════════════════════ */
+(function () {
+  const U = id => `https://images.unsplash.com/${id}?w=600&q=80`;
+  const o = (t, p, b, a) => ({ t, p, b, a });
+
+  /* Barrios / zonas de Bogotá con su punto central (para "tiendas cerca de mí") */
+  window.PN_BARRIOS = {
+    'Chapinero': [4.6486, -74.0628], 'Usaquén': [4.7110, -74.0300], 'Suba': [4.7410, -74.0830],
+    'Kennedy': [4.6280, -74.1500], 'Fontibón': [4.6720, -74.1430], 'Teusaquillo': [4.6350, -74.0900],
+    'Engativá': [4.7000, -74.1100], 'La Candelaria': [4.5980, -74.0760], 'Bosa': [4.6170, -74.1850],
+    'Puente Aranda': [4.6200, -74.1100]
+  };
+
+  window.PN_PRODUCTOS = [
+    {id:1,  nombre:"Crema Hidratante Facial",     cat:"belleza",    estrellas:4.5, resenas:128, imagen:U('photo-1556228841-a3c527ebefe5'), descripcion:"Crema hidratante con ácido hialurónico para todo tipo de piel.", rv:["Valentina R.","Me dejó la piel suave desde la primera semana."],
+      o:[o("Cruz Verde",38900,"Chapinero",44900), o("Carulla",41500,"Usaquén"), o("Falabella",45900,"Online")]},
+    {id:2,  nombre:"Sérum Vitamina C 30ml",       cat:"belleza",    estrellas:4.9, resenas:576, imagen:U('photo-1608248597279-f99d160bfcbc'), descripcion:"Sérum antioxidante con vitamina C al 15% para luminosidad.", rv:["Ana P.","Notables resultados desde la primera semana de uso."],
+      o:[o("Linio",89900,"Online",99900), o("Éxito",94900,"Suba"), o("Falabella",99900,"Chapinero")]},
+    {id:3,  nombre:"Base de Maquillaje Mate",     cat:"belleza",    estrellas:4.3, resenas:89,  imagen:U('photo-1522335789203-aabd1fc54bc9'), descripcion:"Base líquida de cobertura media con acabado mate, larga duración.", rv:["Camila G.","Cubre bien y dura todo el día, el tono es fiel."],
+      o:[o("Falabella",65900,"Chapinero",72900), o("Éxito",69900,"Kennedy"), o("Linio",71900,"Online")]},
+    {id:4,  nombre:"Detergente Líquido 3L",       cat:"higiene",    estrellas:4.2, resenas:67,  imagen:U('photo-1585421514284-efb74c2b69ba'), descripcion:"Detergente concentrado para ropa, aroma lavanda.", rv:["Marta L.","Rinde mucho y huele rico. En D1 es el más barato."],
+      o:[o("D1",24900,"Kennedy"), o("Ara",25400,"Bosa"), o("Éxito",26500,"Suba"), o("Jumbo",27900,"Usaquén",31000)]},
+    {id:5,  nombre:"Aceite de Oliva Extra Virgen",cat:"mercado",    estrellas:4.8, resenas:412, imagen:U('photo-1474979266404-7eaacbcd87c5'), descripcion:"Aceite de oliva extra virgen, prensado en frío, D.O.P. España.", rv:["Jorge T.","Sabor suave, muy buena relación calidad-precio."],
+      o:[o("PriceSmart",28900,"Suba",33000), o("Jumbo",31900,"Usaquén"), o("Carulla",33500,"Chapinero")]},
+    {id:6,  nombre:"Café Molido Premium 500g",    cat:"mercado",    estrellas:4.7, resenas:234, imagen:U('photo-1447933601403-0c6688de566e'), descripcion:"Café 100% arábica tostado y molido, intensidad media, Colombia.", rv:["Daniel M.","Aroma increíble, el mejor café que he comprado en súper."],
+      o:[o("Jumbo",18900,"Usaquén"), o("D1",19500,"Engativá"), o("Éxito",20900,"Fontibón")]},
+    {id:7,  nombre:"Audífonos Bluetooth Pro",     cat:"tecnologia", estrellas:4.7, resenas:342, imagen:U('photo-1505740420928-5e560c06d30e'), descripcion:"Audífonos inalámbricos con ANC activa y 30h de batería.", rv:["Sebastián C.","La cancelación de ruido es muy buena y la batería dura."],
+      o:[o("Alkosto",129900,"Fontibón",159900), o("Linio",134900,"Online"), o("Falabella",149900,"Teusaquillo")]},
+    {id:8,  nombre:"Smartwatch Fitness Pro",      cat:"tecnologia", estrellas:4.4, resenas:156, imagen:U('photo-1523275335684-37898b6baf30'), descripcion:"Reloj inteligente con GPS, monitor cardíaco y pantalla AMOLED.", rv:["Laura V.","El GPS es preciso y la pantalla se ve genial."],
+      o:[o("Falabella",249900,"Chapinero"), o("Linio",255900,"Online"), o("Alkosto",259900,"Fontibón")]},
+    {id:9,  nombre:"Zapatillas Running CloudX",   cat:"moda",       estrellas:4.3, resenas:89,  imagen:U('photo-1542291026-7eec264c27ff'), descripcion:"Zapatillas de running con amortiguación CloudX y suela tracción.", esRopa:true, colores:["#FFFFFF","#1E2A80","#EF4444"], tallas:["38","39","40","41","42","43"], rv:["Carlos R.","Muy buenas, talla fiel. El precio en Éxito es el más bajo."],
+      o:[o("Éxito",189900,"Suba",229900), o("Alkosto",195000,"Fontibón"), o("Falabella",209900,"Chapinero")]},
+    {id:10, nombre:"Sudadera Oversize Fleece",    cat:"moda",       estrellas:4.1, resenas:63,  imagen:U('photo-1556821840-3a63f15732ce'), descripcion:"Sudadera oversize de polar suave, tela 280g.", esRopa:true, colores:["#1A1D2E","#4A90E2","#22C55E"], tallas:["XS","S","M","L","XL","XXL"], rv:["Paula S.","Súper abrigada y cómoda, queda holgada como se ve."],
+      o:[o("Linio",79900,"Online"), o("Éxito",84900,"Kennedy"), o("Falabella",89900,"Teusaquillo")]},
+    {id:11, nombre:"Sábanas Microfibra Queen",    cat:"hogar",      estrellas:4.6, resenas:201, imagen:U('photo-1631049307264-da0ec9d70304'), descripcion:"Juego de sábanas de microfibra suave 4 piezas, 200 hilos.", rv:["Andrea F.","Suaves y no se arrugan. Después de lavarlas siguen igual."],
+      o:[o("Alkosto",119900,"Fontibón"), o("Homecenter",124900,"Puente Aranda"), o("Falabella",132900,"Chapinero")]},
+    {id:12, nombre:"Foco LED 10W Pack x4",        cat:"hogar",      estrellas:4.5, resenas:88,  imagen:U('photo-1565814329452-e1efa11c5b89'), descripcion:"Pack de 4 focos LED ahorradores, luz cálida 3000K, 1000 lúmenes.", rv:["Hernán B.","Buena luz cálida y la factura bajó."],
+      o:[o("Homecenter",22900,"Puente Aranda"), o("Alkosto",24500,"Fontibón"), o("Éxito",25900,"Engativá")]},
+    {id:13, nombre:"Shampoo Anticaspa 750ml",     cat:"higiene",    estrellas:4.0, resenas:41,  imagen:U('photo-1556228578-8c89e6adf883'), descripcion:"Shampoo con zinc y ketoconazol para control eficaz de caspa.", rv:["Felipe A.","Controla la caspa, aunque el olor es fuerte."],
+      o:[o("Carulla",21900,"Chapinero"), o("Éxito",22900,"Suba"), o("D1",23500,"Kennedy")]},
+    {id:14, nombre:"Alimento Premium Perro 15kg", cat:"mascotas",   estrellas:4.8, resenas:319, imagen:U('photo-1589924691995-400dc9ecc119'), descripcion:"Alimento premium para perros adultos, libre de cereales.", rv:["Natalia O.","Mi perro lo come feliz y tiene el pelo brillante."],
+      o:[o("Éxito",89900,"Usaquén"), o("PriceSmart",92500,"Suba"), o("Jumbo",95900,"Engativá")]}
+  ];
+
+  /* Formato que lee el carrito: { id: [ {tienda, precio, ciudad} ] } */
+  window.PN_COMPARACIONES = {};
+  window.PN_PRODUCTOS.forEach(p => {
+    window.PN_COMPARACIONES[p.id] = p.o.map(x => ({ tienda: x.t, precio: x.p, ciudad: x.b === 'Online' ? 'Online (Bogotá)' : x.b }));
+  });
+})();
+
+}</script>
 <script>
 /* ══════════════ DATOS (vienen de carrito-precios.js) ══════════════ */
 const PRODUCTOS = window.PN_PRODUCTOS;
