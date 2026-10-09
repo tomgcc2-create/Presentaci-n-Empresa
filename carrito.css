@@ -128,7 +128,7 @@
 .pc-group-head i { color: var(--pc-blue); }
 .pc-group-head small { margin-left:auto; font: 500 13px var(--pc-font); color: var(--pc-text-3); }
 
-.pc-line { display:grid; grid-template-columns: 150px 1fr auto; gap:20px; padding:20px 0; border-bottom:1px solid var(--pc-line); align-items:center; }
+.pc-line { display:grid; grid-template-columns: auto 150px 1fr auto; gap:20px; padding:20px 0; border-bottom:1px solid var(--pc-line); align-items:center; }
 .pc-line:last-child { border-bottom:0; }
 .pc-line .pc-thumb { width:150px; height:116px; border-radius:18px; }
 .pc-line .pc-item-name { font-size:17px; }
@@ -178,9 +178,9 @@
 @media (max-width: 640px) {
   .pc-page { padding-top: 24px; }
   .pc-group { padding: 4px 16px; border-radius:20px; }
-  .pc-line { grid-template-columns: 96px 1fr; gap:14px; }
-  .pc-line .pc-thumb { width:96px; height:84px; border-radius:14px; }
-  .pc-line-price { grid-column: 1 / -1; display:flex; justify-content:space-between; align-items:center; text-align:left; }
+  .pc-line { grid-template-columns: auto 84px 1fr; gap:12px; }
+  .pc-line .pc-thumb { width:84px; height:76px; border-radius:14px; }
+  .pc-line-price { grid-column: 2 / -1; display:flex; justify-content:space-between; align-items:center; text-align:left; }
   .pc-summary { padding:20px; border-radius:22px; }
   .pc-pay-list { grid-template-columns: 1fr; }
 
@@ -205,3 +205,136 @@
 .pc-mini .pc-tag-best, .pc-line .pc-tag-best { display:inline-flex; align-items:center; gap:5px; margin-top:10px; }
 .pc-save { display:flex; align-items:center; gap:9px; padding:11px 14px; border-radius:14px; background:#FFF4D9; border:1px solid #F3DDA0; font-size:13px; color: var(--pc-navy); }
 .pc-save i { color: var(--pc-gold); font-size:18px; }
+
+/* ═════════════ Flujo de compra: pasos, selección, entrega y pago ═════════════ */
+.pc-sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+.pc-muted { color: var(--pc-text-3); font-size:13px; line-height:1.45; }
+.pc-hint { margin:0; color: var(--pc-text-2); font-size:14px; }
+.pc-btn:disabled { opacity:.45; cursor:not-allowed; box-shadow:none; transform:none; }
+
+/* Pasos */
+.pc-steps { list-style:none; display:flex; align-items:center; gap:12px; padding:0; margin: 0 0 26px; font-weight:700; font-size:14px; color: var(--pc-text-3); }
+.pc-steps li { display:flex; align-items:center; gap:9px; }
+.pc-steps li > span { width:28px; height:28px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; background: var(--pc-soft); color: var(--pc-text-2); font-size:13px; }
+.pc-steps li.is-on { color: var(--pc-navy); }
+.pc-steps li.is-on > span { background: var(--pc-navy); color:#fff; }
+.pc-steps li.is-done { color: var(--pc-green); }
+.pc-steps li.is-done > span { background: var(--pc-green); color:#fff; }
+.pc-steps-line { flex:0 0 46px; height:2px; background: var(--pc-line); }
+
+/* Casillas */
+.pc-check { position:relative; display:inline-flex; cursor:pointer; flex:none; }
+.pc-check input { position:absolute; opacity:0; inset:0; margin:0; cursor:pointer; }
+.pc-check-box { width:24px; height:24px; border-radius:8px; border:2px solid var(--pc-text-3); background:#fff; display:inline-block; position:relative; transition: background .15s, border-color .15s; }
+.pc-check-box::after { content:""; position:absolute; left:7px; top:2px; width:6px; height:12px; border:solid #fff; border-width:0 2.5px 2.5px 0; transform: rotate(45deg) scale(0); transition: transform .15s; }
+.pc-check input:checked + .pc-check-box { background: var(--pc-navy); border-color: var(--pc-navy); }
+.pc-check input:checked + .pc-check-box::after { transform: rotate(45deg) scale(1); }
+.pc-check input:focus-visible + .pc-check-box { outline:2px solid var(--pc-blue); outline-offset:2px; }
+.pc-selbar { display:flex; align-items:center; gap:12px; background: var(--pc-white); border:1px solid var(--pc-line); border-radius:18px; padding:14px 22px; margin-bottom:18px; font-size:15px; }
+.pc-selbar span { color: var(--pc-text-3); font-size:14px; }
+.pc-selbar .pc-link { margin-left:auto; }
+.pc-group-head .pc-check { margin-right:2px; }
+.pc-line.is-off .pc-thumb, .pc-line.is-off .pc-item-name, .pc-line.is-off .pc-line-price { opacity:.45; }
+
+/* Tarjetas de sección (paso 2) */
+.pc-card { background: var(--pc-white); border:1px solid var(--pc-line); border-radius:26px; padding: 24px 26px; margin-bottom:18px; }
+.pc-card-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; }
+.pc-card-head h2 { margin:0; font: 800 22px var(--pc-title); letter-spacing:-.01em; }
+.pc-addr { display:flex; gap:12px; font-size:14.5px; line-height:1.55; color: var(--pc-text-2); }
+.pc-addr > i { color: var(--pc-blue); font-size:20px; margin-top:2px; }
+.pc-addr strong { color: var(--pc-navy); }
+
+/* Métodos de pago (estilo lista con radio) */
+.pc-methods { display:flex; flex-direction:column; margin-top:6px; }
+.pc-method { border-top:1px solid var(--pc-line); }
+.pc-method:first-child { border-top:0; }
+.pc-method-row { display:flex; align-items:center; gap:14px; padding:16px 4px; cursor:pointer; position:relative; }
+.pc-method-row input { position:absolute; opacity:0; }
+.pc-radio { width:24px; height:24px; border-radius:50%; border:2px solid var(--pc-text-3); flex:none; position:relative; transition: border-color .15s; background:#fff; }
+.pc-radio::after { content:""; position:absolute; inset:4px; border-radius:50%; background: var(--pc-navy); transform:scale(0); transition: transform .15s; }
+.pc-method-row input:checked ~ .pc-radio { border-color: var(--pc-navy); }
+.pc-method-row input:checked ~ .pc-radio::after { transform:scale(1); }
+.pc-method-row input:focus-visible ~ .pc-radio { outline:2px solid var(--pc-blue); outline-offset:3px; }
+.pc-tile { width:64px; height:42px; border-radius:10px; border:1px solid var(--pc-line); background:#fff; flex:none; display:inline-flex; align-items:center; justify-content:center;
+  font: 800 13px var(--pc-title); color: var(--tile); letter-spacing:-.01em; }
+.pc-tile i { font-size:20px; }
+.pc-method-name { display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 10px; font-size:14.5px; flex:1; min-width:0; }
+.pc-method-name strong { font-size:15.5px; }
+.pc-method-name span { color: var(--pc-text-2); font-size:13.5px; }
+.pc-brands { display:flex; gap:6px; flex-wrap:wrap; }
+.pc-method.is-open { background: transparent; }
+.pc-method-panel { margin: 0 0 16px 38px; padding: 20px; border:1px solid var(--pc-line); border-radius:18px; background: var(--pc-cream); }
+.pc-method-panel[hidden] { display:none; }
+.pc-secure-line { color: var(--pc-green); font-size:13px; font-weight:600; margin-bottom:14px; }
+
+/* Formularios */
+.pc-form-grid { display:grid; grid-template-columns: 1fr 1fr; gap:16px 18px; margin-bottom:14px; }
+.pc-form-grid .span2 { grid-column: 1 / -1; }
+.pc-field { display:flex; flex-direction:column; gap:7px; margin-bottom:14px; }
+.pc-form-grid .pc-field { margin-bottom:0; }
+.pc-field > label { font-size:13.5px; font-weight:700; color: var(--pc-navy); }
+.pc-input { width:100%; font: 500 15px var(--pc-font); color: var(--pc-navy); background:#fff; border:1.5px solid var(--pc-line); border-radius:12px; padding: 13px 14px; transition: border-color .15s, box-shadow .15s; }
+.pc-input::placeholder { color: var(--pc-text-3); }
+.pc-input:hover { border-color:#cfdcf4; }
+.pc-input:focus { outline:0; border-color: var(--pc-navy); box-shadow: 0 0 0 3px rgba(19,34,79,.1); }
+.pc-input:disabled { background: var(--pc-soft); color: var(--pc-text-2); }
+textarea.pc-input { resize:vertical; min-height:64px; }
+select.pc-input { appearance:none; background-image: linear-gradient(45deg, transparent 50%, var(--pc-navy) 50%), linear-gradient(135deg, var(--pc-navy) 50%, transparent 50%); background-position: calc(100% - 20px) 55%, calc(100% - 14px) 55%; background-size:6px 6px; background-repeat:no-repeat; padding-right:38px; }
+.pc-two { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.pc-input-wrap { position:relative; }
+.pc-input-wrap .pc-input { padding-right: 96px; }
+.pc-brand { position:absolute; right:14px; top:50%; transform:translateY(-50%); font-size:12px; font-weight:800; color: var(--pc-blue); pointer-events:none; }
+.pc-err { color: var(--pc-red); font-size:12.5px; font-weight:600; min-height:0; }
+.pc-err:empty { display:none; }
+.pc-field.has-err .pc-input { border-color: var(--pc-red); }
+
+/* Cuotas */
+.pc-cuotas { display:grid; grid-template-columns: repeat(4, 1fr); gap:8px; }
+.pc-cuota { position:relative; cursor:pointer; }
+.pc-cuota input { position:absolute; opacity:0; inset:0; cursor:pointer; }
+.pc-cuota span { display:flex; align-items:center; justify-content:center; text-align:center; min-height:44px; padding:6px 8px; font-size:13px; font-weight:600; background:#fff; border:1.5px solid var(--pc-line); border-radius:10px; transition: border-color .15s, background .15s; }
+.pc-cuota input:checked + span { border-color: var(--pc-navy); background: var(--pc-celeste); font-weight:800; }
+.pc-cuota input:focus-visible + span { outline:2px solid var(--pc-blue); outline-offset:2px; }
+
+/* Resumen del pedido (paso 2) */
+.pc-order { display:flex; flex-direction:column; gap:12px; max-height:260px; overflow:auto; }
+.pc-order-item { display:grid; grid-template-columns: 54px 1fr auto; gap:12px; align-items:center; font-size:14px; }
+.pc-order-item .pc-thumb { width:54px; height:48px; border-radius:10px; }
+.pc-order-item .pc-item-name { font-size:13.5px; }
+.pc-order-item strong { font-family: var(--pc-title); font-size:14px; white-space:nowrap; }
+
+/* Ventana de datos de entrega */
+.pc-modal-bg { position:fixed; inset:0; z-index:2000; background: rgba(19,34,79,.45); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+  display:flex; align-items:center; justify-content:center; padding:16px; overflow-y:auto; font-family: var(--pc-font, 'DM Sans', sans-serif); animation: pcFade .2s; }
+.pc-modal { --pc-navy:#13224F; --pc-blue:#2F4CB3; --pc-text-2:#4D597B; --pc-text-3:#8A92AB; --pc-cream:#FBF7EC; --pc-white:#FFFDF8; --pc-soft:#F3ECDA; --pc-line:#E9DFC8; --pc-celeste:#E3EBF8; --pc-gold:#E4AE45; --pc-gold-h:#EDBD5E; --pc-red:#C0392B; --pc-font:'DM Sans','Inter',system-ui,sans-serif; --pc-title:'Bricolage Grotesque','Inter',system-ui,sans-serif;
+  font-family: var(--pc-font); color: var(--pc-navy); background: var(--pc-white); width:100%; max-width:620px; border-radius:26px; padding: 26px 28px 28px; box-shadow: 0 30px 80px rgba(19,34,79,.35); margin:auto; animation: pcPop .25s; }
+@keyframes pcFade { from { opacity:0; } } @keyframes pcPop { from { opacity:0; transform: translateY(14px) scale(.98); } }
+.pc-modal-head { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.pc-modal-head h2 { margin:0; font: 800 24px var(--pc-title); letter-spacing:-.01em; }
+.pc-modal-note { display:flex; align-items:center; gap:8px; margin:14px 0 18px; padding:10px 14px; border-radius:12px; background: var(--pc-celeste); color: var(--pc-navy); font-size:13.5px; }
+.pc-modal-note i { color: var(--pc-blue); }
+
+@media (max-width: 640px) {
+  .pc-card { padding:20px 18px; border-radius:20px; }
+  .pc-form-grid { grid-template-columns: 1fr; }
+  .pc-form-grid .span2 { grid-column:auto; }
+  .pc-method-panel { margin-left:0; padding:16px; }
+  .pc-method-row { flex-wrap:wrap; }
+  .pc-brands { margin-left:38px; }
+  .pc-tile { width:56px; }
+  .pc-cuotas { grid-template-columns: 1fr 1fr; }
+  .pc-selbar { padding:12px 16px; flex-wrap:wrap; }
+  .pc-modal { padding:22px 18px 24px; border-radius:22px; }
+  .pc-steps-line { flex-basis:24px; }
+}
+.pc-pay-error { animation: pcShake .35s; }
+
+/* ───────── Navbar sólido en carrito.html (que no se transparente el contenido al hacer scroll) ───────── */
+body[data-pc-no-mini] .pn-navbar {
+  background: #FBF7EC;
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+  border-bottom: 1px solid #E9DFC8;
+  box-shadow: 0 6px 20px rgba(19,34,79,.06);
+}
+/* Cuando la página baja a un campo con error, que no quede tapado por el navbar */
+.pc-field, .pc-method, .pc-card { scroll-margin-top: 110px; }
