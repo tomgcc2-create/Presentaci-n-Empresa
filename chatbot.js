@@ -6,7 +6,7 @@
 /* ---- CONFIGURACIÓN OPCIONAL: IA real con Google Gemini (gratis) ----
    Déjalo vacío ("") para usar solo tu base de conocimiento.
    Si haces el Paso 6, pega aquí la URL de tu Worker de Cloudflare.   */
-const CHATBOT_URL_IA = "";
+const CHATBOT_URL_IA = "https://chatbot-miempresa.priceniceworld.workers.dev";
 
 (function () {
   const KB = window.CONOCIMIENTO || (typeof CONOCIMIENTO !== "undefined" ? CONOCIMIENTO : null);
