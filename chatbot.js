@@ -79,10 +79,10 @@ const CHATBOT_URL_IA = "https://chatbot-miempresa.priceniceworld.workers.dev";
     <button class="cb-toggle" aria-label="Abrir chat"><img src="img/logo-chat.png" alt="Abrir chat"></button>
     <section class="cb-ventana" role="dialog" aria-label="${esc(KB.nombreBot)}">
       <header class="cb-cabecera">
-        <div class="cb-avatar"><img src="img/logo-chat.png" alt="PriceNice"></div>
-        <div><strong>${esc(KB.nombreBot)}</strong><small>En línea</small></div>
+        <button class="cb-expandir" aria-label="Ampliar o reducir el chat" title="Ampliar / reducir"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button>
         <button class="cb-cerrar" aria-label="Cerrar chat">✕</button>
       </header>
+      <div class="cb-redim" title="Arrastra para cambiar el tamaño"></div>
       <div class="cb-mensajes" aria-live="polite"></div>
       <form class="cb-form">
         <input type="text" placeholder="Escribe tu pregunta..." autocomplete="off" maxlength="300" aria-label="Mensaje">
@@ -99,8 +99,33 @@ const CHATBOT_URL_IA = "https://chatbot-miempresa.priceniceworld.workers.dev";
   function abrir(on) {
     raizUI.classList.toggle("abierto", on);
     if (on && !iniciado) { iniciado = true; mostrarAccesos(); }
-    if (on) setTimeout(() => entrada.focus(), 200);
+    if (on && innerWidth > 480) setTimeout(() => entrada.focus(), 350);
   }
+  /* ---------- Tamaño: ampliar con el botón o arrastrar la esquina ---------- */
+  const ventana = $(".cb-ventana");
+  const LIM = () => ({ minW: 290, minH: 380, maxW: Math.min(760, innerWidth - 24), maxH: innerHeight - 40 });
+  function fijarTam(w, h, guardar = true) {
+    const L = LIM();
+    w = Math.max(L.minW, Math.min(L.maxW, w)); h = Math.max(L.minH, Math.min(L.maxH, h));
+    ventana.style.width = w + "px"; ventana.style.height = h + "px";
+    if (guardar) { try { localStorage.setItem("pn_chat_tam", JSON.stringify([w, h])); } catch (e) {} }
+  }
+  try { const t = JSON.parse(localStorage.getItem("pn_chat_tam") || "null"); if (t && innerWidth > 480) fijarTam(t[0], t[1], false); } catch (e) {}
+
+  $(".cb-expandir").onclick = () => {
+    const L = LIM();
+    if (ventana.offsetWidth < 500) fijarTam(Math.min(580, L.maxW), Math.min(820, L.maxH));
+    else { ventana.style.width = ventana.style.height = ""; try { localStorage.removeItem("pn_chat_tam"); } catch (e) {} }
+  };
+  $(".cb-redim").addEventListener("pointerdown", e => {
+    e.preventDefault();
+    const x0 = e.clientX, y0 = e.clientY, w0 = ventana.offsetWidth, h0 = ventana.offsetHeight;
+    ventana.classList.add("redimensionando");
+    const mover = ev => fijarTam(w0 + (x0 - ev.clientX), h0 + (y0 - ev.clientY));
+    const soltar = () => { ventana.classList.remove("redimensionando"); removeEventListener("pointermove", mover); removeEventListener("pointerup", soltar); };
+    addEventListener("pointermove", mover); addEventListener("pointerup", soltar);
+  });
+
   $(".cb-toggle").onclick = () => abrir(!raizUI.classList.contains("abierto"));
   $(".cb-cerrar").onclick = () => abrir(false);
 
@@ -187,31 +212,95 @@ const CHATBOT_URL_IA = "https://chatbot-miempresa.priceniceworld.workers.dev";
       </div>
       <div class="cb-cat-titulo"><b>¿Qué quieres saber?</b></div>
       <div class="cb-pills"></div>
-      <div class="cb-preguntas"></div>`;
+      <div class="cb-carrusel"></div>
+      <div class="cb-nav">
+        <button type="button" class="cb-flecha" data-dir="-1" aria-label="Categoría anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg></button>
+        <div class="cb-puntos-nav"></div>
+        <button type="button" class="cb-flecha" data-dir="1" aria-label="Categoría siguiente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
+      </div>`;
     lista.appendChild(cont);
     pintarSaludo();
 
     cont.querySelector(".cb-banner-btn").onclick = () => enviar("¿Cómo comparo precios?");
-    const pills = cont.querySelector(".cb-pills"), cuerpo = cont.querySelector(".cb-preguntas");
+    const pills = cont.querySelector(".cb-pills"), car = cont.querySelector(".cb-carrusel"), nav = cont.querySelector(".cb-puntos-nav");
+    const N = CATEGORIAS.length;
+    let auto = null;
+    const parar = () => { if (auto) { clearInterval(auto); auto = null; } };
+    const paso = () => (car.firstElementChild ? car.firstElementChild.offsetWidth : 0) + 12;
+    let activa = -1;
 
-    function elegir(cat) {
-      pills.querySelectorAll("button").forEach(b => b.classList.toggle("activa", b.dataset.id === cat.id));
-      cuerpo.innerHTML = "";
+    function marcar(k, retraso = 0) {
+      if (k === activa) return;
+      activa = k;
+      setTimeout(() => [...car.children].forEach((s, n) => s.classList.toggle("activa", n === k)), retraso);
+      pills.querySelectorAll("button").forEach(b => b.classList.toggle("activa", +b.dataset.k === k));
+      nav.querySelectorAll("i").forEach((d, n) => d.classList.toggle("on", n === k));
+    }
+    const irA = k => car.scrollTo({ left: ((k % N) + N) % N * paso(), behavior: "smooth" });
+    const mover = d => irA(activa + d);
+    cont.querySelectorAll(".cb-flecha").forEach(f => f.onclick = () => { parar(); mover(+f.dataset.dir); });
+
+    const pista = document.createElement("div");
+    pista.className = "cb-pista";
+    const grupos = [0, 1, 2, 3].map(() => { const g = document.createElement("div"); g.className = "cb-grupo"; pista.appendChild(g); return g; });
+    pills.appendChild(pista);
+    // La cinta se detiene al pasar el mouse o tocarla (para poder elegir) y sigue corriendo después
+    let reanudar;
+    pills.addEventListener("pointerenter", () => pills.classList.add("pausa"));
+    pills.addEventListener("pointerleave", () => pills.classList.remove("pausa"));
+    pills.addEventListener("touchstart", () => { pills.classList.add("pausa"); clearTimeout(reanudar); reanudar = setTimeout(() => pills.classList.remove("pausa"), 2500); }, { passive: true });
+
+    CATEGORIAS.forEach((cat, k) => {
+      grupos.forEach((g, c) => {
+        const p = document.createElement("button");
+        p.type = "button"; p.textContent = cat.t; p.dataset.k = k;
+        p.onclick = () => { parar(); irA(k); };
+        if (c > 0) { p.setAttribute("aria-hidden", "true"); p.tabIndex = -1; }
+        g.appendChild(p);
+      });
+
+      const d = document.createElement("i"); d.onclick = () => { parar(); irA(k); }; nav.appendChild(d);
+
+      const slide = document.createElement("div");
+      slide.className = "cb-slide";
       cat.items.forEach(it => {
         const b = document.createElement("button");
         b.className = "cb-pregunta";
         b.innerHTML = `<span class="ico">${it.ico}</span><span class="tx"><b>${esc(it.q)}</b><small>${esc(it.d)}</small></span><span class="go">${IC.flecha}</span>`;
-        b.onclick = () => enviar(it.q);
-        cuerpo.appendChild(b);
+        b.onclick = () => { if (!car.dataset.arrastro) enviar(it.q); };
+        slide.appendChild(b);
       });
-    }
-    CATEGORIAS.forEach((cat, k) => {
-      const p = document.createElement("button");
-      p.type = "button"; p.dataset.id = cat.id; p.textContent = cat.t;
-      p.onclick = () => elegir(cat);
-      pills.appendChild(p);
-      if (k === 0) elegir(cat);
+      car.appendChild(slide);
     });
+    marcar(0, 750);
+
+    // La categoría activa sigue al deslizamiento
+    let tick = false;
+    car.addEventListener("scroll", () => {
+      if (tick) return; tick = true;
+      requestAnimationFrame(() => { tick = false; marcar(Math.max(0, Math.min(CATEGORIAS.length - 1, Math.round(car.scrollLeft / (paso() || 1))))); });
+    });
+
+    // Arrastrar con el mouse (en celular ya se desliza con el dedo)
+    car.addEventListener("pointerdown", e => {
+      parar();
+      if (e.pointerType !== "mouse") return;
+      const x0 = e.clientX, s0 = car.scrollLeft; let movio = false;
+      car.classList.add("arrastrando");
+      const mover = ev => { const dx = ev.clientX - x0; if (Math.abs(dx) > 5) movio = true; car.scrollLeft = s0 - dx; };
+      const soltar = () => {
+        removeEventListener("pointermove", mover); removeEventListener("pointerup", soltar);
+        car.classList.remove("arrastrando");
+        if (movio) { car.dataset.arrastro = "1"; setTimeout(() => delete car.dataset.arrastro, 60); }
+        irA(Math.max(0, Math.min(CATEGORIAS.length - 1, Math.round(car.scrollLeft / (paso() || 1)))));
+      };
+      addEventListener("pointermove", mover); addEventListener("pointerup", soltar);
+    });
+
+    // Rota sola cada 6 s hasta que la persona la toque (y no si prefiere sin animaciones)
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      auto = setInterval(() => { if (!cont.isConnected) return parar(); if (!cont.matches(":hover")) mover(1); }, 6000);
+    }
   }
 
   function ejecutarAccion(a) {
