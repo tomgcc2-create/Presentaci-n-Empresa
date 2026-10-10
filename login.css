@@ -1,0 +1,166 @@
+/* ═══════════════════════════════════════════════════════════════
+   PriceNice — login.css
+   Inicio de sesión / registro / recuperar contraseña.
+   Tarjeta de dos paneles: el panel azul se desliza entre "Ingresar" y "Crear cuenta".
+   Colores del sitio: marino + crema + dorado. Independiente del resto de estilos.
+═══════════════════════════════════════════════════════════════ */
+:root {
+  --lg-navy:#13224F; --lg-blue:#2F4CB3; --lg-cream:#FBF7EC; --lg-white:#FFFDF8; --lg-soft:#F3ECDA;
+  --lg-line:#E9DFC8; --lg-celeste:#CFDCF4; --lg-celeste2:#E3EBF8; --lg-gold:#E4AE45; --lg-gold-h:#EDBD5E;
+  --lg-text2:#4D597B; --lg-text3:#8A92AB; --lg-red:#C0392B; --lg-green:#1C7C5A;
+  --lg-font:'DM Sans','Inter',system-ui,sans-serif; --lg-title:'Bricolage Grotesque','Inter',system-ui,sans-serif;
+  --lg-t:.6s cubic-bezier(.65,.05,.36,1);
+}
+* { box-sizing:border-box; }
+[hidden] { display:none !important; }
+html, body { margin:0; }
+body.lg-body {
+  min-height:100vh; display:flex; align-items:center; justify-content:center; padding:72px 16px 32px;
+  font-family:var(--lg-font); color:var(--lg-navy); background:var(--lg-cream); position:relative; overflow-x:hidden;
+}
+body.lg-body::before, body.lg-body::after { content:""; position:fixed; border-radius:50%; z-index:0; pointer-events:none; }
+body.lg-body::before { width:520px; height:520px; right:-160px; top:-180px; background:var(--lg-celeste); opacity:.7; }
+body.lg-body::after  { width:380px; height:380px; left:-140px; bottom:-170px; background:#F5E3B8; opacity:.8; }
+
+.lg-back { position:fixed; top:20px; left:24px; z-index:5; display:inline-flex; align-items:center; gap:8px; color:var(--lg-navy); text-decoration:none; font-weight:700; font-size:14px; padding:10px 16px; border-radius:99px; background:var(--lg-white); border:1px solid var(--lg-line); transition:background .2s; }
+.lg-back:hover { background:var(--lg-celeste2); }
+.lg-stage { position:relative; z-index:1; width:100%; display:flex; justify-content:center; }
+
+/* ───────── Tarjeta ───────── */
+.lg-card { position:relative; width:100%; max-width:980px; height:min(760px, calc(100vh - 110px)); min-height:660px; background:var(--lg-white); border-radius:32px; box-shadow:0 30px 80px rgba(19,34,79,.18); overflow:hidden; }
+.lg-form-wrap { position:absolute; top:0; left:0; width:50%; height:100%; display:flex; overflow-y:auto; background:var(--lg-white); transition:transform var(--lg-t), opacity var(--lg-t); }
+.lg-signin { z-index:2; }
+.lg-signup { z-index:1; opacity:0; }
+.lg-card.is-register .lg-signin { transform:translateX(100%); opacity:0; pointer-events:none; }
+.lg-card.is-register .lg-signup { transform:translateX(100%); opacity:1; z-index:5; animation:lgShow var(--lg-t); }
+@keyframes lgShow { 0%,49.99% { opacity:0; z-index:1; } 50%,100% { opacity:1; z-index:5; } }
+
+.lg-form { margin:auto; width:100%; max-width:390px; padding:30px 8px; }
+.lg-form h1 { margin:0 0 16px; text-align:center; font:800 34px/1.05 var(--lg-title); letter-spacing:-.03em; }
+.lg-lead { margin:0 0 18px; text-align:center; color:var(--lg-text2); font-size:14.5px; line-height:1.5; }
+.lg-brand-m { display:none; }
+.lg-recover-ico { width:64px; height:64px; margin:0 auto 14px; border-radius:50%; background:var(--lg-celeste2); color:var(--lg-blue); display:flex; align-items:center; justify-content:center; font-size:28px; }
+
+/* ───────── Redes sociales ───────── */
+.lg-social { display:flex; justify-content:center; gap:12px; margin-bottom:4px; }
+.lg-soc { width:50px; height:50px; border-radius:14px; border:1.5px solid var(--lg-line); background:#fff; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; transition:transform .15s, border-color .15s, box-shadow .15s; }
+.lg-soc:hover { transform:translateY(-2px); border-color:#cfdcf4; box-shadow:0 8px 18px rgba(19,34,79,.1); }
+.lg-soc:focus-visible, .lg-btn:focus-visible, .lg-ghost:focus-visible, .lg-link:focus-visible, .lg-eye:focus-visible { outline:2px solid var(--lg-blue); outline-offset:2px; }
+.lg-soc:disabled { opacity:.5; cursor:wait; }
+.lg-or { display:flex; align-items:center; gap:12px; margin:14px 0 16px; color:var(--lg-text3); font-size:13px; }
+.lg-or::before, .lg-or::after { content:""; flex:1; height:1px; background:var(--lg-line); }
+.lg-or span { white-space:nowrap; }
+
+/* ───────── Campos ───────── */
+.lg-field { margin-bottom:13px; }
+.lg-row2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.lg-field label { display:block; margin-bottom:6px; font-size:13px; font-weight:700; }
+.lg-field input[type=text], .lg-field input[type=email], .lg-field input[type=password] {
+  width:100%; font:500 15px var(--lg-font); color:var(--lg-navy); background:var(--lg-cream); border:1.5px solid var(--lg-line); border-radius:12px; padding:13px 14px; transition:border-color .15s, box-shadow .15s, background .15s;
+}
+.lg-field input::placeholder { color:var(--lg-text3); }
+.lg-field input:hover { border-color:#cfdcf4; }
+.lg-field input:focus { outline:0; border-color:var(--lg-navy); background:#fff; box-shadow:0 0 0 3px rgba(19,34,79,.1); }
+.lg-field.has-err input { border-color:var(--lg-red); }
+.lg-pass { position:relative; }
+.lg-pass input { padding-right:46px !important; }
+.lg-eye { position:absolute; right:6px; top:50%; transform:translateY(-50%); width:36px; height:36px; border:0; background:none; color:var(--lg-text2); font-size:17px; cursor:pointer; border-radius:10px; }
+.lg-eye:hover { background:var(--lg-celeste2); }
+.lg-err { color:var(--lg-red); font-size:12.5px; font-weight:600; margin-top:5px; }
+.lg-err:empty { display:none; }
+.lg-meter { display:grid; grid-template-columns:repeat(4,1fr); gap:5px; margin-top:8px; }
+.lg-meter i { height:4px; border-radius:99px; background:var(--lg-line); transition:background .2s; }
+.lg-meter[data-n="1"] i:nth-child(-n+1) { background:var(--lg-red); }
+.lg-meter[data-n="2"] i:nth-child(-n+2) { background:#E08A2B; }
+.lg-meter[data-n="3"] i:nth-child(-n+3) { background:var(--lg-gold); }
+.lg-meter[data-n="4"] i { background:var(--lg-green); }
+
+.lg-between { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:4px 0 16px; flex-wrap:wrap; }
+.lg-check { display:inline-flex; align-items:flex-start; gap:10px; cursor:pointer; font-size:13.5px; color:var(--lg-text2); position:relative; line-height:1.4; }
+.lg-check input { position:absolute; opacity:0; width:20px; height:20px; margin:0; cursor:pointer; }
+.lg-check-box { width:20px; height:20px; flex:none; border-radius:7px; border:2px solid var(--lg-text3); background:#fff; position:relative; transition:background .15s, border-color .15s; margin-top:1px; }
+.lg-check-box::after { content:""; position:absolute; left:5.5px; top:1.5px; width:5px; height:10px; border:solid #fff; border-width:0 2.5px 2.5px 0; transform:rotate(45deg) scale(0); transition:transform .15s; }
+.lg-check input:checked + .lg-check-box { background:var(--lg-navy); border-color:var(--lg-navy); }
+.lg-check input:checked + .lg-check-box::after { transform:rotate(45deg) scale(1); }
+.lg-check input:focus-visible + .lg-check-box { outline:2px solid var(--lg-blue); outline-offset:2px; }
+.lg-check a { color:var(--lg-blue); font-weight:700; text-decoration:none; }
+.lg-link { background:none; border:0; padding:4px 0; cursor:pointer; font:700 13.5px var(--lg-font); color:var(--lg-blue); }
+.lg-link:hover { text-decoration:underline; }
+
+/* ───────── Tipo de usuario ───────── */
+.lg-roles { border:0; padding:0; margin:6px 0 14px; min-width:0; }
+.lg-roles legend { padding:0; margin-bottom:8px; font-size:13px; font-weight:700; }
+.lg-roles-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.lg-role { position:relative; cursor:pointer; }
+.lg-role input { position:absolute; opacity:0; inset:0; margin:0; cursor:pointer; }
+.lg-role > span { display:flex; flex-direction:column; gap:2px; height:100%; padding:11px 12px 11px 42px; position:relative; border:1.5px solid var(--lg-line); border-radius:14px; background:#fff; transition:border-color .15s, background .15s, box-shadow .15s; }
+.lg-role > span > i { position:absolute; left:12px; top:12px; width:22px; text-align:center; font-size:18px; color:var(--lg-blue); }
+.lg-role strong { font-size:14px; }
+.lg-role small { font-size:11.5px; line-height:1.3; color:var(--lg-text3); }
+.lg-role:hover > span { border-color:#cfdcf4; }
+.lg-role input:checked + span { border-color:var(--lg-navy); background:var(--lg-celeste2); box-shadow:0 0 0 3px rgba(19,34,79,.08); }
+.lg-role input:focus-visible + span { outline:2px solid var(--lg-blue); outline-offset:2px; }
+
+/* ───────── Botones ───────── */
+.lg-btn { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; margin-top:6px; padding:15px 20px; border:0; border-radius:99px; background:var(--lg-gold); color:var(--lg-navy); font:800 14px var(--lg-font); letter-spacing:.04em; text-transform:uppercase; cursor:pointer; transition:background .15s, transform .15s, box-shadow .15s; }
+.lg-btn:hover { background:var(--lg-gold-h); box-shadow:0 8px 20px rgba(228,174,69,.4); }
+.lg-btn:active { transform:scale(.98); }
+.lg-btn:disabled { opacity:.6; cursor:wait; box-shadow:none; }
+.lg-btn.is-loading::after { content:""; width:15px; height:15px; border:2.5px solid rgba(19,34,79,.3); border-top-color:var(--lg-navy); border-radius:50%; animation:lgSpin .7s linear infinite; }
+@keyframes lgSpin { to { transform:rotate(360deg); } }
+.lg-btn-line { background:transparent; border:1.5px solid var(--lg-navy); }
+.lg-btn-line:hover { background:var(--lg-navy); color:#fff; box-shadow:none; }
+.lg-msg { min-height:20px; margin-top:12px; text-align:center; font-size:13.5px; font-weight:600; line-height:1.4; }
+.lg-msg.is-error { color:var(--lg-red); } .lg-msg.is-ok { color:var(--lg-green); } .lg-msg.is-info { color:var(--lg-blue); }
+.lg-mobile-switch { display:none; margin:16px 0 0; text-align:center; font-size:14px; color:var(--lg-text2); }
+
+/* ───────── Panel azul que se desliza ───────── */
+.lg-overlay-wrap { position:absolute; top:0; left:50%; width:50%; height:100%; overflow:hidden; z-index:100; transition:transform var(--lg-t); }
+.lg-card.is-register .lg-overlay-wrap { transform:translateX(-100%); }
+.lg-overlay { position:relative; left:-100%; width:200%; height:100%; color:#fff; background:linear-gradient(135deg,#13224F 0%,#1B3170 60%,#2F4CB3 130%); transition:transform var(--lg-t); }
+.lg-card.is-register .lg-overlay { transform:translateX(50%); }
+.lg-ov { position:absolute; top:0; width:50%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 44px; text-align:center; overflow:hidden; transition:transform var(--lg-t); }
+.lg-ov-left { transform:translateX(-20%); }
+.lg-ov-right { right:0; }
+.lg-card.is-register .lg-ov-left { transform:none; }
+.lg-card.is-register .lg-ov-right { transform:translateX(20%); }
+.lg-ov-logo { width:120px; height:120px; border-radius:50%; object-fit:contain; background:#13224F; border:3px solid var(--lg-gold); box-shadow:0 0 0 7px rgba(228,174,69,.22); margin-bottom:26px; position:relative; z-index:1; }
+.lg-ov h2 { position:relative; z-index:1; margin:0 0 12px; font:800 34px/1.05 var(--lg-title); letter-spacing:-.03em; }
+.lg-ov p { position:relative; z-index:1; margin:0 0 28px; max-width:290px; color:rgba(255,255,255,.82); font-size:15px; line-height:1.55; }
+.lg-ghost { position:relative; z-index:1; padding:13px 38px; border:2px solid #fff; border-radius:99px; background:transparent; color:#fff; font:800 13px var(--lg-font); letter-spacing:.06em; text-transform:uppercase; cursor:pointer; transition:background .2s, color .2s, transform .15s; }
+.lg-ghost:hover { background:var(--lg-gold); border-color:var(--lg-gold); color:var(--lg-navy); }
+.lg-ghost:active { transform:scale(.97); }
+.lg-dot { position:absolute; border-radius:50%; pointer-events:none; }
+.lg-dot-a { width:240px; height:240px; background:rgba(207,220,244,.12); top:-80px; right:-90px; }
+.lg-dot-b { width:170px; height:170px; background:rgba(228,174,69,.18); bottom:-60px; left:-50px; }
+
+/* ───────── Ventana "un último paso" ───────── */
+.lg-modal-bg { position:fixed; inset:0; z-index:300; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(19,34,79,.5); backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px); animation:lgFade .2s; }
+.lg-modal { width:100%; max-width:520px; padding:28px; border-radius:26px; background:var(--lg-white); box-shadow:0 30px 80px rgba(19,34,79,.35); animation:lgPop .25s; }
+.lg-modal h2 { margin:0 0 6px; text-align:center; font:800 28px var(--lg-title); letter-spacing:-.02em; }
+.lg-modal-btns { display:grid; grid-template-columns:1fr 1.4fr; gap:10px; margin-top:18px; }
+.lg-modal-btns .lg-btn { margin:0; }
+@keyframes lgFade { from { opacity:0; } } @keyframes lgPop { from { opacity:0; transform:translateY(14px) scale(.98); } }
+
+/* ───────── Celular y tablet: una sola columna, sin panel deslizante ───────── */
+@media (max-width: 860px) {
+  body.lg-body { align-items:flex-start; padding-top:76px; }
+  .lg-card { height:auto; min-height:0; max-width:520px; }
+  .lg-form-wrap { position:static; width:100%; height:auto; overflow:visible; transform:none !important; opacity:1; animation:none !important; display:none; }
+  .lg-card:not(.is-register) .lg-signin { display:flex; }
+  .lg-card.is-register .lg-signup { display:flex; }
+  .lg-overlay-wrap { display:none; }
+  .lg-form { padding:32px 22px; }
+  .lg-form h1 { font-size:30px; }
+  .lg-brand-m { display:block; width:76px; height:76px; margin:0 auto 14px; }
+  .lg-brand-m img { width:100%; height:100%; border-radius:50%; background:#13224F; border:3px solid var(--lg-gold); box-shadow:0 0 0 5px rgba(228,174,69,.22); object-fit:contain; }
+  .lg-mobile-switch { display:block; }
+}
+@media (max-width: 420px) {
+  .lg-row2, .lg-roles-grid { grid-template-columns:1fr; }
+  .lg-back { left:12px; top:14px; padding:8px 13px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lg-form-wrap, .lg-overlay-wrap, .lg-overlay, .lg-ov { transition:none; }
+  .lg-card.is-register .lg-signup { animation:none; }
+}
