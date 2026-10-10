@@ -523,13 +523,32 @@ if(!window.PN_PRODUCTOS){
 /* ══════════════ DATOS (vienen de carrito-precios.js) ══════════════ */
 const PRODUCTOS = window.PN_PRODUCTOS;
 const BARRIOS   = window.PN_BARRIOS;
+const escT = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function resenasGuardadas(){ try { return JSON.parse(localStorage.getItem('pn_resenas')||'[]'); } catch(e){ return []; } }
+/* Productos que publican los vendedores (por ahora se leen del navegador; luego vendrán de Firebase) */
+(function(){ try {
+  const cfg = JSON.parse(localStorage.getItem('pn_vendedor_config')||'{}'); if (cfg.pausarTienda) return;
+  const CAT = ['moda','tecnologia','hogar','mercado','belleza','higiene','mascotas'], RS = resenasGuardadas();
+  JSON.parse(localStorage.getItem('pn_mis_productos')||'[]').filter(x => x.activo !== false).forEach(x => {
+    const imgs = (x.imagenes && x.imagenes.length ? x.imagenes : [x.imagenPreview]).filter(Boolean), rs = RS.filter(r => r.prodId === x.id);
+    PRODUCTOS.push({ id:x.id, nombre:x.nombre, cat:CAT.includes(x.categoria)?x.categoria:'otros', estrellas: rs.length ? +(rs.reduce((a,r)=>a+r.estrellas,0)/rs.length).toFixed(1) : 0, resenas: rs.length,
+      imagen:imgs[0]||'', imagenes:imgs, descripcion:x.descripcion, esRopa:x.categoria==='moda', colores:x.colores||[], tallas:x.tallas||[],
+      marca:x.marca, sku:x.sku, garantia:x.garantia, entregas:x.entregas||[], etiquetas:x.etiquetas||[], estado:x.estado, stock:x.cantidad, propio:true,
+      o:[{ t:x.tienda, p:x.precio, b:x.barrio||'Bogotá', a:x.precioAntes||undefined }] });
+  });
+} catch(e){} })();
+function resenasDe(p){
+  const st = resenasGuardadas().filter(r => r.prodId === p.id).map(r => ({...r, nombre:escT(r.nombre), comentario:escT(r.comentario), respuesta:r.respuesta?escT(r.respuesta):''}));
+  const base = RESENAS_DEMO[p.id] || (p.rv ? [{nombre:p.rv[0], fecha:'2026-09-20', estrellas:Math.round(p.estrellas), comentario:p.rv[1], fotos:[]}] : []);
+  return [...st, ...base];
+}
 PRODUCTOS.forEach(p => { const b = p.o.reduce((a,x) => x.p < a.p ? x : a); p.precio = b.p; p.tienda = b.t; });
 const COMPARACIONES = window.PN_COMPARACIONES;
 const RESENAS_DEMO = {
   9: [{nombre:"Laura M.",  fecha:"2026-09-15",estrellas:5,comentario:"Las mejores zapatillas que he comprado. Súper cómodas.",fotos:[]},
       {nombre:"Carlos R.", fecha:"2026-10-01",estrellas:4,comentario:"Muy buenas, talla fiel. El precio en Éxito es el más bajo.",fotos:[]}]
 };
-const CATS = [['','Todas','🛒'],['moda','Moda','👗'],['tecnologia','Tecnología','💻'],['hogar','Hogar','🏠'],['mercado','Mercado','🛒'],['belleza','Belleza','💄'],['higiene','Higiene','🧴'],['mascotas','Mascotas','🐾'],['oferta','Mejores ofertas','🏷️']];
+const CATS = [['','Todas','🛒'],['moda','Moda','👗'],['tecnologia','Tecnología','💻'],['hogar','Hogar','🏠'],['mercado','Mercado','🛒'],['belleza','Belleza','💄'],['higiene','Higiene','🧴'],['mascotas','Mascotas','🐾'],['otros','Otros','📦'],['oferta','Mejores ofertas','🏷️']];
 const NOMCAT = Object.fromEntries(CATS.map(c => [c[0], c[1]]));
 const PAGE = 9;
 
@@ -608,11 +627,11 @@ function crearTarjeta(v, etiqueta) {
       <button class="pn-fav-btn ${isFav?'active':''}" onclick="event.stopPropagation();toggleFav(this,${pr.id})" aria-label="Favorito"><i class="bi bi-heart${isFav?'-fill':''}"></i></button>
     </div>
     <div class="st-row"><h3 onclick="abrirModal(${pr.id})">${pr.nombre}</h3><span class="st-price">${fmtPrecio(best.p)}</span></div>
-    <div class="st-stars">${renderStars(pr.estrellas)} <span>${pr.estrellas} (${pr.resenas} reseñas)</span></div>
+    <div class="st-stars">${renderStars(pr.estrellas)} <span>${pr.resenas ? pr.estrellas+' ('+pr.resenas+' reseñas)' : 'Nuevo · sin reseñas'}</span></div>
     <div class="st-tip"><i class="bi bi-geo-alt-fill"></i> Más barato en <b>${best.t}</b> · ${best.b==='Online'?'online':best.b}${distTxt(best.b)}
       ${ah ? `<small>Ahorras hasta ${fmtPrecio(ah)} frente a la tienda más cara</small>` : ''}
       ${cerca && cerca !== best ? `<small>Más cerca de ti: ${cerca.t} (${cerca.b}) · ${fmtPrecio(cerca.p)}</small>` : ''}</div>
-    <p class="st-rv">“${rv[1]}” — ${rv[0]}</p>
+    ${rv ? `<p class="st-rv">“${rv[1]}” — ${rv[0]}</p>` : `<p class="st-rv">Producto nuevo · todavía sin reseñas</p>`}
     <div class="st-btns"><button class="st-btn" onclick="agregarCarrito(${pr.id})">Agregar al carrito</button><button class="st-btn dark" onclick="abrirModal(${pr.id})">Ver precios</button></div>
   </article>`;
 }
@@ -679,9 +698,9 @@ function usarUbicacion() {
 function abrirModal(id) {
   const p    = PRODUCTOS.find(x => x.id===id); if(!p) return;
   productoActual = p; dmQ = 1; dmP = p.precio;
-  const ress = RESENAS_DEMO[id] || [{nombre:p.rv[0], fecha:'2026-09-20', estrellas:Math.round(p.estrellas), comentario:p.rv[1], fotos:[]}];
+  const ress = resenasDe(p);
   const isFav = getFavs().includes(id);
-  const fotos = [p.imagen, p.imagen+'&flip=h', p.imagen+'&sat=-60', p.imagen+'&crop=top'];
+  const fotos = p.imagenes && p.imagenes.length ? p.imagenes : [p.imagen, p.imagen+'&flip=h', p.imagen+'&sat=-60', p.imagen+'&crop=top'];
   const ofs = [...p.o].sort((a,b) => a.p - b.p), best = ofs[0], mejor = best.p, pct = pctOff(best), ah = ofs[ofs.length-1].p - mejor;
   const ofertasHTML = `<p class="dm-note">Precios del mismo producto en tiendas de Bogotá, del más barato al más caro.</p>
       <div class="st-offers">${ofs.map((o,i) => `
@@ -693,7 +712,12 @@ function abrirModal(id) {
   const rel = PRODUCTOS.filter(x => x.id !== p.id).sort((a,b) => (a.cat===p.cat?0:1e9) + Math.abs(a.precio-p.precio) - ((b.cat===p.cat?0:1e9) + Math.abs(b.precio-p.precio))).slice(0,6);
   const relHTML = rel.map(x => crearTarjeta({pr:x, ofs:x.o, best:x.o.reduce((m,o)=>o.p<m.p?o:m)})).join('');
 
-  const filas = [['Código (SKU)','PN-'+String(p.id).padStart(4,'0')],['Categoría',NOMCAT[p.cat]],['Etiquetas',NOMCAT[p.cat]+', '+best.t+', Bogotá'],['Precio más bajo',fmtPrecio(best.p)+' en '+best.t],['Disponible en',ofs.length+' tienda'+(ofs.length>1?'s':'')+' de Bogotá']];
+  const filas = [['Código (SKU)',p.sku||'PN-'+String(p.id).padStart(4,'0')],['Categoría',NOMCAT[p.cat]],['Etiquetas',(p.etiquetas&&p.etiquetas.length)?p.etiquetas.join(', '):NOMCAT[p.cat]+', '+best.t+', Bogotá'],['Precio más bajo',fmtPrecio(best.p)+' en '+best.t],['Disponible en',ofs.length+' tienda'+(ofs.length>1?'s':'')+' de Bogotá']];
+  if (p.marca) filas.splice(1,0,['Marca',escT(p.marca)]);
+  if (p.estado) filas.push(['Estado',p.estado]);
+  if (p.garantia) filas.push(['Garantía',p.garantia]);
+  if (p.entregas&&p.entregas.length) filas.push(['Entrega',p.entregas.join(' · ')]);
+  if (p.propio && p.stock!=null) filas.push(['Unidades disponibles',p.stock]);
   if (p.esRopa) filas.push(['Tallas',(p.tallas||[]).join(', ')],['Colores',(p.colores||[]).length+' disponibles']);
   const cerca = rel.filter(x => x.cat === p.cat).slice(0,3);
   const infoHTML = `<p class="dm-sub" style="margin-top:0">Información adicional</p>
@@ -729,6 +753,7 @@ function abrirModal(id) {
         <div style="margin-left:auto" class="pn-stars">${renderStars(r.estrellas)}</div>
       </div>
       <div class="pn-review-text">${r.comentario}</div>
+      ${r.respuesta?`<div style="margin-top:10px;background:var(--bg-soft);border-radius:12px;padding:10px 12px;font-size:13px;color:var(--text-2)"><b style="color:var(--brand)">Respuesta del vendedor:</b> ${r.respuesta}</div>`:''}
       ${r.fotos?.length?`<div class="pn-review-photos">${r.fotos.map((f,i)=>`<div class="pn-review-photo" onclick="abrirLightbox(${JSON.stringify(r.fotos)},${i})"><img src="${f}" alt="Foto" loading="lazy"></div>`).join('')}</div>`:''}
     </div>`).join('');
 
@@ -747,7 +772,7 @@ function abrirModal(id) {
       <div class="dm-info">
         <div class="dm-cat">${NOMCAT[p.cat]}</div>
         <h2 class="dm-title">${p.nombre} <span class="dm-stock"><i class="bi bi-check2-circle"></i> Disponible</span></h2>
-        <div class="dm-rating">${renderStars(p.estrellas)} <b>${p.estrellas}</b> <span>(${p.resenas} reseñas)</span></div>
+        <div class="dm-rating">${renderStars(p.estrellas)} ${p.resenas?`<b>${p.estrellas}</b> <span>(${p.resenas} reseñas)</span>`:`<span>Nuevo · aún sin reseñas</span>`}</div>
         <div class="dm-price"><b>${fmtPrecio(p.precio)}</b>${best.a ? `<s>${fmtPrecio(best.a)}</s>` : ''}</div>
         <div class="dm-seller"><i class="bi bi-shop"></i><span>Más barato en <b>${best.t}</b> · ${best.b==='Online'?'online, envío a Bogotá':'barrio '+best.b}${distTxt(best.b)}</span></div>
         <p class="dm-desc">${p.descripcion}</p>
@@ -760,9 +785,9 @@ function abrirModal(id) {
           <button class="pn-fav-large ${isFav?'active':''}" id="modalFavBtn" onclick="toggleFavModal(${p.id})" aria-label="Favorito"><i class="bi bi-heart${isFav?'-fill':''}"></i></button>
         </div>
         <div class="dm-meta">
-          <div><b>Código (SKU):</b> PN-${String(p.id).padStart(4,'0')}</div>
+          <div><b>Código (SKU):</b> ${escT(p.sku||'PN-'+String(p.id).padStart(4,'0'))}</div>
           <div><b>Categoría:</b> ${NOMCAT[p.cat]}</div>
-          <div><b>Etiquetas:</b> ${NOMCAT[p.cat]}, ${best.t}, Bogotá</div>
+          <div><b>Etiquetas:</b> ${(p.etiquetas&&p.etiquetas.length)?p.etiquetas.map(escT).join(', '):NOMCAT[p.cat]+', '+best.t+', Bogotá'}</div>
           <div><b>Compartir:</b> <a href="https://wa.me/?text=${encodeURIComponent(p.nombre+' desde '+fmtPrecio(p.precio)+' en '+best.t+' · PriceNice')}" target="_blank" rel="noopener"><i class="bi bi-whatsapp"></i> WhatsApp</a>
             <button onclick="navigator.clipboard&&navigator.clipboard.writeText(location.href);mostrarToast('Enlace copiado')"><i class="bi bi-link-45deg"></i> Copiar enlace</button></div>
         </div>
@@ -782,6 +807,7 @@ function abrirModal(id) {
         ${ah ? `<li>Ahorras hasta ${fmtPrecio(ah)} frente a la tienda más cara.</li>` : ''}
         ${best.a ? `<li>Descuento vigente: antes ${fmtPrecio(best.a)}, ahora ${fmtPrecio(best.p)} (-${pct}%).</li>` : ''}
         <li>Disponible en ${ofs.length} tienda${ofs.length>1?'s':''} de Bogotá.</li>
+        ${p.garantia&&p.garantia!=='Sin garantía'?`<li>Garantía: ${p.garantia}.</li>`:''}${p.entregas&&p.entregas.length?`<li>Entrega: ${p.entregas.join(' · ')}.</li>`:''}
         ${p.esRopa ? `<li>Colores: ${(p.colores||[]).length} · Tallas: ${(p.tallas||[]).join(', ')}.</li>` : ''}
       </ul>
     </div>
@@ -884,7 +910,11 @@ function enviarResena(prodId) {
   const txt = document.getElementById('resenaTexto')?.value.trim();
   if(!cal) { mostrarToast('Selecciona una calificación'); return; }
   if(!txt) { mostrarToast('El comentario es obligatorio'); return; }
+  const nom = (usuarioSesion && (usuarioSesion.displayName || (usuarioSesion.email||'').split('@')[0])) || 'Comprador';
+  const arr = resenasGuardadas(); arr.unshift({ id:Date.now(), prodId, nombre:nom, fecha:new Date().toISOString().slice(0,10), estrellas:+cal, comentario:txt, fotos:[] });
+  try { localStorage.setItem('pn_resenas', JSON.stringify(arr)); } catch(e){}
   mostrarToast('¡Reseña publicada! Gracias.');
+  abrirModal(prodId); setTimeout(() => modalTab(document.querySelectorAll('.dm-tabs button')[2], 'dmRes'), 60); return;
   document.getElementById('resenaTexto').value='';
   resenaFotos=[]; const p=document.getElementById('photoPreviews'); if(p)p.innerHTML='';
   document.querySelectorAll('input[name="star"]').forEach(r=>r.checked=false);
