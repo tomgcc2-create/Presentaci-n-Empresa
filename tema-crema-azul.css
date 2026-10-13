@@ -13,39 +13,39 @@
 /* ───────────── 1. Variables ───────────── */
 body.pn-tema {
   /* Marino (logo) */
-  --brand:        #13224F;
-  --brand-mid:    #2F4CB3;
-  --brand-hover:  #1F3478;
-  --brand-light:  #E4EBF8;
+  --brand:        #1F2A44;
+  --brand-mid:    #34456B;
+  --brand-hover:  #2A3858;
+  --brand-light:  #E6EAF1;
 
   /* Crema (fondo del logo) */
-  --bg:           #FBF7EC;
-  --bg-white:     #FFFDF8;
-  --bg-soft:      #F3ECDA;
+  --bg:           #F5EFE3;
+  --bg-white:     #FBF8F1;
+  --bg-soft:      #EFE6D4;
 
   /* Texto */
-  --text:         #13224F;
-  --text-2:       #4D597B;
+  --text:         #1F2A44;
+  --text-2:       #4F5B78;
   --text-3:       #8A92AB;
 
   /* Líneas */
-  --border:       #E9DFC8;
-  --border-2:     #D9CCAA;
+  --border:       #DDD0B8;
+  --border-2:     #CDBD9E;
 
   /* Acentos nuevos */
-  --celeste:      #CFDCF4;
-  --celeste-2:    #E3EBF8;
-  --oro:          #E4AE45;
-  --oro-hover:    #EDBD5E;
+  --celeste:      #D6DCE8;
+  --celeste-2:    #E6EAF1;
+  --oro:          #C6A75E;
+  --oro-hover:    #D4B873;
   --green:        #1C7C5A;
   --green-bg:     #DDF2E8;
 
   /* Sombras con tinte marino */
-  --shadow-xs: 0 1px 3px rgba(19,34,79,.07);
-  --shadow-sm: 0 2px 10px rgba(19,34,79,.08);
-  --shadow:    0 6px 22px rgba(19,34,79,.10);
-  --shadow-md: 0 12px 34px rgba(19,34,79,.13);
-  --shadow-lg: 0 20px 52px rgba(19,34,79,.16);
+  --shadow-xs: 0 1px 3px rgba(31,42,68,.07);
+  --shadow-sm: 0 2px 10px rgba(31,42,68,.08);
+  --shadow:    0 6px 22px rgba(31,42,68,.10);
+  --shadow-md: 0 12px 34px rgba(31,42,68,.13);
+  --shadow-lg: 0 20px 52px rgba(31,42,68,.16);
 
   /* Esquinas más redondas */
   --r-sm: 12px;
@@ -132,20 +132,20 @@ body.pn-tema {
 
 /* ───────────── 4. Barra superior ───────────── */
 .pn-tema .pn-navbar {
-  background: rgba(251,247,236,.9);
+  background: rgba(245,239,227,.9);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
 }
 .pn-tema .pn-navbar.scrolled {
   border-bottom-color: var(--border);
-  box-shadow: 0 8px 26px rgba(19,34,79,.07);
+  box-shadow: 0 8px 26px rgba(31,42,68,.07);
 }
 .pn-tema .pn-logo-circle {
   background: var(--brand);
   border: 2px solid var(--oro);
-  box-shadow: 0 0 0 3px rgba(228,174,69,.22);
+  box-shadow: 0 0 0 3px rgba(198,167,94,.22);
 }
-.pn-tema .pn-logo:hover .pn-logo-circle { box-shadow: 0 0 0 5px rgba(228,174,69,.3); }
+.pn-tema .pn-logo:hover .pn-logo-circle { box-shadow: 0 0 0 5px rgba(198,167,94,.3); }
 .pn-tema .pn-logo-name { font-family: var(--font-title); font-style: normal; font-weight: 800; letter-spacing: -.035em; font-size: 27px; }
 .pn-tema .pn-logo-name .w { color: var(--brand); }
 .pn-tema .pn-logo-name .b { color: var(--brand-mid); }
@@ -170,8 +170,8 @@ body.pn-tema {
   margin: 10px auto 0;
   border-radius: 44px 44px 0 0;
   background:
-    radial-gradient(circle at 8% 100%, rgba(255,253,248,.55) 0 170px, transparent 171px),
-    radial-gradient(circle at 96% 4%, rgba(47,76,179,.14) 0 230px, transparent 231px),
+    radial-gradient(circle at 8% 100%, rgba(251,248,241,.55) 0 170px, transparent 171px),
+    radial-gradient(circle at 96% 4%, rgba(52,69,107,.14) 0 230px, transparent 231px),
     var(--celeste);
 }
 /* borde inferior ondulado: la portada se funde con la página */
@@ -245,7 +245,7 @@ body.pn-tema {
 .pn-tema .pn-hero-arrow-left  { left: 18px; }
 .pn-tema .pn-hero-arrow-right { right: 18px; }
 .pn-tema .pn-hero-dots { bottom: 58px; padding: 0; z-index: 6; }
-.pn-tema .pn-hero-dot { background: rgba(19,34,79,.25); }
+.pn-tema .pn-hero-dot { background: rgba(31,42,68,.25); }
 .pn-tema .pn-hero-dot.active { background: var(--brand); }
 
 /* Un solo momento de entrada: la primera portada aparece escalonada */
@@ -301,8 +301,8 @@ body.pn-tema {
   padding: 56px 0 52px;
   border-radius: 44px;
   background:
-    radial-gradient(circle at 92% -10%, rgba(47,76,179,.55) 0 260px, transparent 261px),
-    radial-gradient(circle at 4% 115%, rgba(47,76,179,.35) 0 220px, transparent 221px),
+    radial-gradient(circle at 92% -10%, rgba(52,69,107,.55) 0 260px, transparent 261px),
+    radial-gradient(circle at 4% 115%, rgba(52,69,107,.35) 0 220px, transparent 221px),
     var(--brand);
   color: var(--bg);
 }
@@ -316,13 +316,13 @@ body.pn-tema {
   font-size: clamp(30px, 3.6vw, 46px); line-height: 1.03; letter-spacing: -.035em;
   color: var(--bg);
 }
-.pn-tema .pn-ofertas-head p { margin-top: 10px; max-width: 430px; color: rgba(251,247,236,.74); font-size: 16px; }
+.pn-tema .pn-ofertas-head p { margin-top: 10px; max-width: 430px; color: rgba(245,239,227,.74); font-size: 16px; }
 
 .pn-tema .pn-chip { width: 212px; flex: none; display: flex; flex-direction: column; align-items: center; text-align: center; color: var(--bg); }
 .pn-tema .pn-chip-media { position: relative; width: 172px; height: 172px; }
 .pn-tema .pn-chip-img {
   width: 100%; height: 100%; border-radius: 50%; overflow: hidden;
-  background: var(--bg); border: 5px solid rgba(251,247,236,.2);
+  background: var(--bg); border: 5px solid rgba(245,239,227,.2);
   transition: transform .45s cubic-bezier(.3,1.4,.5,1);
 }
 .pn-tema .pn-chip-img img { width: 100%; height: 100%; object-fit: cover; }
@@ -343,7 +343,7 @@ body.pn-tema {
 .pn-tema .pn-chip-add:hover { transform: scale(1.14); background: var(--oro-hover); }
 .pn-tema .pn-chip-add:active { transform: scale(.95); }
 .pn-tema .pn-chip-name { margin-top: 14px; font-weight: 700; font-size: 15.5px; line-height: 1.3; max-width: 190px; min-height: 40px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.pn-tema .pn-chip-store { font-size: 13px; color: rgba(251,247,236,.66); margin-top: 2px; }
+.pn-tema .pn-chip-store { font-size: 13px; color: rgba(245,239,227,.66); margin-top: 2px; }
 .pn-tema .pn-chip-price { margin-top: 6px; font-family: var(--font-title); font-weight: 800; font-size: 23px; letter-spacing: -.02em; color: var(--oro); }
 
 /* Franja de tiendas */
@@ -413,7 +413,7 @@ body.pn-tema {
 /* ───────────── 10. Banners y colecciones ───────────── */
 .pn-tema .pn-banners-grid { gap: 22px; }
 .pn-tema .pn-banner-card { border-radius: 36px; min-height: 280px; box-shadow: var(--shadow-sm); }
-.pn-tema .pn-banner-overlay { background: linear-gradient(0deg, rgba(19,34,79,.86) 0%, rgba(19,34,79,.22) 62%, transparent 100%); }
+.pn-tema .pn-banner-overlay { background: linear-gradient(0deg, rgba(31,42,68,.86) 0%, rgba(31,42,68,.22) 62%, transparent 100%); }
 .pn-tema .pn-banner-content { padding: 30px 34px; }
 .pn-tema .pn-banner-title { color: var(--bg); font-size: clamp(26px, 3vw, 38px); line-height: 1.04; margin-bottom: 18px; max-width: 360px; }
 .pn-tema .pn-banner-btn { background: var(--oro); color: var(--brand); padding: 11px 22px; font-size: 14px; }
@@ -426,7 +426,7 @@ body.pn-tema {
 }
 .pn-tema .pn-collections-grid { gap: 18px; }
 .pn-tema .pn-collection-card { border-radius: 30px; }
-.pn-tema .pn-collection-overlay { background: linear-gradient(0deg, rgba(19,34,79,.82) 0%, transparent 52%); }
+.pn-tema .pn-collection-overlay { background: linear-gradient(0deg, rgba(31,42,68,.82) 0%, transparent 52%); }
 .pn-tema .pn-collection-name { color: var(--bg); font-size: 20px; letter-spacing: -.02em; left: 22px; right: 22px; bottom: 22px; }
 .pn-tema .pn-collection-name em { font-style: normal; }
 .pn-tema .pn-collection-sub { font-family: var(--font-body); font-weight: 500; letter-spacing: 0; }
@@ -457,10 +457,10 @@ body.pn-tema {
 .pn-tema .pn-cta p { position: relative; z-index: 1; font-size: 16px; max-width: 360px; margin-bottom: 10px; }
 .pn-tema .pn-cta .pn-btn-primary { position: relative; z-index: 1; margin-top: auto; }
 .pn-tema .pn-cta-claro { background: var(--oro); color: var(--brand); }
-.pn-tema .pn-cta-claro p { color: rgba(19,34,79,.78); }
+.pn-tema .pn-cta-claro p { color: rgba(31,42,68,.78); }
 .pn-tema .pn-cta-oscuro { background: var(--brand); color: var(--bg); }
 .pn-tema .pn-cta-oscuro h3 { color: var(--bg); }
-.pn-tema .pn-cta-oscuro p { color: rgba(251,247,236,.74); max-width: 290px; }
+.pn-tema .pn-cta-oscuro p { color: rgba(245,239,227,.74); max-width: 290px; }
 .pn-tema .pn-cta-deco { position: absolute; right: -30px; bottom: -44px; width: 230px; height: 230px; object-fit: contain; z-index: 0; }
 .pn-tema .pn-cta-claro .pn-cta-deco { opacity: .16; filter: grayscale(1) brightness(.2); }
 
@@ -474,7 +474,7 @@ body.pn-tema {
 .pn-tema .pn-footer-logo-name { font-family: var(--font-title); font-style: normal; font-weight: 800; letter-spacing: -.035em; font-size: 24px; }
 .pn-tema .pn-footer-logo-name .w { color: var(--bg); }
 .pn-tema .pn-footer-logo-name .b { color: var(--oro); }
-.pn-tema .pn-footer-col h4 { color: rgba(251,247,236,.5); }
+.pn-tema .pn-footer-col h4 { color: rgba(245,239,227,.5); }
 .pn-tema .pn-footer-col a:hover,
 .pn-tema .pn-footer-social a:hover { color: var(--oro); }
 

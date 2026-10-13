@@ -22,8 +22,8 @@
   const LOGO_FALLBACK      = 'img/logo-dark.png';
 
   const METODOS_PAGO = [
-    { id: 'tarjeta',     nombre: 'Tarjeta',          nota: 'Paga ahora o paga mensualmente', tile: '',       color: '#13224F', chips: ['VISA', 'Mastercard', 'AMEX', 'Diners'] },
-    { id: 'pse',         nombre: 'PSE',              nota: 'Débito desde tu banco',          tile: 'PSE',    color: '#1A5FB4' },
+    { id: 'tarjeta',     nombre: 'Tarjeta',          nota: 'Paga ahora o paga mensualmente', tile: '',       color: '#1F2A44', chips: ['VISA', 'Mastercard', 'AMEX', 'Diners'] },
+    { id: 'pse',         nombre: 'PSE',              nota: 'Débito desde tu banco',          tile: 'PSE',    color: '#34456B' },
     { id: 'nequi',       nombre: 'Nequi',            nota: 'Aprueba desde la app',           tile: 'Nequi',  color: '#C9157F' },
     { id: 'daviplata',   nombre: 'Daviplata',        nota: 'Aprueba desde la app',           tile: 'Davi',   color: '#D32030' },
     { id: 'bancolombia', nombre: 'Botón Bancolombia', nota: 'Desde tu cuenta Bancolombia',   tile: 'BC',     color: '#3D4A6B' },

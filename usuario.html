@@ -11,7 +11,7 @@
        HEADER
     ════════════════════════════ */
     .panel-header {
-      background: linear-gradient(135deg, #1a237e, #283593);
+      background: linear-gradient(135deg, #1F2A44, #1F2A44);
       color: white;
       padding: 40px 20px;
       text-align: center;
@@ -43,7 +43,7 @@
 
     /* ── Cabecera de sección ── */
     .resena-header {
-      background: linear-gradient(135deg, #1a237e, #283593);
+      background: linear-gradient(135deg, #1F2A44, #1F2A44);
       color: white;
       padding: 28px 20px 20px;
       text-align: center;
@@ -65,7 +65,7 @@
       font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: #D4954D;
+      color: #C6A75E;
       border-bottom: 2px solid #fde8d8;
       padding-bottom: 6px;
       margin-bottom: 18px;
@@ -109,14 +109,14 @@
       transition: border-color 0.2s, box-shadow 0.2s;
     }
     .ctrl-resena:focus {
-      border-color: #D4954D;
+      border-color: #C6A75E;
       box-shadow: 0 0 0 3px rgba(212,149,77,0.15);
       outline: none;
     }
 
     /* ── Botón publicar ── */
     .btn-publicar-resena {
-      background: linear-gradient(135deg, #1a237e, #283593);
+      background: linear-gradient(135deg, #1F2A44, #1F2A44);
       color: white;
       border: none;
       border-radius: 12px;
@@ -285,7 +285,7 @@
         <div class="d-flex gap-3 mb-4" id="destino-btns">
           <button type="button" id="btn-dest-app" onclick="seleccionarDestino('app')"
             class="btn flex-fill fw-bold py-3 rounded-3 destino-btn destino-btn-app"
-            style="border:2px solid #D4954D; background:white; color:#D4954D; font-size:.95rem; transition:all .2s;">
+            style="border:2px solid #C6A75E; background:white; color:#C6A75E; font-size:.95rem; transition:all .2s;">
             📱 Reseña a la App
           </button>
           <button type="button" id="btn-dest-tienda" onclick="seleccionarDestino('tienda')"
@@ -541,7 +541,7 @@
       const btnApp    = document.getElementById("btn-dest-app");
       const btnTienda = document.getElementById("btn-dest-tienda");
       if (dest === "app") {
-        btnApp.style.background    = "#D4954D";
+        btnApp.style.background    = "#C6A75E";
         btnApp.style.color         = "white";
         btnTienda.style.background = "white";
         btnTienda.style.color      = "#1a6e3c";
@@ -551,7 +551,7 @@
         btnTienda.style.background = "#1a6e3c";
         btnTienda.style.color      = "white";
         btnApp.style.background    = "white";
-        btnApp.style.color         = "#D4954D";
+        btnApp.style.color         = "#C6A75E";
         document.getElementById("campos-tienda").style.display = "block";
         document.getElementById("campos-app").style.display    = "none";
         cargarTiendasFirestore();
@@ -670,7 +670,7 @@
          "titulo-opinion","bloque-comentario","titulo-sugerencia","bloque-sugerencia","bloque-botones"]
           .forEach(id => document.getElementById(id).style.display = "none");
         document.getElementById("btn-dest-app").style.background    = "white";
-        document.getElementById("btn-dest-app").style.color         = "#D4954D";
+        document.getElementById("btn-dest-app").style.color         = "#C6A75E";
         document.getElementById("btn-dest-tienda").style.background = "white";
         document.getElementById("btn-dest-tienda").style.color      = "#1a6e3c";
 
@@ -733,7 +733,7 @@
                 <div>
                   <span style="font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:20px;margin-right:6px;
                     background:${r.destino==='tienda'?'#e8f5e9':'#fff3e0'};
-                    color:${r.destino==='tienda'?'#1a6e3c':'#D4954D'};">
+                    color:${r.destino==='tienda'?'#1a6e3c':'#C6A75E'};">
                     ${r.destino==='tienda'?'🏪 Tienda':'📱 App'}
                   </span>
                   <span class="fw-bold">${r.referencia}</span>
@@ -788,7 +788,7 @@
        "titulo-opinion","bloque-comentario","titulo-sugerencia","bloque-sugerencia","bloque-botones"]
         .forEach(id => document.getElementById(id).style.display = "none");
       document.getElementById("btn-dest-app").style.background    = "white";
-      document.getElementById("btn-dest-app").style.color         = "#D4954D";
+      document.getElementById("btn-dest-app").style.color         = "#C6A75E";
       document.getElementById("btn-dest-tienda").style.background = "white";
       document.getElementById("btn-dest-tienda").style.color      = "#1a6e3c";
       window.scrollTo({ top: 0, behavior: "smooth" });

@@ -193,7 +193,7 @@ function inyectarPanel() {
 
           <button type="submit"
             style="width:100%; padding:11px; border:none; border-radius:12px;
-                   background:linear-gradient(135deg,#1565c0,#0d47a1); color:white;
+                   background:linear-gradient(135deg,#34456B,#1F2A44); color:white;
                    font-weight:700; font-size:.9rem; cursor:pointer; transition:opacity .2s;"
             id="btnCambiarPass">🔒 Cambiar contraseña</button>
         </form>
@@ -236,9 +236,9 @@ function detectarColor() {
   if (url.includes("vendedor"))           return { h: "#1a6e3c", bg: "linear-gradient(135deg,#1a6e3c,#0f4226)" };
   if (url.includes("admin"))              return { h: "#37474f", bg: "linear-gradient(135deg,#37474f,#263238)" };
   if (url.includes("due"))               return { h: "#b71c1c", bg: "linear-gradient(135deg,#b71c1c,#7f0000)" };
-  if (url.includes("verificador"))        return { h: "#1565c0", bg: "linear-gradient(135deg,#1565c0,#0d47a1)" };
+  if (url.includes("verificador"))        return { h: "#34456B", bg: "linear-gradient(135deg,#34456B,#1F2A44)" };
   if (url.includes("patrocinador"))       return { h: "#7b1fa2", bg: "linear-gradient(135deg,#7b1fa2,#4a148c)" };
-  return                                          { h: "#D4954D", bg: "linear-gradient(135deg,#D4954D,#775533)" };
+  return                                          { h: "#C6A75E", bg: "linear-gradient(135deg,#C6A75E,#775533)" };
 }
 
 /* ════════════════════════════════════════════════════════════

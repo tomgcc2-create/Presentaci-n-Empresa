@@ -15,10 +15,10 @@
   <style>
     /* ══ Tienda · estilo editorial (hero grande, tarjetas grises, botones redondeados) ══ */
     .st-hero{position:relative;width:var(--panel-w);margin:10px auto 0;height:clamp(270px,33vw,410px);border-radius:44px;overflow:hidden;color:var(--bg);
-      background:radial-gradient(circle at 92% -10%,rgba(47,76,179,.6) 0 270px,transparent 271px),radial-gradient(circle at 3% 110%,rgba(47,76,179,.4) 0 230px,transparent 231px),var(--brand)}
+      background:radial-gradient(circle at 92% -10%,rgba(52,69,107,.6) 0 270px,transparent 271px),radial-gradient(circle at 3% 110%,rgba(52,69,107,.4) 0 230px,transparent 231px),var(--brand)}
     .st-hero::before{content:"";position:absolute;inset:-20%;background:url(img/logo-dark.png) 0 0/170px 170px repeat;opacity:.06;transform:rotate(-12deg)}
     .st-hero h1{position:absolute;left:0;right:0;bottom:-.21em;text-align:center;font-family:var(--font-title);font-weight:800;font-size:clamp(110px,25vw,340px);line-height:1;letter-spacing:-.05em;color:var(--bg);text-shadow:0 8px 40px rgba(0,0,0,.25);pointer-events:none}
-    .st-logo{position:absolute;z-index:1;right:9%;top:10%;width:clamp(120px,15vw,215px);aspect-ratio:1;border-radius:50%;background:var(--brand);border:4px solid var(--oro);box-shadow:0 0 0 10px rgba(228,174,69,.2),0 18px 40px rgba(0,0,0,.3);display:grid;place-items:center;animation:stBob 5s ease-in-out infinite}
+    .st-logo{position:absolute;z-index:1;right:9%;top:10%;width:clamp(120px,15vw,215px);aspect-ratio:1;border-radius:50%;background:var(--brand);border:4px solid var(--oro);box-shadow:0 0 0 10px rgba(198,167,94,.2),0 18px 40px rgba(0,0,0,.3);display:grid;place-items:center;animation:stBob 5s ease-in-out infinite}
     .st-logo img{width:92%;height:92%;object-fit:contain}
     .st-ch{position:absolute;z-index:1;font-weight:800;font-size:13px;padding:8px 15px;border-radius:999px;box-shadow:0 8px 22px rgba(0,0,0,.25);animation:stBob 6s ease-in-out infinite;white-space:nowrap}
     .st-ch.a{left:8%;top:14%;background:var(--oro);color:var(--brand)}
@@ -66,7 +66,7 @@
     .st-store:hover{border-color:var(--brand)}
     .st-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:26px 22px}
     .st-card{display:flex;flex-direction:column;gap:11px;min-width:0}
-    .st-tile{position:relative;aspect-ratio:1/1;border-radius:24px;background:#F0EFEA;overflow:hidden;cursor:pointer;display:grid;place-items:center;color:var(--text-3);font-size:38px}
+    .st-tile{position:relative;aspect-ratio:1/1;border-radius:24px;background:#EFE6D4;overflow:hidden;cursor:pointer;display:grid;place-items:center;color:var(--text-3);font-size:38px}
     .st-tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .4s}
     .st-card:hover .st-tile img{transform:scale(1.05)}
     .st-tag{position:absolute;top:12px;right:12px;z-index:2;background:var(--bg-white);color:var(--brand);font-size:11.5px;font-weight:700;padding:4px 12px;border-radius:99px}
@@ -92,13 +92,13 @@
     .st-reco-h p{font-size:14px;color:var(--text-2);margin-top:4px}
     .st-rail{display:flex;gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;padding-bottom:6px}
     .st-rail::-webkit-scrollbar{display:none}.st-rail>*{flex:0 0 clamp(250px,26vw,320px);scroll-snap-align:start}
-    .st-cta{margin-top:56px;background:var(--brand);color:var(--bg);border-radius:32px;padding:44px 48px;display:flex;flex-wrap:wrap;gap:28px;justify-content:space-between;align-items:center;background-image:radial-gradient(circle at 95% 0,rgba(47,76,179,.55) 0 220px,transparent 221px)}
+    .st-cta{margin-top:56px;background:var(--brand);color:var(--bg);border-radius:32px;padding:44px 48px;display:flex;flex-wrap:wrap;gap:28px;justify-content:space-between;align-items:center;background-image:radial-gradient(circle at 95% 0,rgba(52,69,107,.55) 0 220px,transparent 221px)}
     .st-cta h2{font-family:var(--font-title);font-weight:800;font-size:clamp(28px,3.4vw,44px);line-height:1.04;letter-spacing:-.035em;color:var(--bg)}
-    .st-cta p{max-width:360px;font-size:14px;color:rgba(251,247,236,.75);margin-bottom:12px}
+    .st-cta p{max-width:360px;font-size:14px;color:rgba(245,239,227,.75);margin-bottom:12px}
     .st-cta form{display:flex;gap:6px;background:var(--bg-white);border-radius:999px;padding:5px;max-width:380px}
     .st-cta input{flex:1;min-width:0;border:0;outline:0;background:none;padding:0 14px;font-size:14px;color:var(--text)}
     .st-cta button{border:0;border-radius:999px;background:var(--oro);color:var(--brand);font-weight:800;padding:10px 20px;font-size:13px}
-    .st-ov{position:fixed;inset:0;background:rgba(20,23,43,.4);backdrop-filter:blur(3px);z-index:1590;display:none}.st-ov.open{display:block}
+    .st-ov{position:fixed;inset:0;background:rgba(31,42,68,.4);backdrop-filter:blur(3px);z-index:1590;display:none}.st-ov.open{display:block}
     .st-offers{display:flex;flex-direction:column;gap:8px}
     .st-offer{display:grid;grid-template-columns:1fr auto auto;gap:14px;align-items:center;padding:12px 16px;border:1.5px solid var(--border);border-radius:16px;background:var(--bg-white)}
     .st-offer.best{border-color:var(--green);background:var(--green-bg)}
@@ -108,7 +108,7 @@
     .st-offer .st-btn{padding:8px 16px}
     .st-sim{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
     .st-sim button{text-align:left;border:1.5px solid var(--border);border-radius:16px;background:var(--bg-white);padding:10px;font-size:12.5px;color:var(--text-2)}
-    .st-sim img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;margin-bottom:8px;background:#F0EFEA}
+    .st-sim img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;margin-bottom:8px;background:#EFE6D4}
     .st-sim b{display:block;color:var(--brand);font-size:13px}
     .pn-empty-state{text-align:center;padding:64px 20px;color:var(--text-2)}.pn-empty-state .icon{font-size:3rem;display:block;margin-bottom:14px}
     @media(max-width:900px){.st-main{grid-template-columns:1fr}.st-side{position:fixed;z-index:1600;top:0;left:0;bottom:0;width:300px;max-width:86vw;background:var(--bg-white);padding:22px;overflow-y:auto;transform:translateX(-105%);transition:transform .28s;box-shadow:var(--shadow-lg)}.st-side.open{transform:none}.st-fbtn{display:flex}.st-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.st-cta{padding:32px 26px}}
@@ -116,7 +116,7 @@
 
     /* ── MODAL PRODUCTO ── */
     .pn-modal-overlay {
-      position:fixed;inset:0;background:rgba(20,23,43,.55);
+      position:fixed;inset:0;background:rgba(31,42,68,.55);
       backdrop-filter:blur(5px);z-index:1800;
       display:none;align-items:center;justify-content:center;padding:16px;
     }
@@ -156,7 +156,7 @@
       resize:vertical;min-height:88px;
     }
     .pn-review-textarea::placeholder { color:var(--text-3); }
-    .pn-review-textarea:focus { border-color:var(--brand-mid);box-shadow:0 0 0 3px rgba(59,79,216,.1); }
+    .pn-review-textarea:focus { border-color:var(--brand-mid);box-shadow:0 0 0 3px rgba(52,69,107,.1); }
     .pn-file-label {
       display:inline-flex;align-items:center;gap:7px;
       padding:8px 16px;border:1.5px dashed var(--border-2);
@@ -172,7 +172,7 @@
     .pn-photo-item img { width:100%;height:100%;object-fit:cover; }
     .pn-photo-remove {
       position:absolute;top:3px;right:3px;width:18px;height:18px;
-      background:rgba(20,23,43,.75);border-radius:50%;color:#fff;
+      background:rgba(31,42,68,.75);border-radius:50%;color:#fff;
       font-size:10px;display:flex;align-items:center;justify-content:center;
       cursor:pointer;border:none;
     }
@@ -187,7 +187,7 @@
 
     /* Lightbox */
     .pn-lightbox {
-      position:fixed;inset:0;background:rgba(20,23,43,.95);
+      position:fixed;inset:0;background:rgba(31,42,68,.95);
       z-index:3000;display:none;align-items:center;justify-content:center;
     }
     .pn-lightbox.open { display:flex; }
@@ -198,16 +198,16 @@
     .pn-lightbox-next { right:16px; }
 
     /* ══ Ventana de producto (mini ventana con fondo desenfocado) ══ */
-    .pn-modal-overlay{backdrop-filter:blur(10px);background:rgba(19,34,79,.5)}
+    .pn-modal-overlay{backdrop-filter:blur(10px);background:rgba(31,42,68,.5)}
     .pn-modal-box{max-width:1040px;border-radius:32px;background:var(--bg-white)}
     .dm-top{display:grid;grid-template-columns:1fr 1fr;gap:36px;padding:30px 36px 8px}
-    .dm-main{position:relative;aspect-ratio:1;border-radius:26px;overflow:hidden;background:#F0EFEA;display:grid;place-items:center;color:var(--text-3);font-size:42px}
+    .dm-main{position:relative;aspect-ratio:1;border-radius:26px;overflow:hidden;background:#EFE6D4;display:grid;place-items:center;color:var(--text-3);font-size:42px}
     .dm-main img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
     .dm-ph{position:absolute}
     .dm-arr{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;border-radius:12px;border:0;display:grid;place-items:center;font-size:17px;background:var(--bg-white);color:var(--brand);box-shadow:var(--shadow-sm);z-index:2}
     .dm-arr.l{left:14px}.dm-arr.r{right:14px;background:var(--brand);color:var(--bg)}
     .dm-thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
-    .dm-th{aspect-ratio:1;border-radius:14px;overflow:hidden;background:#F0EFEA;border:2px solid transparent;cursor:pointer}
+    .dm-th{aspect-ratio:1;border-radius:14px;overflow:hidden;background:#EFE6D4;border:2px solid transparent;cursor:pointer}
     .dm-th.active{border-color:var(--brand)}.dm-th img{width:100%;height:100%;object-fit:cover}
     .dm-info{display:flex;flex-direction:column;gap:10px;min-width:0}
     .dm-cat{font-size:13px;font-weight:700;color:var(--text-3);letter-spacing:.04em;text-transform:uppercase}
@@ -497,9 +497,9 @@ if(!window.PN_PRODUCTOS){
       o:[o("Alkosto",129900,"Fontibón",159900), o("Linio",134900,"Online"), o("Falabella",149900,"Teusaquillo")]},
     {id:8,  nombre:"Smartwatch Fitness Pro",      cat:"tecnologia", estrellas:4.4, resenas:156, imagen:U('photo-1523275335684-37898b6baf30'), descripcion:"Reloj inteligente con GPS, monitor cardíaco y pantalla AMOLED.", rv:["Laura V.","El GPS es preciso y la pantalla se ve genial."],
       o:[o("Falabella",249900,"Chapinero"), o("Linio",255900,"Online"), o("Alkosto",259900,"Fontibón")]},
-    {id:9,  nombre:"Zapatillas Running CloudX",   cat:"moda",       estrellas:4.3, resenas:89,  imagen:U('photo-1542291026-7eec264c27ff'), descripcion:"Zapatillas de running con amortiguación CloudX y suela tracción.", esRopa:true, colores:["#FFFFFF","#1E2A80","#EF4444"], tallas:["38","39","40","41","42","43"], rv:["Carlos R.","Muy buenas, talla fiel. El precio en Éxito es el más bajo."],
+    {id:9,  nombre:"Zapatillas Running CloudX",   cat:"moda",       estrellas:4.3, resenas:89,  imagen:U('photo-1542291026-7eec264c27ff'), descripcion:"Zapatillas de running con amortiguación CloudX y suela tracción.", esRopa:true, colores:["#FFFFFF","#1F2A44","#EF4444"], tallas:["38","39","40","41","42","43"], rv:["Carlos R.","Muy buenas, talla fiel. El precio en Éxito es el más bajo."],
       o:[o("Éxito",189900,"Suba",229900), o("Alkosto",195000,"Fontibón"), o("Falabella",209900,"Chapinero")]},
-    {id:10, nombre:"Sudadera Oversize Fleece",    cat:"moda",       estrellas:4.1, resenas:63,  imagen:U('photo-1556821840-3a63f15732ce'), descripcion:"Sudadera oversize de polar suave, tela 280g.", esRopa:true, colores:["#1A1D2E","#4A90E2","#22C55E"], tallas:["XS","S","M","L","XL","XXL"], rv:["Paula S.","Súper abrigada y cómoda, queda holgada como se ve."],
+    {id:10, nombre:"Sudadera Oversize Fleece",    cat:"moda",       estrellas:4.1, resenas:63,  imagen:U('photo-1556821840-3a63f15732ce'), descripcion:"Sudadera oversize de polar suave, tela 280g.", esRopa:true, colores:["#1A1D2E","#5A6F9A","#22C55E"], tallas:["XS","S","M","L","XL","XXL"], rv:["Paula S.","Súper abrigada y cómoda, queda holgada como se ve."],
       o:[o("Linio",79900,"Online"), o("Éxito",84900,"Kennedy"), o("Falabella",89900,"Teusaquillo")]},
     {id:11, nombre:"Sábanas Microfibra Queen",    cat:"hogar",      estrellas:4.6, resenas:201, imagen:U('photo-1631049307264-da0ec9d70304'), descripcion:"Juego de sábanas de microfibra suave 4 piezas, 200 hilos.", rv:["Andrea F.","Suaves y no se arrugan. Después de lavarlas siguen igual."],
       o:[o("Alkosto",119900,"Fontibón"), o("Homecenter",124900,"Puente Aranda"), o("Falabella",132900,"Chapinero")]},

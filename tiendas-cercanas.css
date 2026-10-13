@@ -53,7 +53,7 @@
 
 .pn-legend-dot.aliada {
   background: var(--brand-mid);
-  box-shadow: 0 0 0 3px rgba(59, 79, 216, 0.2);
+  box-shadow: 0 0 0 3px rgba(52,69,107, 0.2);
 }
 
 .pn-legend-dot.google {
@@ -109,7 +109,7 @@
 .pn-filter-input:focus {
   background: #fff;
   border-color: var(--brand-mid);
-  box-shadow: 0 0 0 3px rgba(59, 79, 216, 0.12);
+  box-shadow: 0 0 0 3px rgba(52,69,107, 0.12);
 }
 
 .pn-filter-clear {
@@ -162,7 +162,7 @@
   background: var(--brand);
   color: #fff;
   border-color: var(--brand);
-  box-shadow: 0 2px 8px rgba(30, 42, 128, 0.25);
+  box-shadow: 0 2px 8px rgba(31,42,68, 0.25);
 }
 
 .pn-filter-status {
@@ -213,7 +213,7 @@
   max-width: 440px;
   width: 90%;
   text-align: center;
-  box-shadow: 0 20px 40px rgba(20, 23, 43, 0.2);
+  box-shadow: 0 20px 40px rgba(31,42,68, 0.2);
   z-index: 20;
   transition: all 0.35s ease;
   animation: pnFadeInUp 0.4s ease;
@@ -236,7 +236,7 @@
   align-items: center;
   justify-content: center;
   margin: 0 auto 16px;
-  box-shadow: 0 4px 14px rgba(59, 79, 216, 0.16);
+  box-shadow: 0 4px 14px rgba(52,69,107, 0.16);
   animation: pnPulseSoft 2s infinite ease-in-out;
 }
 
@@ -270,14 +270,14 @@
   border-radius: var(--r-pill);
   font-size: 15px;
   font-weight: 600;
-  box-shadow: 0 4px 16px rgba(30, 42, 128, 0.3);
+  box-shadow: 0 4px 16px rgba(31,42,68, 0.3);
   transition: all var(--t);
 }
 
 .pn-btn-location:hover {
   background: var(--brand-hover);
   transform: translateY(-2px);
-  box-shadow: 0 6px 22px rgba(30, 42, 128, 0.4);
+  box-shadow: 0 6px 22px rgba(31,42,68, 0.4);
 }
 
 .pn-btn-location:active {
@@ -334,7 +334,7 @@
 
 .pn-manual-input:focus {
   border-color: var(--brand-mid);
-  box-shadow: 0 0 0 3px rgba(59, 79, 216, 0.12);
+  box-shadow: 0 0 0 3px rgba(52,69,107, 0.12);
 }
 
 .pn-manual-alert {
@@ -378,9 +378,9 @@
 /* ── Alerta informativa sobre API Key de Google Maps ── */
 .pn-api-key-banner {
   display: none;
-  background: #EFF6FF;
-  border: 1px solid #BFDBFE;
-  color: #1E40AF;
+  background: #E6EAF1;
+  border: 1px solid #D6DCE8;
+  color: #34456B;
   padding: 10px 16px;
   border-radius: var(--r);
   font-size: 13px;
@@ -502,7 +502,7 @@
   align-items: center;
   gap: 4px;
   font-weight: 600;
-  color: #2563EB;
+  color: #34456B;
 }
 
 /* Cuerpo con scroll */
@@ -686,7 +686,7 @@
   align-self: flex-start;
   background: var(--brand-light);
   color: var(--brand-mid);
-  border: 1px solid rgba(59, 79, 216, 0.2);
+  border: 1px solid rgba(52,69,107, 0.2);
   border-radius: var(--r-pill);
   padding: 5px 12px;
   font-size: 12px;
@@ -714,7 +714,7 @@
 .pn-user-location-dot {
   width: 16px;
   height: 16px;
-  background: #3B4FD8;
+  background: #34456B;
   border: 3px solid #FFFFFF;
   border-radius: 50%;
   position: absolute;
@@ -731,7 +731,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: rgba(59, 79, 216, 0.25);
+  background: rgba(52,69,107, 0.25);
   animation: pnRadarRipple 2s infinite ease-out;
   pointer-events: none;
   z-index: 1;
@@ -805,7 +805,7 @@
   display: none;
   position: absolute;
   inset: 0;
-  background: rgba(20, 23, 43, 0.4);
+  background: rgba(31,42,68, 0.4);
   backdrop-filter: blur(2px);
   z-index: 24;
   opacity: 0;

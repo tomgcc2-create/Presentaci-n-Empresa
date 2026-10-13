@@ -335,7 +335,7 @@ async function cargarPinesTiendas(userLat, userLng) {
 }
 
 /**
- * Crea un pin de Tienda Aliada (Color Azul Marino / Índigo PriceNice #3B4FD8)
+ * Crea un pin de Tienda Aliada (Color Azul Marino / Índigo PriceNice #34456B)
  */
 function crearPinTiendaAliada(store) {
   if (!map || typeof L === "undefined") return;
@@ -343,10 +343,10 @@ function crearPinTiendaAliada(store) {
   const pinHtml = `
     <div class="pn-marker-bubble partner" id="pin-${store.id}" title="${store.nombre}" data-id="${store.id}">
       <svg class="pn-marker-pin-svg" width="38" height="48" viewBox="0 0 38 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M19 0C8.50659 0 0 8.50659 0 19C0 31.5 19 48 19 48C19 48 38 31.5 38 19C38 8.50659 29.4934 0 19 0Z" fill="#1E2A80"/>
-        <path d="M19 3C9.61116 3 2 10.6112 2 20C2 31.2 19 45.5 19 45.5C19 45.5 36 31.2 36 20C36 10.6112 28.3888 3 19 3Z" fill="#3B4FD8"/>
+        <path d="M19 0C8.50659 0 0 8.50659 0 19C0 31.5 19 48 19 48C19 48 38 31.5 38 19C38 8.50659 29.4934 0 19 0Z" fill="#1F2A44"/>
+        <path d="M19 3C9.61116 3 2 10.6112 2 20C2 31.2 19 45.5 19 45.5C19 45.5 36 31.2 36 20C36 10.6112 28.3888 3 19 3Z" fill="#34456B"/>
         <circle cx="19" cy="19" r="13" fill="#FFFFFF"/>
-        <path d="M14 16V14C14 11.2386 16.2386 9 19 9C21.7614 9 24 11.2386 24 14V16H25.5C26.0523 16 26.5 16.4477 26.5 17V26C26.5 26.5523 26.0523 27 25.5 27H12.5C11.9477 27 11.5 26.5523 11.5 26V17C11.5 16.4477 11.9477 16 12.5 16H14ZM16 16H22V14C22 12.3431 20.6569 11 19 11C17.3431 11 16 12.3431 16 14V16Z" fill="#1E2A80"/>
+        <path d="M14 16V14C14 11.2386 16.2386 9 19 9C21.7614 9 24 11.2386 24 14V16H25.5C26.0523 16 26.5 16.4477 26.5 17V26C26.5 26.5523 26.0523 27 25.5 27H12.5C11.9477 27 11.5 26.5523 11.5 26V17C11.5 16.4477 11.9477 16 12.5 16H14ZM16 16H22V14C22 12.3431 20.6569 11 19 11C17.3431 11 16 12.3431 16 14V16Z" fill="#1F2A44"/>
       </svg>
     </div>
   `;

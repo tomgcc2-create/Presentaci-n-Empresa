@@ -8,10 +8,10 @@
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <style>
-    :root { --brand:#1a237e; --brand-dark:#283593; --ok:#2e7d32; --warn:#f57f17; }
+    :root { --brand:#1F2A44; --brand-dark:#1F2A44; --ok:#2e7d32; --warn:#f57f17; }
 
     .panel-header {
-      background: linear-gradient(135deg, #1a237e, #283593);
+      background: linear-gradient(135deg, #1F2A44, #1F2A44);
       color: white; padding: 40px 20px; text-align: center;
       border-radius: 0 0 20px 20px; margin-bottom: 30px;
     }
@@ -31,7 +31,7 @@
 
     /* ── Modales comunes ── */
     .modal-header-brand {
-      background: linear-gradient(135deg, #1a237e, #283593);
+      background: linear-gradient(135deg, #1F2A44, #1F2A44);
       color: white; border-radius: 16px 16px 0 0;
     }
     .modal-header-brand .btn-close { filter: invert(1); }
@@ -83,7 +83,7 @@
     .cat-belleza   { background:#fce4ec; color:#c62828; }
     .cat-higiene   { background:#e0f7fa; color:#00695c; }
     .cat-alimentos { background:#fff3e0; color:#e65100; }
-    .cat-hogar     { background:#e8eaf6; color:#283593; }
+    .cat-hogar     { background:#E6EAF1; color:#1F2A44; }
     .cat-bebes     { background:#f3e5f5; color:#6a1b9a; }
     .cat-mascotas  { background:#e8f5e9; color:#2e7d32; }
 
@@ -622,7 +622,7 @@
   // ════════════════════════════════════════════════════
   const MESES = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago"];
   const TIENDAS_REPORTE = ["D1","Jumbo","Éxito","Carulla","Olímpica","Droguería Cruz Verde","Falabella","PriceSmart","Alkosto","Homecenter","Ara","Miniso","Agrocampo","Linio"];
-  const PALETA = ["#b71c1c","#1565c0","#2e7d32","#f57f17","#6a1b9a","#00695c","#e64a19","#37474f","#ad1457","#558b2f","#0277bd","#4527a0","#00838f","#c43e00"];
+  const PALETA = ["#b71c1c","#34456B","#2e7d32","#f57f17","#6a1b9a","#00695c","#e64a19","#37474f","#ad1457","#558b2f","#34456B","#4527a0","#00838f","#c43e00"];
 
   // Datos simulados de ventas
   function simVentas(base, variacion = 0.15) {
@@ -659,7 +659,7 @@
           {
             label: "📊 Promedio del mercado",
             data: mercado,
-            borderColor: "#1565c0", backgroundColor: "rgba(21,101,192,.07)",
+            borderColor: "#34456B", backgroundColor: "rgba(21,101,192,.07)",
             borderWidth: 2, pointRadius: 4, tension: 0.4,
             borderDash: [6,3], fill: false
           }
