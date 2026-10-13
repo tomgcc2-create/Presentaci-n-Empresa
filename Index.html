@@ -19,8 +19,9 @@
   <link rel="stylesheet" href="carrito.css">
   <!-- Chatbot: al final para que z-index y position:fixed no sean pisados -->
   <link rel="stylesheet" href="chatbot.css">
+  <link rel="stylesheet" href="inicio-glow.css">
 </head>
-<body class="has-navbar pn-tema">
+<body class="has-navbar pn-tema pn-glow">
 
 <!-- ════════════════════════════════════════════
      NAVBAR BLANCA FIJA
@@ -344,30 +345,23 @@
 <!-- ════════════════════════════════════════════
      BENEFICIOS (debajo de la portada)
 ════════════════════════════════════════════ -->
-<section class="pn-perks" aria-label="Beneficios de PriceNice">
-  <div class="pn-container">
-    <ul class="pn-perks-grid">
-      <li class="pn-perk">
-        <span class="pn-perk-icon"><i class="bi bi-bar-chart-line"></i></span>
-        <strong>Comparación de precios</strong>
-        <span>Un solo lugar, todas las tiendas</span>
-      </li>
-      <li class="pn-perk">
-        <span class="pn-perk-icon"><i class="bi bi-geo-alt"></i></span>
-        <strong>Tiendas cercanas</strong>
-        <span>Encuentra dónde comprar cerca de ti</span>
-      </li>
-      <li class="pn-perk">
-        <span class="pn-perk-icon"><i class="bi bi-star"></i></span>
-        <strong>Reseñas reales</strong>
-        <span>Opiniones verificadas de compradores</span>
-      </li>
-      <li class="pn-perk">
-        <span class="pn-perk-icon"><i class="bi bi-shield-check"></i></span>
-        <strong>Compra segura</strong>
-        <span>Precios verificados, sin sorpresas</span>
-      </li>
-    </ul>
+<section class="pn-tiles" aria-label="Accesos rápidos">
+  <div class="pn-tiles-grid">
+    <a href="tienda.html?oferta=1" class="pn-tile pn-tile-1 fade-up">
+      <span class="pn-tile-title">ofertas</span>
+      <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=700&q=80" alt="" loading="lazy">
+      <span class="pn-tile-go"><i class="bi bi-arrow-up-right"></i></span>
+    </a>
+    <a href="tienda.html?nuevo=1" class="pn-tile pn-tile-2 fade-up">
+      <span class="pn-tile-title">novedades</span>
+      <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=700&q=80" alt="" loading="lazy">
+      <span class="pn-tile-go"><i class="bi bi-arrow-up-right"></i></span>
+    </a>
+    <a href="#tiendas-cerca" class="pn-tile pn-tile-3 fade-up">
+      <span class="pn-tile-title">tiendas cerca</span>
+      <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=700&q=80" alt="" loading="lazy">
+      <span class="pn-tile-go"><i class="bi bi-arrow-up-right"></i></span>
+    </a>
   </div>
 </section>
 
@@ -409,7 +403,7 @@
   <div class="pn-container">
     <div class="pn-section-head fade-up">
       <div>
-        <h2 class="pn-section-title" id="titCat">Explora por categorías</h2>
+        <h2 class="pn-section-title" id="titCat">categorías</h2>
         <p class="pn-section-sub">Todo lo que necesitas, organizado para ti</p>
       </div>
       <a href="tienda.html" class="pn-section-link">Ver todo <i class="bi bi-arrow-right"></i></a>
@@ -467,7 +461,7 @@
   <div class="pn-container">
     <div class="pn-section-head fade-up">
       <div>
-        <h2 class="pn-section-title" id="titTend">Tendencias</h2>
+        <h2 class="pn-section-title" id="titTend">más vendidos</h2>
         <p class="pn-section-sub">Lo que todos están comprando esta semana</p>
       </div>
       <div class="pn-rail-ctrl">
@@ -527,7 +521,7 @@
   <div class="pn-container">
     <div class="pn-section-head fade-up">
       <div>
-        <h2 class="pn-section-title" id="titCol">Colecciones destacadas</h2>
+        <h2 class="pn-section-title" id="titCol">catálogo</h2>
         <p class="pn-section-sub">Selecciones cuidadosas para cada estilo de vida</p>
       </div>
       <a href="tienda.html" class="pn-section-link">Ver todo <i class="bi bi-arrow-right"></i></a>
@@ -566,6 +560,45 @@
         </div>
       </a>
     </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     RESEÑAS
+════════════════════════════════════════════ -->
+<section class="pn-section pn-resenas" aria-labelledby="titRes">
+  <div class="pn-container">
+    <div class="pn-section-head fade-up">
+      <div><h2 class="pn-section-title" id="titRes">reseñas</h2></div>
+    </div>
+    <div class="pn-rev-wrap">
+      <button type="button" class="pn-rev-arrow" id="revPrev" aria-label="Reseña anterior"><i class="bi bi-chevron-left"></i></button>
+      <div class="pn-rev-track" id="revTrack">
+        <article class="pn-rev-card">
+          <header><span class="pn-rev-av">C</span><div><strong>Camila Rojas</strong><span class="pn-rev-stars">★★★★★</span></div></header>
+          <p>Compré una licuadora que en otra tienda costaba casi $40.000 más. PriceNice me mostró dónde estaba más barata y pude pasar a recogerla cerca de mi casa.</p>
+          <p>Ahora lo reviso antes de cualquier compra.</p>
+        </article>
+        <article class="pn-rev-card">
+          <header><span class="pn-rev-av">J</span><div><strong>Julián Pardo</strong><span class="pn-rev-stars">★★★★★</span></div></header>
+          <p>El mapa de tiendas cercanas me salvó: encontré una droguería abierta a dos cuadras con mejor precio que la cadena de siempre.</p>
+          <p>Muy útil para el día a día.</p>
+        </article>
+        <article class="pn-rev-card">
+          <header><span class="pn-rev-av">L</span><div><strong>Laura Giraldo</strong><span class="pn-rev-stars">★★★★★</span></div></header>
+          <p>Me gusta que las tiendas estén verificadas y que las reseñas sean de compradores reales. Da confianza para decidir.</p>
+          <p>Lo recomiendo a toda mi familia.</p>
+        </article>
+        <article class="pn-rev-card">
+          <header><span class="pn-rev-av">D</span><div><strong>Diego Marín</strong><span class="pn-rev-stars">★★★★☆</span></div></header>
+          <p>Comparé tres tiendas en un minuto para un celular y ahorré bastante. La página es muy clara y rápida.</p>
+          <p>Ojalá sigan sumando más tiendas.</p>
+        </article>
+      </div>
+      <button type="button" class="pn-rev-arrow" id="revNext" aria-label="Reseña siguiente"><i class="bi bi-chevron-right"></i></button>
+    </div>
+    <div class="pn-rev-dots" id="revDots"></div>
   </div>
 </section>
 
@@ -726,6 +759,10 @@
           <span class="pn-footer-logo-name"><span class="w">Price</span><span class="b">Nice</span></span>
         </div>
         <p>Tu brújula de los buenos precios. Comparamos precios de todas las tiendas para que siempre pagues lo justo.</p>
+        <form class="pn-news" id="pnNews" novalidate>
+          <input type="email" id="pnNewsEmail" placeholder="Tu correo para recibir novedades" aria-label="Correo electrónico" required>
+          <button type="submit" aria-label="Suscribirme"><i class="bi bi-arrow-right"></i></button>
+        </form>
         <div class="pn-footer-social" aria-label="Redes sociales">
           <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
           <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
@@ -848,6 +885,7 @@ let slideActual = 0, autoTimer;
 const totalSlides = document.querySelectorAll('.pn-hero-slide').length;
 
 function iniciarCarrusel() {
+  document.querySelector('.pn-hero-slide')?.classList.add('is-active');
   const dots = document.getElementById('heroDots');
   for (let i = 0; i < totalSlides; i++) {
     const d = document.createElement('button');
@@ -863,6 +901,7 @@ function irASlide(n) {
   slideActual = (n + totalSlides) % totalSlides;
   document.getElementById('heroSlides').style.transform = `translateX(-${slideActual*100}%)`;
   document.querySelectorAll('.pn-hero-dot').forEach((d,i) => d.classList.toggle('active', i===slideActual));
+  document.querySelectorAll('.pn-hero-slide').forEach((el,i) => el.classList.toggle('is-active', i===slideActual));
 }
 function cambiarSlide(dir) { reiniciarAuto(); irASlide(slideActual+dir); }
 function reiniciarAuto()   { clearInterval(autoTimer); autoTimer = setInterval(() => irASlide(slideActual+1), 5000); }
@@ -910,6 +949,7 @@ function renderStars(v) {
        style="color:var(--yellow)"></i>`).join('');
 }
 
+const ETIQ_CAT = {moda:'moda',tecnologia:'tecnología',hogar:'hogar',mercado:'mercado',belleza:'belleza',deportes:'deportes',juguetes:'juguetes',drogueria:'droguería',mascotas:'mascotas',automotriz:'automotriz'};
 function crearTarjeta(p) {
   const favs  = JSON.parse(localStorage.getItem('pn_favoritos')||'[]');
   const isFav = favs.includes(p.id);
@@ -925,16 +965,16 @@ function crearTarjeta(p) {
       </button>
     </div>
     <div class="pn-product-body">
+      <span class="pn-product-cat">${ETIQ_CAT[p.cat] || p.cat || ''}</span>
       <h3 class="pn-product-name">${p.nombre}</h3>
-      <div class="pn-stars">${renderStars(p.estrellas)} <span>(${p.resenas})</span></div>
       <div class="pn-product-price">${fmtPrecio(p.precio)}</div>
-      ${p.desde
-        ? `<div class="pn-product-store">Desde ${fmtPrecio(p.precio)} en ${p.tienda}</div>`
-        : `<div class="pn-product-from">${p.tienda}</div>`}
-      <button class="pn-add-btn" onclick="agregarCarrito(${p.id})"
-        aria-label="Agregar ${p.nombre} al carrito">
-        <i class="bi bi-bag-plus"></i> Agregar al carrito
-      </button>
+      <div class="pn-product-from">${p.desde ? 'Desde ' : ''}${p.tienda}</div>
+      <div class="pn-product-actions">
+        <a class="pn-detalle-btn" href="tienda.html?q=${encodeURIComponent(p.nombre)}">Detalles</a>
+        <button class="pn-add-btn" onclick="agregarCarrito(${p.id})" aria-label="Agregar ${p.nombre} al carrito">
+          <i class="bi bi-bag-plus"></i>
+        </button>
+      </div>
     </div>
   </article>`;
 }
@@ -1122,5 +1162,6 @@ document.addEventListener('DOMContentLoaded', () => {
 <script src="carrito.js" defer></script>
 <script src="conocimiento.js" defer></script>
 <script src="chatbot.js" defer></script>
+<script src="inicio-glow.js"></script>
 </body>
 </html>
