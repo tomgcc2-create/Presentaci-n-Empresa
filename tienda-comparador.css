@@ -1,0 +1,96 @@
+/* ═══════════════════════════════════════════════════════════════
+   PriceNice — tienda-comparador.css
+   Tienda virtual + comparador de precios en una sola página.
+   Se usa junto a ofertas-comparar.css (escenario marino y ficha).
+═══════════════════════════════════════════════════════════════ */
+
+.pn-oc.tc { margin-top: 14px; }
+.tc .pn-oc-intro h1 {
+  margin: 0; max-width: 12em;
+  font-family: var(--font-title, 'Bricolage Grotesque', sans-serif);
+  font-weight: 800; font-size: clamp(36px, 4.6vw, 66px); line-height: .98;
+  letter-spacing: -.045em; text-transform: lowercase; color: var(--beige-l, #F5EFE3);
+}
+
+/* Ubicación */
+.tc-loc { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.tc-geo, .tc-loc select {
+  height: 42px; border-radius: 999px; font: 600 14px var(--font-body, 'DM Sans', sans-serif);
+  border: 1px solid rgba(245,239,227,.32); color: var(--beige-l, #F5EFE3); background: transparent; cursor: pointer;
+}
+.tc-geo { display: inline-flex; align-items: center; gap: 8px; padding: 0 18px; transition: background .2s ease; }
+.tc-geo:hover { background: rgba(245,239,227,.12); }
+.tc-loc select { padding: 0 34px 0 16px; appearance: none; -webkit-appearance: none;
+  background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23F5EFE3' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 14px center; }
+.tc-loc select option { color: #1F2A44; }
+.tc-loc.is-set .tc-geo { border-color: var(--gold, #C6A75E); color: var(--gold-l, #D4B873); }
+
+/* Coincidencias */
+.tc-match { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 16px; min-height: 0; }
+.tc-match:empty { display: none; }
+.tc-match span { font-size: 14px; color: rgba(245,239,227,.66); }
+.tc-match button {
+  border: 1px solid rgba(245,239,227,.3); background: transparent; color: var(--beige-l, #F5EFE3);
+  padding: 6px 14px; border-radius: 999px; cursor: pointer; max-width: 100%;
+  font: 600 13.5px var(--font-body, 'DM Sans', sans-serif); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.tc-match button:hover { background: rgba(245,239,227,.12); }
+.tc-match button.is-on { background: var(--gold, #C6A75E); border-color: var(--gold, #C6A75E); color: var(--navy, #1F2A44); }
+
+/* Estadísticas del catálogo (chips que ya existían) */
+.tc .tc-stats { margin-top: 22px; }
+.tc .tc-stats .st-chip { background: rgba(245,239,227,.12); color: var(--beige-l, #F5EFE3); }
+.tc .tc-stats .st-chip.g { background: rgba(221,242,232,.16); color: #A5E6C6; }
+
+/* Ficha: tres datos clave */
+.tc-kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 16px; }
+.tc-kpi { padding: 10px 12px; border-radius: 16px; background: var(--slate-l, #E6EAF1); }
+.tc-kpi strong { display: block; font: 800 20px/1.1 var(--font-title, 'Bricolage Grotesque', sans-serif); letter-spacing: -.02em; }
+.tc-kpi small { display: block; margin-top: 2px; font-size: 12px; line-height: 1.25; color: #5b6580; }
+
+/* Filas con botón de compra por tienda */
+.tc .pn-oc-row { grid-template-columns: minmax(92px, 140px) minmax(0, 1fr) minmax(88px, auto) 40px; }
+.tc-near {
+  display: inline-block; width: fit-content; margin-top: 3px; padding: 1px 8px; border-radius: 99px;
+  font-style: normal; font-size: 11.5px; font-weight: 700; background: var(--slate, #D6DCE8); color: var(--navy-2, #34456B);
+}
+.tc-buy {
+  width: 40px; height: 40px; border-radius: 50%; border: 0; cursor: pointer;
+  background: var(--navy, #1F2A44); color: var(--beige-l, #F5EFE3); font-size: 16px;
+  display: grid; place-items: center;
+  transition: background .2s ease, color .2s ease, transform .2s ease;
+}
+.tc-buy:hover { background: var(--gold, #C6A75E); color: var(--navy, #1F2A44); transform: scale(1.08); }
+
+/* Reseñas */
+.tc-rev { margin: 18px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.tc-rev li { padding: 12px 14px; border-radius: 16px; background: var(--bg-soft, #EFE6D4); }
+.tc-rev-top { display: flex; align-items: center; gap: 8px; font-size: 13.5px; }
+.tc-rev-top .tc-stars { color: #B98E1F; letter-spacing: 1px; }
+.tc-rev p {
+  margin: 4px 0 0; font-size: 13.5px; line-height: 1.4; color: #3d4766;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.tc-rev-title { margin: 18px 0 0; font: 800 15px var(--font-title, 'Bricolage Grotesque', sans-serif); }
+.tc-rev-title + .tc-rev { margin-top: 8px; }
+
+.tc .pn-oc-cta { gap: 8px; }
+.tc-now {
+  border: 0; cursor: pointer; padding: 12px 18px; border-radius: 999px;
+  background: var(--beige-l, #F5EFE3); color: var(--navy, #1F2A44);
+  font: 700 14.5px var(--font-body, 'DM Sans', sans-serif);
+}
+.tc-now:hover { background: #fff; }
+.tc-more { background: none; border: 0; cursor: pointer; }
+
+@media (max-width: 560px) {
+  .tc .pn-oc-row { grid-template-columns: minmax(70px, 96px) minmax(0, 1fr) auto 36px; gap: 8px; }
+  .tc-buy { width: 36px; height: 36px; font-size: 15px; }
+  .tc-kpi strong { font-size: 17px; }
+  .tc-kpi { padding: 9px 10px; }
+}
+
+/* El campo de búsqueda vive dentro de la píldora: sin los estilos globales de los inputs */
+.pn-oc-search input, .pn-oc-search input:focus, .pn-oc-search input:focus-visible {
+  background: transparent !important; border: 0 !important; box-shadow: none !important; outline: 0 !important; border-radius: 0 !important;
+}

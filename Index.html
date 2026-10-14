@@ -20,8 +20,16 @@
   <!-- Chatbot: al final para que z-index y position:fixed no sean pisados -->
   <link rel="stylesheet" href="chatbot.css">
   <link rel="stylesheet" href="inicio-glow.css">
+  <link rel="stylesheet" href="ofertas-comparar.css">
 </head>
-<body class="has-navbar pn-tema pn-glow">
+<body class="has-navbar has-ticker pn-tema pn-glow">
+
+<!-- Letrero superior: comparaciones en movimiento (se llena desde ofertas-comparar.js) -->
+<div class="pn-ticker" id="pnTicker" role="region" aria-label="Comparación rápida de precios">
+  <a class="pn-tk-cta" href="#ocRoot">Compara tus precios</a>
+  <div class="pn-tk-marquee"><div class="pn-tk-track" id="pnTkTrack"></div></div>
+</div>
+
 
 <!-- ════════════════════════════════════════════
      NAVBAR BLANCA FIJA
@@ -367,20 +375,48 @@
 
 
 <!-- ════════════════════════════════════════════
-     LOS MEJORES PRECIOS DE HOY (cinta que corre)
+     OFERTAS + COMPARAR (ficha de comparación, buscador y riel de ofertas)
+     Estilos: ofertas-comparar.css · Lógica y datos: ofertas-comparar.js
 ════════════════════════════════════════════ -->
-<section class="pn-ofertas" aria-labelledby="titOfertas">
-  <div class="pn-ofertas-head">
-    <div>
-      <h2 id="titOfertas">Buenos precios de hoy</h2>
-      <p>Un vistazo a lo que puedes comparar ahora mismo. Pasa el cursor por encima para detener la cinta.</p>
+<section class="pn-oc" id="ocRoot" aria-labelledby="titOC">
+  <div class="pn-oc-stage">
+    <div class="pn-oc-intro">
+      <h2 id="titOC">ofertas que ya vienen comparadas</h2>
+      <p>Escribe lo que buscas y te mostramos en qué tienda de Bogotá está más barato, sin abrir diez pestañas.</p>
+
+      <div class="pn-oc-search" role="search">
+        <i class="bi bi-search" aria-hidden="true"></i>
+        <input id="ocInput" type="search" placeholder="Busca un producto" autocomplete="off"
+               role="combobox" aria-expanded="false" aria-controls="ocList" aria-autocomplete="list"
+               aria-label="Buscar un producto para comparar precios">
+        <button type="button" id="ocGo" class="pn-oc-go">Comparar</button>
+        <ul id="ocList" class="pn-oc-list" role="listbox" aria-label="Productos encontrados" hidden></ul>
+      </div>
+
+      <div class="pn-oc-try" id="ocTry">
+        <span>Prueba con</span>
+        <button type="button" data-q="audífonos">audífonos</button>
+        <button type="button" data-q="café">café</button>
+        <button type="button" data-q="zapatillas">zapatillas</button>
+        <button type="button" data-q="sérum">sérum</button>
+      </div>
+
+      <a class="pn-oc-all" href="tienda.html?oferta=1">Ver todas las ofertas</a>
     </div>
-    <a href="tienda.html?oferta=1" class="pn-btn-primary pn-btn-oro">
-      Ver todas las ofertas <i class="bi bi-arrow-right"></i>
-    </a>
+
+    <div class="pn-oc-feat-wrap" id="ocFeat"></div>
   </div>
-  <div class="pn-marquee" style="--dur:58s">
-    <div class="pn-marquee-track" id="trackOfertas"></div>
+
+  <div class="pn-oc-rail-wrap">
+    <div class="pn-oc-rail-head">
+      <h3>Elige una y mira dónde está más barata</h3>
+      <div class="pn-oc-chips" id="ocChips" role="group" aria-label="Filtrar por categoría"></div>
+    </div>
+    <div class="pn-oc-rail-row">
+      <button type="button" class="pn-oc-arrow" id="ocPrev" aria-label="Ofertas anteriores"><i class="bi bi-chevron-left"></i></button>
+      <div class="pn-oc-rail" id="ocRail"></div>
+      <button type="button" class="pn-oc-arrow" id="ocNext" aria-label="Más ofertas"><i class="bi bi-chevron-right"></i></button>
+    </div>
   </div>
 </section>
 
@@ -1163,5 +1199,6 @@ document.addEventListener('DOMContentLoaded', () => {
 <script src="conocimiento.js" defer></script>
 <script src="chatbot.js" defer></script>
 <script src="inicio-glow.js"></script>
+<script src="ofertas-comparar.js"></script>
 </body>
 </html>

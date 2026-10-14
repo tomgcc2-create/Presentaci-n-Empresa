@@ -12,6 +12,8 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="tema-crema-azul.css">
   <link rel="stylesheet" href="carrito.css">
+  <link rel="stylesheet" href="ofertas-comparar.css">
+  <link rel="stylesheet" href="tienda-comparador.css">
   <style>
     /* ══ Tienda · estilo editorial (hero grande, tarjetas grises, botones redondeados) ══ */
     .st-hero{position:relative;width:var(--panel-w);margin:10px auto 0;height:clamp(270px,33vw,410px);border-radius:44px;overflow:hidden;color:var(--bg);
@@ -320,21 +322,32 @@
 
 
 <!-- ════════ HERO + BUSCADOR ════════ -->
-<section class="st-hero" aria-label="Tienda virtual">
-  <span class="st-ch a">💲 Mejor precio</span><span class="st-ch b">-19% hoy</span><span class="st-ch c">$0 sobreprecios</span>
-  <span class="st-coin a">$</span><span class="st-coin b">$</span>
-  <div class="st-logo"><img src="img/logo-dark.png" alt="PriceNice"></div>
-  <h1>Tienda</h1>
-</section>
-<div class="st-search">
-  <h2>Encuentra el mejor precio</h2>
-  <div class="st-sbox">
-    <i class="bi bi-search" style="color:var(--text-3)"></i>
-    <input type="text" id="storeBuscador" placeholder="Buscar producto o tienda..." oninput="filtrarProductos()" aria-label="Buscar en la tienda">
-    <button onclick="filtrarProductos()">Buscar</button>
+<!-- ════════ TIENDA + COMPARADOR (todo en uno) ════════
+     Estilos: ofertas-comparar.css + tienda-comparador.css · Lógica: tienda-comparador.js -->
+<section class="pn-oc tc" id="ocRoot" aria-labelledby="tcTitulo">
+  <div class="pn-oc-stage">
+    <div class="pn-oc-intro">
+      <h1 id="tcTitulo">compra donde cuesta menos</h1>
+      <p>Busca un producto, compara sus precios entre tiendas cerca de ti, mira las reseñas y cómpralo aquí mismo.</p>
+
+      <div class="pn-oc-search" role="search">
+        <i class="bi bi-search" aria-hidden="true"></i>
+        <input type="text" id="storeBuscador" placeholder="Busca un producto o tienda" oninput="filtrarProductos()" aria-label="Buscar en la tienda" autocomplete="off">
+        <button type="button" class="pn-oc-go" onclick="filtrarProductos()">Comparar</button>
+      </div>
+
+      <div class="tc-loc">
+        <button type="button" class="tc-geo" onclick="usarUbicacion()"><i class="bi bi-crosshair" aria-hidden="true"></i> Usar mi ubicación</button>
+        <select id="tcBarrio" aria-label="Elige tu barrio"><option value="">o elige tu barrio</option></select>
+      </div>
+
+      <div class="tc-match" id="tcMatch" aria-live="polite"></div>
+      <div class="st-chips tc-stats" id="storeStats"></div>
+    </div>
+
+    <div class="pn-oc-feat-wrap" id="ocFeat"></div>
   </div>
-  <div class="st-chips" id="storeStats"></div>
-</div>
+</section>
 
 <!-- ════════ CONTENIDO ════════ -->
 <div class="pn-container st-main">
@@ -564,9 +577,11 @@ const distTxt = b => (userPos && BARRIOS[b]) ? ` · ≈ ${km(userPos, BARRIOS[b]
 const distNum = v => userPos ? Math.min(...v.ofs.filter(o => BARRIOS[o.b]).map(o => km(userPos, BARRIOS[o.b])), 99) : 0;
 
 /* ══ Filtros ══ */
+/* Búsqueda sin tildes ni mayúsculas: "audifonos" encuentra "Audífonos" */
+const nz = s => String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 function leerF() {
   const g = id => document.getElementById(id);
-  return { q: ((g('storeBuscador').value || g('pnSearchInput')?.value || '')).toLowerCase().trim(),
+  return { q: nz(g('storeBuscador').value || g('pnSearchInput')?.value || '').trim(),
     tienda: g('fTienda').value, barrio: g('fBarrio').value, online: g('fOnline').checked,
     min: parseFloat(g('precioMin').value) || 0, max: parseFloat(g('precioMax').value) || Infinity, sort: g('sortSelect').value };
 }
@@ -576,7 +591,7 @@ function vistas(F, conPrecio) {
     if (cat === 'oferta') { if (!pr.o.some(o => o.a)) return null; }
     else if (cat === 'nuevo') { if (pr.id < 9) return null; }
     else if (cat && pr.cat !== cat) return null;
-    if (F.q && !pr.nombre.toLowerCase().includes(F.q) && !pr.o.some(o => o.t.toLowerCase().includes(F.q))) return null;
+    if (F.q && !nz(pr.nombre).includes(F.q) && !pr.o.some(o => nz(o.t).includes(F.q))) return null;
     const ofs = pr.o.filter(o => (!F.tienda || o.t === F.tienda) && (!F.barrio || o.b === F.barrio || (o.b === 'Online' && F.online)));
     if (!ofs.length) return null;
     const best = ofs.reduce((a, x) => x.p < a.p ? x : a);
@@ -1008,6 +1023,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+<script src="tienda-comparador.js"></script>
 <script src="carrito.js" defer></script>
 </body>
 </html>
