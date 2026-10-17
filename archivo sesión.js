@@ -13,6 +13,13 @@ import { observarSesion, cerrarSesion, obtenerRol } from './auth.js';
 /* ─── Referencias DOM ─── */
 const area = document.getElementById('pnSesionArea');
 
+/* ─── Contenido solo para vendedores ───
+   Los enlaces marcados con data-solo-vendedor (menú, pie de página…) nacen ocultos
+   y solo se muestran si la persona inició sesión con rol vendedor (o admin). */
+function mostrarSoloVendedor(visible) {
+  document.querySelectorAll('[data-solo-vendedor]').forEach(el => { el.hidden = !visible; });
+}
+
 /* ─── Helpers HTML ─── */
 function buildBotonLogin() {
   return `<a href="login.html" class="pn-btn-sesion">
@@ -95,6 +102,7 @@ observarSesion(async (usuario) => {
   if (!usuario) {
     /* Sin sesión */
     area.innerHTML = buildBotonLogin();
+    mostrarSoloVendedor(false);
     actualizarBadgesGlobal();
     /* Notificar a la página */
     if (typeof window.setPnUser === 'function') window.setPnUser(null);
@@ -110,6 +118,7 @@ observarSesion(async (usuario) => {
   }
 
   area.innerHTML = buildAvatar(usuario, rol);
+  mostrarSoloVendedor(rol === 'vendedor' || rol === 'admin');
 
   /* Botón cerrar sesión */
   const btnCerrar = document.getElementById('btnCerrarSesionNav');

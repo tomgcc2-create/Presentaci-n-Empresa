@@ -1124,3 +1124,6 @@ body.has-navbar { padding-top:80px; }
 
 /* Contador animado */
 .stat-counter { display:inline-block; }
+
+/* Enlaces visibles solo para vendedores (los activa archivo sesión.js) */
+[data-solo-vendedor][hidden] { display: none !important; }
