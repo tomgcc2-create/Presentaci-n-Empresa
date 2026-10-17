@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Patrocina en PriceNice</title>
+<link rel="icon" type="image/png" href="img/logo-dark.png">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=DM+Sans:opsz,wght@9..40,400..700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="tema-crema-azul.css">
+<style>
+body.pn-tema{padding:0!important;background:var(--bg);color:var(--text);font-family:var(--font-body);overflow-x:hidden}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+.script{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;color:var(--oro)}
+/* NAV */
+.nav{display:flex;align-items:center;justify-content:space-between;height:78px}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--font-title);font-weight:800;font-size:21px;color:var(--brand);text-decoration:none}
+.logo img{width:38px;height:38px;border-radius:50%;background:var(--brand);padding:2px}
+.logo b{color:var(--brand-mid)}
+.nav-links{display:flex;gap:30px;font-size:14.5px;color:var(--text-2)}
+.nav-links a{color:inherit;text-decoration:none;position:relative}
+.nav-links a::after{content:"";position:absolute;left:0;bottom:-5px;width:0;height:2px;background:var(--oro);transition:width .3s}
+.nav-links a:hover{color:var(--brand)}.nav-links a:hover::after{width:100%}
+.nav-acc{display:flex;align-items:center;gap:22px;font-size:14.5px}
+.nav-acc a{color:var(--brand);text-decoration:none;font-weight:600}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:999px;padding:13px 24px;font-weight:700;font-size:14.5px;text-decoration:none;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.btn-oro{background:var(--oro);color:var(--brand)}
+.btn-brand{background:var(--brand);color:var(--bg)}
+.btn-line{background:transparent;color:var(--brand);border:1.5px solid var(--border-2)}
+/* HERO */
+.hero{padding:60px 0 20px;text-align:center}
+.hero-top{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:end;text-align:left}
+.hero h1{font-family:var(--font-title);font-weight:800;font-size:clamp(44px,5.6vw,76px);line-height:.98;letter-spacing:-.035em;color:var(--brand);margin:0}
+.hero h1 .script{display:block;font-size:.95em;margin:-4px 0 0 60px;letter-spacing:-.01em}
+.hero-side p{font-size:15px;color:var(--text-2);line-height:1.7;margin:0 0 20px}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap}
+/* CARRUSEL EN PERSPECTIVA */
+.carousel-title{margin:70px 0 6px;font-family:var(--font-title);font-weight:800;font-size:28px;color:var(--brand)}
+.carousel-sub{font-size:14px;color:var(--text-3);margin-bottom:20px}
+.car{position:relative;height:440px;perspective:1200px;overflow:hidden}
+.slide{position:absolute;left:50%;top:50%;width:300px;height:380px;margin:-190px 0 0 -150px;border-radius:26px;padding:26px;display:flex;flex-direction:column;justify-content:space-between;text-align:left;color:#fff;box-shadow:var(--shadow-lg);transition:transform .75s cubic-bezier(.2,.8,.2,1),opacity .75s,filter .75s;cursor:pointer;transform-style:preserve-3d}
+.slide .tag{align-self:flex-start;font-size:11px;font-weight:700;background:rgba(255,255,255,.18);color:#fff;border-radius:99px;padding:4px 11px}
+.slide h3{font-family:var(--font-title);font-size:32px;font-weight:800;line-height:1.05;margin:0 0 8px;letter-spacing:-.02em}
+.slide p{font-size:14px;line-height:1.5;margin:0;opacity:.85}
+.slide .meta{font-size:12px;opacity:.7;display:flex;align-items:center;gap:6px}
+.s-navy{background:var(--brand)}.s-gold{background:var(--oro);color:var(--brand)}.s-gold .tag{background:rgba(31,42,68,.12);color:var(--brand)}
+.s-slate{background:var(--brand-mid)}.s-celeste{background:var(--celeste);color:var(--brand)}.s-celeste .tag{background:rgba(31,42,68,.1);color:var(--brand)}
+.s-cream{background:#EFE6D4;color:var(--brand)}.s-cream .tag{background:rgba(31,42,68,.1);color:var(--brand)}
+.pos-0{transform:translateX(0) translateZ(0) scale(1);z-index:5;opacity:1}
+.pos--1{transform:translateX(-62%) rotateY(22deg) scale(.86);z-index:4;opacity:.95}
+.pos-1{transform:translateX(62%) rotateY(-22deg) scale(.86);z-index:4;opacity:.95}
+.pos--2{transform:translateX(-112%) rotateY(32deg) scale(.72);z-index:2;opacity:.5;filter:saturate(.7)}
+.pos-2{transform:translateX(112%) rotateY(-32deg) scale(.72);z-index:2;opacity:.5;filter:saturate(.7)}
+.pos-hide{transform:translateX(0) scale(.5);opacity:0;z-index:0;pointer-events:none}
+.car-ctrl{display:flex;justify-content:center;gap:12px;margin-top:6px}
+.car-ctrl button{width:46px;height:46px;border-radius:50%;border:1.5px solid var(--border-2);background:var(--bg-white);color:var(--brand);font-size:18px;cursor:pointer;transition:transform .2s,background .2s}
+.car-ctrl button:hover{transform:scale(1.08)}
+.car-ctrl button.go{background:var(--oro);border-color:var(--oro)}
+/* ABOUT */
+.about{display:grid;grid-template-columns:1fr 1.5fr;gap:50px;align-items:center;padding:110px 0 80px}
+.about h2{font-family:var(--font-title);font-weight:800;font-size:clamp(38px,4.6vw,60px);letter-spacing:-.03em;color:var(--brand);line-height:1;margin:0}
+.about h2 .script{display:block;font-size:.9em;margin-left:30px}
+.about p.big{font-size:20px;line-height:1.55;color:var(--brand);font-weight:500;margin:0 0 18px}
+.about p.big span{color:var(--text-3)}
+/* PASOS */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:90px}
+.step{background:var(--bg-white);border:1px solid var(--border);border-radius:26px;padding:26px;transition:transform .35s,box-shadow .35s}
+.step:hover{transform:translateY(-6px);box-shadow:var(--shadow-md)}
+.step .n{font-family:var(--font-title);font-size:44px;font-weight:800;color:var(--oro);line-height:1}
+.step h4{font-family:var(--font-title);font-size:21px;font-weight:800;color:var(--brand);margin:14px 0 6px}
+.step p{font-size:14px;color:var(--text-2);line-height:1.55;margin:0}
+/* FEATURED OSCURO */
+.featured{background:var(--brand);color:#fff;border-radius:40px;padding:80px 0;position:relative;overflow:hidden;margin:0 14px}
+.featured .mark{position:absolute;left:-1%;bottom:-40px;font-family:var(--font-title);font-weight:800;font-size:170px;color:rgba(255,255,255,.05);white-space:nowrap;animation:drift 18s ease-in-out infinite;pointer-events:none}
+@keyframes drift{0%,100%{transform:translateX(0)}50%{transform:translateX(70px)}}
+.feat-head{display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap;margin-bottom:36px;position:relative}
+.feat-head h2{font-family:var(--font-title);font-weight:800;font-size:clamp(38px,4.6vw,58px);letter-spacing:-.03em;margin:0;line-height:1}
+.feat-head h2 .script{color:var(--oro)}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;position:relative}
+.fcard{border:1px solid rgba(255,255,255,.14);border-radius:26px;padding:28px;background:rgba(255,255,255,.04);transition:transform .35s,background .35s}
+.fcard:hover{transform:translateY(-6px);background:rgba(255,255,255,.09)}
+.fcard .ico{font-size:26px;color:var(--oro);margin-bottom:16px}
+.fcard h4{font-family:var(--font-title);font-size:24px;font-weight:800;margin:0 0 8px}
+.fcard p{font-size:14.5px;color:rgba(255,255,255,.75);line-height:1.6;margin:0}
+.fcard .pct{font-family:var(--font-title);font-size:50px;font-weight:800;color:#fff;line-height:1;margin-bottom:10px}
+/* CTA FINAL */
+.final{text-align:center;padding:110px 0 70px}
+.final h2{font-family:var(--font-title);font-weight:800;font-size:clamp(40px,5vw,66px);letter-spacing:-.03em;color:var(--brand);line-height:1;margin:0 0 14px}
+.final p{font-size:16px;color:var(--text-2);margin:0 0 30px}
+.final .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+footer.pie{padding:30px 0 40px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--text-3);flex-wrap:wrap;gap:12px}
+footer.pie a{color:var(--text-2);text-decoration:none;margin-left:18px}
+footer.pie a:hover{color:var(--brand)}
+/* REVEAL */
+.rv{opacity:0;transform:translateY(30px);transition:opacity .8s cubic-bezier(.2,.8,.2,1),transform .8s cubic-bezier(.2,.8,.2,1)}
+.rv.on{opacity:1;transform:none}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
+@keyframes up{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+.hero-anim{animation:up .9s cubic-bezier(.2,.8,.2,1) backwards}
+@media(max-width:900px){
+  .hero-top,.about{grid-template-columns:1fr}
+  .hero h1 .script{margin-left:20px}
+  .steps{grid-template-columns:1fr 1fr}
+  .feat-grid{grid-template-columns:1fr}
+  .nav-links{display:none}
+  .slide{width:250px;height:330px;margin:-165px 0 0 -125px}
+  .pos--2,.pos-2{display:none}
+}
+@media(max-width:560px){
+  .steps{grid-template-columns:1fr}
+  .featured{margin:0 8px;border-radius:28px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body class="pn-tema">
+<div class="wrap">
+
+  <nav class="nav">
+    <a class="logo" href="Index.html"><img src="img/logo-dark.png" alt=""><span>Price<b>Nice</b></span></a>
+    <div class="nav-links">
+      <a href="#inicio">Inicio</a>
+      <a href="#sobre">Sobre</a>
+      <a href="#pasos">Cómo empezar</a>
+      <a href="#resultados">Resultados</a>
+    </div>
+    <div class="nav-acc">
+      <a href="login.html">Iniciar sesión</a>
+      <a class="btn btn-oro" href="login.html">Crear cuenta</a>
+    </div>
+  </nav>
+
+  <section class="hero" id="inicio">
+    <div class="hero-top">
+      <h1 class="hero-anim">Impulsa tu marca
+        <span class="script">con PriceNice</span></h1>
+      <div class="hero-side hero-anim" style="animation-delay:.15s">
+        <p>Pon tus productos frente a personas que ya están comparando precios. Crea tu campaña, elige dónde aparece y mide tus resultados desde tu panel.</p>
+        <div class="hero-btns">
+          <a class="btn btn-brand" href="login.html">Ingresar a mi panel <i class="bi bi-arrow-right"></i></a>
+          <a class="btn btn-line" href="#sobre">Conocer más</a>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="carousel-title rv">Así se ven tus anuncios</h2>
+    <p class="carousel-sub rv">Cada anuncio muestra la etiqueta "Patrocinado" y se ajusta a la ubicación que elijas.</p>
+    <div class="car" id="car" aria-label="Ejemplos de anuncios patrocinados">
+      <div class="slide s-navy"><span class="tag">Patrocinado</span><div><h3>Regreso a clases</h3><p>20 % en uniformes y útiles esta semana.</p></div><div class="meta"><i class="bi bi-geo-alt"></i>Bogotá · Inicio</div></div>
+      <div class="slide s-gold"><span class="tag">Patrocinado</span><div><h3>Nueva temporada</h3><p>Colecciones de otoño con envío gratis.</p></div><div class="meta"><i class="bi bi-geo-alt"></i>Medellín · Moda</div></div>
+      <div class="slide s-slate"><span class="tag">Patrocinado</span><div><h3>Tecnología al mejor precio</h3><p>Audífonos y parlantes con garantía extendida.</p></div><div class="meta"><i class="bi bi-geo-alt"></i>Cali · Búsqueda</div></div>
+      <div class="slide s-celeste"><span class="tag">Patrocinado</span><div><h3>Café de origen</h3><p>Tostado artesanal, entrega a domicilio.</p></div><div class="meta"><i class="bi bi-geo-alt"></i>Bogotá · Alimentos</div></div>
+      <div class="slide s-cream"><span class="tag">Patrocinado</span><div><h3>Hogar que brilla</h3><p>Productos de limpieza con precio especial.</p></div><div class="meta"><i class="bi bi-geo-alt"></i>Barranquilla · Hogar</div></div>
+    </div>
+    <div class="car-ctrl">
+      <button id="prev" aria-label="Anterior"><i class="bi bi-arrow-left"></i></button>
+      <button id="next" class="go" aria-label="Siguiente"><i class="bi bi-arrow-right"></i></button>
+    </div>
+  </section>
+
+  <section class="about" id="sobre">
+    <div class="rv">
+      <h2>Sobre el <span class="script">patrocinio</span></h2>
+    </div>
+    <div class="rv d1">
+      <p class="big">Patrocinar en PriceNice es llegar a quien ya busca. Tu marca aparece donde las personas comparan y deciden, <span>con planes claros, pagos seguros y métricas que puedes seguir en tiempo real.</span></p>
+    </div>
+  </section>
+
+  <section id="pasos" class="rv" style="margin-bottom:0">
+    <div class="steps">
+      <div class="step"><div class="n">01</div><h4>Crea tu cuenta</h4><p>Regístrate como patrocinador y completa el perfil de tu marca.</p></div>
+      <div class="step d1"><div class="n">02</div><h4>Elige un plan</h4><p>Básico, Destacado o Premium, según el alcance que busques.</p></div>
+      <div class="step d2"><div class="n">03</div><h4>Crea tu campaña</h4><p>Define fechas, presupuesto, ubicación, banner y texto del anuncio.</p></div>
+      <div class="step d3"><div class="n">04</div><h4>Activa con pago</h4><p>Tu campaña se activa cuando el pago queda confirmado.</p></div>
+    </div>
+  </section>
+
+  <section class="featured" id="resultados">
+    <span class="mark" aria-hidden="true">Patrocinio</span>
+    <div class="wrap" style="padding:0 44px">
+      <div class="feat-head rv">
+        <h2>Campañas que <span class="script">se miden</span></h2>
+        <a class="btn btn-oro" href="login.html">Empezar mi campaña <i class="bi bi-arrow-right"></i></a>
+      </div>
+      <div class="feat-grid">
+        <div class="fcard rv"><i class="bi bi-eye ico"></i><div class="pct">Visible</div><h4>Impresiones</h4><p>Tu anuncio se muestra en el inicio, en una categoría o en la búsqueda.</p></div>
+        <div class="fcard rv d1"><i class="bi bi-cursor ico"></i><div class="pct">Medible</div><h4>Clics y CTR</h4><p>Ve cuántas personas hacen clic y qué tan bien funciona tu anuncio.</p></div>
+        <div class="fcard rv d2"><i class="bi bi-arrow-repeat ico"></i><div class="pct">Flexible</div><h4>Pausa o renueva</h4><p>Pausa tu campaña cuando quieras o renuévala al terminar el periodo.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="final rv">
+    <h2>Listo para <span class="script">patrocinar</span></h2>
+    <p>Entra a tu panel, elige un plan y crea tu primera campaña.</p>
+    <div class="btns">
+      <a class="btn btn-brand" href="login.html">Iniciar sesión</a>
+      <a class="btn btn-oro" href="login.html">Crear cuenta</a>
+    </div>
+  </section>
+
+  <footer class="pie">
+    <span>© 2026 PriceNice — Todos los derechos reservados</span>
+    <span>
+      <a href="Index.html">Inicio</a>
+      <a href="tienda.html">Tienda</a>
+      <a href="login.html">Panel de patrocinador</a>
+    </span>
+  </footer>
+</div>
+
+<script>
+/* Carrusel en perspectiva */
+const slides = [...document.querySelectorAll(".slide")];
+let idx = 0;
+slides.forEach(s => { s.dataset.color = [...s.classList].find(c => c.startsWith("s-")); });
+function pintarCarrusel2() {
+  const n = slides.length;
+  slides.forEach((s, i) => {
+    let off = i - idx;
+    if (off > n / 2) off -= n;
+    if (off < -n / 2) off += n;
+    const clase = off === 0 ? "pos-0" : off === 1 ? "pos-1" : off === -1 ? "pos--1" : off === 2 ? "pos-2" : off === -2 ? "pos--2" : "pos-hide";
+    s.className = `slide ${s.dataset.color} ${clase}`;
+  });
+}
+document.getElementById("next").addEventListener("click", () => { idx = (idx + 1) % slides.length; pintarCarrusel2(); });
+document.getElementById("prev").addEventListener("click", () => { idx = (idx - 1 + slides.length) % slides.length; pintarCarrusel2(); });
+slides.forEach((s, i) => s.addEventListener("click", () => { idx = i; pintarCarrusel2(); }));
+pintarCarrusel2();
+setInterval(() => { idx = (idx + 1) % slides.length; pintarCarrusel2(); }, 5000);
+
+/* Revelado al hacer scroll */
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("on"); io.unobserve(e.target); } }), { threshold: .15 });
+document.querySelectorAll(".rv").forEach(el => io.observe(el));
+</script>
+</body>
+</html>
