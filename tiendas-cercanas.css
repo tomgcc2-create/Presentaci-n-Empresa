@@ -712,26 +712,26 @@
 }
 
 .pn-user-location-dot {
-  width: 16px;
-  height: 16px;
-  background: #34456B;
+  width: 20px;
+  height: 20px;
+  background: #EF4444; /* Rojo, igual que la leyenda "Tu ubicación" */
   border: 3px solid #FFFFFF;
   border-radius: 50%;
   position: absolute;
-  top: 4px;
-  left: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  top: 2px;
+  left: 2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
   z-index: 2;
 }
 
 .pn-user-location-pulse {
   position: absolute;
-  top: -8px;
-  left: -8px;
-  width: 40px;
-  height: 40px;
+  top: -12px;
+  left: -12px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background: rgba(52,69,107, 0.25);
+  background: rgba(239, 68, 68, 0.3);
   animation: pnRadarRipple 2s infinite ease-out;
   pointer-events: none;
   z-index: 1;
