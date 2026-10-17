@@ -60,7 +60,7 @@ export function inicializarSeccionTiendas() {
 
 /**
  * Pide la ubicación automáticamente la primera vez que el mapa entra en pantalla
- * (al cargar tiendas-cercanas.html, o al bajar a la sección en Index.html).
+ * (al cargar tiendas-cercanas.html, o al bajar a la sección en index.html).
  */
 function pedirUbicacionAlVerMapa(contenedor) {
   if (!navigator.geolocation) return;
