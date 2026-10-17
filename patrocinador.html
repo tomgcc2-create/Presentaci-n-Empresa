@@ -128,6 +128,22 @@ textarea.in{min-height:90px;resize:vertical}
 .sc .big-av{width:110px;height:110px;border-radius:50%;background:var(--brand-light) center/cover;margin:0 auto 10px;display:grid;place-items:center;color:var(--brand);font-family:var(--font-title);font-weight:800;font-size:40px;border:4px solid var(--oro)}
 .sc h4{font-family:var(--font-title);color:var(--brand);font-size:20px;margin:0}
 .sc p{font-size:13px;color:var(--text-2);margin:6px 0}
+@keyframes spUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes spGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.sp-sec.on .sp-card,.sp-sec.on .plan{animation:spUp .7s cubic-bezier(.2,.8,.2,1) backwards}
+.sp-sec.on .sp-grid>.sp-card:nth-child(2),.sp-sec.on .plan:nth-child(2){animation-delay:.08s}
+.sp-sec.on .sp-grid>.sp-card:nth-child(3),.sp-sec.on .plan:nth-child(3){animation-delay:.16s}
+.sp-sec.on .sp-grid>.sp-card:nth-child(4){animation-delay:.24s}
+.sp-sec.on .sp-grid>.sp-card:nth-child(5){animation-delay:.32s}
+.bars .pair i{transform-origin:bottom;animation:spGrow .9s cubic-bezier(.2,.8,.2,1) backwards}
+.sp-card{transition:transform .3s ease,box-shadow .3s ease}
+.sp-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
+.plan{transition:transform .35s ease,box-shadow .35s ease;transform-style:preserve-3d}
+.plan:hover{box-shadow:0 14px 34px rgba(31,42,68,.16)}
+.sp-nav button i,.sp-nav a i{transition:transform .25s}
+.sp-nav button:hover i,.sp-nav a:hover i{transform:scale(1.2) rotate(-8deg)}
+.sp-script{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;color:var(--oro);font-size:.92em;margin-left:6px;letter-spacing:-.01em}
+@media(prefers-reduced-motion:reduce){.sp-sec.on .sp-card,.sp-sec.on .plan,.bars .pair i{animation:none}.sp-card,.plan{transition:none}}
 #spToast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,30px);background:var(--brand);color:#fff;padding:12px 22px;border-radius:99px;font-size:14px;opacity:0;pointer-events:none;transition:.3s;z-index:99}
 #spToast.show{opacity:1;transform:translate(-50%,0)}
 @media(max-width:1100px){
@@ -181,14 +197,14 @@ textarea.in{min-height:90px;resize:vertical}
 
    <h6>Ir a</h6>
    <a href="tienda.html"><i class="bi bi-shop"></i> Ver la tienda</a>
-   <a href="usuario.html"><i class="bi bi-person"></i> Panel usuario</a>
+   <a href="Index.html"><i class="bi bi-house"></i> Página principal</a>
    <button class="sp-out" id="btnSalir"><i class="bi bi-box-arrow-left"></i> Cerrar sesión</button>
   </nav>
  </aside>
 
  <main class="sp-main">
   <div class="sp-top">
-   <div><h1 id="spTitulo">Resumen</h1><p id="spSub">Así va tu presencia como patrocinador.</p></div>
+   <div><h1 id="spTitulo">Resumen <span class="sp-script">tu marca</span></h1><p id="spSub">Así va tu presencia como patrocinador.</p></div>
    <div class="sp-tr"><button class="sp-chip" data-v="perfil" title="Editar perfil"><span class="sp-av-sm" id="spChipAv">P</span><span><b id="spChipN">Patrocinador</b><small>Editar perfil</small></span></button>
    <button class="sp-btn o" data-v="crear"><i class="bi bi-plus-lg"></i> Crear campaña</button></div>
   </div>
@@ -436,12 +452,12 @@ const ESTADOS = {
   finalizada:     ["Finalizada",        "off"]
 };
 const TITULOS = {
-  resumen:  ["Resumen", "Así va tu presencia como patrocinador."],
-  campanas: ["Mis campañas", "Revisa el estado y las métricas de tus campañas."],
-  crear:    ["Crear campaña", "Configura tu anuncio y mira cómo se verá."],
-  planes:   ["Planes", "Elige el plan que mejor se ajusta a tu marca."],
-  pagos:    ["Pagos", "Historial de pagos y facturas."],
-  perfil:   ["Mi perfil de marca", "Información que verán los clientes."]
+  resumen:  ["Resumen", "Así va tu presencia como patrocinador.", "tu marca"],
+  campanas: ["Mis campañas", "Revisa el estado y las métricas de tus campañas.", "en marcha"],
+  crear:    ["Crear campaña", "Configura tu anuncio y mira cómo se verá.", "tu anuncio"],
+  planes:   ["Planes", "Elige el plan que mejor se ajusta a tu marca.", "tu plan"],
+  pagos:    ["Pagos", "Historial de pagos y facturas.", "tus pagos"],
+  perfil:   ["Mi perfil de marca", "Información que verán los clientes.", "tu identidad"]
 };
 const MESES = ["Ene", "Feb", "Mar", "Abr", "May", "Jun"];
 const IMPR_EJEMPLO = [1200, 2100, 1700, 2600, 3100, 2850];
@@ -471,7 +487,7 @@ const toast = msg => {
 function ir(v) {
   document.querySelectorAll(".sp-sec").forEach(s => s.classList.toggle("on", s.id === "v-" + v));
   document.querySelectorAll(".sp-nav [data-v]").forEach(b => b.classList.toggle("on", b.dataset.v === v));
-  $("#spTitulo").textContent = TITULOS[v][0];
+  $("#spTitulo").innerHTML = TITULOS[v][0] + (TITULOS[v][2] ? ` <span class="sp-script">${TITULOS[v][2]}</span>` : "");
   $("#spSub").textContent = TITULOS[v][1];
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
@@ -500,16 +516,25 @@ async function cargarPagos() {
 }
 
 /* ════════════ RESUMEN ════════════ */
+function animarNum(el, fin, fmt) {
+  const t0 = performance.now(), dur = 900;
+  const tick = t => {
+    const p = Math.min((t - t0) / dur, 1);
+    el.textContent = fmt(fin * (1 - Math.pow(1 - p, 3)));
+    if (p < 1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
 function pintarResumen() {
   const activas = campanas.filter(c => c.estado === "activa");
   const impr = campanas.reduce((s, c) => s + (c.impresiones || 0), 0);
   const clics = campanas.reduce((s, c) => s + (c.clics || 0), 0);
   const gasto = campanas.reduce((s, c) => s + (c.gastado || 0), 0);
-  $("#kActivas").textContent = activas.length;
-  $("#kImpr").textContent = impr.toLocaleString("es-CO");
-  $("#kClics").textContent = clics.toLocaleString("es-CO");
-  $("#kCtr").textContent = (impr ? (clics / impr * 100) : 0).toFixed(2).replace(".", ",") + "%";
-  $("#kGasto").textContent = cop(gasto);
+  animarNum($("#kActivas"), activas.length, v => Math.round(v).toString());
+  animarNum($("#kImpr"), impr, v => Math.round(v).toLocaleString("es-CO"));
+  animarNum($("#kClics"), clics, v => Math.round(v).toLocaleString("es-CO"));
+  animarNum($("#kCtr"), impr ? clics / impr * 100 : 0, v => v.toFixed(2).replace(".", ",") + "%");
+  animarNum($("#kGasto"), gasto, v => cop(Math.round(v)));
 
   const max = Math.max(...IMPR_EJEMPLO);
   $("#grafica").innerHTML = MESES.map((m, i) => `
@@ -845,6 +870,16 @@ function pintarTodo() {
   pintarPagos();
   actualizarPreview();
 }
+
+/* Inclinación 3D suave en las tarjetas de planes */
+document.querySelectorAll(".plan").forEach(card => {
+  card.addEventListener("mousemove", e => {
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+    card.style.transform = `perspective(900px) rotateY(${x * 8}deg) rotateX(${-y * 6}deg) translateY(-4px)`;
+  });
+  card.addEventListener("mouseleave", () => { card.style.transform = ""; });
+});
 
 /* ════════════ ARRANQUE ════════════ */
 onAuthStateChanged(auth, async usuario => {
