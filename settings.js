@@ -310,9 +310,8 @@ async function cargarActividad(uid) {
     const snapPrecios = await getDocs(collection(db, "actualizacionesPrecios"));
     snapPrecios.forEach(d => {
       const v = d.data();
-      if (v.verificador && v.verificador !== "Verificador") {
-        // No tenemos UID aquí, filtramos por nombre (limitación del esquema actual)
-      }
+      // Con el esquema nuevo cada actualización guarda verificadorUid; las antiguas no lo tienen y se conservan.
+      if (v.verificadorUid && v.verificadorUid !== uid) return;
       items.push({
         icono: "💲",
         titulo: "Precio actualizado",

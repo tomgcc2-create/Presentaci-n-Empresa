@@ -20,6 +20,22 @@ import {
     getDoc
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
+/* Roles que una persona puede elegir al registrarse. "admin" y "dueño" solo los asigna un administrador. */
+const ROLES_PUBLICOS = ["usuario", "vendedor", "verificador", "patrocinador"];
+const rolSeguro = (rol) => ROLES_PUBLICOS.includes(rol) ? rol : "usuario";
+
+/* Una cuenta desactivada por el administrador no puede ingresar. */
+async function verificarCuentaActiva(uid) {
+    const instantanea = await getDoc(doc(db, "usuarios", uid));
+    if (instantanea.exists() && instantanea.data().activo === false) {
+        await signOut(auth);
+        const error = new Error("Cuenta desactivada");
+        error.code = "auth/user-disabled";
+        throw error;
+    }
+    return instantanea;
+}
+
 export async function registrar(nombre, email, password, apellido = "", rol = "usuario") {
     const credencial = await createUserWithEmailAndPassword(auth, email, password);
 
@@ -29,7 +45,8 @@ export async function registrar(nombre, email, password, apellido = "", rol = "u
         nombre,
         apellido,
         email,
-        rol
+        rol: rolSeguro(rol),
+        activo: true
     });
 
     return credencial.user;
@@ -55,7 +72,7 @@ function crearProveedor(nombre) {
 /* Devuelve { user, perfil }. perfil es null si es la primera vez (todavía no eligió tipo de usuario). */
 export async function ingresarConProveedor(nombre) {
     const credencial = await signInWithPopup(auth, crearProveedor(nombre));
-    const instantanea = await getDoc(doc(db, "usuarios", credencial.user.uid));
+    const instantanea = await verificarCuentaActiva(credencial.user.uid);
     return { user: credencial.user, perfil: instantanea.exists() ? instantanea.data() : null };
 }
 
@@ -65,7 +82,8 @@ export async function crearPerfil(user, rol, proveedor = "") {
         nombre: nombre || "",
         apellido: resto.join(" "),
         email: user.email || "",
-        rol,
+        rol: rolSeguro(rol),
+        activo: true,
         proveedor
     }, { merge: true });
 }
@@ -77,6 +95,7 @@ export async function configurarPersistencia(recordar) {
 
 export async function iniciarSesion(email, password) {
     const credencial = await signInWithEmailAndPassword(auth, email, password);
+    await verificarCuentaActiva(credencial.user.uid);
     return credencial.user;
 }
 

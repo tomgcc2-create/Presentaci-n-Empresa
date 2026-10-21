@@ -597,6 +597,7 @@ function pintarCampanas() {
 async function pausarCampana(id) {
   const c = campanas.find(x => x.id === id);
   if (!c) return;
+  if (c.estado === "pendiente_pago") { toast("Completa el pago para activar la campaña"); return; }
   const nuevo = c.estado === "activa" ? "pausada" : "activa";
   try {
     await updateDoc(doc(db, "campanas", id), { estado: nuevo });

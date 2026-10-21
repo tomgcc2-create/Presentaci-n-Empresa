@@ -1,0 +1,118 @@
+rules_version = '2';
+
+// Reglas de seguridad de Cloud Firestore — PriceNice
+// Despliegue: firebase deploy --only firestore:rules
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- Funciones auxiliares ----------
+    function signedIn() { return request.auth != null; }
+
+    function perfil(uid) {
+      return get(/databases/$(database)/documents/usuarios/$(uid)).data;
+    }
+
+    function rolActual() {
+      return exists(/databases/$(database)/documents/usuarios/$(request.auth.uid))
+        ? perfil(request.auth.uid).rol : 'usuario';
+    }
+
+    function cuentaActiva() {
+      return !exists(/databases/$(database)/documents/usuarios/$(request.auth.uid))
+        || perfil(request.auth.uid).get('activo', true) != false;
+    }
+
+    function esAdmin()       { return signedIn() && cuentaActiva() && rolActual() in ['admin']; }
+    function esModerador()   { return signedIn() && cuentaActiva() && rolActual() in ['admin', 'dueño', 'dueno']; }
+    function esVerificador() { return signedIn() && cuentaActiva() && rolActual() in ['verificador', 'admin', 'dueño', 'dueno']; }
+
+    // Roles que una persona puede elegir al registrarse (admin y dueño los asigna un administrador)
+    function rolPublico(r) { return r in ['usuario', 'vendedor', 'verificador', 'patrocinador']; }
+
+    // ---------- usuarios ----------
+    match /usuarios/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || esAdmin());
+
+      allow create: if signedIn() && (
+        (request.auth.uid == uid && rolPublico(request.resource.data.rol))
+        || esAdmin()
+      );
+
+      // El dueño del perfil puede editarlo, pero nunca cambiar su rol ni reactivarse.
+      allow update: if esAdmin() || (
+        signedIn() && request.auth.uid == uid
+        && request.resource.data.rol == resource.data.rol
+        && request.resource.data.get('activo', true) == resource.data.get('activo', true)
+      );
+
+      allow delete: if esAdmin();
+    }
+
+    // ---------- productos ----------
+    match /productos/{id} {
+      allow read: if signedIn();
+      allow create: if signedIn() && cuentaActiva()
+        && request.resource.data.vendedorId == request.auth.uid
+        && rolActual() in ['vendedor', 'admin', 'dueño', 'dueno'];
+      allow update, delete: if esAdmin()
+        || (signedIn() && resource.data.vendedorId == request.auth.uid);
+    }
+
+    // ---------- resenas ----------
+    match /resenas/{id} {
+      allow read: if signedIn();
+      allow create: if signedIn() && cuentaActiva()
+        && request.resource.data.usuarioId == request.auth.uid
+        && request.resource.data.estado == 'pendiente'
+        && request.resource.data.calificacion is int
+        && request.resource.data.calificacion >= 1
+        && request.resource.data.calificacion <= 5;
+      allow update, delete: if esModerador();
+    }
+
+    // ---------- campanas ----------
+    match /campanas/{id} {
+      allow read: if signedIn() && (resource.data.uid == request.auth.uid || esAdmin());
+
+      // Una campaña nace siempre pendiente de pago y sin métricas.
+      allow create: if signedIn() && cuentaActiva()
+        && request.resource.data.uid == request.auth.uid
+        && rolActual() in ['patrocinador', 'admin']
+        && request.resource.data.estado == 'pendiente_pago'
+        && request.resource.data.impresiones == 0
+        && request.resource.data.clics == 0
+        && request.resource.data.gastado == 0;
+
+      // El patrocinador solo pausa/reanuda campañas ya pagadas o las envía a renovación (pendiente_pago).
+      allow update: if esAdmin() || (
+        signedIn() && resource.data.uid == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['estado', 'fin'])
+        && (
+          (resource.data.estado in ['activa', 'pausada'] && request.resource.data.estado in ['activa', 'pausada'])
+          || request.resource.data.estado == 'pendiente_pago'
+        )
+      );
+
+      allow delete: if esAdmin();
+    }
+
+    // ---------- pagos ----------
+    // Solo lectura para el dueño. Se escriben desde el servidor (Admin SDK / Cloud Function) al confirmar el pago.
+    match /pagos/{id} {
+      allow read: if signedIn() && (resource.data.uid == request.auth.uid || esAdmin());
+      allow write: if false;
+    }
+
+    // ---------- actualizacionesPrecios ----------
+    match /actualizacionesPrecios/{id} {
+      allow read: if signedIn();
+      allow create: if esVerificador()
+        && request.resource.data.verificadorUid == request.auth.uid
+        && request.resource.data.precioNuevo is number
+        && request.resource.data.precioNuevo > 0;
+      allow update, delete: if esAdmin();
+    }
+
+    // Todo lo demás queda denegado por defecto.
+  }
+}

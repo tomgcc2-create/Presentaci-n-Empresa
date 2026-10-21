@@ -12,7 +12,7 @@ import {
     doc,
     setDoc,
     updateDoc,
-    deleteDoc
+    serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 import { observarSesion, obtenerRol, mensajeError } from "./auth.js";
 import { initSettings } from "./settings.js";
@@ -49,7 +49,8 @@ async function crearUsuario(datos) {
     await setDoc(doc(db, "usuarios", credencial.user.uid), {
         nombre: datos.nombre,
         email: datos.email,
-        rol: datos.rol
+        rol: datos.rol,
+        activo: true
     });
 }
 
@@ -62,8 +63,14 @@ async function actualizarUsuario(uid, datos) {
     await updateDoc(doc(db, "usuarios", uid), datos);
 }
 
-async function eliminarUsuario(uid) {
-    await deleteDoc(doc(db, "usuarios", uid));
+/* Desactiva la cuenta (no borra solo el perfil): auth.js impide el ingreso de cuentas con activo === false.
+   Borrar la cuenta de Authentication requiere el Admin SDK (Cloud Function) o la consola de Firebase. */
+async function desactivarUsuario(uid) {
+    await updateDoc(doc(db, "usuarios", uid), { activo: false, desactivadoEn: serverTimestamp() });
+}
+
+async function reactivarUsuario(uid) {
+    await updateDoc(doc(db, "usuarios", uid), { activo: true, desactivadoEn: null });
 }
 
 function mostrar(texto, tipo = "error") {
@@ -118,7 +125,7 @@ function fila(usuario) {
 
     tr.appendChild(celda((usuario.nombre || "-") + (esYo ? " (tú)" : "")));
     tr.appendChild(celda(usuario.email || "-"));
-    tr.appendChild(celda(usuario.rol || "usuario"));
+    tr.appendChild(celda((usuario.rol || "usuario") + (usuario.activo === false ? " (desactivado)" : "")));
 
     const acciones = document.createElement("td");
 
@@ -129,20 +136,24 @@ function fila(usuario) {
     acciones.appendChild(editar);
 
 if (!esYo) {
-    const borrar = document.createElement("button");
-    borrar.className = "boton-fila peligro";
-    borrar.textContent = "Eliminar";
-    borrar.addEventListener("click", async () => {
-        if (!confirm('¿Eliminar el perfil de "' + (usuario.nombre || usuario.email) + '"?')) return;
+    const inactivo = usuario.activo === false;
+    const estado = document.createElement("button");
+    estado.className = "boton-fila" + (inactivo ? "" : " peligro");
+    estado.textContent = inactivo ? "Reactivar" : "Desactivar";
+    estado.addEventListener("click", async () => {
+        const pregunta = inactivo
+            ? '¿Reactivar la cuenta de "' + (usuario.nombre || usuario.email) + '"?'
+            : '¿Desactivar la cuenta de "' + (usuario.nombre || usuario.email) + '"? No podrá iniciar sesión.';
+        if (!confirm(pregunta)) return;
         try {
-            await eliminarUsuario(usuario.uid);
-            mostrar("Perfil eliminado. La cuenta sigue en Authentication.", "info");
+            if (inactivo) await reactivarUsuario(usuario.uid); else await desactivarUsuario(usuario.uid);
+            mostrar(inactivo ? "Cuenta reactivada." : "Cuenta desactivada: ya no podrá iniciar sesión.", "info");
             await pintarUsuarios();
         } catch (error) {
-            mostrar("No se pudo eliminar: " + error.message);
+            mostrar("No se pudo completar la acción: " + error.message);
         }
     });
-    acciones.appendChild(borrar);
+    acciones.appendChild(estado);
 }
 
 tr.appendChild(acciones);
