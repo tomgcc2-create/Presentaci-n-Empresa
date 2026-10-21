@@ -76,6 +76,7 @@
             <th>Nombre</th>
             <th>Correo</th>
             <th>Rol</th>
+            <th>Verificación</th>
             <th>Acciones</th>
         </tr>
     </thead>
@@ -88,6 +89,23 @@
 </p>
 
 </section>
+</div>
+
+<!-- Modal de verificación de vendedor -->
+<div id="modalVerificacion" class="modal-overlay" hidden>
+    <div class="modal-verif">
+        <button type="button" class="modal-cerrar" id="cerrarVerif" aria-label="Cerrar">✕</button>
+        <h2>Verificación de vendedor</h2>
+        <div id="detalleVendedor" class="verif-detalle"></div>
+        <div class="verif-acciones">
+            <button type="button" class="boton-secundario" id="btnRechazar">Rechazar</button>
+            <button type="button" class="boton-principal" id="btnAprobar">Aprobar vendedor</button>
+        </div>
+        <div class="verif-nota-wrap">
+            <label for="verifNota">Nota (opcional):</label>
+            <input type="text" id="verifNota" placeholder="Ej. Datos verificados correctamente">
+        </div>
+    </div>
 </div>
 
 <script src="sesion.js"></script>

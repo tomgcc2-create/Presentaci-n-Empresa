@@ -33,16 +33,21 @@ service cloud.firestore {
     match /usuarios/{uid} {
       allow read: if signedIn() && (request.auth.uid == uid || esAdmin());
 
+      // Al crear su perfil, el usuario puede incluir datos de vendedor y tienda
+      // (sub-objetos "vendedor" y "tienda") cuando elige rol vendedor.
       allow create: if signedIn() && (
         (request.auth.uid == uid && rolPublico(request.resource.data.rol))
         || esAdmin()
       );
 
-      // El dueño del perfil puede editarlo, pero nunca cambiar su rol ni reactivarse.
+      // El dueño del perfil puede editarlo, pero nunca cambiar su rol ni reactivarse
+      // ni auto-verificarse (la verificacion solo la cambia un admin).
       allow update: if esAdmin() || (
         signedIn() && request.auth.uid == uid
         && request.resource.data.rol == resource.data.rol
         && request.resource.data.get('activo', true) == resource.data.get('activo', true)
+        && request.resource.data.get('verificacion', null) == resource.data.get('verificacion', null)
+        && request.resource.data.get('verificado', false) == resource.data.get('verificado', false)
       );
 
       allow delete: if esAdmin();

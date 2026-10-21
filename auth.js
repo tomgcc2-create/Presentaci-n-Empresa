@@ -17,7 +17,9 @@ import {
 import {
     doc,
     setDoc,
-    getDoc
+    getDoc,
+    updateDoc,
+    serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 /* Roles que una persona puede elegir al registrarse. "admin" y "dueño" solo los asigna un administrador. */
@@ -36,20 +38,72 @@ async function verificarCuentaActiva(uid) {
     return instantanea;
 }
 
-export async function registrar(nombre, email, password, apellido = "", rol = "usuario") {
+export async function registrar(nombre, email, password, apellido = "", rol = "usuario", datosVendedor = null) {
     const credencial = await createUserWithEmailAndPassword(auth, email, password);
 
     await updateProfile(credencial.user, { displayName: nombre });
 
-    await setDoc(doc(db, "usuarios", credencial.user.uid), {
+    const perfil = {
         nombre,
         apellido,
         email,
         rol: rolSeguro(rol),
         activo: true
-    });
+    };
+
+    /* Si el rol es vendedor, guardamos sus datos personales, los de la tienda
+       y marcamos la cuenta como pendiente de verificación. */
+    if (rolSeguro(rol) === "vendedor" && datosVendedor) {
+        perfil.verificacion = "pendiente";   // pendiente → verificado | rechazado
+        perfil.verificado = false;
+        perfil.fechaSolicitud = serverTimestamp();
+        perfil.vendedor = {
+            telefono: datosVendedor.telefono || "",
+            tipoDocumento: datosVendedor.tipoDocumento || "",
+            numeroDocumento: datosVendedor.numeroDocumento || "",
+            iaNota: datosVendedor.iaNota || ""   // valoración preliminar de la IA
+        };
+        perfil.tienda = {
+            nombre: datosVendedor.tiendaNombre || "",
+            categoria: datosVendedor.tiendaCategoria || "",
+            direccion: datosVendedor.tiendaDireccion || "",
+            barrio: datosVendedor.tiendaBarrio || "",
+            ciudad: datosVendedor.tiendaCiudad || "Bogotá",
+            descripcion: datosVendedor.tiendaDescripcion || ""
+        };
+    }
+
+    await setDoc(doc(db, "usuarios", credencial.user.uid), perfil);
 
     return credencial.user;
+}
+
+/* Un admin o la IA marcan al vendedor como verificado o rechazado. */
+export async function actualizarVerificacion(uid, estado, observacion = "") {
+    const datos = {
+        verificacion: estado,            // "verificado" | "rechazado"
+        verificado: estado === "verificado",
+        verificacionNota: observacion || ""
+    };
+    if (estado === "verificado") {
+        datos.verificadoEn = serverTimestamp();
+    } else {
+        datos.verificado = false;
+        datos.verificadoEn = null;
+    }
+    await updateDoc(doc(db, "usuarios", uid), datos);
+}
+
+/* Consulta si el vendedor ya está verificado (para mostrarlo en su panel). */
+export async function obtenerVerificacion(uid) {
+    const instantanea = await getDoc(doc(db, "usuarios", uid));
+    if (!instantanea.exists()) return { verificacion: null, verificado: false };
+    const d = instantanea.data();
+    return {
+        verificacion: d.verificacion || null,
+        verificado: !!d.verificado,
+        nota: d.verificacionNota || ""
+    };
 }
 
 /* ───────── Acceso con Google / Microsoft (Hotmail, Outlook) / Facebook ─────────
@@ -78,14 +132,23 @@ export async function ingresarConProveedor(nombre) {
 
 export async function crearPerfil(user, rol, proveedor = "") {
     const [nombre, ...resto] = (user.displayName || "").trim().split(" ");
-    await setDoc(doc(db, "usuarios", user.uid), {
+    const perfil = {
         nombre: nombre || "",
         apellido: resto.join(" "),
         email: user.email || "",
         rol: rolSeguro(rol),
         activo: true,
         proveedor
-    }, { merge: true });
+    };
+    /* Si eligió vendedor con red social, marcamos verificación pendiente.
+       Los datos de la tienda los completa después en su panel. */
+    if (rolSeguro(rol) === "vendedor") {
+        perfil.verificacion = "pendiente";
+        perfil.verificado = false;
+        perfil.fechaSolicitud = serverTimestamp();
+        perfil.tienda = { nombre: "", categoria: "", direccion: "", barrio: "", ciudad: "Bogotá", descripcion: "" };
+    }
+    await setDoc(doc(db, "usuarios", user.uid), perfil, { merge: true });
 }
 
 /* "Recordarme": true = la sesión sigue al cerrar el navegador; false = solo esta pestaña */

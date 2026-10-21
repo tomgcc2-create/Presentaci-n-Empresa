@@ -3,6 +3,10 @@ import {
     recuperarPassword, ingresarConProveedor, crearPerfil, configurarPersistencia, mensajeError
 } from "./auth.js";
 
+/* URL del Worker de la IA (la misma del chatbot). Se usa para la verificación preliminar
+   del vendedor. Si no responde, la verificación final la hace un administrador. */
+const IA_VERIFICACION_URL = "https://chatbot-miempresa.priceniceworld.workers.dev";
+
 /* ═══════════════════════════════════════════════════════════
    Tipos de usuario que se pueden elegir al registrarse.
    OJO: "dueño" no se ofrece al público a propósito. Si cualquiera
@@ -95,8 +99,30 @@ function dibujarRoles(contenedor, nombre, seleccionado) {
 }
 const rolElegido = (nombre) => (document.querySelector(`input[name="${nombre}"]:checked`) || {}).value || "usuario";
 
+/* ───────────────── Mostrar / ocultar campos de vendedor ───────────────── */
+const panelVendedor = $("datosVendedor");
+
+function mostrarCamposVendedor() {
+    const rol = rolElegido("rRol");
+    if (rol === "vendedor") {
+        panelVendedor.hidden = false;
+        $("vdTel").setAttribute("required", "");
+    } else {
+        panelVendedor.hidden = true;
+        // Limpia errores de los campos del vendedor al salir
+        ["vdTel","vdTipoDoc","vdNumDoc","vdTienda","vdCategoria","vdBarrio","vdDireccion","vdDesc"]
+            .forEach(id => setErr(id, ""));
+    }
+}
+
+/* Se dispara cuando cambia la selección de rol (radio buttons) */
+document.addEventListener("change", (e) => {
+    if (e.target.matches('input[name="rRol"]')) mostrarCamposVendedor();
+});
+
 const rolInicial = new URLSearchParams(location.search).get("rol");
 dibujarRoles($("rolesGrid"), "rRol", ROLES_REGISTRO.some(r => r.id === rolInicial) ? rolInicial : "usuario");
+mostrarCamposVendedor();   // Muestra campos de vendedor si venimos de ?rol=vendedor
 
 /* Ventana "un último paso" para quien entra por primera vez con una red social */
 function pedirRol() {
@@ -130,6 +156,10 @@ $("rPass").addEventListener("input", (e) => {
     $("rMeter").dataset.n = p ? Math.max(1, n) : 0;
 });
 document.querySelectorAll(".lg-field input").forEach(i => i.addEventListener("input", () => setErr(i.id, "")));
+document.querySelectorAll("#datosVendedor input, #datosVendedor select, #datosVendedor textarea").forEach(el => {
+    el.addEventListener("input", () => setErr(el.id, ""));
+    el.addEventListener("change", () => setErr(el.id, ""));
+});
 $("rTerminos").addEventListener("change", () => setErr("rTerminos", ""));
 
 const correoValido = (c) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(c);
@@ -162,6 +192,65 @@ formLogin.addEventListener("submit", async (e) => {
 });
 
 /* ───────────────── Crear cuenta con correo ───────────────── */
+/* Valida los campos extra del vendedor. Devuelve los datos o null si hay errores. */
+function validarDatosVendedor() {
+    let ok = true;
+    const telefono = $("vdTel").value.trim();
+    const tipoDoc = $("vdTipoDoc").value;
+    const numDoc = $("vdNumDoc").value.trim();
+    const tienda = $("vdTienda").value.trim();
+    const categoria = $("vdCategoria").value;
+    const barrio = $("vdBarrio").value.trim();
+    const direccion = $("vdDireccion").value.trim();
+    const desc = $("vdDesc").value.trim();
+
+    if (telefono.length < 7) { setErr("vdTel", "Escribe un teléfono válido"); ok = false; }
+    if (!tipoDoc) { setErr("vdTipoDoc", "Selecciona un tipo de documento"); ok = false; }
+    if (numDoc.length < 5) { setErr("vdNumDoc", "Escribe el número de documento"); ok = false; }
+    if (tienda.length < 3) { setErr("vdTienda", "Escribe el nombre de tu tienda"); ok = false; }
+    if (!categoria) { setErr("vdCategoria", "Selecciona una categoría"); ok = false; }
+    if (barrio.length < 3) { setErr("vdBarrio", "Escribe el barrio o zona"); ok = false; }
+    if (direccion.length < 5) { setErr("vdDireccion", "Escribe la dirección de la tienda"); ok = false; }
+    if (desc.length < 10) { setErr("vdDesc", "Cuéntanos sobre tu tienda (mín. 10 caracteres)"); ok = false; }
+
+    if (!ok) return null;
+    return {
+        telefono, tipoDocumento: tipoDoc, numeroDocumento: numDoc,
+        tiendaNombre: tienda, tiendaCategoria: categoria, tiendaBarrio: barrio,
+        tiendaDireccion: direccion, tiendaDescripcion: desc
+    };
+}
+
+/* Verificación preliminar con la IA: envía los datos del vendedor al Worker
+   y recibe una valoración. Si no responde o falla, continúa igual (el admin
+   hace la verificación final). */
+async function verificarConIA(datos) {
+    const prompt = `Eres un verificador de cuentas de vendedor en una plataforma de precios.
+Revisa estos datos y responde SI o NO si parecen válidos y completos, seguido de una breve razón.
+Vendedor: ${datos.tiendaNombre}
+Teléfono: ${datos.telefono}
+Documento: ${datos.tipoDocumento} ${datos.numeroDocumento}
+Categoría: ${datos.tiendaCategoria}
+Barrio: ${datos.tiendaBarrio}
+Dirección: ${datos.tiendaDireccion}
+Descripción: ${datos.tiendaDescripcion}`;
+
+    try {
+        const r = await fetch(IA_VERIFICACION_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ mensaje: prompt, contexto: "", historial: [] })
+        });
+        if (!r.ok) return { ok: true, nota: "IA no disponible, verificación manual" };
+        const json = await r.json();
+        const texto = (json.respuesta || "").toUpperCase();
+        const aprobado = texto.startsWith("SI") || texto.includes("VÁLIDO") || texto.includes("VALIDO");
+        return { ok: aprobado, nota: json.respuesta || "" };
+    } catch (e) {
+        return { ok: true, nota: "IA no disponible, verificación manual" };
+    }
+}
+
 formRegistro.addEventListener("submit", async (e) => {
     e.preventDefault();
     limpiarErrores(formRegistro); mostrar("msgRegistro", "");
@@ -173,13 +262,36 @@ formRegistro.addEventListener("submit", async (e) => {
     if (!correoValido(correo)) { setErr("rEmail", "Escribe un correo válido"); ok = false; }
     if (clave.length < 6)    { setErr("rPass", "Mínimo 6 caracteres"); ok = false; }
     if (!$("rTerminos").checked) { setErr("rTerminos", "Debes aceptar los términos para continuar"); ok = false; }
-    if (!ok) { const mal = formRegistro.querySelector(".has-err input, #err-rTerminos:not(:empty)"); if (mal) mal.scrollIntoView({ block: "center", behavior: "smooth" }); return; }
+
+    /* Validar campos del vendedor si corresponde */
+    let datosVendedor = null;
+    if (rol === "vendedor") {
+        datosVendedor = validarDatosVendedor();
+        if (!datosVendedor) ok = false;
+    }
+
+    if (!ok) { const mal = formRegistro.querySelector(".has-err input, .has-err textarea, .has-err select, #err-rTerminos:not(:empty)"); if (mal) mal.scrollIntoView({ block: "center", behavior: "smooth" }); return; }
 
     procesando = true; ocupado($("btnRegistro"), true, "Crear cuenta"); bloquearSociales(true);
     try {
         await configurarPersistencia(true);
-        await registrar(nombre, correo, clave, apellido, rol);
-        mostrar("msgRegistro", "¡Cuenta creada! Redirigiendo…", "ok");
+
+        /* Verificación preliminar con IA para vendedores (no bloquea el registro) */
+        if (rol === "vendedor" && datosVendedor) {
+            mostrar("msgRegistro", "Verificando tus datos con la IA…", "info");
+            try {
+                const verif = await verificarConIA(datosVendedor);
+                datosVendedor.iaNota = verif.nota;
+            } catch (e) { /* Si la IA falla, se registra igual y el admin verifica */ }
+        }
+
+        await registrar(nombre, correo, clave, apellido, rol, datosVendedor);
+
+        if (rol === "vendedor") {
+            mostrar("msgRegistro", "¡Cuenta creada! Tu tienda está en revisión. Te avisaremos al verificarla.", "ok");
+        } else {
+            mostrar("msgRegistro", "¡Cuenta creada! Redirigiendo…", "ok");
+        }
         irAPagina(rol);
     } catch (error) {
         mostrar("msgRegistro", mensajeError(error));

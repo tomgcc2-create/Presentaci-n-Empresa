@@ -58,6 +58,63 @@
           <div class="lg-roles-grid" id="rolesGrid"><!-- login.js dibuja las opciones --></div>
         </fieldset>
 
+        <!-- ═════════ Datos extra para vendedores (se muestran solo si el rol es vendedor) ═════════ -->
+        <div class="lg-vendedor" id="datosVendedor" hidden>
+          <div class="lg-vd-head">
+            <i class="bi bi-shop"></i>
+            <div>
+              <strong>Verificación de vendedor</strong>
+              <small>Necesitamos algunos datos para validar tu tienda</small>
+            </div>
+          </div>
+
+          <div class="lg-vd-sep">Datos personales del vendedor</div>
+          <div class="lg-field"><label for="vdTel">Teléfono / WhatsApp <em>*</em></label>
+            <input id="vdTel" type="tel" autocomplete="tel" placeholder="Ej. 300 123 4567"><div class="lg-err" id="err-vdTel" role="alert"></div></div>
+          <div class="lg-row2">
+            <div class="lg-field"><label for="vdTipoDoc">Tipo de documento <em>*</em></label>
+              <select id="vdTipoDoc" class="lg-select">
+                <option value="">— Seleccionar —</option>
+                <option value="CC">Cédula de ciudadanía</option>
+                <option value="CE">Cédula de extranjería</option>
+                <option value="NIT">NIT (persona jurídica)</option>
+                <option value="PPT">Permiso por Protección Temporal</option>
+              </select><div class="lg-err" id="err-vdTipoDoc" role="alert"></div></div>
+            <div class="lg-field"><label for="vdNumDoc">Número de documento <em>*</em></label>
+              <input id="vdNumDoc" type="text" autocomplete="off" placeholder="Ej. 1020304050"><div class="lg-err" id="err-vdNumDoc" role="alert"></div></div>
+          </div>
+
+          <div class="lg-vd-sep">Datos de la tienda</div>
+          <div class="lg-field"><label for="vdTienda">Nombre de la tienda <em>*</em></label>
+            <input id="vdTienda" type="text" autocomplete="off" placeholder="Ej. Electrónica Central"><div class="lg-err" id="err-vdTienda" role="alert"></div></div>
+          <div class="lg-row2">
+            <div class="lg-field"><label for="vdCategoria">Categoría de la tienda <em>*</em></label>
+              <select id="vdCategoria" class="lg-select">
+                <option value="">— Seleccionar —</option>
+                <option value="moda">Moda</option>
+                <option value="tecnologia">Tecnología</option>
+                <option value="hogar">Hogar</option>
+                <option value="mercado">Mercado</option>
+                <option value="belleza">Belleza</option>
+                <option value="higiene">Higiene</option>
+                <option value="mascotas">Mascotas</option>
+                <option value="alimentos">Alimentos</option>
+                <option value="otros">Otros</option>
+              </select><div class="lg-err" id="err-vdCategoria" role="alert"></div></div>
+            <div class="lg-field"><label for="vdBarrio">Barrio / zona <em>*</em></label>
+              <input id="vdBarrio" type="text" autocomplete="off" placeholder="Ej. Chapinero, Suba..."><div class="lg-err" id="err-vdBarrio" role="alert"></div></div>
+          </div>
+          <div class="lg-field"><label for="vdDireccion">Dirección de la tienda <em>*</em></label>
+            <input id="vdDireccion" type="text" autocomplete="off" placeholder="Calle / carrera, número"><div class="lg-err" id="err-vdDireccion" role="alert"></div></div>
+          <div class="lg-field"><label for="vdDesc">Describe tu tienda <em>*</em></label>
+            <textarea id="vdDesc" class="lg-textarea" placeholder="Qué vendes, desde cuándo, qué te hace diferente..."></textarea><div class="lg-err" id="err-vdDesc" role="alert"></div></div>
+
+          <div class="lg-vd-ai" id="vdAvisoIA" role="status">
+            <i class="bi bi-robot"></i>
+            <span>Tu información será revisada por nuestra IA y un administrador antes de activar tu tienda.</span>
+          </div>
+        </div>
+
         <label class="lg-check">
           <input type="checkbox" id="rTerminos">
           <span class="lg-check-box"></span>
