@@ -3,385 +3,511 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registro de Vendedor | PriceNice</title>
+  <title>Verificación de Vendedor | PriceNice</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=DM+Sans:opsz,wght@9..40,400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="registro-vendedor.css">
 </head>
 <body class="rv-body">
 
-  <!-- ── Fondo decorativo ── -->
-  <div class="rv-bg-glow rv-bg-glow-a" aria-hidden="true"></div>
-  <div class="rv-bg-glow rv-bg-glow-b" aria-hidden="true"></div>
+  <!-- ── Burbujas decorativas (igual que login) ── -->
+  <div class="rv-blob rv-blob-a" aria-hidden="true"></div>
+  <div class="rv-blob rv-blob-b" aria-hidden="true"></div>
+  <div class="rv-blob rv-blob-c" aria-hidden="true"></div>
 
-  <!-- ── Header mínimo ── -->
+  <!-- ══════════════════════════════════════
+       HEADER
+  ══════════════════════════════════════ -->
   <header class="rv-header">
-    <a href="login.html" class="rv-back" aria-label="Volver">
+    <a href="javascript:history.back()" class="rv-back">
       <i class="bi bi-arrow-left"></i>
       <span>Volver</span>
     </a>
-    <a href="Index.html" class="rv-logo" aria-label="PriceNice inicio">
-      <img src="img/logo-dark.png" alt="PriceNice" height="40">
-      <span class="rv-logo-name"><span class="rv-logo-w">Price</span><span class="rv-logo-g">Nice</span></span>
+
+    <!-- Logo grande con animación de brillo -->
+    <a href="Index.html" class="rv-logo" aria-label="PriceNice — inicio">
+      <div class="rv-logo-img-wrap">
+        <img src="img/logo-dark.png" alt="PriceNice" class="rv-logo-img">
+        <div class="rv-logo-glow" aria-hidden="true"></div>
+      </div>
+      <span class="rv-logo-text">
+        <span class="rv-logo-price">Price</span><span class="rv-logo-nice">Nice</span>
+      </span>
     </a>
-    <div class="rv-header-right">
-      <span class="rv-badge-vendedor"><i class="bi bi-shop"></i> <span>Vendedor</span></span>
-    </div>
+
+    <span class="rv-header-tag">
+      <i class="bi bi-patch-check-fill"></i>
+      <span>Verificación de vendedor</span>
+    </span>
   </header>
 
-  <!-- ── Contenedor principal ── -->
+  <!-- ══════════════════════════════════════
+       HERO — introducción
+  ══════════════════════════════════════ -->
+  <section class="rv-hero" id="rvHero">
+    <div class="rv-hero-inner">
+      <div class="rv-hero-icon" aria-hidden="true">
+        <i class="bi bi-shop-window"></i>
+      </div>
+      <h1 class="rv-hero-title">Activa tu perfil de vendedor</h1>
+      <p class="rv-hero-desc">
+        Completa los 4 pasos a continuación. Tu solicitud será analizada por nuestra
+        <strong>IA de verificación</strong> y revisada por el equipo de PriceNice.
+        Solo tardarás unos minutos.
+      </p>
+      <div class="rv-hero-chips">
+        <span class="rv-chip"><i class="bi bi-cpu"></i> Revisión IA</span>
+        <span class="rv-chip"><i class="bi bi-person-check"></i> Aprobación manual</span>
+        <span class="rv-chip"><i class="bi bi-clock-history"></i> 1–3 días hábiles</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       MAIN — progreso + formulario
+  ══════════════════════════════════════ -->
   <main class="rv-main" id="rvMain">
 
-    <!-- ══ BARRA DE PROGRESO ══ -->
-    <div class="rv-progress-wrap" aria-label="Progreso del formulario">
-      <div class="rv-progress-bar">
-        <div class="rv-progress-fill" id="rvProgressFill" style="width:25%"></div>
+    <!-- ── Barra de progreso ── -->
+    <div class="rv-progress-wrap" id="rvProgressWrap" aria-label="Progreso del formulario">
+      <div class="rv-progress-track">
+        <div class="rv-progress-fill" id="rvProgressFill" style="width:25%">
+          <div class="rv-progress-glow"></div>
+        </div>
       </div>
       <div class="rv-steps" role="list">
+
         <div class="rv-step is-active" id="rvStep1" role="listitem" aria-current="step">
-          <div class="rv-step-circle"><i class="bi bi-building"></i></div>
-          <span>Empresa</span>
+          <div class="rv-step-circle">
+            <i class="bi bi-person-vcard"></i>
+            <span class="rv-step-done-ico"><i class="bi bi-check-lg"></i></span>
+          </div>
+          <span class="rv-step-label">Tus datos</span>
         </div>
-        <div class="rv-step-connector"></div>
+
+        <div class="rv-step-line" id="rvLine1"></div>
+
         <div class="rv-step" id="rvStep2" role="listitem">
-          <div class="rv-step-circle"><i class="bi bi-person-badge"></i></div>
-          <span>Responsable</span>
+          <div class="rv-step-circle">
+            <i class="bi bi-shop"></i>
+            <span class="rv-step-done-ico"><i class="bi bi-check-lg"></i></span>
+          </div>
+          <span class="rv-step-label">Tu tienda</span>
         </div>
-        <div class="rv-step-connector"></div>
+
+        <div class="rv-step-line" id="rvLine2"></div>
+
         <div class="rv-step" id="rvStep3" role="listitem">
-          <div class="rv-step-circle"><i class="bi bi-file-earmark-arrow-up"></i></div>
-          <span>Documentos</span>
+          <div class="rv-step-circle">
+            <i class="bi bi-building"></i>
+            <span class="rv-step-done-ico"><i class="bi bi-check-lg"></i></span>
+          </div>
+          <span class="rv-step-label">Empresa</span>
         </div>
-        <div class="rv-step-connector"></div>
+
+        <div class="rv-step-line" id="rvLine3"></div>
+
         <div class="rv-step" id="rvStep4" role="listitem">
-          <div class="rv-step-circle"><i class="bi bi-patch-check"></i></div>
-          <span>Confirmación</span>
+          <div class="rv-step-circle">
+            <i class="bi bi-patch-check"></i>
+            <span class="rv-step-done-ico"><i class="bi bi-check-lg"></i></span>
+          </div>
+          <span class="rv-step-label">Confirmar</span>
         </div>
+
       </div>
     </div>
 
     <!-- ══ FORMULARIO ══ -->
-    <form class="rv-card" id="rvForm" novalidate>
+    <form class="rv-card" id="rvForm" novalidate autocomplete="off">
 
-      <!-- ─────────────────── PASO 1: EMPRESA ─────────────────── -->
-      <section class="rv-panel is-active" id="rvPanel1" aria-label="Datos de la empresa">
-        <div class="rv-panel-header">
-          <div class="rv-panel-icon"><i class="bi bi-building"></i></div>
+      <!-- ════════════════════════════════
+           PASO 1 — DATOS PERSONALES
+      ════════════════════════════════ -->
+      <section class="rv-panel is-active" id="rvPanel1" aria-labelledby="rv1Title">
+        <div class="rv-panel-head">
+          <div class="rv-panel-icon-wrap">
+            <i class="bi bi-person-vcard rv-panel-icon"></i>
+          </div>
           <div>
-            <h2 class="rv-panel-title">Datos de la empresa</h2>
-            <p class="rv-panel-desc">Información legal y de contacto de tu negocio</p>
+            <h2 class="rv-panel-title" id="rv1Title">Tus datos personales</h2>
+            <p class="rv-panel-sub">Información del responsable o representante del negocio</p>
           </div>
         </div>
 
-        <div class="rv-fields">
+        <div class="rv-grid">
 
-          <div class="rv-field rv-field-full">
-            <label for="empRazon" class="rv-label">Razón social / Nombre de la empresa <span class="rv-req">*</span></label>
-            <input type="text" id="empRazon" class="rv-input" placeholder="Ej: Distribuciones López S.A.S." autocomplete="organization" maxlength="120">
-            <span class="rv-err" id="err-empRazon"></span>
-          </div>
-
-          <div class="rv-field">
-            <label for="empNit" class="rv-label">NIT / Identificador tributario <span class="rv-req">*</span></label>
+          <div class="rv-field rv-full">
+            <label class="rv-label" for="repNombre">Nombre completo <span class="rv-req">*</span></label>
             <div class="rv-input-wrap">
-              <i class="bi bi-hash rv-input-icon"></i>
-              <input type="text" id="empNit" class="rv-input rv-has-icon" placeholder="000.000.000-0" maxlength="20">
+              <i class="bi bi-person rv-ico"></i>
+              <input id="repNombre" type="text" class="rv-input rv-icon-pad"
+                placeholder="Nombres y apellidos" autocomplete="name" maxlength="120">
             </div>
-            <span class="rv-hint">Incluye dígito de verificación. Ej: 900.123.456-7</span>
-            <span class="rv-err" id="err-empNit"></span>
-          </div>
-
-          <div class="rv-field">
-            <label for="empTipoEmp" class="rv-label">Tipo de empresa <span class="rv-req">*</span></label>
-            <div class="rv-select-wrap">
-              <select id="empTipoEmp" class="rv-select">
-                <option value="">Selecciona…</option>
-                <option value="sas">S.A.S</option>
-                <option value="sa">S.A.</option>
-                <option value="ltda">Ltda.</option>
-                <option value="eirl">E.I.R.L.</option>
-                <option value="persona_natural">Persona Natural</option>
-                <option value="otro">Otro</option>
-              </select>
-              <i class="bi bi-chevron-down rv-select-arrow"></i>
-            </div>
-            <span class="rv-err" id="err-empTipoEmp"></span>
-          </div>
-
-          <div class="rv-field rv-field-full">
-            <label for="empDireccion" class="rv-label">Dirección de la empresa <span class="rv-req">*</span></label>
-            <input type="text" id="empDireccion" class="rv-input" placeholder="Calle, número, ciudad, departamento" maxlength="200" autocomplete="street-address">
-            <span class="rv-err" id="err-empDireccion"></span>
-          </div>
-
-          <div class="rv-field">
-            <label for="empTelefono" class="rv-label">Teléfono de contacto <span class="rv-req">*</span></label>
-            <div class="rv-input-wrap">
-              <i class="bi bi-telephone rv-input-icon"></i>
-              <input type="tel" id="empTelefono" class="rv-input rv-has-icon" placeholder="+57 300 000 0000" maxlength="20" autocomplete="tel">
-            </div>
-            <span class="rv-err" id="err-empTelefono"></span>
-          </div>
-
-          <div class="rv-field">
-            <label for="empCorreo" class="rv-label">Correo de contacto <span class="rv-req">*</span></label>
-            <div class="rv-input-wrap">
-              <i class="bi bi-envelope rv-input-icon"></i>
-              <input type="email" id="empCorreo" class="rv-input rv-has-icon" placeholder="empresa@correo.com" maxlength="120" autocomplete="email">
-            </div>
-            <span class="rv-err" id="err-empCorreo"></span>
-          </div>
-
-          <div class="rv-field rv-field-full">
-            <label for="empSitioWeb" class="rv-label">Sitio web <span class="rv-opt">(opcional)</span></label>
-            <div class="rv-input-wrap">
-              <i class="bi bi-globe rv-input-icon"></i>
-              <input type="url" id="empSitioWeb" class="rv-input rv-has-icon" placeholder="https://tuempresa.com" maxlength="200">
-            </div>
-          </div>
-
-        </div>
-
-        <div class="rv-nav">
-          <span></span>
-          <button type="button" class="rv-btn rv-btn-primary" id="btnSiguiente1">
-            Siguiente: Responsable <i class="bi bi-arrow-right"></i>
-          </button>
-        </div>
-      </section>
-
-      <!-- ─────────────────── PASO 2: RESPONSABLE ─────────────────── -->
-      <section class="rv-panel" id="rvPanel2" aria-label="Datos del representante legal" inert>
-        <div class="rv-panel-header">
-          <div class="rv-panel-icon"><i class="bi bi-person-badge"></i></div>
-          <div>
-            <h2 class="rv-panel-title">Datos del responsable</h2>
-            <p class="rv-panel-desc">Representante legal o dueño del negocio</p>
-          </div>
-        </div>
-
-        <div class="rv-fields">
-
-          <div class="rv-field rv-field-full">
-            <label for="repNombre" class="rv-label">Nombre completo <span class="rv-req">*</span></label>
-            <input type="text" id="repNombre" class="rv-input" placeholder="Nombre(s) y apellidos" maxlength="120" autocomplete="name">
             <span class="rv-err" id="err-repNombre"></span>
           </div>
 
           <div class="rv-field">
-            <label for="repTipoDoc" class="rv-label">Tipo de documento <span class="rv-req">*</span></label>
+            <label class="rv-label" for="repTipoDoc">Tipo de documento <span class="rv-req">*</span></label>
             <div class="rv-select-wrap">
               <select id="repTipoDoc" class="rv-select">
                 <option value="">Selecciona…</option>
-                <option value="cc">Cédula de ciudadanía</option>
-                <option value="ce">Cédula de extranjería</option>
-                <option value="pp">Pasaporte</option>
-                <option value="nit">NIT persona natural</option>
+                <option value="CC">Cédula de ciudadanía</option>
+                <option value="CE">Cédula de extranjería</option>
+                <option value="PP">Pasaporte</option>
+                <option value="NIT">NIT persona natural</option>
+                <option value="PPT">Permiso por Protección Temporal</option>
               </select>
-              <i class="bi bi-chevron-down rv-select-arrow"></i>
+              <i class="bi bi-chevron-down rv-sel-arrow"></i>
             </div>
             <span class="rv-err" id="err-repTipoDoc"></span>
           </div>
 
           <div class="rv-field">
-            <label for="repNumDoc" class="rv-label">Número de documento <span class="rv-req">*</span></label>
-            <input type="text" id="repNumDoc" class="rv-input" placeholder="Sin puntos ni espacios" maxlength="20">
+            <label class="rv-label" for="repNumDoc">Número de documento <span class="rv-req">*</span></label>
+            <input id="repNumDoc" type="text" class="rv-input"
+              placeholder="Sin puntos ni espacios" maxlength="20">
             <span class="rv-err" id="err-repNumDoc"></span>
           </div>
 
           <div class="rv-field">
-            <label for="repTelefono" class="rv-label">Teléfono personal <span class="rv-req">*</span></label>
+            <label class="rv-label" for="repTelefono">Teléfono / WhatsApp <span class="rv-req">*</span></label>
             <div class="rv-input-wrap">
-              <i class="bi bi-phone rv-input-icon"></i>
-              <input type="tel" id="repTelefono" class="rv-input rv-has-icon" placeholder="+57 300 000 0000" maxlength="20" autocomplete="tel">
+              <i class="bi bi-phone rv-ico"></i>
+              <input id="repTelefono" type="tel" class="rv-input rv-icon-pad"
+                placeholder="+57 300 000 0000" autocomplete="tel" maxlength="20">
             </div>
             <span class="rv-err" id="err-repTelefono"></span>
           </div>
 
           <div class="rv-field">
-            <label for="repCorreo" class="rv-label">Correo personal <span class="rv-req">*</span></label>
+            <label class="rv-label" for="repCorreo">Correo personal <span class="rv-req">*</span></label>
             <div class="rv-input-wrap">
-              <i class="bi bi-envelope rv-input-icon"></i>
-              <input type="email" id="repCorreo" class="rv-input rv-has-icon" placeholder="tuCorreo@ejemplo.com" maxlength="120" autocomplete="email">
+              <i class="bi bi-envelope rv-ico"></i>
+              <input id="repCorreo" type="email" class="rv-input rv-icon-pad"
+                placeholder="tu@correo.com" autocomplete="email" maxlength="120">
             </div>
             <span class="rv-err" id="err-repCorreo"></span>
           </div>
 
           <div class="rv-field">
-            <label for="repCargo" class="rv-label">Cargo en la empresa <span class="rv-req">*</span></label>
+            <label class="rv-label" for="repCargo">Cargo en la empresa <span class="rv-req">*</span></label>
             <div class="rv-select-wrap">
               <select id="repCargo" class="rv-select">
                 <option value="">Selecciona…</option>
-                <option value="representante_legal">Representante legal</option>
                 <option value="propietario">Propietario / Dueño</option>
+                <option value="representante_legal">Representante legal</option>
                 <option value="gerente">Gerente general</option>
                 <option value="socio">Socio principal</option>
                 <option value="otro">Otro</option>
               </select>
-              <i class="bi bi-chevron-down rv-select-arrow"></i>
+              <i class="bi bi-chevron-down rv-sel-arrow"></i>
             </div>
             <span class="rv-err" id="err-repCargo"></span>
           </div>
 
-        </div>
+        </div><!-- /rv-grid -->
 
         <div class="rv-nav">
-          <button type="button" class="rv-btn rv-btn-ghost" id="btnAnterior2">
-            <i class="bi bi-arrow-left"></i> Anterior
-          </button>
-          <button type="button" class="rv-btn rv-btn-primary" id="btnSiguiente2">
-            Siguiente: Documentos <i class="bi bi-arrow-right"></i>
+          <span></span>
+          <button type="button" class="rv-btn rv-btn-next" id="btnNext1">
+            Siguiente: Tu tienda <i class="bi bi-arrow-right"></i>
           </button>
         </div>
       </section>
 
-      <!-- ─────────────────── PASO 3: DOCUMENTOS ─────────────────── -->
-      <section class="rv-panel" id="rvPanel3" aria-label="Documentos de soporte" inert>
-        <div class="rv-panel-header">
-          <div class="rv-panel-icon"><i class="bi bi-file-earmark-arrow-up"></i></div>
+      <!-- ════════════════════════════════
+           PASO 2 — DATOS DE LA TIENDA
+      ════════════════════════════════ -->
+      <section class="rv-panel" id="rvPanel2" aria-labelledby="rv2Title" inert>
+        <div class="rv-panel-head">
+          <div class="rv-panel-icon-wrap">
+            <i class="bi bi-shop rv-panel-icon"></i>
+          </div>
           <div>
-            <h2 class="rv-panel-title">Documentos de soporte</h2>
-            <p class="rv-panel-desc">Formatos aceptados: PDF, JPG, PNG — Máximo 5 MB por archivo</p>
+            <h2 class="rv-panel-title" id="rv2Title">Datos de tu tienda</h2>
+            <p class="rv-panel-sub">Cuéntanos cómo se llama tu negocio y dónde está</p>
           </div>
         </div>
 
-        <div class="rv-fields">
+        <div class="rv-grid">
+
+          <div class="rv-field rv-full">
+            <label class="rv-label" for="tNombre">Nombre de la tienda <span class="rv-req">*</span></label>
+            <div class="rv-input-wrap">
+              <i class="bi bi-shop-window rv-ico"></i>
+              <input id="tNombre" type="text" class="rv-input rv-icon-pad"
+                placeholder="Ej. Electrónica Central" maxlength="100">
+            </div>
+            <span class="rv-err" id="err-tNombre"></span>
+          </div>
+
+          <div class="rv-field">
+            <label class="rv-label" for="tCategoria">Categoría principal <span class="rv-req">*</span></label>
+            <div class="rv-select-wrap">
+              <select id="tCategoria" class="rv-select">
+                <option value="">Selecciona…</option>
+                <option value="moda">👗 Moda y calzado</option>
+                <option value="tecnologia">💻 Tecnología</option>
+                <option value="hogar">🏠 Hogar</option>
+                <option value="mercado">🛒 Mercado / alimentos</option>
+                <option value="belleza">💄 Belleza</option>
+                <option value="higiene">🧴 Higiene y salud</option>
+                <option value="mascotas">🐾 Mascotas</option>
+                <option value="deportes">⚽ Deportes</option>
+                <option value="infantil">🍼 Bebés e infantil</option>
+                <option value="otros">🔧 Otros</option>
+              </select>
+              <i class="bi bi-chevron-down rv-sel-arrow"></i>
+            </div>
+            <span class="rv-err" id="err-tCategoria"></span>
+          </div>
+
+          <div class="rv-field">
+            <label class="rv-label" for="tBarrio">Barrio / zona <span class="rv-req">*</span></label>
+            <div class="rv-input-wrap">
+              <i class="bi bi-geo-alt rv-ico"></i>
+              <input id="tBarrio" type="text" class="rv-input rv-icon-pad"
+                placeholder="Ej. Chapinero, Suba…" maxlength="80">
+            </div>
+            <span class="rv-err" id="err-tBarrio"></span>
+          </div>
+
+          <div class="rv-field rv-full">
+            <label class="rv-label" for="tDireccion">Dirección de la tienda <span class="rv-req">*</span></label>
+            <div class="rv-input-wrap">
+              <i class="bi bi-pin-map rv-ico"></i>
+              <input id="tDireccion" type="text" class="rv-input rv-icon-pad"
+                placeholder="Calle / carrera, número" maxlength="180">
+            </div>
+            <span class="rv-err" id="err-tDireccion"></span>
+          </div>
+
+          <div class="rv-field rv-full">
+            <label class="rv-label" for="tDesc">Describe tu tienda <span class="rv-req">*</span></label>
+            <textarea id="tDesc" class="rv-textarea"
+              placeholder="¿Qué vendes? ¿Desde cuándo? ¿Qué te hace diferente a la competencia?"
+              rows="4" maxlength="600"></textarea>
+            <span class="rv-hint">Mínimo 20 caracteres · <span id="tDescCount">0</span>/600</span>
+            <span class="rv-err" id="err-tDesc"></span>
+          </div>
+
+        </div>
+
+        <div class="rv-nav">
+          <button type="button" class="rv-btn rv-btn-ghost" id="btnBack2">
+            <i class="bi bi-arrow-left"></i> Anterior
+          </button>
+          <button type="button" class="rv-btn rv-btn-next" id="btnNext2">
+            Siguiente: Empresa <i class="bi bi-arrow-right"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- ════════════════════════════════
+           PASO 3 — EMPRESA Y DOCUMENTOS
+      ════════════════════════════════ -->
+      <section class="rv-panel" id="rvPanel3" aria-labelledby="rv3Title" inert>
+        <div class="rv-panel-head">
+          <div class="rv-panel-icon-wrap">
+            <i class="bi bi-building rv-panel-icon"></i>
+          </div>
+          <div>
+            <h2 class="rv-panel-title" id="rv3Title">Empresa y documentos</h2>
+            <p class="rv-panel-sub">Razón social, NIT y documentos legales de soporte</p>
+          </div>
+        </div>
+
+        <div class="rv-grid">
+
+          <div class="rv-field rv-full">
+            <label class="rv-label" for="empRazon">Razón social / Nombre de la empresa <span class="rv-req">*</span></label>
+            <input id="empRazon" type="text" class="rv-input"
+              placeholder="Ej. Distribuciones López S.A.S." maxlength="120" autocomplete="organization">
+            <span class="rv-err" id="err-empRazon"></span>
+          </div>
+
+          <div class="rv-field">
+            <label class="rv-label" for="empNit">NIT / Identificador tributario <span class="rv-req">*</span></label>
+            <div class="rv-input-wrap">
+              <i class="bi bi-hash rv-ico"></i>
+              <input id="empNit" type="text" class="rv-input rv-icon-pad"
+                placeholder="000.000.000-0" maxlength="20">
+            </div>
+            <span class="rv-hint">Incluye dígito de verificación</span>
+            <span class="rv-err" id="err-empNit"></span>
+          </div>
+
+          <div class="rv-field">
+            <label class="rv-label" for="empTipo">Tipo de empresa <span class="rv-req">*</span></label>
+            <div class="rv-select-wrap">
+              <select id="empTipo" class="rv-select">
+                <option value="">Selecciona…</option>
+                <option value="persona_natural">Persona natural</option>
+                <option value="sas">S.A.S</option>
+                <option value="sa">S.A.</option>
+                <option value="ltda">Ltda.</option>
+                <option value="eirl">E.I.R.L.</option>
+                <option value="otro">Otro</option>
+              </select>
+              <i class="bi bi-chevron-down rv-sel-arrow"></i>
+            </div>
+            <span class="rv-err" id="err-empTipo"></span>
+          </div>
+
+        </div>
+
+        <!-- Documentos -->
+        <div class="rv-docs-title">
+          <i class="bi bi-paperclip"></i> Documentos de soporte
+          <span class="rv-docs-formats">PDF, JPG, PNG · máx. 5 MB c/u</span>
+        </div>
+
+        <div class="rv-docs-grid">
 
           <!-- Cámara de comercio -->
-          <div class="rv-field rv-field-full">
-            <label class="rv-label">Cámara de comercio <span class="rv-req">*</span></label>
-            <div class="rv-upload-zone" id="zoneCC" data-field="docCamaraComercio">
-              <input type="file" id="docCamaraComercio" accept=".pdf,.jpg,.jpeg,.png" class="rv-file-input" aria-label="Subir cámara de comercio">
-              <div class="rv-upload-ui">
-                <div class="rv-upload-icon"><i class="bi bi-cloud-arrow-up"></i></div>
-                <p class="rv-upload-txt"><strong>Haz clic</strong> o arrastra el archivo aquí</p>
-                <span class="rv-upload-meta">PDF, JPG, PNG · máx. 5 MB</span>
-              </div>
-              <div class="rv-upload-preview" id="previewCC" hidden></div>
+          <div class="rv-doc-card" id="zoneCC" data-campo="docCamaraComercio">
+            <input type="file" id="docCamaraComercio" class="rv-file-input"
+              accept=".pdf,.jpg,.jpeg,.png" aria-label="Subir cámara de comercio">
+            <div class="rv-doc-front">
+              <div class="rv-doc-icon"><i class="bi bi-file-earmark-text"></i></div>
+              <p class="rv-doc-label">Cámara de comercio <span class="rv-req">*</span></p>
+              <span class="rv-doc-meta">Haz clic o arrastra aquí</span>
             </div>
+            <div class="rv-doc-preview" id="previewCC" hidden></div>
             <span class="rv-err" id="err-docCamaraComercio"></span>
           </div>
 
           <!-- RUT -->
-          <div class="rv-field rv-field-full">
-            <label class="rv-label">RUT (Registro Único Tributario) <span class="rv-req">*</span></label>
-            <div class="rv-upload-zone" id="zoneRUT" data-field="docRut">
-              <input type="file" id="docRut" accept=".pdf,.jpg,.jpeg,.png" class="rv-file-input" aria-label="Subir RUT">
-              <div class="rv-upload-ui">
-                <div class="rv-upload-icon"><i class="bi bi-cloud-arrow-up"></i></div>
-                <p class="rv-upload-txt"><strong>Haz clic</strong> o arrastra el archivo aquí</p>
-                <span class="rv-upload-meta">PDF, JPG, PNG · máx. 5 MB</span>
-              </div>
-              <div class="rv-upload-preview" id="previewRUT" hidden></div>
+          <div class="rv-doc-card" id="zoneRUT" data-campo="docRut">
+            <input type="file" id="docRut" class="rv-file-input"
+              accept=".pdf,.jpg,.jpeg,.png" aria-label="Subir RUT">
+            <div class="rv-doc-front">
+              <div class="rv-doc-icon"><i class="bi bi-receipt"></i></div>
+              <p class="rv-doc-label">RUT <span class="rv-req">*</span></p>
+              <span class="rv-doc-meta">Haz clic o arrastra aquí</span>
             </div>
+            <div class="rv-doc-preview" id="previewRUT" hidden></div>
             <span class="rv-err" id="err-docRut"></span>
           </div>
 
-          <!-- Documento de identidad del representante -->
-          <div class="rv-field rv-field-full">
-            <label class="rv-label">Documento de identidad del responsable <span class="rv-req">*</span></label>
-            <p class="rv-upload-note">Foto o copia clara del documento indicado en el paso anterior</p>
-            <div class="rv-upload-zone" id="zoneDoc" data-field="docIdentidad">
-              <input type="file" id="docIdentidad" accept=".pdf,.jpg,.jpeg,.png" class="rv-file-input" aria-label="Subir documento de identidad">
-              <div class="rv-upload-ui">
-                <div class="rv-upload-icon"><i class="bi bi-cloud-arrow-up"></i></div>
-                <p class="rv-upload-txt"><strong>Haz clic</strong> o arrastra el archivo aquí</p>
-                <span class="rv-upload-meta">PDF, JPG, PNG · máx. 5 MB</span>
-              </div>
-              <div class="rv-upload-preview" id="previewDoc" hidden></div>
+          <!-- Documento de identidad -->
+          <div class="rv-doc-card" id="zoneDoc" data-campo="docIdentidad">
+            <input type="file" id="docIdentidad" class="rv-file-input"
+              accept=".pdf,.jpg,.jpeg,.png" aria-label="Subir documento de identidad">
+            <div class="rv-doc-front">
+              <div class="rv-doc-icon"><i class="bi bi-person-badge"></i></div>
+              <p class="rv-doc-label">Doc. identidad <span class="rv-req">*</span></p>
+              <span class="rv-doc-meta">Haz clic o arrastra aquí</span>
             </div>
+            <div class="rv-doc-preview" id="previewDoc" hidden></div>
             <span class="rv-err" id="err-docIdentidad"></span>
           </div>
 
-          <!-- Info -->
-          <div class="rv-field rv-field-full">
-            <div class="rv-info-box">
-              <i class="bi bi-shield-lock rv-info-icon"></i>
-              <div>
-                <strong>Seguridad de tus documentos</strong>
-                <p>Tus archivos se almacenan de forma cifrada y solo los revisan los administradores de PriceNice para verificar tu solicitud.</p>
-              </div>
-            </div>
-          </div>
+        </div><!-- /rv-docs-grid -->
 
+        <!-- Aviso de seguridad -->
+        <div class="rv-security-note">
+          <i class="bi bi-shield-lock-fill"></i>
+          <span>Tus archivos se almacenan de forma cifrada y solo los revisa el equipo de PriceNice para verificar tu solicitud.</span>
         </div>
 
         <div class="rv-nav">
-          <button type="button" class="rv-btn rv-btn-ghost" id="btnAnterior3">
+          <button type="button" class="rv-btn rv-btn-ghost" id="btnBack3">
             <i class="bi bi-arrow-left"></i> Anterior
           </button>
-          <button type="button" class="rv-btn rv-btn-primary" id="btnSiguiente3">
-            Siguiente: Confirmar <i class="bi bi-arrow-right"></i>
+          <button type="button" class="rv-btn rv-btn-next" id="btnNext3">
+            Revisar y confirmar <i class="bi bi-arrow-right"></i>
           </button>
         </div>
       </section>
 
-      <!-- ─────────────────── PASO 4: CONFIRMACIÓN ─────────────────── -->
-      <section class="rv-panel" id="rvPanel4" aria-label="Confirmar y enviar" inert>
-        <div class="rv-panel-header">
-          <div class="rv-panel-icon"><i class="bi bi-patch-check"></i></div>
+      <!-- ════════════════════════════════
+           PASO 4 — CONFIRMACIÓN
+      ════════════════════════════════ -->
+      <section class="rv-panel" id="rvPanel4" aria-labelledby="rv4Title" inert>
+        <div class="rv-panel-head">
+          <div class="rv-panel-icon-wrap">
+            <i class="bi bi-patch-check rv-panel-icon"></i>
+          </div>
           <div>
-            <h2 class="rv-panel-title">Confirmar y enviar</h2>
-            <p class="rv-panel-desc">Revisa que todo esté correcto antes de enviar tu solicitud</p>
+            <h2 class="rv-panel-title" id="rv4Title">Revisar y confirmar</h2>
+            <p class="rv-panel-sub">Verifica que todo esté correcto antes de enviar</p>
           </div>
         </div>
 
-        <!-- Resumen de datos -->
-        <div class="rv-summary" id="rvSummary" aria-label="Resumen de tu solicitud">
-          <!-- Se genera dinámicamente -->
+        <!-- Resumen generado por JS -->
+        <div class="rv-summary" id="rvSummary" aria-label="Resumen de solicitud">
+          <!-- JS lo rellena -->
+        </div>
+
+        <!-- IA aviso -->
+        <div class="rv-ia-aviso">
+          <div class="rv-ia-aviso-icon"><i class="bi bi-cpu-fill"></i></div>
+          <div>
+            <strong>Revisión automática</strong>
+            <p>Al enviar, nuestra IA analizará tu solicitud en segundos y generará una recomendación para los administradores. La decisión final siempre la toma un administrador.</p>
+          </div>
         </div>
 
         <!-- Términos -->
-        <div class="rv-terms-wrap">
-          <label class="rv-check">
-            <input type="checkbox" id="rvTerminos">
-            <span class="rv-check-box"></span>
-            <span>Acepto los <a href="#terminos" class="rv-link">Términos y condiciones de vendedores</a> y autorizo el tratamiento de mis datos personales y los de mi empresa conforme a la <a href="#privacidad" class="rv-link">Política de privacidad</a> de PriceNice.</span>
-          </label>
-          <span class="rv-err" id="err-rvTerminos"></span>
-        </div>
+        <label class="rv-check-label" for="rvTerminos">
+          <input type="checkbox" id="rvTerminos" class="rv-checkbox">
+          <span class="rv-checkbox-box"></span>
+          <span class="rv-check-text">
+            Acepto los <a href="#terminos" class="rv-link">Términos y condiciones para vendedores</a>
+            y autorizo el tratamiento de mis datos y los de mi empresa conforme a la
+            <a href="#privacidad" class="rv-link">Política de privacidad</a> de PriceNice.
+          </span>
+        </label>
+        <span class="rv-err" id="err-rvTerminos"></span>
 
         <!-- Mensaje de estado -->
         <div class="rv-msg" id="rvMsg" role="status" aria-live="polite" hidden></div>
 
         <div class="rv-nav">
-          <button type="button" class="rv-btn rv-btn-ghost" id="btnAnterior4">
+          <button type="button" class="rv-btn rv-btn-ghost" id="btnBack4">
             <i class="bi bi-arrow-left"></i> Anterior
           </button>
-          <button type="submit" class="rv-btn rv-btn-primary rv-btn-submit" id="btnEnviar">
-            <i class="bi bi-send-check"></i> Enviar solicitud
+          <button type="submit" class="rv-btn rv-btn-submit" id="btnEnviar">
+            <i class="bi bi-send-check-fill"></i>
+            Enviar solicitud
           </button>
         </div>
       </section>
 
-    </form>
+    </form><!-- /rv-card -->
 
     <!-- ══ PANTALLA DE ÉXITO ══ -->
     <div class="rv-success" id="rvSuccess" hidden aria-live="polite">
+      <div class="rv-success-rings" aria-hidden="true">
+        <div class="rv-success-ring rv-ring-1"></div>
+        <div class="rv-success-ring rv-ring-2"></div>
+        <div class="rv-success-ring rv-ring-3"></div>
+      </div>
       <div class="rv-success-icon"><i class="bi bi-check-circle-fill"></i></div>
       <h2 class="rv-success-title">¡Solicitud enviada!</h2>
       <p class="rv-success-desc">
-        Tu solicitud de verificación como vendedor está <strong>Pendiente de revisión</strong>.
-        Nuestro equipo la revisará en los próximos <strong>1–3 días hábiles</strong> y recibirás
-        una notificación en tu correo con la decisión.
+        Tu solicitud está <strong>Pendiente de revisión</strong>. Nuestro equipo la revisará
+        en los próximos <strong>1–3 días hábiles</strong> y te notificaremos por correo.
       </p>
-      <div class="rv-success-estado">
-        <span class="rv-badge rv-badge-pendiente"><i class="bi bi-clock"></i> Pendiente de verificación</span>
+      <div class="rv-success-badge">
+        <i class="bi bi-clock-history"></i> Pendiente de verificación
       </div>
       <div class="rv-success-btns">
-        <a href="login.html" class="rv-btn rv-btn-ghost">Ir a mi cuenta</a>
-        <a href="Index.html" class="rv-btn rv-btn-primary">Volver al inicio</a>
+        <a href="usuario.html" class="rv-btn rv-btn-ghost">Mi cuenta</a>
+        <a href="Index.html" class="rv-btn rv-btn-next">Ir al inicio <i class="bi bi-arrow-right"></i></a>
       </div>
       <p class="rv-success-note">
         <i class="bi bi-info-circle"></i>
         Mientras tu solicitud no sea aprobada, no podrás publicar ni vender productos.
-        Si tu solicitud es rechazada, recibirás el motivo y podrás corregirla y reenviarla.
+        Si es rechazada, recibirás el motivo y podrás corregirla y reenviarla.
       </p>
     </div>
 
-  </main>
+  </main><!-- /rv-main -->
 
   <script type="module" src="registro-vendedor.js"></script>
 </body>

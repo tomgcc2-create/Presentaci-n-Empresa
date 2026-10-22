@@ -58,60 +58,12 @@
           <div class="lg-roles-grid" id="rolesGrid"><!-- login.js dibuja las opciones --></div>
         </fieldset>
 
-        <!-- ═════════ Datos extra para vendedores (se muestran solo si el rol es vendedor) ═════════ -->
-        <div class="lg-vendedor" id="datosVendedor" hidden>
-          <div class="lg-vd-head">
-            <i class="bi bi-shop"></i>
-            <div>
-              <strong>Verificación de vendedor</strong>
-              <small>Necesitamos algunos datos para validar tu tienda</small>
-            </div>
-          </div>
-
-          <div class="lg-vd-sep">Datos personales del vendedor</div>
-          <div class="lg-field"><label for="vdTel">Teléfono / WhatsApp <em>*</em></label>
-            <input id="vdTel" type="tel" autocomplete="tel" placeholder="Ej. 300 123 4567"><div class="lg-err" id="err-vdTel" role="alert"></div></div>
-          <div class="lg-row2">
-            <div class="lg-field"><label for="vdTipoDoc">Tipo de documento <em>*</em></label>
-              <select id="vdTipoDoc" class="lg-select">
-                <option value="">— Seleccionar —</option>
-                <option value="CC">Cédula de ciudadanía</option>
-                <option value="CE">Cédula de extranjería</option>
-                <option value="NIT">NIT (persona jurídica)</option>
-                <option value="PPT">Permiso por Protección Temporal</option>
-              </select><div class="lg-err" id="err-vdTipoDoc" role="alert"></div></div>
-            <div class="lg-field"><label for="vdNumDoc">Número de documento <em>*</em></label>
-              <input id="vdNumDoc" type="text" autocomplete="off" placeholder="Ej. 1020304050"><div class="lg-err" id="err-vdNumDoc" role="alert"></div></div>
-          </div>
-
-          <div class="lg-vd-sep">Datos de la tienda</div>
-          <div class="lg-field"><label for="vdTienda">Nombre de la tienda <em>*</em></label>
-            <input id="vdTienda" type="text" autocomplete="off" placeholder="Ej. Electrónica Central"><div class="lg-err" id="err-vdTienda" role="alert"></div></div>
-          <div class="lg-row2">
-            <div class="lg-field"><label for="vdCategoria">Categoría de la tienda <em>*</em></label>
-              <select id="vdCategoria" class="lg-select">
-                <option value="">— Seleccionar —</option>
-                <option value="moda">Moda</option>
-                <option value="tecnologia">Tecnología</option>
-                <option value="hogar">Hogar</option>
-                <option value="mercado">Mercado</option>
-                <option value="belleza">Belleza</option>
-                <option value="higiene">Higiene</option>
-                <option value="mascotas">Mascotas</option>
-                <option value="alimentos">Alimentos</option>
-                <option value="otros">Otros</option>
-              </select><div class="lg-err" id="err-vdCategoria" role="alert"></div></div>
-            <div class="lg-field"><label for="vdBarrio">Barrio / zona <em>*</em></label>
-              <input id="vdBarrio" type="text" autocomplete="off" placeholder="Ej. Chapinero, Suba..."><div class="lg-err" id="err-vdBarrio" role="alert"></div></div>
-          </div>
-          <div class="lg-field"><label for="vdDireccion">Dirección de la tienda <em>*</em></label>
-            <input id="vdDireccion" type="text" autocomplete="off" placeholder="Calle / carrera, número"><div class="lg-err" id="err-vdDireccion" role="alert"></div></div>
-          <div class="lg-field"><label for="vdDesc">Describe tu tienda <em>*</em></label>
-            <textarea id="vdDesc" class="lg-textarea" placeholder="Qué vendes, desde cuándo, qué te hace diferente..."></textarea><div class="lg-err" id="err-vdDesc" role="alert"></div></div>
-
-          <div class="lg-vd-ai" id="vdAvisoIA" role="status">
-            <i class="bi bi-robot"></i>
-            <span>Tu información será revisada por nuestra IA y un administrador antes de activar tu tienda.</span>
+        <!-- Aviso informativo al elegir rol Vendedor -->
+        <div class="lg-vendedor-aviso" id="avisoVendedor" hidden>
+          <div class="lg-va-icon"><i class="bi bi-shop-window"></i></div>
+          <div class="lg-va-body">
+            <strong>Perfil de Vendedor</strong>
+            <p>Para activar tu cuenta como vendedor, tu solicitud debe ser <strong>verificada por nuestra IA</strong> y aprobada por los administradores. Al crear tu cuenta serás redirigido a una nueva página donde completarás los datos de tu tienda y subirás los documentos requeridos.</p>
           </div>
         </div>
 
@@ -204,6 +156,54 @@
     </aside>
   </div>
 </main>
+
+<!-- ═══════════════════════════════════════════════════════
+     MODO ADMIN DE PRUEBAS
+     Este panel SOLO se muestra si el servidor lo autoriza.
+     El código secreto nunca aparece aquí ni en login.js.
+════════════════════════════════════════════════════════ -->
+<div class="lg-modal-bg" id="adminTestModal" hidden aria-modal="true" role="dialog" aria-labelledby="atModalTitle">
+  <div class="at-modal">
+
+    <!-- Cabecera -->
+    <div class="at-header">
+      <div class="at-header-icon" aria-hidden="true">
+        <i class="bi bi-terminal-fill"></i>
+      </div>
+      <div>
+        <h2 class="at-title" id="atModalTitle">Modo administrador de pruebas</h2>
+        <p class="at-subtitle">Selecciona el perfil que deseas previsualizar</p>
+      </div>
+      <button class="at-close" id="atClose" aria-label="Cerrar modo prueba">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <!-- Aviso de seguridad -->
+    <div class="at-warning" role="alert">
+      <i class="bi bi-shield-lock-fill"></i>
+      <span>Sesión de prueba activa. Este modo no crea cuentas reales ni modifica datos.</span>
+    </div>
+
+    <!-- Grid de perfiles (lo rellena login.js con la respuesta del servidor) -->
+    <div class="at-profiles" id="atProfiles" role="list">
+      <!-- JS inserta los perfiles autorizados por el servidor -->
+    </div>
+
+    <!-- Mensaje de estado -->
+    <p class="at-msg" id="atMsg" hidden></p>
+
+    <!-- Footer -->
+    <div class="at-footer">
+      <span class="at-footer-note">
+        <i class="bi bi-clock-history"></i>
+        La sesión de prueba expira en <strong>30 minutos</strong>.
+      </span>
+      <button type="button" class="at-btn-cancel" id="atCancel">Cancelar</button>
+    </div>
+
+  </div>
+</div>
 
 <!-- Un último paso para quien entra por primera vez con Google, Microsoft o Facebook -->
 <div class="lg-modal-bg" id="rolModal" hidden>
