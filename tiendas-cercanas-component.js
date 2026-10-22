@@ -3,6 +3,7 @@
  * Solución 100% gratuita y sin tarjeta ni claves de API:
  * - Mapa: Leaflet con OpenStreetMap (CartoDB Positron / OSM tiles).
  * - Ubicación del usuario: Geolocation API del navegador.
+ * - Respaldo si el GPS falla: ubicación aproximada por IP (ipwho.is / ipapi.co).
  * - Búsqueda manual: Nominatim API (OpenStreetMap, restringido a Bogotá, Colombia).
  * - Tiendas cercanas: Overpass API (OpenStreetMap) en radio de ~1.5 km (shop=*).
  * - Caché local para respetar las políticas de uso de OSM / Overpass.
@@ -48,11 +49,38 @@ export function inicializarSeccionTiendas() {
     cargarLeaflet().then(() => {
       crearMapaLeaflet(mapDiv);
       vincularEventosUI();
+      pedirUbicacionAlVerMapa(mapDiv);
     });
   } else {
     crearMapaLeaflet(mapDiv);
     vincularEventosUI();
+    pedirUbicacionAlVerMapa(mapDiv);
   }
+}
+
+/**
+ * Pide la ubicación automáticamente la primera vez que el mapa entra en pantalla
+ * (al cargar tiendas-cercanas.html, o al bajar a la sección en index.html).
+ */
+function pedirUbicacionAlVerMapa(contenedor) {
+  if (!navigator.geolocation) return;
+
+  const pedir = () => {
+    if (!userPosition) solicitarUbicacionUsuario();
+  };
+
+  if (!("IntersectionObserver" in window)) {
+    pedir();
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    if (entries.some((e) => e.isIntersecting)) {
+      observer.disconnect();
+      pedir();
+    }
+  }, { threshold: 0.1 });
+  observer.observe(contenedor);
 }
 
 /**
@@ -100,10 +128,9 @@ function crearMapaLeaflet(container) {
   // Control de zoom en la esquina inferior derecha
   L.control.zoom({ position: "bottomright" }).addTo(map);
 
-  // Tiles de OpenStreetMap en estilo CartoDB Positron (limpio, claro y moderno)
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/" target="_blank">CARTO</a>',
-    subdomains: "abcd",
+  // Tiles estándar de OpenStreetMap (gratis, sin API key; CARTO ahora exige clave)
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors',
     maxZoom: 19
   }).addTo(map);
 
@@ -118,7 +145,7 @@ function crearMapaLeaflet(container) {
 /* ══════════════════════════════════════════════════════════
    2. SOLICITUD DE UBICACIÓN (GEOLOCATION API)
    ══════════════════════════════════════════════════════════ */
-export function solicitarUbicacionUsuario() {
+export async function solicitarUbicacionUsuario() {
   const btn = document.getElementById("pnBtnDarUbicacion");
   if (btn) {
     btn.disabled = true;
@@ -130,34 +157,84 @@ export function solicitarUbicacionUsuario() {
     return;
   }
 
-  navigator.geolocation.getCurrentPosition(
-    (pos) => {
-      const lat = pos.coords.latitude;
-      const lng = pos.coords.longitude;
-      userPosition = { lat, lng };
+  const pedirPosicion = (opciones) =>
+    new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject, opciones));
 
-      // Si el usuario está fuera de Bogotá, ubicamos en una zona céntrica (Chapinero)
-      const distABogota = calcularDistanciaKm(lat, lng, BOGOTA_CENTER.lat, BOGOTA_CENTER.lng);
-      if (distABogota > 80) {
-        userPosition = { lat: 4.6558, lng: -74.0625 };
-        mostrarNotificacionToast("Te ubicamos en Bogotá (Chapinero) para mostrar las tiendas cercanas.");
-      }
-
-      animarHaciaUbicacion(userPosition.lat, userPosition.lng);
-    },
-    (err) => {
-      let msg = "No pudimos obtener tu ubicación automáticamente.";
-      if (err.code === err.PERMISSION_DENIED) {
-        msg = "Permiso de ubicación denegado. Puedes escribir tu dirección o barrio:";
-      }
-      mostrarFormularioManual(msg);
-    },
-    {
-      enableHighAccuracy: true,
-      timeout: 10000,
-      maximumAge: 0
+  try {
+    let pos;
+    try {
+      // 1er intento: alta precisión (GPS en móviles)
+      pos = await pedirPosicion({ enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
+    } catch (err) {
+      if (err.code === 1 /* PERMISSION_DENIED */) throw err;
+      // En PC sin GPS la alta precisión suele agotar el tiempo: reintentar con Wi-Fi/red
+      pos = await pedirPosicion({ enableHighAccuracy: false, timeout: 15000, maximumAge: 300000 });
     }
-  );
+
+    const lat = pos.coords.latitude;
+    const lng = pos.coords.longitude;
+    userPosition = { lat, lng };
+
+    // Si el usuario está fuera de Bogotá, ubicamos en una zona céntrica (Chapinero)
+    const distABogota = calcularDistanciaKm(lat, lng, BOGOTA_CENTER.lat, BOGOTA_CENTER.lng);
+    if (distABogota > 80) {
+      userPosition = { lat: 4.6558, lng: -74.0625 };
+      mostrarNotificacionToast("Te ubicamos en Bogotá (Chapinero) para mostrar las tiendas cercanas.");
+    }
+
+    animarHaciaUbicacion(userPosition.lat, userPosition.lng);
+  } catch (err) {
+    // Permiso bloqueado: el navegador no vuelve a mostrar la ventana de permiso,
+    // así que explicamos cómo activarlo en lugar de ubicar por IP (que puede caer lejos)
+    if (err.code === 1 /* PERMISSION_DENIED */) {
+      const msg = window.isSecureContext
+        ? "Tu navegador tiene bloqueada la ubicación para este sitio. Actívala en el ícono 🔒 junto a la dirección web (Ubicación → Permitir) y recarga, o escribe tu dirección o barrio:"
+        : "La ubicación solo funciona en páginas con https://. Escribe tu dirección o barrio:";
+      mostrarFormularioManual(msg);
+      return;
+    }
+
+    // GPS y red sin respuesta (p. ej. ubicación de Windows desactivada): respaldo por IP
+    const aprox = await obtenerUbicacionPorIP();
+    if (aprox && calcularDistanciaKm(aprox.lat, aprox.lng, BOGOTA_CENTER.lat, BOGOTA_CENTER.lng) <= 80) {
+      userPosition = aprox;
+      mostrarNotificacionToast("Ubicación aproximada. Activa la ubicación de tu dispositivo o escribe tu barrio para mayor precisión.");
+      animarHaciaUbicacion(aprox.lat, aprox.lng);
+      return;
+    }
+
+    mostrarFormularioManual("No pudimos obtener tu ubicación automáticamente. Escribe tu dirección o barrio:");
+  }
+}
+
+/**
+ * Ubicación aproximada (nivel ciudad) a partir de la IP del visitante.
+ * Proveedores gratuitos, sin API key, con HTTPS y CORS (compatibles con GitHub Pages):
+ * - ipwho.is  (principal)
+ * - ipapi.co  (respaldo, ~1.000 consultas/día)
+ * Devuelve { lat, lng } o null si ninguno responde.
+ */
+async function obtenerUbicacionPorIP() {
+  const proveedores = [
+    { url: "https://ipwho.is/", leer: (d) => (d.success === false ? null : { lat: d.latitude, lng: d.longitude }) },
+    { url: "https://ipapi.co/json/", leer: (d) => (d.error ? null : { lat: d.latitude, lng: d.longitude }) }
+  ];
+
+  for (const p of proveedores) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      const res = await fetch(p.url, { signal: controller.signal });
+      clearTimeout(timeoutId);
+      if (!res.ok) continue;
+
+      const coords = p.leer(await res.json());
+      if (coords && Number.isFinite(coords.lat) && Number.isFinite(coords.lng)) return coords;
+    } catch (e) {
+      console.info(`Ubicación por IP no disponible en ${p.url}:`, e);
+    }
+  }
+  return null;
 }
 
 /**
@@ -174,16 +251,15 @@ function animarHaciaUbicacion(lat, lng) {
 
   if (!map) return;
 
+  // Marcador y tiendas se colocan de inmediato: no dependemos de "moveend",
+  // que no se dispara si el usuario mueve el mapa o la pestaña queda en segundo plano
+  colocarMarcadorUsuario(lat, lng);
+  cargarPinesTiendas(lat, lng);
+
   // Animación de vuelo suave de Leaflet de zoom 12 a zoom 15
   map.flyTo([lat, lng], 15, {
     duration: 1.5,
     easeLinearity: 0.25
-  });
-
-  // Cuando termine el movimiento, añadir marcador de usuario y desplegar tiendas
-  map.once("moveend", () => {
-    colocarMarcadorUsuario(lat, lng);
-    cargarPinesTiendas(lat, lng);
   });
 }
 

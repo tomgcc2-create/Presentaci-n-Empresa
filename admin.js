@@ -12,9 +12,9 @@ import {
     doc,
     setDoc,
     updateDoc,
-    deleteDoc
+    serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-import { observarSesion, obtenerRol, mensajeError } from "./auth.js";
+import { observarSesion, obtenerRol, mensajeError, actualizarVerificacion } from "./auth.js";
 import { initSettings } from "./settings.js";
 
 const contenido = document.getElementById("contenido");
@@ -47,11 +47,21 @@ async function crearUsuario(datos) {
     await updateProfile(credencial.user, { displayName: datos.nombre });
     await signOut(secundaria);
 
-    await setDoc(doc(db, "usuarios", credencial.user.uid), {
+    const perfil = {
         nombre: datos.nombre,
         email: datos.email,
-        rol: datos.rol
-    });
+        rol: datos.rol,
+        activo: true
+    };
+
+    // Si el admin crea un vendedor, lo marca como verificado directamente
+    if (datos.rol === "vendedor") {
+        perfil.verificacion = "verificado";
+        perfil.verificado = true;
+        perfil.verificadoEn = serverTimestamp();
+    }
+
+    await setDoc(doc(db, "usuarios", credencial.user.uid), perfil);
 }
 
 async function listarUsuarios() {
@@ -63,8 +73,14 @@ async function actualizarUsuario(uid, datos) {
     await updateDoc(doc(db, "usuarios", uid), datos);
 }
 
-async function eliminarUsuario(uid) {
-    await deleteDoc(doc(db, "usuarios", uid));
+/* Desactiva la cuenta (no borra solo el perfil): auth.js impide el ingreso de cuentas con activo === false.
+   Borrar la cuenta de Authentication requiere el Admin SDK (Cloud Function) o la consola de Firebase. */
+async function desactivarUsuario(uid) {
+    await updateDoc(doc(db, "usuarios", uid), { activo: false, desactivadoEn: serverTimestamp() });
+}
+
+async function reactivarUsuario(uid) {
+    await updateDoc(doc(db, "usuarios", uid), { activo: true, desactivadoEn: null });
 }
 
 function mostrar(texto, tipo = "error") {
@@ -111,7 +127,7 @@ function celda(texto) {
 function filaVacia(texto) {
     const tr = document.createElement("tr");
     const td = document.createElement("td");
-    td.colSpan = 4;
+    td.colSpan = 5;
     td.textContent = texto;
     tr.appendChild(td);
     return tr;
@@ -120,15 +136,46 @@ function filaVacia(texto) {
 function fila(usuario) {
     const tr = document.createElement("tr");
     const esYo = usuario.uid === uidActual;
+    const esVendedor = usuario.rol === "vendedor";
 
+    tr.appendChild(celda((usuario.nombre || "-") + (esYo ? " (tú)" : "")));
+    tr.appendChild(celda(usuario.email || "-"));
     tr.appendChild(celda((usuario.nombre || "-") + (esYo ? " (tú)" : "")));
     tr.appendChild(celda(usuario.email || "-"));
 
     // Badge de rol
     const tdRol = document.createElement("td");
     const rolVal = usuario.rol || "usuario";
-    tdRol.innerHTML = `<span class="adm-rol-badge adm-rol-${rolVal}">${rolVal}</span>`;
+    const rolTexto = usuario.activo === false ? `${rolVal} (desactivado)` : rolVal;
+    tdRol.innerHTML = `<span class="adm-rol-badge adm-rol-${rolVal}">${rolTexto}</span>`;
     tr.appendChild(tdRol);
+
+    // Columna de verificación
+    const celdaVerif = document.createElement("td");
+    if (esVendedor) {
+        const estado = usuario.verificacion || (usuario.verificado ? "verificado" : "sin_verificar");
+        if (estado === "pendiente" || estado === "sin_verificar") {
+            const badge = document.createElement("span");
+            badge.className = "verif-badge pendiente";
+            badge.textContent = "Pendiente";
+            celdaVerif.appendChild(badge);
+        } else if (estado === "verificado" || usuario.verificado) {
+            const badge = document.createElement("span");
+            badge.className = "verif-badge verificado";
+            badge.textContent = "Verificado";
+            celdaVerif.appendChild(badge);
+        } else if (estado === "rechazado") {
+            const badge = document.createElement("span");
+            badge.className = "verif-badge rechazado";
+            badge.textContent = "Rechazado";
+            celdaVerif.appendChild(badge);
+        } else {
+            celdaVerif.textContent = "—";
+        }
+    } else {
+        celdaVerif.textContent = "—";
+    }
+    tr.appendChild(celdaVerif);
 
     const acciones = document.createElement("td");
     const editar = document.createElement("button");
@@ -138,7 +185,35 @@ function fila(usuario) {
     editar.addEventListener("click", () => modoEditar(usuario));
     acciones.appendChild(editar);
 
+    // Botón de verificación para vendedores pendientes
+    if (esVendedor && (usuario.verificacion === "pendiente" || (!usuario.verificacion && !usuario.verificado))) {
+        const verificar = document.createElement("button");
+        verificar.className = "boton-fila verificar";
+        verificar.textContent = "Verificar";
+        verificar.addEventListener("click", () => abrirModalVerificacion(usuario));
+        acciones.appendChild(verificar);
+    }
+
 if (!esYo) {
+    const inactivo = usuario.activo === false;
+    const estado = document.createElement("button");
+    estado.className = "boton-fila" + (inactivo ? "" : " peligro");
+    estado.textContent = inactivo ? "Reactivar" : "Desactivar";
+    estado.addEventListener("click", async () => {
+        const pregunta = inactivo
+            ? '¿Reactivar la cuenta de "' + (usuario.nombre || usuario.email) + '"?'
+            : '¿Desactivar la cuenta de "' + (usuario.nombre || usuario.email) + '"? No podrá iniciar sesión.';
+        if (!confirm(pregunta)) return;
+        try {
+            if (inactivo) await reactivarUsuario(usuario.uid); else await desactivarUsuario(usuario.uid);
+            mostrar(inactivo ? "Cuenta reactivada." : "Cuenta desactivada: ya no podrá iniciar sesión.", "info");
+            await pintarUsuarios();
+        } catch (error) {
+            mostrar("No se pudo cambiar el estado: " + error.message, "error");
+        }
+    });
+    acciones.appendChild(estado);
+
     const borrar = document.createElement("button");
     borrar.className = "adm-btn adm-btn-danger";
     borrar.style.cssText = "font-size:12px;padding:6px 12px;margin-left:6px";
@@ -146,14 +221,23 @@ if (!esYo) {
     borrar.addEventListener("click", async () => {
         if (!confirm('¿Eliminar el perfil de "' + (usuario.nombre || usuario.email) + '"?')) return;
         try {
-            await eliminarUsuario(usuario.uid);
-            mostrar("Perfil eliminado. La cuenta sigue en Authentication.", "info");
+            await borrarUsuario(usuario.uid);
+            mostrar("Usuario eliminado.", "info");
             await pintarUsuarios();
         } catch (error) {
-            mostrar("No se pudo eliminar: " + error.message);
+            mostrar("No se pudo eliminar: " + error.message, "error");
         }
     });
     acciones.appendChild(borrar);
+        try {
+            if (inactivo) await reactivarUsuario(usuario.uid); else await desactivarUsuario(usuario.uid);
+            mostrar(inactivo ? "Cuenta reactivada." : "Cuenta desactivada: ya no podrá iniciar sesión.", "info");
+            await pintarUsuarios();
+        } catch (error) {
+            mostrar("No se pudo completar la acción: " + error.message);
+        }
+    });
+    acciones.appendChild(estado);
 }
 
 tr.appendChild(acciones);
@@ -211,6 +295,90 @@ cancelar.addEventListener("click", () => {
     modoNuevo();
     mostrar("");
 });
+/* ───────────────── Modal de verificación de vendedor ───────────────── */
+const modalVerif = document.getElementById("modalVerificacion");
+const detalleVendedor = document.getElementById("detalleVendedor");
+const btnAprobar = document.getElementById("btnAprobar");
+const btnRechazar = document.getElementById("btnRechazar");
+const btnCerrarVerif = document.getElementById("cerrarVerif");
+const verifNota = document.getElementById("verifNota");
+
+let vendedorActual = null;
+
+function abrirModalVerificacion(usuario) {
+    vendedorActual = usuario;
+    const vd = usuario.vendedor || {};
+    const ti = usuario.tienda || {};
+    const docTipos = { CC: "Cédula de ciudadanía", CE: "Cédula de extranjería", NIT: "NIT", PPT: "Permiso por Protección Temporal" };
+    const categorias = { moda:"Moda", tecnologia:"Tecnología", hogar:"Hogar", mercado:"Mercado", belleza:"Belleza", higiene:"Higiene", mascotas:"Mascotas", alimentos:"Alimentos", otros:"Otros" };
+
+    detalleVendedor.innerHTML = `
+        <div class="vd-grupo">
+            <div class="vd-grupo-tit">Datos del vendedor</div>
+            <div class="vd-item"><label>Nombre</label><span>${(usuario.nombre || "")} ${(usuario.apellido || "")}</span></div>
+            <div class="vd-item"><label>Correo</label><span>${usuario.email || "—"}</span></div>
+            <div class="vd-item"><label>Teléfono</label><span>${vd.telefono || "—"}</span></div>
+            <div class="vd-item"><label>Documento</label><span>${docTipos[vd.tipoDocumento] || vd.tipoDocumento || "—"} ${vd.numeroDocumento || ""}</span></div>
+        </div>
+        <div class="vd-grupo">
+            <div class="vd-grupo-tit">Datos de la tienda</div>
+            <div class="vd-item"><label>Tienda</label><span>${ti.nombre || "—"}</span></div>
+            <div class="vd-item"><label>Categoría</label><span>${categorias[ti.categoria] || ti.categoria || "—"}</span></div>
+            <div class="vd-item"><label>Dirección</label><span>${ti.direccion || "—"}</span></div>
+            <div class="vd-item"><label>Barrio / zona</label><span>${ti.barrio || "—"}</span></div>
+            <div class="vd-item"><label>Ciudad</label><span>${ti.ciudad || "Bogotá"}</span></div>
+            <div class="vd-item"><label>Descripción</label><span>${ti.descripcion || "—"}</span></div>
+        </div>
+        ${vd.iaNota ? `<div class="vd-ia"><b>Valoración de la IA</b>${vd.iaNota}</div>` : ""}
+    `;
+
+    verifNota.value = "";
+    modalVerif.hidden = false;
+}
+
+function cerrarModalVerif() {
+    modalVerif.hidden = true;
+    vendedorActual = null;
+}
+
+btnCerrarVerif.addEventListener("click", cerrarModalVerif);
+modalVerif.addEventListener("click", (e) => { if (e.target === modalVerif) cerrarModalVerif(); });
+
+btnAprobar.addEventListener("click", async () => {
+    if (!vendedorActual) return;
+    btnAprobar.disabled = true;
+    try {
+        await actualizarVerificacion(vendedorActual.uid, "verificado", verifNota.value.trim());
+        mostrar("Vendedor verificado correctamente.", "info");
+        cerrarModalVerif();
+        await pintarUsuarios();
+    } catch (error) {
+        mostrar("No se pudo verificar: " + error.message);
+    }
+    btnAprobar.disabled = false;
+});
+
+btnRechazar.addEventListener("click", async () => {
+    if (!vendedorActual) return;
+    const nota = verifNota.value.trim() || "Datos insuficientes o incorrectos";
+    btnRechazar.disabled = true;
+    try {
+        await actualizarVerificacion(vendedorActual.uid, "rechazado", nota);
+        mostrar("Vendedor rechazado.", "info");
+        cerrarModalVerif();
+        await pintarUsuarios();
+    } catch (error) {
+        mostrar("No se pudo completar: " + error.message);
+    }
+    btnRechazar.disabled = false;
+});
+
+observarSesion(async usuario => {
+    if (!usuario) {
+        window.location.href = "login.html";
+        return;
+    }
+
 
 /* admin.js solo gestiona el CRUD de usuarios.
    La autenticación y visibilidad del panel se manejan en admin.html */

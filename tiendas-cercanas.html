@@ -23,7 +23,7 @@
   <div class="pn-navbar-main">
 
     <!-- Logo -->
-    <a href="Index.html" class="pn-logo" aria-label="PriceNice — inicio">
+    <a href="index.html" class="pn-logo" aria-label="PriceNice — inicio">
       <div class="pn-logo-circle">
         <img src="img/logo-dark.png" alt="PriceNice" loading="eager">
       </div>
@@ -35,12 +35,11 @@
 
     <!-- Menú principal (desktop) -->
     <nav class="pn-navbar-menu" aria-label="Menú principal">
-      <a href="Index.html"            class="pn-menu-link">Inicio</a>
-      <a href="tienda.html"           class="pn-menu-link">Tienda</a>
-      <a href="tienda.html?oferta=1"  class="pn-menu-link">Ofertas</a>
-      <a href="tienda.html?nuevo=1"   class="pn-menu-link">Novedades</a>
+      <a href="index.html"            class="pn-menu-link">Inicio</a>
+      <a href="tienda.html" class="pn-menu-link">Comparación de precios</a>
+      <a href="ofertas-novedades.html" class="pn-menu-link">Ofertas y novedades</a>
       <a href="tiendas-cercanas.html" class="pn-menu-link active">Cercanas</a>
-      <a href="vendedor.html"         class="pn-menu-link">Vendedores</a>
+      <a href="vendedor.html" class="pn-menu-link" data-solo-vendedor hidden>Vendedores</a>
     </nav>
 
     <!-- Buscador -->
@@ -90,12 +89,11 @@
       </button>
     </div>
     <nav style="display:flex;flex-direction:column;gap:4px">
-      <a href="Index.html"            class="pn-cat-panel-link">🏠 Inicio</a>
-      <a href="tienda.html"           class="pn-cat-panel-link">🛒 Tienda</a>
-      <a href="tienda.html?oferta=1"  class="pn-cat-panel-link">🏷️ Ofertas</a>
-      <a href="tienda.html?nuevo=1"   class="pn-cat-panel-link">✨ Novedades</a>
+      <a href="index.html"            class="pn-cat-panel-link">🏠 Inicio</a>
+      <a href="tienda.html" class="pn-cat-panel-link">🛒 Comparación de precios</a>
+      <a href="ofertas-novedades.html" class="pn-cat-panel-link">🏷️ Ofertas y novedades</a>
       <a href="tiendas-cercanas.html" class="pn-cat-panel-link active">📍 Tiendas cercanas</a>
-      <a href="vendedor.html"         class="pn-cat-panel-link">🏪 Vendedores</a>
+      <a href="vendedor.html" class="pn-cat-panel-link" data-solo-vendedor hidden>🏪 Vendedores</a>
     </nav>
   </div>
 </div>
@@ -232,8 +230,8 @@
 
       <div class="pn-footer-col">
         <h4>Navegar</h4>
-        <a href="Index.html">Inicio</a>
-        <a href="tienda.html">Tienda virtual</a>
+        <a href="index.html">Inicio</a>
+        <a href="tienda.html">Comparación de precios</a>
         <a href="catalogo.html">Catálogo</a>
         <a href="tiendas-cercanas.html">Tiendas cercanas</a>
       </div>
@@ -242,7 +240,7 @@
         <h4>Mi cuenta</h4>
         <a href="login.html">Iniciar sesión</a>
         <a href="favoritos.html">Mis favoritos</a>
-        <a href="vendedor.html">Panel vendedor</a>
+        <a href="vendedor.html" data-solo-vendedor hidden>Panel vendedor</a>
       </div>
 
       <div class="pn-footer-col">

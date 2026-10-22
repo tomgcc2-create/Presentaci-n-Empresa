@@ -101,6 +101,27 @@ body.lg-body::after  { width:380px; height:380px; left:-140px; bottom:-170px; ba
 .lg-role input:checked + span { border-color:var(--lg-navy); background:var(--lg-celeste2); box-shadow:0 0 0 3px rgba(31,42,68,.08); }
 .lg-role input:focus-visible + span { outline:2px solid var(--lg-blue); outline-offset:2px; }
 
+/* ───────── Datos extra del vendedor ───────── */
+.lg-vendedor { margin:4px 0 14px; padding:18px 16px; border:1.5px solid var(--lg-line); border-radius:18px; background:var(--lg-cream); animation:lgVdIn .3s ease; }
+@keyframes lgVdIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:none; } }
+.lg-vd-head { display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+.lg-vd-head > i { width:42px; height:42px; flex:none; border-radius:12px; background:var(--lg-celeste2); color:var(--lg-blue); display:flex; align-items:center; justify-content:center; font-size:21px; }
+.lg-vd-head strong { display:block; font-size:15px; }
+.lg-vd-head small { font-size:12.5px; color:var(--lg-text3); }
+.lg-vd-sep { font-size:11.5px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--lg-text3); margin:16px 0 8px; padding-bottom:6px; border-bottom:1px solid var(--lg-line); }
+.lg-vd-sep:first-of-type { margin-top:0; }
+.lg-select { width:100%; font:500 15px var(--lg-font); color:var(--lg-navy); background:var(--lg-cream); border:1.5px solid var(--lg-line); border-radius:12px; padding:13px 14px; cursor:pointer; transition:border-color .15s, box-shadow .15s, background .15s; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%234F5B78' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 5 4 4 4-4'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center; padding-right:38px; }
+.lg-select:hover { border-color:#D6DCE8; }
+.lg-select:focus { outline:0; border-color:var(--lg-navy); background-color:#fff; box-shadow:0 0 0 3px rgba(31,42,68,.1); }
+.lg-field.has-err .lg-select { border-color:var(--lg-red); }
+.lg-textarea { width:100%; font:500 15px var(--lg-font); color:var(--lg-navy); background:var(--lg-cream); border:1.5px solid var(--lg-line); border-radius:12px; padding:13px 14px; min-height:80px; resize:vertical; transition:border-color .15s, box-shadow .15s, background .15s; }
+.lg-textarea::placeholder { color:var(--lg-text3); }
+.lg-textarea:hover { border-color:#D6DCE8; }
+.lg-textarea:focus { outline:0; border-color:var(--lg-navy); background:#fff; box-shadow:0 0 0 3px rgba(31,42,68,.1); }
+.lg-field.has-err .lg-textarea { border-color:var(--lg-red); }
+.lg-vd-ai { display:flex; align-items:flex-start; gap:10px; margin-top:14px; padding:12px 14px; border-radius:12px; background:var(--lg-celeste2); color:var(--lg-text2); font-size:12.5px; line-height:1.45; }
+.lg-vd-ai i { color:var(--lg-blue); font-size:18px; flex:none; margin-top:1px; }
+
 /* ───────── Botones ───────── */
 .lg-btn { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; margin-top:6px; padding:15px 20px; border:0; border-radius:99px; background:var(--lg-gold); color:var(--lg-navy); font:800 14px var(--lg-font); letter-spacing:.04em; text-transform:uppercase; cursor:pointer; transition:background .15s, transform .15s, box-shadow .15s; }
 .lg-btn:hover { background:var(--lg-gold-h); box-shadow:0 8px 20px rgba(198,167,94,.4); }

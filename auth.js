@@ -17,22 +17,93 @@ import {
 import {
     doc,
     setDoc,
-    getDoc
+    getDoc,
+    updateDoc,
+    serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-export async function registrar(nombre, email, password, apellido = "", rol = "usuario") {
+/* Roles que una persona puede elegir al registrarse. "admin" y "dueño" solo los asigna un administrador. */
+const ROLES_PUBLICOS = ["usuario", "vendedor", "verificador", "patrocinador"];
+const rolSeguro = (rol) => ROLES_PUBLICOS.includes(rol) ? rol : "usuario";
+
+/* Una cuenta desactivada por el administrador no puede ingresar. */
+async function verificarCuentaActiva(uid) {
+    const instantanea = await getDoc(doc(db, "usuarios", uid));
+    if (instantanea.exists() && instantanea.data().activo === false) {
+        await signOut(auth);
+        const error = new Error("Cuenta desactivada");
+        error.code = "auth/user-disabled";
+        throw error;
+    }
+    return instantanea;
+}
+
+export async function registrar(nombre, email, password, apellido = "", rol = "usuario", datosVendedor = null) {
     const credencial = await createUserWithEmailAndPassword(auth, email, password);
 
     await updateProfile(credencial.user, { displayName: nombre });
 
-    await setDoc(doc(db, "usuarios", credencial.user.uid), {
+    const perfil = {
         nombre,
         apellido,
         email,
-        rol
-    });
+        rol: rolSeguro(rol),
+        activo: true
+    };
+
+    /* Si el rol es vendedor, guardamos sus datos personales, los de la tienda
+       y marcamos la cuenta como pendiente de verificación. */
+    if (rolSeguro(rol) === "vendedor" && datosVendedor) {
+        perfil.verificacion = "pendiente";   // pendiente → verificado | rechazado
+        perfil.verificado = false;
+        perfil.fechaSolicitud = serverTimestamp();
+        perfil.vendedor = {
+            telefono: datosVendedor.telefono || "",
+            tipoDocumento: datosVendedor.tipoDocumento || "",
+            numeroDocumento: datosVendedor.numeroDocumento || "",
+            iaNota: datosVendedor.iaNota || ""   // valoración preliminar de la IA
+        };
+        perfil.tienda = {
+            nombre: datosVendedor.tiendaNombre || "",
+            categoria: datosVendedor.tiendaCategoria || "",
+            direccion: datosVendedor.tiendaDireccion || "",
+            barrio: datosVendedor.tiendaBarrio || "",
+            ciudad: datosVendedor.tiendaCiudad || "Bogotá",
+            descripcion: datosVendedor.tiendaDescripcion || ""
+        };
+    }
+
+    await setDoc(doc(db, "usuarios", credencial.user.uid), perfil);
 
     return credencial.user;
+}
+
+/* Un admin o la IA marcan al vendedor como verificado o rechazado. */
+export async function actualizarVerificacion(uid, estado, observacion = "") {
+    const datos = {
+        verificacion: estado,            // "verificado" | "rechazado"
+        verificado: estado === "verificado",
+        verificacionNota: observacion || ""
+    };
+    if (estado === "verificado") {
+        datos.verificadoEn = serverTimestamp();
+    } else {
+        datos.verificado = false;
+        datos.verificadoEn = null;
+    }
+    await updateDoc(doc(db, "usuarios", uid), datos);
+}
+
+/* Consulta si el vendedor ya está verificado (para mostrarlo en su panel). */
+export async function obtenerVerificacion(uid) {
+    const instantanea = await getDoc(doc(db, "usuarios", uid));
+    if (!instantanea.exists()) return { verificacion: null, verificado: false };
+    const d = instantanea.data();
+    return {
+        verificacion: d.verificacion || null,
+        verificado: !!d.verificado,
+        nota: d.verificacionNota || ""
+    };
 }
 
 /* ───────── Acceso con Google / Microsoft (Hotmail, Outlook) / Facebook ─────────
@@ -55,19 +126,29 @@ function crearProveedor(nombre) {
 /* Devuelve { user, perfil }. perfil es null si es la primera vez (todavía no eligió tipo de usuario). */
 export async function ingresarConProveedor(nombre) {
     const credencial = await signInWithPopup(auth, crearProveedor(nombre));
-    const instantanea = await getDoc(doc(db, "usuarios", credencial.user.uid));
+    const instantanea = await verificarCuentaActiva(credencial.user.uid);
     return { user: credencial.user, perfil: instantanea.exists() ? instantanea.data() : null };
 }
 
 export async function crearPerfil(user, rol, proveedor = "") {
     const [nombre, ...resto] = (user.displayName || "").trim().split(" ");
-    await setDoc(doc(db, "usuarios", user.uid), {
+    const perfil = {
         nombre: nombre || "",
         apellido: resto.join(" "),
         email: user.email || "",
-        rol,
+        rol: rolSeguro(rol),
+        activo: true,
         proveedor
-    }, { merge: true });
+    };
+    /* Si eligió vendedor con red social, marcamos verificación pendiente.
+       Los datos de la tienda los completa después en su panel. */
+    if (rolSeguro(rol) === "vendedor") {
+        perfil.verificacion = "pendiente";
+        perfil.verificado = false;
+        perfil.fechaSolicitud = serverTimestamp();
+        perfil.tienda = { nombre: "", categoria: "", direccion: "", barrio: "", ciudad: "Bogotá", descripcion: "" };
+    }
+    await setDoc(doc(db, "usuarios", user.uid), perfil, { merge: true });
 }
 
 /* "Recordarme": true = la sesión sigue al cerrar el navegador; false = solo esta pestaña */
@@ -77,6 +158,7 @@ export async function configurarPersistencia(recordar) {
 
 export async function iniciarSesion(email, password) {
     const credencial = await signInWithEmailAndPassword(auth, email, password);
+    await verificarCuentaActiva(credencial.user.uid);
     return credencial.user;
 }
 

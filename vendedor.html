@@ -113,12 +113,24 @@ body.pn-tema{padding:0!important;background:linear-gradient(135deg,var(--celeste
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 @media(max-width:1100px){.c2{grid-column:span 4}.pf,.cfg{grid-template-columns:1fr}.cfg-n{position:static;flex-direction:row;flex-wrap:wrap;gap:10px}.cfg-n h6{display:none}}
 @media(max-width:560px){.c2{grid-column:span 6}}
+/* ── Banner de verificación del vendedor ── */
+.vd-verif-banner{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:16px;margin-bottom:18px;font-size:14px;line-height:1.5;animation:vdIn .3s ease}
+.vd-verif-banner i{font-size:24px;flex:none}
+.vd-verif-banner.pendiente{background:#FEF3C7;color:#92400E;border:1px solid #FDE68A}
+.vd-verif-banner.pendiente i{color:#F59E0B}
+.vd-verif-banner.rechazado{background:var(--red-bg);color:var(--red);border:1px solid #FECACA}
+.vd-verif-banner.rechazado i{color:var(--red)}
+.vd-verif-banner.verificado{background:var(--green-bg);color:#15803D;border:1px solid #BBF7D0}
+.vd-verif-banner.verificado i{color:var(--green)}
+.vd-verif-banner b{display:block;margin-bottom:2px}
+.vd-verif-banner small{opacity:.85}
+@media(max-width:860px){.vd-verif-banner{flex-direction:row;align-items:flex-start;gap:10px;padding:12px 14px}}
 </style>
 </head>
 <body class="pn-tema">
 <div class="vd-shell">
  <aside class="vd-side">
-  <a class="vd-logo" href="Index.html"><img src="img/logo-dark.png" alt=""><span>Price<b>Nice</b></span></a>
+  <a class="vd-logo" href="index.html"><img src="img/logo-dark.png" alt=""><span>Price<b>Nice</b></span></a>
   <div class="vd-prof"><div class="vd-av" id="vdAv">V</div><strong id="vdName">Vendedor</strong><small id="vdMail">Panel del vendedor</small>
    <div class="vd-ps"><div><b id="sP">0</b><span>Productos</span></div><div><b id="sS">0</b><span>En stock</span></div><div><b id="sC">0</b><span>Categorías</span></div></div></div>
   <nav class="vd-nav">
@@ -138,6 +150,8 @@ body.pn-tema{padding:0!important;background:linear-gradient(135deg,var(--celeste
  </aside>
 
  <main class="vd-main">
+  <!-- Banner de estado de verificación -->
+  <div id="vdVerifBanner" class="vd-verif-banner" style="display:none"></div>
   <div class="vd-top"><div><h1 id="vdTitulo">Resumen</h1><p id="vdSub">Así va tu negocio en PriceNice.</p></div>
    <div class="vd-tr"><button class="vd-chip" onclick="ir('perfil')" title="Editar perfil"><span class="av" id="chipAv">V</span><span><b id="chipN">Vendedor</b><small id="chipS">Editar mi perfil</small></span></button><button class="vd-btn o" onclick="nuevo()"><i class="bi bi-plus-lg"></i> Publicar producto</button></div></div>
 
@@ -222,6 +236,29 @@ body.pn-tema{padding:0!important;background:linear-gradient(135deg,var(--celeste
 <div id="vdToast"></div>
 
 <script type="module" src="archivo sesión.js"></script>
+<script type="module">
+import { observarSesion, obtenerVerificacion } from './auth.js';
+observarSesion(async (u) => {
+    const banner = document.getElementById('vdVerifBanner');
+    if (!banner || !u) return;
+    try {
+        const v = await obtenerVerificacion(u.uid);
+        if (v.verificacion === 'verificado' || v.verificado === true) {
+            banner.style.display = 'flex';
+            banner.className = 'vd-verif-banner verificado';
+            banner.innerHTML = '<i class="bi bi-patch-check-fill"></i><div><b>Tienda verificada</b><small>Tu tienda está activa y visible para los compradores.</small></div>';
+        } else if (v.verificacion === 'rechazado') {
+            banner.style.display = 'flex';
+            banner.className = 'vd-verif-banner rechazado';
+            banner.innerHTML = '<i class="bi bi-x-circle-fill"></i><div><b>Verificación rechazada</b><small>'+(v.nota || 'Revisa tus datos e intenta de nuevo.')+'</small></div>';
+        } else {
+            banner.style.display = 'flex';
+            banner.className = 'vd-verif-banner pendiente';
+            banner.innerHTML = '<i class="bi bi-clock-history"></i><div><b>Tu tienda está en revisión</b><small>Estamos verificando tus datos. Mientras tanto puedes publicar productos; serán visibles cuando se apruebe.</small></div>';
+        }
+    } catch (e) { /* si falla, no mostramos banner */ }
+});
+</script>
 <script src="carrito-precios.js"></script>
 <script>
 const KEY='pn_mis_productos', $=id=>document.getElementById(id);
