@@ -123,3 +123,31 @@ export function mensajeError(error) {
 
     return codigos[error?.code] || "Ocurrió un error: " + (error.message || error);
 }
+
+/**
+ * Devuelve el estado actual de la solicitud de verificación de vendedor de un usuario.
+ * Estados posibles: "pendiente" | "en_revision" | "aprobada" | "rechazada" | null (sin solicitud)
+ */
+export async function obtenerEstadoSolicitudVendedor(uid) {
+    try {
+        const instantanea = await getDoc(doc(db, "solicitudesVendedor", uid));
+        if (!instantanea.exists()) return null;
+        return instantanea.data().estado || "pendiente";
+    } catch {
+        return null;
+    }
+}
+
+/**
+ * Devuelve los datos completos de la solicitud de vendedor de un usuario,
+ * o null si no existe o hay un error.
+ */
+export async function obtenerSolicitudVendedor(uid) {
+    try {
+        const instantanea = await getDoc(doc(db, "solicitudesVendedor", uid));
+        if (!instantanea.exists()) return null;
+        return { id: instantanea.id, ...instantanea.data() };
+    } catch {
+        return null;
+    }
+}

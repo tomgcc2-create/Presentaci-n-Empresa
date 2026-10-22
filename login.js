@@ -60,7 +60,26 @@ function bloquearSociales(si) { document.querySelectorAll(".lg-soc").forEach(b =
 const esCancelacion = (e) => e && (e.code === "auth/popup-closed-by-user" || e.code === "auth/cancelled-popup-request");
 
 function irAPagina(rol) { window.location.href = paginaPorRol[rol] || "usuario.html"; }
-async function redirigirPorRol(usuario) { irAPagina(await obtenerRol(usuario.uid)); }
+async function redirigirPorRol(usuario) {
+    const rol = await obtenerRol(usuario.uid);
+    /* Si el rol es "usuario" verificar si tiene una solicitud de vendedor pendiente/en revisión.
+       En ese caso llevarlo a la página de estado de su solicitud. */
+    if (rol === "usuario") {
+        try {
+            const { db } = await import("./firebase-config.js");
+            const { doc, getDoc } = await import("https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js");
+            const snap = await getDoc(doc(db, "solicitudesVendedor", usuario.uid));
+            if (snap.exists()) {
+                const estado = snap.data().estado;
+                if (estado === "pendiente" || estado === "en_revision") {
+                    window.location.href = "registro-vendedor.html";
+                    return;
+                }
+            }
+        } catch { /* Sin solicitud o sin permisos — redirección normal */ }
+    }
+    irAPagina(rol);
+}
 
 /* ───────────────── Cambiar de vista (ingresar / registrar / recuperar) ───────────────── */
 function irA(modo) {
@@ -178,9 +197,19 @@ formRegistro.addEventListener("submit", async (e) => {
     procesando = true; ocupado($("btnRegistro"), true, "Crear cuenta"); bloquearSociales(true);
     try {
         await configurarPersistencia(true);
-        await registrar(nombre, correo, clave, apellido, rol);
-        mostrar("msgRegistro", "¡Cuenta creada! Redirigiendo…", "ok");
-        irAPagina(rol);
+
+        if (rol === "vendedor") {
+            /* ── Flujo vendedor: crear cuenta con rol provisional "usuario",
+               luego redirigir al formulario de verificación.
+               El rol real se asigna cuando el admin apruebe la solicitud. ── */
+            await registrar(nombre, correo, clave, apellido, "usuario");
+            mostrar("msgRegistro", "¡Cuenta creada! Redirigiendo al formulario de verificación…", "ok");
+            setTimeout(() => { window.location.href = "registro-vendedor.html"; }, 1200);
+        } else {
+            await registrar(nombre, correo, clave, apellido, rol);
+            mostrar("msgRegistro", "¡Cuenta creada! Redirigiendo…", "ok");
+            irAPagina(rol);
+        }
     } catch (error) {
         mostrar("msgRegistro", mensajeError(error));
         procesando = false; ocupado($("btnRegistro"), false, "Crear cuenta"); bloquearSociales(false);
@@ -203,10 +232,16 @@ document.querySelectorAll(".lg-soc").forEach(boton => {
                 rol = perfil.rol || "usuario";                       // ya tenía cuenta
             } else {
                 rol = desdeRegistro ? rolElegido("rRol") : await pedirRol();   // primera vez
-                await crearPerfil(user, rol, proveedor);
+                /* Si eligió "vendedor", guardar como "usuario" y redirigir a verificación */
+                const rolFirestore = rol === "vendedor" ? "usuario" : rol;
+                await crearPerfil(user, rolFirestore, proveedor);
             }
             mostrar(idMsg, "¡Listo! Redirigiendo…", "ok");
-            irAPagina(rol);
+            if (rol === "vendedor") {
+                setTimeout(() => { window.location.href = "registro-vendedor.html"; }, 1000);
+            } else {
+                irAPagina(rol);
+            }
         } catch (error) {
             if (error && error.message === "cancelado") {
                 await cerrarSesion().catch(() => {});

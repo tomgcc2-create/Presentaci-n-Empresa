@@ -1,97 +1,849 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administración | PriceNice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ══════════════════════════════════════════════════
+       Variables y base — coherente con el resto del sitio
+    ══════════════════════════════════════════════════ */
+    :root {
+      --adm-black:  #0A0A0A;
+      --adm-card:   #161616;
+      --adm-surf:   #1E1E1E;
+      --adm-border: #2C2C2C;
+      --adm-bord2:  #3A3A3A;
+      --adm-green:  #7AFF50;
+      --adm-green-d:#5DCC39;
+      --adm-green-bg:rgba(122,255,80,.08);
+      --adm-white:  #FAFAFA;
+      --adm-off:    #E5E5E5;
+      --adm-t2:     #A0A0A0;
+      --adm-t3:     #666666;
+      --adm-red:    #FF4D4D;
+      --adm-red-bg: rgba(255,77,77,.1);
+      --adm-warn:   #FFB830;
+      --adm-warn-bg:rgba(255,184,48,.1);
+      --adm-blue:   #8AB4FF;
+      --adm-blue-bg:rgba(138,180,255,.1);
+      --adm-font:   'DM Sans','Inter',system-ui,sans-serif;
+      --adm-title:  'Bricolage Grotesque','Inter',system-ui,sans-serif;
+    }
 
-    <title>Administración | Mi Empresa VR</title>
+    *, *::before, *::after { box-sizing: border-box; }
+    [hidden] { display: none !important; }
 
-    <link rel="stylesheet" href="style.css">
+    body.es-admin {
+      margin: 0;
+      background: var(--adm-black);
+      font-family: var(--adm-font);
+      color: var(--adm-white);
+      min-height: 100vh;
+    }
+
+    /* ─── Cabecera admin ─── */
+    .adm-header {
+      background: var(--adm-card);
+      border-bottom: 1px solid var(--adm-border);
+      padding: 16px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .adm-header-left { display: flex; align-items: center; gap: 14px; }
+    .adm-logo { font: 800 20px/1 var(--adm-title); letter-spacing: -.02em; }
+    .adm-logo span:first-child { color: var(--adm-white); }
+    .adm-logo span:last-child  { color: var(--adm-green); }
+    .adm-tag {
+      background: var(--adm-green-bg);
+      border: 1px solid rgba(122,255,80,.3);
+      color: var(--adm-green);
+      font: 700 11px var(--adm-font);
+      padding: 4px 10px;
+      border-radius: 99px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .adm-header-right { display: flex; align-items: center; gap: 10px; }
+    #bienvenidaAdmin {
+      font-size: 13px;
+      color: var(--adm-t2);
+    }
+    .adm-btn-cerrar {
+      display: inline-flex; align-items: center; gap: 6px;
+      font: 600 13px var(--adm-font);
+      color: var(--adm-t2);
+      background: transparent;
+      border: 1px solid var(--adm-border);
+      border-radius: 99px;
+      padding: 7px 14px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all .2s;
+    }
+    .adm-btn-cerrar:hover { color: var(--adm-red); border-color: var(--adm-red); }
+
+    /* ─── Tabs de navegación principal ─── */
+    .adm-tabs {
+      display: flex;
+      gap: 4px;
+      padding: 20px 28px 0;
+      border-bottom: 1px solid var(--adm-border);
+      background: var(--adm-card);
+    }
+    .adm-tab {
+      display: inline-flex; align-items: center; gap: 8px;
+      font: 600 14px var(--adm-font);
+      color: var(--adm-t3);
+      background: none;
+      border: none;
+      padding: 10px 18px 14px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color .2s, border-color .2s;
+      white-space: nowrap;
+    }
+    .adm-tab:hover { color: var(--adm-white); }
+    .adm-tab.active { color: var(--adm-green); border-bottom-color: var(--adm-green); }
+    .adm-tab-badge {
+      background: var(--adm-warn);
+      color: var(--adm-black);
+      font: 700 10px var(--adm-font);
+      padding: 2px 7px;
+      border-radius: 99px;
+      min-width: 18px;
+      text-align: center;
+    }
+    .adm-tab-badge.verde { background: var(--adm-green); }
+
+    /* ─── Paneles de contenido ─── */
+    .adm-panel { display: none; padding: 28px; }
+    .adm-panel.active { display: block; }
+
+    /* ─── Sección usuarios (estilo heredado adaptado) ─── */
+    .adm-section-title {
+      font: 700 18px/1.2 var(--adm-title);
+      color: var(--adm-white);
+      margin: 0 0 20px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .adm-card {
+      background: var(--adm-card);
+      border: 1px solid var(--adm-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .adm-label {
+      display: block;
+      font: 600 12px var(--adm-font);
+      color: var(--adm-t2);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: 6px;
+    }
+    .adm-input, .adm-select {
+      width: 100%;
+      font: 500 14px var(--adm-font);
+      color: var(--adm-white);
+      background: var(--adm-surf);
+      border: 1.5px solid var(--adm-bord2);
+      border-radius: 10px;
+      padding: 11px 12px;
+      outline: none;
+      appearance: none;
+      transition: border-color .2s, box-shadow .2s;
+      margin-bottom: 14px;
+    }
+    .adm-input::placeholder { color: var(--adm-t3); }
+    .adm-input:focus, .adm-select:focus {
+      border-color: var(--adm-green);
+      box-shadow: 0 0 0 3px rgba(122,255,80,.12);
+    }
+    .adm-btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      font: 700 13px var(--adm-font);
+      padding: 10px 20px;
+      border-radius: 99px;
+      border: none;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .adm-btn-primary { background: var(--adm-green); color: var(--adm-black); }
+    .adm-btn-primary:hover { background: var(--adm-green-d); box-shadow: 0 6px 20px rgba(122,255,80,.25); }
+    .adm-btn-ghost { background: transparent; color: var(--adm-t2); border: 1.5px solid var(--adm-bord2); }
+    .adm-btn-ghost:hover { color: var(--adm-white); border-color: #555; }
+    .adm-btn-danger { background: var(--adm-red-bg); color: var(--adm-red); border: 1px solid rgba(255,77,77,.3); }
+    .adm-btn-danger:hover { background: var(--adm-red); color: #fff; }
+    .adm-btn:disabled { opacity: .5; cursor: not-allowed; }
+    .adm-msg { font-size: 13px; padding: 10px 14px; border-radius: 10px; margin-top: 10px; }
+    .adm-msg.ok   { background: var(--adm-green-bg); color: var(--adm-green); border: 1px solid rgba(122,255,80,.3); }
+    .adm-msg.err  { background: var(--adm-red-bg);   color: var(--adm-red);   border: 1px solid rgba(255,77,77,.3); }
+    .adm-msg.info { background: rgba(255,255,255,.04); color: var(--adm-t2); border: 1px solid var(--adm-border); }
+
+    /* Tabla de usuarios */
+    .adm-table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--adm-border); }
+    .adm-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .adm-table th {
+      background: var(--adm-surf);
+      padding: 10px 14px;
+      text-align: left;
+      font: 700 11px var(--adm-font);
+      color: var(--adm-t3);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      white-space: nowrap;
+    }
+    .adm-table td { padding: 11px 14px; border-bottom: 1px solid var(--adm-border); vertical-align: middle; color: var(--adm-off); }
+    .adm-table tr:last-child td { border-bottom: none; }
+    .adm-table tr:hover td { background: rgba(255,255,255,.02); }
+    .adm-rol-badge {
+      font: 700 11px var(--adm-font);
+      padding: 3px 10px;
+      border-radius: 99px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .adm-rol-usuario     { background: rgba(255,255,255,.08); color: var(--adm-t2); }
+    .adm-rol-vendedor    { background: var(--adm-green-bg); color: var(--adm-green); }
+    .adm-rol-admin       { background: var(--adm-red-bg); color: var(--adm-red); }
+    .adm-rol-verificador { background: var(--adm-blue-bg); color: var(--adm-blue); }
+    .adm-rol-patrocinador{ background: var(--adm-warn-bg); color: var(--adm-warn); }
+    .adm-nota { font-size: 12px; color: var(--adm-t3); margin-top: 14px; }
+
+    /* ══════════════════════════════════════════════════
+       SECCIÓN VENDEDORES
+    ══════════════════════════════════════════════════ */
+
+    /* Contadores de estado */
+    .av-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .av-stat {
+      background: var(--adm-card);
+      border: 1px solid var(--adm-border);
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+    }
+    .av-stat:hover, .av-stat.active { border-color: var(--adm-green); background: var(--adm-green-bg); }
+    .av-stat-num { font: 800 28px/1 var(--adm-title); color: var(--adm-white); display: block; margin-bottom: 4px; }
+    .av-stat-lbl { font: 600 11px var(--adm-font); color: var(--adm-t3); text-transform: uppercase; letter-spacing: .06em; }
+    .av-stat.stat-pendiente .av-stat-num { color: var(--adm-warn); }
+    .av-stat.stat-aprobada  .av-stat-num { color: var(--adm-green); }
+    .av-stat.stat-rechazada .av-stat-num { color: var(--adm-red); }
+    .av-stat.stat-revision  .av-stat-num { color: var(--adm-blue); }
+
+    /* Filtros de estado */
+    .av-filtros {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    .av-filtro-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      font: 600 13px var(--adm-font);
+      color: var(--adm-t2);
+      background: var(--adm-surf);
+      border: 1.5px solid var(--adm-bord2);
+      border-radius: 99px;
+      padding: 7px 14px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .av-filtro-btn:hover { color: var(--adm-white); border-color: #555; }
+    .av-filtro-btn.active { background: var(--adm-green-bg); color: var(--adm-green); border-color: rgba(122,255,80,.4); }
+    .av-filtro-num {
+      background: rgba(255,255,255,.12);
+      color: var(--adm-white);
+      font: 700 11px var(--adm-font);
+      padding: 1px 7px;
+      border-radius: 99px;
+      min-width: 18px;
+      text-align: center;
+    }
+    .av-filtro-btn.active .av-filtro-num { background: rgba(122,255,80,.25); color: var(--adm-green); }
+
+    /* Tabla solicitudes */
+    .av-table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--adm-border); }
+    .av-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .av-table th {
+      background: var(--adm-surf);
+      padding: 10px 14px;
+      text-align: left;
+      font: 700 11px var(--adm-font);
+      color: var(--adm-t3);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      white-space: nowrap;
+    }
+    .av-td { padding: 12px 14px; border-bottom: 1px solid var(--adm-border); vertical-align: middle; }
+    .av-fila:last-child .av-td { border-bottom: none; }
+    .av-fila:hover .av-td { background: rgba(255,255,255,.02); }
+    .av-td-sm { font-size: 12px; color: var(--adm-t2); }
+    .av-empresa-nombre { font: 600 13px var(--adm-font); color: var(--adm-white); }
+    .av-empresa-nit    { font-size: 11px; color: var(--adm-t3); margin-top: 2px; }
+
+    /* Badges de estado */
+    .av-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font: 700 11px var(--adm-font);
+      padding: 4px 10px;
+      border-radius: 99px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      white-space: nowrap;
+    }
+    .av-badge-pendiente  { background: var(--adm-warn-bg); color: var(--adm-warn); border: 1px solid rgba(255,184,48,.3); }
+    .av-badge-revision   { background: var(--adm-blue-bg); color: var(--adm-blue); border: 1px solid rgba(138,180,255,.3); }
+    .av-badge-aprobada   { background: var(--adm-green-bg); color: var(--adm-green); border: 1px solid rgba(122,255,80,.3); }
+    .av-badge-rechazada  { background: var(--adm-red-bg); color: var(--adm-red); border: 1px solid rgba(255,77,77,.3); }
+    .av-badge-ia-ok      { background: var(--adm-green-bg); color: var(--adm-green); border: 1px solid rgba(122,255,80,.25); }
+    .av-badge-ia-err     { background: var(--adm-red-bg); color: var(--adm-red); border: 1px solid rgba(255,77,77,.25); }
+    .av-badge-ia-warn    { background: var(--adm-warn-bg); color: var(--adm-warn); border: 1px solid rgba(255,184,48,.25); }
+    .av-badge-ia-nd      { background: rgba(255,255,255,.06); color: var(--adm-t3); border: 1px solid var(--adm-border); }
+
+    /* Botón ver */
+    .av-btn-ver {
+      display: inline-flex; align-items: center; gap: 6px;
+      font: 600 12px var(--adm-font);
+      color: var(--adm-t2);
+      background: var(--adm-surf);
+      border: 1.5px solid var(--adm-bord2);
+      border-radius: 99px;
+      padding: 6px 14px;
+      cursor: pointer;
+      transition: all .2s;
+      white-space: nowrap;
+    }
+    .av-btn-ver:hover { color: var(--adm-white); border-color: #555; background: #2a2a2a; }
+
+    /* ══════════════════════════════════════════════════
+       MODAL DE REVISIÓN
+    ══════════════════════════════════════════════════ */
+    #avModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 24px 16px 40px;
+      overflow-y: auto;
+    }
+    #avModal.is-open { display: flex; }
+    .av-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.75);
+      backdrop-filter: blur(6px);
+      z-index: 0;
+    }
+    .av-modal-box {
+      position: relative;
+      z-index: 1;
+      background: var(--adm-card);
+      border: 1px solid var(--adm-bord2);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 780px;
+      box-shadow: 0 40px 100px rgba(0,0,0,.6);
+      display: flex;
+      flex-direction: column;
+      margin: auto;
+    }
+    .av-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--adm-border);
+      gap: 12px;
+    }
+    #avModalTitle {
+      font: 700 17px/1.2 var(--adm-title);
+      color: var(--adm-white);
+      margin: 0;
+    }
+    .av-modal-close {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      border: 1.5px solid var(--adm-bord2);
+      background: var(--adm-surf);
+      color: var(--adm-t2);
+      font-size: 16px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .2s;
+      flex-shrink: 0;
+    }
+    .av-modal-close:hover { color: var(--adm-white); border-color: #555; }
+    #avModalBody {
+      padding: 20px 24px;
+      overflow-y: auto;
+      max-height: calc(100vh - 260px);
+    }
+    /* Secciones del modal */
+    .av-modal-section { margin-bottom: 24px; }
+    .av-modal-section:last-child { margin-bottom: 0; }
+    .av-modal-section-title {
+      font: 700 12px var(--adm-font);
+      color: var(--adm-green);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin: 0 0 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--adm-border);
+    }
+    .av-modal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px 20px;
+    }
+    .av-modal-item { display: flex; flex-direction: column; gap: 3px; }
+    .av-modal-label { font: 600 11px var(--adm-font); color: var(--adm-t3); text-transform: uppercase; letter-spacing: .05em; }
+    .av-modal-val   { font-size: 13px; color: var(--adm-off); word-break: break-word; }
+    /* Links documentos */
+    .av-docs-links { display: flex; flex-wrap: wrap; gap: 10px; }
+    .av-doc-link {
+      display: inline-flex; align-items: center; gap: 7px;
+      font: 600 13px var(--adm-font);
+      color: var(--adm-green);
+      background: var(--adm-green-bg);
+      border: 1px solid rgba(122,255,80,.25);
+      border-radius: 99px;
+      padding: 7px 14px;
+      text-decoration: none;
+      transition: all .2s;
+    }
+    .av-doc-link:hover { background: rgba(122,255,80,.18); }
+    /* Análisis IA */
+    .av-ia-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 14px;
+      padding: 14px 16px;
+      background: var(--adm-surf);
+      border-radius: 12px;
+      border: 1px solid var(--adm-bord2);
+    }
+    .av-ia-puntaje { display: flex; align-items: baseline; gap: 4px; }
+    .av-ia-puntaje-num { font: 800 36px/1 var(--adm-title); }
+    .av-ia-puntaje-lbl { font: 600 14px var(--adm-font); color: var(--adm-t3); }
+    .av-ia-rec { font: 600 14px var(--adm-font); color: var(--adm-t2); }
+    .av-ia-obs-list { display: flex; flex-direction: column; gap: 8px; }
+    .av-ia-obs {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 13px; color: var(--adm-off);
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--adm-border);
+    }
+    .av-ia-obs i { flex-shrink: 0; margin-top: 1px; font-size: 14px; }
+    .av-ia-resumen {
+      white-space: pre-wrap;
+      font: 400 12px/1.6 'Courier New',monospace;
+      color: var(--adm-t2);
+      background: var(--adm-surf);
+      border: 1px solid var(--adm-border);
+      border-radius: 10px;
+      padding: 14px;
+      margin-top: 14px;
+      overflow-x: auto;
+    }
+    /* Motivo rechazo */
+    .av-motivo-rechazo {
+      font-size: 14px;
+      color: var(--adm-red);
+      background: var(--adm-red-bg);
+      border: 1px solid rgba(255,77,77,.3);
+      border-radius: 10px;
+      padding: 12px 14px;
+      line-height: 1.5;
+    }
+    /* Footer del modal */
+    .av-modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 16px 24px;
+      border-top: 1px solid var(--adm-border);
+      flex-wrap: wrap;
+    }
+    .av-btn-decision {
+      display: inline-flex; align-items: center; gap: 7px;
+      font: 700 13px var(--adm-font);
+      padding: 11px 22px;
+      border-radius: 99px;
+      border: none;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .av-btn-decision:disabled { opacity: .45; cursor: not-allowed; }
+    .av-btn-aprobar  { background: var(--adm-green); color: var(--adm-black); }
+    .av-btn-aprobar:not(:disabled):hover { background: var(--adm-green-d); box-shadow: 0 6px 20px rgba(122,255,80,.25); }
+    .av-btn-rechazar { background: var(--adm-red-bg); color: var(--adm-red); border: 1px solid rgba(255,77,77,.4); }
+    .av-btn-rechazar:not(:disabled):hover { background: var(--adm-red); color: #fff; }
+    .av-btn-cancelar { background: var(--adm-surf); color: var(--adm-t2); border: 1.5px solid var(--adm-bord2); }
+    .av-btn-cancelar:hover { color: var(--adm-white); border-color: #555; }
+    /* Área motivo rechazo inline */
+    .av-motivo-wrap {
+      padding: 0 24px 16px;
+    }
+    .av-motivo-label {
+      display: block;
+      font: 600 12px var(--adm-font);
+      color: var(--adm-t2);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: 8px;
+    }
+    .av-motivo-textarea {
+      width: 100%;
+      font: 400 14px var(--adm-font);
+      color: var(--adm-white);
+      background: var(--adm-surf);
+      border: 1.5px solid var(--adm-bord2);
+      border-radius: 12px;
+      padding: 12px 14px;
+      outline: none;
+      resize: vertical;
+      transition: border-color .2s;
+    }
+    .av-motivo-textarea::placeholder { color: var(--adm-t3); }
+    .av-motivo-textarea:focus { border-color: var(--adm-warn); box-shadow: 0 0 0 3px var(--adm-warn-bg); }
+    /* Mensaje en el modal */
+    .av-modal-msg {
+      margin: 0 24px 12px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font: 600 13px var(--adm-font);
+    }
+    .av-msg-ok   { background: var(--adm-green-bg); color: var(--adm-green); border: 1px solid rgba(122,255,80,.3); }
+    .av-msg-warn { background: var(--adm-warn-bg);  color: var(--adm-warn);  border: 1px solid rgba(255,184,48,.3); }
+    .av-msg-err  { background: var(--adm-red-bg);   color: var(--adm-red);   border: 1px solid rgba(255,77,77,.3); }
+    .av-msg-info { background: rgba(255,255,255,.04); color: var(--adm-t2); border: 1px solid var(--adm-border); }
+
+    /* ─── Aviso de acceso ─── */
+    .adm-aviso {
+      margin: 40px auto;
+      max-width: 480px;
+      text-align: center;
+      padding: 40px 24px;
+      background: var(--adm-card);
+      border: 1px solid var(--adm-border);
+      border-radius: 16px;
+    }
+    .adm-aviso i { font-size: 48px; color: var(--adm-red); display: block; margin-bottom: 16px; }
+    .adm-aviso h2 { font: 700 20px var(--adm-title); margin: 0 0 8px; }
+    .adm-aviso p  { color: var(--adm-t2); font-size: 14px; }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 600px) {
+      .adm-tabs  { padding: 16px 16px 0; gap: 2px; overflow-x: auto; }
+      .adm-panel { padding: 20px 16px; }
+      .av-modal-grid { grid-template-columns: 1fr; }
+      .av-modal-footer { justify-content: stretch; }
+      .av-btn-decision { flex: 1; justify-content: center; }
+      .adm-header { padding: 12px 16px; }
+    }
+  </style>
 </head>
 
 <body class="es-admin">
 
-    <header>
-        <h1>Panel de administración</h1>
-        <p>Gestión de usuarios registrados</p>
-    </header>
+  <!-- ══ HEADER ══ -->
+  <header class="adm-header">
+    <div class="adm-header-left">
+      <div class="adm-logo">
+        <span>Price</span><span>Nice</span>
+      </div>
+      <span class="adm-tag"><i class="bi bi-shield-check"></i> Admin</span>
+    </div>
+    <div class="adm-header-right">
+      <span id="bienvenidaAdmin"></span>
+      <button class="adm-btn-cerrar" id="btnCerrarSesion">
+        <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+      </button>
+    </div>
+  </header>
 
-    <nav>
-        <a href="login.html">Volver al sitio</a>
-        <span id="sesion">Sesión</span>
+  <!-- ══ AVISO sin permisos ══ -->
+  <div class="adm-aviso" id="aviso" hidden>
+    <i class="bi bi-shield-x"></i>
+    <h2>Acceso restringido</h2>
+    <p>Esta página es solo para administradores de PriceNice.</p>
+    <a href="login.html" class="adm-btn adm-btn-ghost" style="margin-top:16px">
+      <i class="bi bi-arrow-left"></i> Volver al inicio
+    </a>
+  </div>
+
+  <!-- ══ CONTENIDO PRINCIPAL ══ -->
+  <div id="contenido" hidden>
+
+    <!-- Tabs de navegación -->
+    <nav class="adm-tabs" role="tablist" aria-label="Secciones del panel">
+      <button class="adm-tab active" id="tabUsuarios" role="tab" aria-selected="true"
+        onclick="cambiarTab('usuarios')">
+        <i class="bi bi-people"></i> Usuarios
+      </button>
+      <button class="adm-tab" id="tabVendedores" role="tab" aria-selected="false"
+        onclick="cambiarTab('vendedores')">
+        <i class="bi bi-shop"></i> Solicitudes vendedor
+        <span class="adm-tab-badge" id="avCount-pendiente">0</span>
+      </button>
     </nav>
 
-    <p class="aviso" id="aviso" hidden>
-        Esta página es solo para administradores.
-    </p>
+    <!-- ─────────────────── PANEL: USUARIOS ─────────────────── -->
+    <div class="adm-panel active" id="panelUsuarios" role="tabpanel">
 
-    <div id="contenido" hidden>
+      <div class="adm-card">
+        <h2 class="adm-section-title"><i class="bi bi-person-plus"></i> Gestión de usuarios</h2>
+        <form id="formUsuario">
+          <input type="hidden" id="idUsuario">
 
-        <section class="panel-admin">
+          <label class="adm-label" for="nombre">Nombre</label>
+          <input type="text" id="nombre" class="adm-input" required placeholder="Nombre del usuario">
 
-            <h2 id="tituloFormulario">Agregar usuario</h2>
+          <label class="adm-label" for="email">Correo</label>
+          <input type="email" id="email" class="adm-input" autocomplete="off" required placeholder="correo@ejemplo.com">
 
-            <form id="formUsuario" class="form-panel">
+          <label class="adm-label" for="password">Contraseña</label>
+          <input type="password" id="password" class="adm-input" autocomplete="new-password" minlength="6" required placeholder="Mínimo 6 caracteres">
 
-                <input type="hidden" id="idUsuario">
+          <label class="adm-label" for="rol">Rol</label>
+          <select id="rol" class="adm-select" style="margin-bottom:18px">
+            <option value="usuario">usuario</option>
+            <option value="vendedor">vendedor</option>
+            <option value="verificador">verificador</option>
+            <option value="patrocinador">patrocinador</option>
+            <option value="dueño">dueño</option>
+            <option value="admin">admin</option>
+          </select>
 
-                <div class="campo">
-                    <label for="nombre">Nombre</label>
-                    <input type="text" id="nombre" required>
-                </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button type="submit" id="guardar" class="adm-btn adm-btn-primary">
+              <i class="bi bi-plus-lg"></i> <span id="guardarTxt">Agregar usuario</span>
+            </button>
+            <button type="button" id="cancelar" class="adm-btn adm-btn-ghost" hidden>
+              Cancelar
+            </button>
+          </div>
+          <p class="mensaje adm-msg" id="mensaje" style="display:none"></p>
+        </form>
+      </div>
 
-                <div class="campo">
-                    <label for="email">Correo</label>
-                    <input type="email" id="email" autocomplete="off" required>
-                </div>
+      <div class="adm-table-wrap">
+        <table class="adm-table">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Correo</th>
+              <th>Rol</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="listaUsuarios"></tbody>
+        </table>
+      </div>
+      <p class="adm-nota">
+        <i class="bi bi-info-circle"></i>
+        Eliminar quita el perfil y el acceso al sitio, pero la cuenta sigue en Authentication.
+        Para borrarla del todo ve a la consola de Firebase.
+      </p>
 
-                <div class="campo">
-                    <label for="password">Contraseña</label>
-                    <input type="password" id="password" autocomplete="new-password" minlength="6" required>
-                </div>
+    </div>
 
-                <div class="campo">
-                    <label for="rol">Rol</label>
-                    <select id="rol">
-    <option value="usuario">usuario</option>
-    <option value="vendedor">vendedor</option>
-    <option value="verificador">verificador</option>
-    <option value="patrocinador">patrocinador</option>
-    <option value="dueño">dueño</option>
-</select>
-                </div>
+    <!-- ─────────────────── PANEL: SOLICITUDES VENDEDOR ─────────────────── -->
+    <div class="adm-panel" id="panelVendedores" role="tabpanel">
 
-                <div class="acciones">
-                    <button type="submit" id="guardar" class="boton-principal">Agregar usuario</button>
-                    <button type="button" id="cancelar" class="boton-secundario" hidden>Cancelar</button>
-                </div>
+      <h2 class="adm-section-title">
+        <i class="bi bi-shop"></i> Solicitudes de verificación de vendedores
+      </h2>
 
-                <p class="mensaje" id="mensaje"></p>
+      <!-- Contadores -->
+      <div class="av-stats">
+        <div class="av-stat" data-av-filtro="todos" onclick="filtrarAv(this)">
+          <span class="av-stat-num" id="avCount-todos">0</span>
+          <span class="av-stat-lbl">Total</span>
+        </div>
+        <div class="av-stat stat-pendiente" data-av-filtro="pendiente" onclick="filtrarAv(this)">
+          <span class="av-stat-num" id="avCount-pendiente2">0</span>
+          <span class="av-stat-lbl">Pendientes</span>
+        </div>
+        <div class="av-stat stat-revision" data-av-filtro="en_revision" onclick="filtrarAv(this)">
+          <span class="av-stat-num" id="avCount-en_revision">0</span>
+          <span class="av-stat-lbl">En revisión</span>
+        </div>
+        <div class="av-stat stat-aprobada" data-av-filtro="aprobada" onclick="filtrarAv(this)">
+          <span class="av-stat-num" id="avCount-aprobada">0</span>
+          <span class="av-stat-lbl">Aprobadas</span>
+        </div>
+        <div class="av-stat stat-rechazada" data-av-filtro="rechazada" onclick="filtrarAv(this)">
+          <span class="av-stat-num" id="avCount-rechazada">0</span>
+          <span class="av-stat-lbl">Rechazadas</span>
+        </div>
+      </div>
 
-            </form>
-        </section>
-<table>
-    <thead>
-        <tr>
-            <th>Nombre</th>
-            <th>Correo</th>
-            <th>Rol</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody id="listaUsuarios"></tbody>
-</table>
+      <!-- Filtros rápidos -->
+      <div class="av-filtros" role="group" aria-label="Filtrar por estado">
+        <button class="av-filtro-btn active" data-av-filtro="todos">
+          Todos <span class="av-filtro-num" id="avFCount-todos">0</span>
+        </button>
+        <button class="av-filtro-btn" data-av-filtro="pendiente">
+          <i class="bi bi-clock"></i> Pendientes <span class="av-filtro-num" id="avFCount-pendiente">0</span>
+        </button>
+        <button class="av-filtro-btn" data-av-filtro="en_revision">
+          <i class="bi bi-eye"></i> En revisión <span class="av-filtro-num" id="avFCount-en_revision">0</span>
+        </button>
+        <button class="av-filtro-btn" data-av-filtro="aprobada">
+          <i class="bi bi-check-circle"></i> Aprobadas <span class="av-filtro-num" id="avFCount-aprobada">0</span>
+        </button>
+        <button class="av-filtro-btn" data-av-filtro="rechazada">
+          <i class="bi bi-x-circle"></i> Rechazadas <span class="av-filtro-num" id="avFCount-rechazada">0</span>
+        </button>
+      </div>
 
-<p class="nota">
-    Eliminar quita el perfil y el acceso al sitio, pero la cuenta sigue en
-    Authentication. Para borrarla del todo hay que hacerlo desde la consola de Firebase.
-</p>
+      <!-- Tabla -->
+      <div class="av-table-wrap">
+        <table class="av-table" aria-label="Solicitudes de vendedores">
+          <thead>
+            <tr>
+              <th>Empresa</th>
+              <th>Responsable</th>
+              <th>Correo cuenta</th>
+              <th>Fecha</th>
+              <th>Recom. IA</th>
+              <th>Estado</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody id="avTbody">
+            <tr>
+              <td colspan="7" style="text-align:center;padding:32px;color:#555;font-style:italic">
+                Cargando solicitudes…
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-</section>
-</div>
+    </div>
 
-<script src="sesion.js"></script>
-<script type="module" src="admin.js"></script>
+  </div><!-- /contenido -->
+
+  <!-- ══ MODAL DE REVISIÓN ══ -->
+  <div id="avModal" role="dialog" aria-modal="true" aria-labelledby="avModalTitle">
+    <div class="av-modal-overlay"></div>
+    <div class="av-modal-box">
+      <div class="av-modal-header">
+        <h3 id="avModalTitle">Solicitud</h3>
+        <button class="av-modal-close" aria-label="Cerrar">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      <div id="avModalBody"></div>
+      <div class="av-modal-footer">
+        <button type="button" id="avBtnRechazar" class="av-btn-decision av-btn-rechazar">
+          <i class="bi bi-x-circle"></i> Rechazar
+        </button>
+        <button type="button" id="avBtnAprobar" class="av-btn-decision av-btn-aprobar">
+          <i class="bi bi-check-circle"></i> Aprobar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module">
+    import { auth, db } from "./firebase-config.js";
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+    import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+    import { initModuloVendedores } from "./admin-vendedores.js";
+
+    // ── Tab switching ──
+    window.cambiarTab = function(tab) {
+      document.querySelectorAll(".adm-tab").forEach(t => {
+        t.classList.toggle("active", t.id === "tab" + cap(tab));
+        t.setAttribute("aria-selected", t.id === "tab" + cap(tab));
+      });
+      document.querySelectorAll(".adm-panel").forEach(p => {
+        p.classList.toggle("active", p.id === "panel" + cap(tab));
+      });
+    };
+    function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+    // ── Sincronizar contadores de la tab badge con los del panel ──
+    window.filtrarAv = function(el) {
+      // Delegamos al módulo de vendedores vía atributo data
+      document.querySelectorAll("[data-av-filtro]").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(`[data-av-filtro="${el.dataset.avFiltro}"]`).forEach(b => b.classList.add("active"));
+      // El módulo usa los data-av-filtro para detectar el click — dispara el evento manualmente
+      el.dispatchEvent(new CustomEvent("av-filtrar", { bubbles: true }));
+    };
+
+    // ── Autenticación y lógica principal ──
+    let uid = null, nombreAdmin = null;
+
+    onAuthStateChanged(auth, async (usuario) => {
+      if (!usuario) { window.location.href = "login.html"; return; }
+      uid = usuario.uid;
+
+      const snap = await getDoc(doc(db, "usuarios", uid));
+      const datos = snap.exists() ? snap.data() : {};
+      const rol = datos.rol || "usuario";
+
+      if (rol !== "admin" && rol !== "dueño") {
+        document.getElementById("aviso").hidden = false;
+        return;
+      }
+
+      nombreAdmin = datos.nombre || usuario.email;
+      document.getElementById("bienvenidaAdmin").textContent = `Hola, ${nombreAdmin}`;
+      document.getElementById("contenido").hidden = false;
+
+      // Iniciar módulo de vendedores
+      initModuloVendedores(uid, nombreAdmin);
+
+      // Cargar tabla de usuarios (módulo admin.js)
+      const { pintarUsuarios } = await import("./admin.js");
+      await pintarUsuarios();
+    });
+
+    // ── Cerrar sesión ──
+    document.getElementById("btnCerrarSesion").addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.href = "login.html";
+    });
+
+    // ── Sincronizar badge del tab con avCount-pendiente ──
+    const observer = new MutationObserver(() => {
+      const n = document.getElementById("avCount-pendiente2")?.textContent || "0";
+      const badge = document.getElementById("avCount-pendiente");
+      if (badge) badge.textContent = n;
+    });
+    const target = document.getElementById("avCount-pendiente2");
+    if (target) observer.observe(target, { childList: true, characterData: true, subtree: true });
+  </script>
 
 </body>
 </html>

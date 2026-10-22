@@ -19,7 +19,8 @@ import { initSettings } from "./settings.js";
 
 const contenido = document.getElementById("contenido");
 const aviso = document.getElementById("aviso");
-const tituloFormulario = document.getElementById("tituloFormulario");
+// tituloFormulario puede no existir en versiones nuevas del admin — usamos guardarTxt
+const tituloFormulario = document.getElementById("tituloFormulario") || { textContent: "" };
 const formulario = document.getElementById("formUsuario");
 const idUsuario = document.getElementById("idUsuario");
 const nombre = document.getElementById("nombre");
@@ -67,9 +68,13 @@ async function eliminarUsuario(uid) {
 }
 
 function mostrar(texto, tipo = "error") {
+    if (!mensaje) return;
     mensaje.textContent = texto;
-    mensaje.className = "mensaje " + (texto ? tipo : "");
+    // Compatible con clase adm-msg (nuevo HTML) y clase mensaje (legacy)
+    mensaje.className = "mensaje adm-msg " + (texto ? tipo : "");
+    mensaje.style.display = texto ? "block" : "none";
 }
+const _guardarTxt = () => document.getElementById("guardarTxt") || guardar;
 function modoNuevo() {
     formulario.reset();
     idUsuario.value = "";
@@ -77,7 +82,7 @@ function modoNuevo() {
     password.disabled = false;
     password.required = true;
     tituloFormulario.textContent = "Agregar usuario";
-    guardar.textContent = "Agregar usuario";
+    _guardarTxt().textContent = "Agregar usuario";
     cancelar.hidden = true;
 }
 
@@ -91,7 +96,7 @@ function modoEditar(usuario) {
     password.disabled = true;
     password.required = false;
     tituloFormulario.textContent = "Editar usuario";
-    guardar.textContent = "Guardar cambios";
+    _guardarTxt().textContent = "Guardar cambios";
     cancelar.hidden = false;
     nombre.focus();
     mostrar("El correo y la contraseña no se pueden cambiar desde aquí.", "info");
@@ -118,19 +123,25 @@ function fila(usuario) {
 
     tr.appendChild(celda((usuario.nombre || "-") + (esYo ? " (tú)" : "")));
     tr.appendChild(celda(usuario.email || "-"));
-    tr.appendChild(celda(usuario.rol || "usuario"));
+
+    // Badge de rol
+    const tdRol = document.createElement("td");
+    const rolVal = usuario.rol || "usuario";
+    tdRol.innerHTML = `<span class="adm-rol-badge adm-rol-${rolVal}">${rolVal}</span>`;
+    tr.appendChild(tdRol);
 
     const acciones = document.createElement("td");
-
     const editar = document.createElement("button");
-    editar.className = "boton-fila";
+    editar.className = "adm-btn adm-btn-ghost";
+    editar.style.cssText = "font-size:12px;padding:6px 12px";
     editar.textContent = "Editar";
     editar.addEventListener("click", () => modoEditar(usuario));
     acciones.appendChild(editar);
 
 if (!esYo) {
     const borrar = document.createElement("button");
-    borrar.className = "boton-fila peligro";
+    borrar.className = "adm-btn adm-btn-danger";
+    borrar.style.cssText = "font-size:12px;padding:6px 12px;margin-left:6px";
     borrar.textContent = "Eliminar";
     borrar.addEventListener("click", async () => {
         if (!confirm('¿Eliminar el perfil de "' + (usuario.nombre || usuario.email) + '"?')) return;
@@ -200,31 +211,9 @@ cancelar.addEventListener("click", () => {
     modoNuevo();
     mostrar("");
 });
-observarSesion(async usuario => {
-    if (!usuario) {
-        window.location.href = "login.html";
-        return;
-    }
 
-    uidActual = usuario.uid;
-
-    let rolActual;
-
-    try {
-        rolActual = await obtenerRol(usuario.uid);
-    } catch (error) {
-        rolActual = "usuario";
-    }
-
-    if (rolActual !== "admin") {
-        aviso.hidden = false;
-        contenido.hidden = true;
-        return;
-    }
-
-    aviso.hidden = true;
-    contenido.hidden = false;
-
-    initSettings();
-    await pintarUsuarios();
-});
+/* admin.js solo gestiona el CRUD de usuarios.
+   La autenticación y visibilidad del panel se manejan en admin.html */
+// El observarSesion de admin.html ya inicializa el panel.
+// Este módulo expone pintarUsuarios para que admin.html pueda invocarlo si es necesario.
+export { pintarUsuarios, modoNuevo };
