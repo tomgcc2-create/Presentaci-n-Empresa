@@ -1,0 +1,516 @@
+/* ═══════════════════════════════════════════════════════════════════
+   PriceNice — vendedor-ia.css
+   Asistente IA del panel del vendedor.
+   Paleta: navy #1F2A44 · dorado #C6A75E · crema #F5EFE3
+═══════════════════════════════════════════════════════════════════ */
+
+/* ─── Variables (hereda las del tema si están disponibles) ─── */
+:root {
+  --via-navy:    var(--brand,   #1F2A44);
+  --via-blue:    var(--brand-mid,#34456B);
+  --via-gold:    var(--oro,     #C6A75E);
+  --via-gold-h:  #D4B873;
+  --via-cream:   var(--bg,      #F5EFE3);
+  --via-white:   var(--bg-white,#FBF8F1);
+  --via-soft:    var(--bg-soft, #EFE6D4);
+  --via-line:    var(--border,  #DDD0B8);
+  --via-text2:   var(--text-2,  #4F5B78);
+  --via-text3:   var(--text-3,  #8A92AB);
+  --via-red:     var(--red,     #C0392B);
+  --via-green:   var(--green,   #1C7C5A);
+  --via-font:    var(--font-body, 'DM Sans', 'Inter', system-ui, sans-serif);
+  --via-title:   var(--font-title,'Bricolage Grotesque','Inter', system-ui, sans-serif);
+  --via-ease:    cubic-bezier(.4, 0, .2, 1);
+  --via-t:       .28s var(--via-ease);
+  --via-shadow:  0 24px 60px rgba(31,42,68,.18), 0 0 0 1px rgba(31,42,68,.06);
+}
+
+/* ═══════════ BOTÓN "MEJORAR CON IA" ═══════════ */
+.via-btn-mejorar {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 8px;
+  padding: 9px 18px;
+  font: 700 13px var(--via-font);
+  color: var(--via-navy);
+  background: linear-gradient(135deg, #fdf5e4 0%, #f9edcc 100%);
+  border: 1.5px solid var(--via-gold);
+  border-radius: 99px;
+  cursor: pointer;
+  transition: background var(--via-t), box-shadow var(--via-t), transform .14s;
+  position: relative;
+  overflow: hidden;
+}
+.via-btn-mejorar::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent);
+  transform: translateX(-100%) skewX(-20deg);
+  transition: transform 0s;
+}
+.via-btn-mejorar:hover {
+  background: linear-gradient(135deg, #faeec7 0%, #f5e4a8 100%);
+  box-shadow: 0 6px 18px rgba(198,167,94,.3);
+  transform: translateY(-1px);
+}
+.via-btn-mejorar:hover::before {
+  transform: translateX(200%) skewX(-20deg);
+  transition: transform .7s ease;
+}
+.via-btn-mejorar:active  { transform: scale(.97); }
+.via-btn-mejorar:disabled { opacity: .6; cursor: wait; transform: none; }
+.via-btn-mejorar .bi-stars { color: var(--via-gold); font-size: 15px; }
+
+/* ═══════════ BOTÓN "EXPLÍCAME ESTA GRÁFICA" ═══════════ */
+.via-btn-grafica {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 10px 0 14px;
+  padding: 8px 16px;
+  font: 600 12.5px var(--via-font);
+  color: var(--via-blue);
+  background: var(--via-white);
+  border: 1.5px solid var(--via-line);
+  border-radius: 99px;
+  cursor: pointer;
+  transition: all var(--via-t);
+}
+.via-btn-grafica:hover {
+  background: #fdf5e4;
+  border-color: var(--via-gold);
+  color: var(--via-navy);
+  box-shadow: 0 4px 14px rgba(198,167,94,.2);
+}
+.via-btn-grafica .bi-stars { color: var(--via-gold); font-size: 14px; }
+.via-btn-grafica:disabled  { opacity: .6; cursor: wait; }
+
+/* ═══════════ PANEL FLOTANTE ═══════════ */
+.via-panel {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9900;
+  width: 420px;
+  max-width: calc(100vw - 32px);
+  max-height: min(620px, calc(100vh - 48px));
+  background: var(--via-white);
+  border: 1.5px solid var(--via-line);
+  border-radius: 24px;
+  box-shadow: var(--via-shadow);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  /* Estado inicial oculto */
+  opacity: 0;
+  transform: translateY(24px) scale(.97);
+  transition: opacity .28s var(--via-ease), transform .28s var(--via-ease);
+  pointer-events: none;
+}
+.via-panel--open {
+  opacity: 1;
+  transform: none;
+  pointer-events: all;
+}
+.via-panel--out {
+  opacity: 0;
+  transform: translateY(16px) scale(.97);
+}
+
+/* ─── Header del panel ─── */
+.via-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 16px 18px;
+  background: linear-gradient(135deg, var(--via-navy) 0%, var(--via-blue) 100%);
+  color: #fff;
+  flex-shrink: 0;
+}
+.via-header-left {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+}
+.via-header-icon {
+  width: 38px; height: 38px;
+  flex-shrink: 0;
+  border-radius: 11px;
+  background: rgba(255,255,255,.12);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 19px;
+  color: var(--via-gold);
+  animation: viaStarPulse 3s ease-in-out infinite;
+}
+@keyframes viaStarPulse {
+  0%,100% { text-shadow: none; }
+  50%     { text-shadow: 0 0 12px rgba(198,167,94,.8); }
+}
+.via-header-title {
+  display: block;
+  font: 700 14px var(--via-title);
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.via-header-sub {
+  font-size: 11.5px;
+  color: rgba(255,255,255,.6);
+}
+.via-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.via-close {
+  width: 32px; height: 32px;
+  border-radius: 9px;
+  border: 1.5px solid rgba(255,255,255,.2);
+  background: transparent;
+  color: rgba(255,255,255,.75);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background var(--via-t), color var(--via-t);
+}
+.via-close:hover { background: rgba(255,255,255,.18); color: #fff; }
+
+/* ─── Contador de límite ─── */
+.via-limite {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255,255,255,.6);
+  white-space: nowrap;
+}
+.via-limite--bajo { color: #FFB830; }
+
+/* ─── Área de mensajes ─── */
+.via-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  scroll-behavior: smooth;
+}
+.via-messages::-webkit-scrollbar { width: 5px; }
+.via-messages::-webkit-scrollbar-thumb { background: var(--via-line); border-radius: 99px; }
+
+/* ─── Mensajes ─── */
+.via-msg {
+  display: flex;
+  gap: 10px;
+  animation: viaMsgIn .25s var(--via-ease) both;
+  max-width: 95%;
+}
+@keyframes viaMsgIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+.via-msg--user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+.via-msg--user .via-msg-body {
+  background: var(--via-navy);
+  color: #fff;
+  border-radius: 18px 18px 4px 18px;
+}
+.via-msg--ia .via-msg-body {
+  background: var(--via-soft);
+  color: var(--via-navy);
+  border-radius: 18px 18px 18px 4px;
+}
+.via-msg--err .via-msg-body {
+  background: #fde8e6;
+  color: var(--via-red);
+  border-radius: 12px;
+  border: 1px solid #f3b8b3;
+  font-size: 13px;
+}
+.via-msg-icon {
+  width: 30px; height: 30px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--via-navy);
+  color: var(--via-gold);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  margin-top: 2px;
+}
+.via-msg-body {
+  padding: 10px 14px;
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+/* ─── Indicador "escribiendo…" ─── */
+.via-msg--typing .via-msg-body {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 12px 18px;
+}
+.via-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--via-text3);
+  animation: viaDot 1.3s ease-in-out infinite;
+  display: inline-block;
+}
+.via-dot:nth-child(2) { animation-delay: .18s; }
+.via-dot:nth-child(3) { animation-delay: .36s; }
+@keyframes viaDot {
+  0%,80%,100% { transform: scale(.7); opacity: .4; }
+  40%         { transform: scale(1.1); opacity: 1; }
+}
+
+/* ─── Input de chat ─── */
+.via-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border-top: 1.5px solid var(--via-line);
+  flex-shrink: 0;
+  background: var(--via-white);
+}
+.via-input {
+  flex: 1;
+  font: 500 14px var(--via-font);
+  color: var(--via-navy);
+  background: var(--via-soft);
+  border: 1.5px solid var(--via-line);
+  border-radius: 99px;
+  padding: 10px 16px;
+  outline: none;
+  transition: border-color var(--via-t), box-shadow var(--via-t);
+}
+.via-input::placeholder { color: var(--via-text3); }
+.via-input:focus { border-color: var(--via-navy); box-shadow: 0 0 0 3px rgba(31,42,68,.08); background: #fff; }
+.via-send {
+  width: 40px; height: 40px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: none;
+  background: var(--via-gold);
+  color: var(--via-navy);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background var(--via-t), transform .14s, box-shadow var(--via-t);
+}
+.via-send:hover { background: var(--via-gold-h); box-shadow: 0 4px 14px rgba(198,167,94,.4); transform: scale(1.08); }
+.via-send:active { transform: scale(.95); }
+
+/* ═══════════ PANEL DE SUGERENCIAS (Publicar producto) ═══════════ */
+.via-desc-wrap { position: relative; }
+
+.via-sug-panel {
+  margin-top: 10px;
+  background: var(--via-white);
+  border: 1.5px solid var(--via-line);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 8px 28px rgba(31,42,68,.08);
+  animation: viaSugIn .3s var(--via-ease) both;
+}
+@keyframes viaSugIn {
+  from { opacity: 0; transform: translateY(-8px) scale(.99); }
+  to   { opacity: 1; transform: none; }
+}
+
+.via-sug-header {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 13px 16px;
+  background: linear-gradient(135deg, var(--via-navy), var(--via-blue));
+  color: #fff;
+  font: 700 13px var(--via-font);
+}
+.via-sug-icon { font-size: 17px; color: var(--via-gold); }
+.via-sug-close {
+  margin-left: auto;
+  background: none; border: none;
+  color: rgba(255,255,255,.7);
+  font-size: 15px;
+  cursor: pointer;
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background var(--via-t);
+}
+.via-sug-close:hover { background: rgba(255,255,255,.15); color: #fff; }
+
+.via-sug-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 22px;
+}
+
+.via-sug-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.via-sug-chip {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--via-line);
+  transition: background var(--via-t);
+}
+.via-sug-chip:last-child { border-bottom: none; }
+.via-sug-chip:hover { background: #fdf9f0; }
+.via-sug-chip--seleccionado { background: #edfaf3 !important; }
+
+.via-sug-chip-label {
+  font: 700 11px var(--via-font);
+  color: var(--via-gold);
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  margin-bottom: 5px;
+}
+.via-sug-chip-text {
+  font-size: 13.5px;
+  color: var(--via-navy);
+  line-height: 1.55;
+  margin: 0 0 10px;
+}
+.via-sug-chip-actions {
+  display: flex;
+  gap: 8px;
+}
+.via-sug-usar, .via-sug-copiar {
+  display: inline-flex; align-items: center; gap: 6px;
+  font: 600 12px var(--via-font);
+  border-radius: 99px;
+  padding: 6px 14px;
+  cursor: pointer;
+  border: 1.5px solid var(--via-line);
+  transition: all var(--via-t);
+}
+.via-sug-usar {
+  background: var(--via-navy);
+  color: #fff;
+  border-color: var(--via-navy);
+}
+.via-sug-usar:hover { background: var(--via-blue); box-shadow: 0 4px 12px rgba(31,42,68,.18); }
+.via-sug-copiar {
+  background: var(--via-white);
+  color: var(--via-text2);
+}
+.via-sug-copiar:hover { color: var(--via-navy); border-color: var(--via-navy); background: var(--via-soft); }
+
+/* Sección de extras (título, etiquetas, fotos) */
+.via-sug-extras {
+  padding: 14px 16px;
+  border-top: 1px solid var(--via-line);
+  background: var(--via-soft);
+}
+.via-extra { margin-bottom: 10px; }
+.via-extra:last-child { margin-bottom: 0; }
+.via-extra strong {
+  display: block;
+  font-size: 12px;
+  color: var(--via-blue);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin-bottom: 4px;
+}
+.via-extra p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--via-navy);
+  line-height: 1.5;
+}
+
+/* Botones de acción del panel de sugerencias */
+.via-sug-otra, .via-sug-chat {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 11px;
+  font: 600 13px var(--via-font);
+  cursor: pointer;
+  border: none;
+  border-top: 1px solid var(--via-line);
+  transition: background var(--via-t), color var(--via-t);
+}
+.via-sug-otra {
+  background: var(--via-white);
+  color: var(--via-text2);
+}
+.via-sug-otra:hover { background: var(--via-soft); color: var(--via-navy); }
+.via-sug-chat {
+  background: linear-gradient(135deg, #fdf5e4, #f9edcc);
+  color: var(--via-navy);
+  border-top: 1px solid var(--via-line);
+}
+.via-sug-chat:hover { background: linear-gradient(135deg, #faeec7, #f5e4a8); }
+
+.via-sug-err {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 14px 16px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  background: #fde8e6;
+  color: var(--via-red);
+  border: 1px solid #f3b8b3;
+  font-size: 13px;
+}
+
+/* ═══════════ SPINNER INLINE ═══════════ */
+.via-spin {
+  display: inline-block;
+  animation: viaSpinAnim .7s linear infinite;
+}
+@keyframes viaSpinAnim { to { transform: rotate(360deg); } }
+
+/* ═══════════ RESPONSIVE ═══════════ */
+@media (max-width: 640px) {
+  .via-panel {
+    bottom: 0; right: 0;
+    width: 100vw;
+    max-width: 100vw;
+    border-radius: 20px 20px 0 0;
+    max-height: 75vh;
+  }
+  .via-sug-chip-actions { flex-wrap: wrap; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .via-panel,
+  .via-sug-panel,
+  .via-msg,
+  .via-dot,
+  .via-header-icon { animation: none !important; transition: none !important; }
+}
+
+/* ─── Etiqueta modo demo ─── */
+.via-demo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font: 600 11px var(--via-font);
+  color: var(--via-navy);
+  background: var(--via-gold);
+  border-radius: 99px;
+  padding: 3px 10px;
+  white-space: nowrap;
+  margin-left: 4px;
+  flex-shrink: 0;
+}

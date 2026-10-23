@@ -2,8 +2,10 @@
  * PriceNice — Cloudflare Worker
  *
  * Endpoints:
- *   POST /          → chatbot (intermediario hacia Google Gemini)
- *   POST /admin-test → modo administrador de pruebas
+ *   POST /              → chatbot público (intermediario hacia Google Gemini)
+ *   POST /admin-test    → modo administrador de pruebas
+ *   POST /admin-test/verify → verifica token de prueba
+ *   POST /ia-vendedor   → asistente IA del panel del vendedor (autenticado por UID)
  *
  * ─────────────────────────────────────────────────────────
  * Variables de entorno (Cloudflare → Workers → Settings → Variables):
@@ -14,26 +16,15 @@
  *   GEMINI_MODEL     (texto)    Opcional. Modelo de Gemini a usar.
  *
  *  MODO PRUEBA ADMIN:
- *   ADMIN_TEST_CODE  (secreto)  El código secreto que el admin escribe en el campo correo.
- *                               Ejemplo: "PRICENICE-2024-ADMIN"
- *                               NUNCA debe aparecer en el código del navegador.
- *   ADMIN_TEST_MODE  (texto)    "true" para activar, "false" para desactivar antes de producción.
- *                               Por defecto: desactivado si la variable no existe.
- *   ADMIN_SALT       (secreto)  Salt aleatorio (32+ chars) para firmar los tokens de sesión.
+ *   ADMIN_TEST_CODE  (secreto)  Código secreto del admin.
+ *   ADMIN_TEST_MODE  (texto)    "true" para activar.
+ *   ADMIN_SALT       (secreto)  Salt para firmar tokens HMAC-SHA256.
+ *
+ *  IA VENDEDOR:
+ *   IA_VENDEDOR_DAILY_LIMIT (texto) Consultas permitidas por vendedor/día. Default: 20.
  *
  *  KV NAMESPACE:
- *   RATE_LIMIT_KV    Namespace de KV enlazado al Worker (binding "RATE_LIMIT_KV").
- *                    Úsalo para rate-limiting y registro de usos.
- *                    Si no tienes KV, el Worker funciona igual pero sin persistencia.
- *
- * ─────────────────────────────────────────────────────────
- * SEGURIDAD:
- *   • El código secreto NUNCA se envía al navegador.
- *   • El servidor responde igual si el código está mal o si el modo está desactivado
- *     (no revela si el modo existe).
- *   • Rate-limiting: máximo 5 intentos por IP en 15 minutos.
- *   • Cada uso exitoso se registra (IP, fecha/hora, perfil elegido) en KV.
- *   • Los tokens de sesión firmados expiran en 30 minutos.
+ *   RATE_LIMIT_KV    Binding al namespace KV del Worker.
  */
 
 /* ──────────────────────────────────────────────
@@ -184,6 +175,13 @@ export default {
     }
 
     /* ══════════════════════════════════════════
+       ENDPOINT: /ia-vendedor (asistente IA del panel vendedor)
+    ══════════════════════════════════════════ */
+    if (url.pathname === "/ia-vendedor") {
+      return handleIAVendedor(request, env, ok);
+    }
+
+    /* ══════════════════════════════════════════
        ENDPOINT: / (chatbot, comportamiento original)
     ══════════════════════════════════════════ */
     return handleChatbot(request, env, ok);
@@ -278,7 +276,238 @@ async function handleAdminVerify(request, env, ok) {
 }
 
 /* ──────────────────────────────────────────────
-   HANDLER: CHATBOT (comportamiento original)
+   HANDLER: IA VENDEDOR
+   Body: {
+     uid:    string,   // UID de Firebase del vendedor (no es secreto, se usa como clave de rate-limit)
+     tipo:   "descripcion" | "grafica" | "chat",
+     // Para tipo "descripcion":
+     producto: { nombre, categoria, precio, descripcionActual? },
+     // Para tipo "grafica":
+     metricas: { vistas[], clics[], meses[], totalProductos, totalReseñas, calificacion, sinDatos? },
+     // Para tipo "chat":
+     pregunta: string,
+     historial: [{ rol: "user"|"ia", texto: string }],   // últimas 6 entradas
+     // Contexto general (todos los tipos):
+     tienda: { nombre, barrio, categoria }
+   }
+   Respuesta exitosa:
+     { ok: true, respuesta: string, sugerencias?: string[], limiteDiario: { usadas, total } }
+────────────────────────────────────────────── */
+async function handleIAVendedor(request, env, ok) {
+  if (!env.GEMINI_API_KEY) return ok({ error: "Servicio no configurado" }, 500);
+
+  const kv  = env.RATE_LIMIT_KV || null;
+  const LIMITE_DIARIO = parseInt(env.IA_VENDEDOR_DAILY_LIMIT || "20", 10);
+
+  let body;
+  try { body = await request.json(); } catch { return ok({ error: "JSON inválido" }, 400); }
+
+  const uid = String(body.uid || "").trim().slice(0, 128);
+  if (!uid) return ok({ error: "UID requerido" }, 400);
+
+  const tipo = String(body.tipo || "chat");
+
+  // ── Rate-limiting por UID y día ──
+  const hoy     = new Date().toISOString().slice(0, 10); // "2024-10-22"
+  const rlKey   = `ia_v:${uid}:${hoy}`;
+  let usadas    = 0;
+
+  if (kv) {
+    const raw = await kv.get(rlKey);
+    usadas     = raw ? parseInt(raw, 10) : 0;
+    if (usadas >= LIMITE_DIARIO) {
+      return ok({
+        error: `Alcanzaste el límite de ${LIMITE_DIARIO} consultas por hoy. Vuelve mañana.`,
+        limiteDiario: { usadas, total: LIMITE_DIARIO }
+      }, 429);
+    }
+  }
+
+  // ── Construir el prompt según el tipo ──
+  const modelo = env.GEMINI_MODEL || "gemini-2.0-flash";
+  let prompt;
+
+  if (tipo === "descripcion") {
+    prompt = construirPromptDescripcion(body);
+  } else if (tipo === "grafica") {
+    prompt = construirPromptGrafica(body);
+  } else {
+    prompt = construirPromptChat(body);
+  }
+
+  if (!prompt) return ok({ error: "Datos insuficientes para la consulta" }, 400);
+
+  // ── Llamar a Gemini ──
+  const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent`;
+
+  const instruccionBase =
+    "Eres el asistente de ventas de PriceNice, una plataforma colombiana para comparar precios. " +
+    "Ayudas a los vendedores a vender más. Hablas en español colombiano, con un tono cercano, " +
+    "claro y motivador. Eres breve: máximo 3 párrafos por respuesta. " +
+    "REGLAS IMPORTANTES: " +
+    "1. Nunca inventes características del producto (materiales, garantías, medidas) que no se mencionaron. " +
+    "2. Si los datos son de ejemplo o no son reales, dilo explícitamente antes de dar consejos. " +
+    "3. No muestres datos de otros vendedores. " +
+    "4. No cambies precios, no borres productos, no publiques nada: solo das sugerencias. " +
+    "5. Si el vendedor no tiene productos aún, guíalo con los primeros pasos.";
+
+  const historialGemini = [];
+  if (Array.isArray(body.historial)) {
+    body.historial.slice(-6).forEach(m => {
+      if (m && typeof m.texto === "string") {
+        historialGemini.push({
+          role:  m.rol === "ia" ? "model" : "user",
+          parts: [{ text: m.texto.slice(0, 500) }]
+        });
+      }
+    });
+  }
+  historialGemini.push({ role: "user", parts: [{ text: prompt }] });
+
+  let respuestaTexto = "";
+  try {
+    const r = await fetch(geminiUrl, {
+      method:  "POST",
+      headers: { "Content-Type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY },
+      body:    JSON.stringify({
+        systemInstruction: { parts: [{ text: instruccionBase }] },
+        contents:          historialGemini,
+        generationConfig:  { maxOutputTokens: 600, temperature: 0.55 }
+      })
+    });
+    if (!r.ok) return ok({ error: "IA no disponible en este momento" }, 502);
+    const json = await r.json();
+    respuestaTexto = json?.candidates?.[0]?.content?.parts?.map(p => p.text).join("") || "";
+    if (!respuestaTexto) return ok({ error: "Sin respuesta de la IA" }, 502);
+  } catch {
+    return ok({ error: "Error de conexión con la IA" }, 502);
+  }
+
+  // ── Actualizar rate-limit en KV ──
+  if (kv) {
+    usadas++;
+    // Expira al final del día (segundos hasta medianoche UTC)
+    const ahora   = new Date();
+    const manana  = new Date(ahora);
+    manana.setUTCDate(ahora.getUTCDate() + 1);
+    manana.setUTCHours(0, 0, 0, 0);
+    const ttl = Math.ceil((manana - ahora) / 1000) + 60;
+    await kv.put(rlKey, String(usadas), { expirationTtl: ttl });
+  }
+
+  // ── Para tipo "descripcion", extraer sugerencias del texto ──
+  let sugerencias = null;
+  if (tipo === "descripcion") {
+    sugerencias = extraerSugerencias(respuestaTexto);
+  }
+
+  return ok({
+    ok:       true,
+    respuesta: respuestaTexto,
+    ...(sugerencias ? { sugerencias } : {}),
+    limiteDiario: { usadas, total: LIMITE_DIARIO }
+  });
+}
+
+/* ── Prompt: mejorar descripción ── */
+function construirPromptDescripcion(body) {
+  const p = body.producto || {};
+  if (!p.nombre) return null;
+
+  const tienda = body.tienda || {};
+  const lines  = [
+    `Tienda: "${tienda.nombre || "sin nombre"}", barrio: "${tienda.barrio || "Bogotá"}", categoría principal: "${tienda.categoria || "general"}".`,
+    `Producto: "${p.nombre}"`,
+    p.categoria ? `Categoría del producto: ${p.categoria}` : "",
+    p.precio    ? `Precio: $${Number(p.precio).toLocaleString("es-CO")} COP` : "",
+    p.descripcionActual ? `Descripción actual del vendedor: "${p.descripcionActual}"` : "El vendedor aún no escribió descripción."
+  ].filter(Boolean).join("\n");
+
+  return (
+    `${lines}\n\n` +
+    `Basándote SOLO en los datos que te di (no inventes características), ` +
+    `escribe 3 opciones de descripción para este producto:\n` +
+    `1. CORTA: máximo 2 oraciones, directa y clara.\n` +
+    `2. LLAMATIVA: usa un gancho emocional o de valor, máximo 3 oraciones.\n` +
+    `3. DETALLADA: 4-5 oraciones, menciona el uso, el beneficio y cómo conseguirlo.\n\n` +
+    `Luego sugiere:\n` +
+    `- Un título alternativo más atractivo (si el actual puede mejorar).\n` +
+    `- 3-5 palabras clave para etiquetas.\n` +
+    `- Qué fotos conviene subir (sin inventar características del producto).\n\n` +
+    `Formato: usa exactamente las etiquetas [CORTA], [LLAMATIVA], [DETALLADA], [TITULO], [ETIQUETAS], [FOTOS].`
+  );
+}
+
+/* ── Prompt: explicar gráfica ── */
+function construirPromptGrafica(body) {
+  const m = body.metricas || {};
+  const tienda = body.tienda || {};
+
+  const sinDatos = !!m.sinDatos;
+  const resumen  = [
+    `Tienda: "${tienda.nombre || "sin nombre"}", barrio: "${tienda.barrio || "Bogotá"}".`,
+    `Total productos publicados: ${m.totalProductos || 0}.`,
+    `Total reseñas: ${m.totalReseñas || 0}.`,
+    `Calificación promedio: ${m.calificacion ? Number(m.calificacion).toFixed(1) : "0.0"}.`,
+  ];
+
+  if (sinDatos) {
+    resumen.push("IMPORTANTE: Los datos de la gráfica son datos de EJEMPLO, no reales todavía.");
+  } else if (Array.isArray(m.vistas) && m.vistas.length) {
+    const meses = m.meses || [];
+    const pares = m.vistas.map((v, i) => `${meses[i] || "M" + (i + 1)}: ${v} vistas, ${(m.clics || [])[i] || 0} clics`);
+    resumen.push(`Datos mensuales: ${pares.join("; ")}.`);
+  }
+
+  return (
+    resumen.join("\n") + "\n\n" +
+    (sinDatos
+      ? `Los datos son de ejemplo. Explica qué SIGNIFICA cada barra de la gráfica en general ` +
+        `(vistas vs clics) y qué debería buscar el vendedor cuando tenga datos reales. ` +
+        `Da 2-3 consejos generales para mejorar el interés de compradores, ` +
+        `dejando claro que son consejos generales, no basados en datos reales todavía.`
+      : `Analiza estos datos reales. ¿Qué tendencias ves? ¿Hay meses fuertes o débiles? ` +
+        `¿La relación vistas/clics es buena? Da 2-3 recomendaciones concretas y fáciles de aplicar.`)
+  );
+}
+
+/* ── Prompt: chat libre ── */
+function construirPromptChat(body) {
+  const pregunta = String(body.pregunta || "").trim().slice(0, 400);
+  if (!pregunta) return null;
+
+  const tienda   = body.tienda || {};
+  const metricas = body.metricas || {};
+
+  const contexto = [
+    `Tienda: "${tienda.nombre || "sin nombre"}", barrio: "${tienda.barrio || "Bogotá"}".`,
+    `Productos publicados: ${metricas.totalProductos || 0}.`,
+    `Reseñas: ${metricas.totalReseñas || 0}. Calificación: ${metricas.calificacion ? Number(metricas.calificacion).toFixed(1) : "0.0"}.`,
+    metricas.sinDatos ? "Nota: los datos de la gráfica son de ejemplo, no reales." : ""
+  ].filter(Boolean).join(" ");
+
+  return `Contexto del vendedor: ${contexto}\n\nPregunta del vendedor: "${pregunta}"`;
+}
+
+/* ── Extraer sugerencias etiquetadas ── */
+function extraerSugerencias(texto) {
+  const tags   = ["[CORTA]", "[LLAMATIVA]", "[DETALLADA]"];
+  const result = [];
+  tags.forEach(tag => {
+    const idx = texto.indexOf(tag);
+    if (idx === -1) return;
+    const inicio  = idx + tag.length;
+    const nextTag = Math.min(
+      ...["[LLAMATIVA]", "[DETALLADA]", "[TITULO]", "[ETIQUETAS]", "[FOTOS]"]
+        .map(t => { const i = texto.indexOf(t, inicio); return i === -1 ? Infinity : i; })
+    );
+    const frag = texto.slice(inicio, isFinite(nextTag) ? nextTag : undefined).trim();
+    if (frag) result.push(frag);
+  });
+  return result.length ? result : null;
+}
+
+/* ──────────────────────────────────────────────
 ────────────────────────────────────────────── */
 async function handleChatbot(request, env, ok) {
   if (!env.GEMINI_API_KEY) return ok({ error: "Servicio no configurado" }, 500);
