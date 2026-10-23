@@ -2,14 +2,6 @@
 .ct-page{background:var(--bg);color:var(--text);font-family:var(--font-body)}
 .ct-wrap{width:var(--cont-w);margin:0 auto}
 
-/* Hero */
-.ct-hero{background:var(--celeste);text-align:center;padding:84px 20px 96px;position:relative;overflow:hidden;border-radius:0 0 var(--r-xl) var(--r-xl)}
-.ct-hero h1{font-family:var(--font-title);font-weight:800;letter-spacing:-.03em;font-size:clamp(40px,7vw,76px);color:var(--brand);margin:0}
-.ct-wave{display:block;margin:10px auto 14px;color:var(--oro)}
-.ct-hero p{max-width:560px;margin:0 auto;color:var(--text-2);font-size:15px;line-height:1.6}
-.ct-chev{position:absolute;color:var(--oro);opacity:.7;font-size:34px;letter-spacing:-8px;top:50%;transform:translateY(-50%)}
-.ct-chev.l{left:6%}.ct-chev.r{right:6%;bottom:18px;top:auto;transform:none}
-
 /* Franja de tiendas */
 .ct-strip{display:flex;justify-content:space-around;align-items:center;gap:20px;flex-wrap:wrap;padding:34px 0;font-family:var(--font-title);font-weight:800;font-size:20px;color:var(--brand-mid)}
 .ct-strip span{display:flex;align-items:center;gap:8px;opacity:.75}
@@ -72,19 +64,6 @@ textarea.ct-input{border-radius:var(--r-lg);min-height:150px;resize:vertical}
 @keyframes ctPulse{0%{box-shadow:0 0 0 0 rgba(198,167,94,.5)}100%{box-shadow:0 0 0 16px rgba(198,167,94,0)}}
 @keyframes ctBlob{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(30px,-20px) scale(1.15)}}
 
-/* Hero */
-.ct-hero::before,.ct-hero::after{content:"";position:absolute;border-radius:50%;filter:blur(40px);z-index:0;animation:ctBlob 9s ease-in-out infinite}
-.ct-hero::before{width:260px;height:260px;background:rgba(198,167,94,.28);left:-60px;top:-60px}
-.ct-hero::after{width:300px;height:300px;background:rgba(52,69,107,.16);right:-70px;bottom:-90px;animation-delay:-4s}
-.ct-hero>*{position:relative;z-index:1}
-.ct-hero h1{animation:ctFadeUp .8s cubic-bezier(.2,.7,.2,1) both;
-  background:linear-gradient(90deg,var(--brand),var(--brand-mid),var(--oro),var(--brand-mid),var(--brand));background-size:200% auto;
-  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:ctFadeUp .8s both,ctShine 6s linear infinite .8s}
-.ct-wave path{stroke-dasharray:140;animation:ctDraw 1.4s ease-out .5s both}
-.ct-hero p{animation:ctFadeUp .8s .35s both}
-.ct-chev.l{animation:ctChev 2s ease-in-out infinite}
-.ct-chev.r{animation:ctChev 2s ease-in-out infinite .6s}
-
 /* Aparición al hacer scroll */
 .ct-reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1);transition-delay:var(--d,0s)}
 .ct-reveal.in{opacity:1;transform:none}
@@ -123,3 +102,79 @@ textarea.ct-input{border-radius:var(--r-lg);min-height:150px;resize:vertical}
   .ct-page *,.ct-page *::before,.ct-page *::after{animation:none!important;transition:none!important}
   .ct-reveal{opacity:1;transform:none}
 }
+
+/* ───────── Hero estilo "tarjetas" ───────── */
+.ct-hero{padding:28px 0 8px}
+.ct-hero-in{width:var(--panel-w);margin:0 auto;display:grid;grid-template-columns:1.15fr 1fr;gap:20px}
+.ct-hl{background:linear-gradient(160deg,var(--bg-white),var(--bg-soft));border:1px solid var(--border);border-radius:var(--r-xl);padding:44px 44px 34px;box-shadow:var(--shadow);animation:ctFadeUp .8s both}
+.ct-eyebrow{display:inline-flex;gap:8px;align-items:center;background:var(--celeste);color:var(--brand-mid);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:7px 14px}
+.ct-eyebrow i{color:var(--oro)}
+.ct-hl h1{font-family:var(--font-title);font-weight:800;letter-spacing:-.03em;line-height:1.05;font-size:clamp(32px,4.4vw,54px);color:var(--brand);margin:18px 0 14px}
+.ct-hl h1 em{font-style:normal;background:linear-gradient(90deg,var(--oro),#E4C77F,var(--oro));background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:ctShine 4s linear infinite}
+.ct-hl p{color:var(--text-2);font-size:15px;line-height:1.65;max-width:520px;margin:0 0 24px}
+.ct-hl-btns{display:flex;gap:12px;flex-wrap:wrap}
+.ct-btn.ghost{background:transparent;color:var(--brand);border:1.5px solid var(--border-2)}
+.ct-btn.ghost:hover{background:var(--celeste);transform:translateY(-1px)}
+.ct-btn i{margin-left:6px;display:inline-block;transition:transform .25s}
+.ct-btn:hover i{transform:translateX(4px)}
+
+.ct-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:32px}
+.ct-stat{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:4px;box-shadow:var(--shadow-xs);transition:transform .3s,box-shadow .3s;animation:ctFadeUp .7s both}
+.ct-stat:nth-child(1){animation-delay:.35s}.ct-stat:nth-child(2){animation-delay:.5s}.ct-stat:nth-child(3){animation-delay:.65s}
+.ct-stat:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
+.ct-ic{width:36px;height:36px;border-radius:50%;background:var(--brand);color:var(--oro);display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:6px}
+.ct-stat b{font-family:var(--font-title);font-size:28px;color:var(--brand);line-height:1}
+.ct-stat small{font-size:12px;color:var(--text-2);line-height:1.3}
+
+.ct-hr{position:relative;border-radius:var(--r-xl);overflow:hidden;min-height:440px;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 30% 20%,var(--brand-mid),var(--brand) 70%);box-shadow:var(--shadow-md);animation:ctFadeUp .8s .15s both}
+.ct-orbit{position:absolute;width:340px;height:340px;border-radius:50%;border:1.5px dashed rgba(198,167,94,.55);animation:ctSpin 24s linear infinite}
+.ct-orbit::after{content:"";position:absolute;top:-7px;left:50%;width:14px;height:14px;border-radius:50%;background:var(--oro);box-shadow:0 0 18px var(--oro)}
+.ct-logo-big{width:210px;height:210px;border-radius:50%;background:#14203a;border:5px solid var(--oro);display:flex;align-items:center;justify-content:center;box-shadow:0 20px 50px rgba(0,0,0,.35);animation:ctFloat 5s ease-in-out infinite;position:relative;z-index:2}
+.ct-logo-big img{width:88%;height:88%;object-fit:contain}
+.ct-pill{position:absolute;z-index:3;background:rgba(251,248,241,.95);color:var(--brand);font-size:13px;font-weight:700;border-radius:999px;padding:10px 16px;box-shadow:var(--shadow);display:flex;align-items:center;gap:8px;white-space:nowrap}
+.ct-pill i{color:var(--oro)}
+.ct-pill.p1{top:26px;right:22px;animation:ctFloat 4s ease-in-out infinite}
+.ct-pill.p2{bottom:70px;left:22px;animation:ctFloat 4.6s ease-in-out infinite -1.5s}
+.ct-pill.p3{bottom:22px;right:26px;animation:ctFloat 5s ease-in-out infinite -3s}
+.ct-coin{position:absolute;width:34px;height:34px;border-radius:50%;background:var(--oro);color:var(--brand);font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(0,0,0,.3);animation:ctFloat 3.6s ease-in-out infinite}
+.ct-coin.c1{top:60px;left:50px}.ct-coin.c2{top:46%;right:36px;animation-delay:-1.2s;width:26px;height:26px;font-size:13px}.ct-coin.c3{bottom:40px;left:44%;animation-delay:-2.4s;width:28px;height:28px;font-size:14px}
+@keyframes ctSpin{to{transform:rotate(360deg)}}
+
+@media(max-width:900px){
+  .ct-hero-in{grid-template-columns:1fr}
+  .ct-hl{padding:30px 22px}
+  .ct-hr{min-height:340px}
+  .ct-orbit{width:260px;height:260px}.ct-logo-big{width:160px;height:160px}
+}
+@media(max-width:520px){.ct-stats{grid-template-columns:1fr}.ct-stat{flex-direction:row;align-items:center;gap:12px}}
+
+/* ───────── Radar de rastreo ───────── */
+.ct-hr{background:radial-gradient(circle at 50% 50%,#22335a,#101a31 75%)}
+.ct-hr::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(198,167,94,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(198,167,94,.07) 1px,transparent 1px);background-size:34px 34px;animation:ctGrid 6s linear infinite}
+@keyframes ctGrid{to{background-position:34px 34px}}
+.ct-radar{position:relative;width:min(380px,82%);aspect-ratio:1;border-radius:50%;z-index:1}
+.ct-radar .ring{position:absolute;border-radius:50%;border:1.5px solid rgba(198,167,94,.45);inset:0}
+.ct-radar .r2{inset:17%}.ct-radar .r3{inset:34%}
+.ct-radar .axis{position:absolute;background:rgba(198,167,94,.3)}
+.ct-radar .axis.h{left:0;right:0;top:50%;height:1px}.ct-radar .axis.v{top:0;bottom:0;left:50%;width:1px}
+.ct-sweep{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,rgba(198,167,94,0) 0deg,rgba(198,167,94,0) 270deg,rgba(198,167,94,.55) 360deg);animation:ctSpin 3.4s linear infinite}
+.ct-sweep::after{content:"";position:absolute;left:50%;top:0;width:2px;height:50%;background:var(--oro);box-shadow:0 0 12px var(--oro);transform-origin:bottom}
+.ct-radar .ct-logo-big{position:absolute;left:50%;top:50%;width:25%;height:25%;margin:-12.5% 0 0 -12.5%;border-width:3px;animation:none}
+.ct-blip{position:absolute;width:12px;height:12px;border-radius:50%;background:var(--oro);box-shadow:0 0 14px var(--oro);opacity:0;animation:ctBlip 3.4s ease-out infinite;animation-delay:var(--t)}
+.ct-blip::before{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--oro);animation:ctPing 3.4s ease-out infinite;animation-delay:var(--t)}
+.ct-blip em{position:absolute;left:18px;top:-6px;font-style:normal;font-size:11px;font-weight:700;color:var(--brand);background:var(--bg-white);border-radius:999px;padding:3px 9px;white-space:nowrap;box-shadow:var(--shadow-sm)}
+@keyframes ctBlip{0%{opacity:0;transform:scale(.3)}8%{opacity:1;transform:scale(1.3)}20%,70%{opacity:1;transform:scale(1)}100%{opacity:0}}
+@keyframes ctPing{0%{opacity:.9;transform:scale(.6)}40%,100%{opacity:0;transform:scale(2.6)}}
+/* posición + momento en que el barrido pasa por cada punto (giro horario desde arriba, 3.4s) */
+.b1{left:68%;top:18%;--t:.5s}   /* ~ 1/8 vuelta */
+.b2{left:86%;top:56%;--t:1.0s}
+.b3{left:58%;top:80%;--t:1.5s}
+.b4{left:18%;top:70%;--t:2.1s}
+.b5{left:8%;top:38%;--t:2.6s}
+.b6{left:30%;top:14%;--t:3.0s}
+.b4 em,.b5 em,.b6 em{left:auto;right:18px}
+.ct-status{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);z-index:3;display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(6px);border-radius:999px;padding:8px 16px;white-space:nowrap}
+.ct-status i{width:8px;height:8px;border-radius:50%;background:#3DDC97;animation:ctPulse 1.4s infinite}
+.ct-pill.p3{bottom:66px;right:22px}
+@media(max-width:520px){.ct-pill{font-size:11px;padding:8px 12px}.ct-blip em{font-size:10px}}

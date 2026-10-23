@@ -78,12 +78,44 @@
 
 <main aria-labelledby="ctTitulo">
 
-  <section class="ct-hero">
-    <span class="ct-chev l" aria-hidden="true">»»»</span>
-    <h1 id="ctTitulo">Contáctanos</h1>
-    <svg class="ct-wave" width="110" height="14" viewBox="0 0 110 14" fill="none" aria-hidden="true"><path d="M2 7c9-10 17-10 26 0s17 10 26 0 17-10 26 0 17 10 26 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-    <p>¿Tienes dudas, sugerencias o quieres vender con nosotros? Escríbenos y te respondemos lo antes posible.</p>
-    <span class="ct-chev r" aria-hidden="true">»»»</span>
+  <section class="ct-hero" aria-label="Presentación">
+    <div class="ct-hero-in">
+
+      <div class="ct-hl">
+        <span class="ct-eyebrow"><i class="bi bi-chat-heart"></i> Hablemos</span>
+        <h1 id="ctTitulo">Contáctanos y encuentra <em>el mejor precio</em></h1>
+        <p>Comparamos precios de las tiendas de Bogotá para que siempre pagues lo justo. Escríbenos si tienes dudas, sugerencias o quieres vender con nosotros.</p>
+        <div class="ct-hl-btns">
+          <a class="ct-btn" href="#ctForm">Enviar mensaje <i class="bi bi-arrow-right"></i></a>
+          <a class="ct-btn ghost" href="tienda.html">Comparar precios</a>
+        </div>
+
+        <div class="ct-stats">
+          <div class="ct-stat"><span class="ct-ic"><i class="bi bi-tags"></i></span><b><span data-count="500">0</span>+</b><small>productos comparados</small></div>
+          <div class="ct-stat"><span class="ct-ic"><i class="bi bi-shop"></i></span><b><span data-count="4">0</span>+</b><small>tiendas aliadas</small></div>
+          <div class="ct-stat"><span class="ct-ic"><i class="bi bi-people"></i></span><b><span data-count="1200">0</span>+</b><small>clientes ahorrando</small></div>
+        </div>
+      </div>
+
+      <div class="ct-hr" aria-hidden="true">
+        <div class="ct-radar">
+          <i class="ring r1"></i><i class="ring r2"></i><i class="ring r3"></i>
+          <i class="axis h"></i><i class="axis v"></i>
+          <div class="ct-sweep"></div>
+          <span class="ct-blip b1"><em>Tienda aliada</em></span>
+          <span class="ct-blip b2"><em>Cliente</em></span>
+          <span class="ct-blip b3"><em>Oferta -30%</em></span>
+          <span class="ct-blip b4"><em>Tienda aliada</em></span>
+          <span class="ct-blip b5"><em>Cliente</em></span>
+          <span class="ct-blip b6"><em>Mejor precio</em></span>
+          <div class="ct-logo-big"><img src="img/logo-dark.png" alt=""></div>
+        </div>
+        <span class="ct-status"><i></i> Rastreando precios en Bogotá…</span>
+        <span class="ct-pill p1"><i class="bi bi-envelope"></i> priceniceworld@gmail.com</span>
+        <span class="ct-pill p3"><i class="bi bi-lightning-charge"></i> Respuesta en 24 h</span>
+      </div>
+
+    </div>
   </section>
 
   <div class="ct-wrap">
@@ -160,6 +192,10 @@ function ejecutarBusqueda(){var q=(document.getElementById('pnSearchInput')||{})
 window.addEventListener('scroll',function(){document.getElementById('pnNavbar').classList.toggle('scrolled',window.scrollY>10);},{passive:true});
 (function(){try{var c=JSON.parse(localStorage.getItem('pn_carrito')||'[]'),n=c.reduce(function(a,i){return a+(i.qty||0)},0),b=document.getElementById('badgeCarritoNav');if(b&&n>0){b.textContent=n>99?'99+':n;b.style.display='flex';}}catch(e){}})();
 
+(function(){var cs=document.querySelectorAll('[data-count]');
+cs.forEach(function(el){var t=+el.dataset.count,st=null;
+ function step(ts){if(!st)st=ts;var p=Math.min((ts-st)/1600,1);el.textContent=Math.round(t*(1-Math.pow(1-p,3))).toLocaleString('es-CO');if(p<1)requestAnimationFrame(step);}
+ requestAnimationFrame(step);});})();
 (function(){var els=document.querySelectorAll('.ct-reveal');
 if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in')});return;}
 var io=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target);}})},{threshold:.15});
