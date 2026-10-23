@@ -10,7 +10,7 @@
   var DPR = Math.min(window.devicePixelRatio || 1, 2);
   var SIZE = 560, RS = 1.2;                       // RS = resolución interna de la esfera
   cv.width = SIZE * DPR; cv.height = SIZE * DPR;
-  cv.style.touchAction = 'none';
+  cv.style.touchAction = 'pan-y';
   var CX = SIZE / 2, CY = SIZE / 2, rad = Math.PI / 180, TAU = Math.PI * 2;
   var R0 = SIZE * 0.40, R1 = SIZE * 0.43, R = R0;
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;

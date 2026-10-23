@@ -342,7 +342,7 @@ body.pn-tema{padding:0!important;background:linear-gradient(135deg,var(--celeste
 @media(prefers-reduced-motion:reduce){.via-floating,.via-panel,.via-msg,.via-dot,.via-header-icon{animation:none!important;transition:none!important}}
 </style>
 
-<script type="module" src="archivo sesión.js"></script>
+<script type="module" src="archivo-sesion.js"></script>
 <script type="module">
 import { observarSesion, obtenerVerificacion } from './auth.js';
 observarSesion(async (u) => {
@@ -456,7 +456,7 @@ function editar(id){const p=P.find(x=>x.id===id);if(!p)return;limpiar();editId=i
 function pedir(id){delId=id;$('cf').classList.add('on')}
 function borrar(){P=P.filter(p=>p.id!==delId);guardarLS();$('cf').classList.remove('on');lista();toast('Producto eliminado')}
 
-/* ── SESIÓN (la entrega archivo sesión.js) ── */
+/* ── SESIÓN (la entrega archivo-sesion.js) ── */
 window.setPnUser=u=>{if(!u){location.href='login.html';return}SES={n:u.displayName||(u.email||'Vendedor').split('@')[0],m:u.email||''};pintaPerfil()};
 window.salir=async()=>{try{const{cerrarSesion}=await import('./auth.js');await cerrarSesion()}catch(e){}location.href='login.html'};
 document.addEventListener('keydown',e=>{if(e.key==='Escape')$('cf').classList.remove('on')});
@@ -499,7 +499,7 @@ pintaPerfil();stats();resumen();calidad();
 
 /* ── Inicializar asistente IA cuando haya sesión ── */
 window.addEventListener('load', () => {
-  // observarSesion ya corre en auth.js / archivo sesión.js
+  // observarSesion ya corre en auth.js / archivo-sesion.js
   // Usamos el setter que vendedor.html ya expone: window.setPnUser
   const _setOrig = window.setPnUser;
   window.setPnUser = function(u) {

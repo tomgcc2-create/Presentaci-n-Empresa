@@ -166,3 +166,9 @@
   .cc-stage{padding:10px}
   .cc-page .pn-map-wrapper{height:480px}
 }
+
+/* Correcciones: la tarjeta de ubicación y el botón "Mi ubicación" deben quedar
+   por encima de las capas de Leaflet (z-index 400-1000), si no el mapa las tapa */
+.cc-page .pn-map-overlay-card{z-index:1500}
+.cc-page .pn-map-floating-recenter{z-index:1500}
+.cc-page .pn-map-wrapper .leaflet-control-container{z-index:1400}

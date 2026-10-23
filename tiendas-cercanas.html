@@ -328,7 +328,7 @@
 <!-- SCRIPTS -->
 <!-- Leaflet JS (Librería de mapas gratuita, sin API key) -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script type="module" src="archivo sesión.js"></script>
+<script type="module" src="archivo-sesion.js"></script>
 <script type="module" src="script.js"></script>
 <script type="module">
   import { inicializarSeccionTiendas } from "./tiendas-cercanas-component.js";
@@ -342,6 +342,7 @@ function toggleMobileMenu() {
   const m = document.getElementById('mobileMenu');
   if (m) m.classList.toggle('open');
 }
+function abrirCarrito() { window.location.href = 'carrito.html'; }
 function ejecutarBusqueda() {
   const q = document.getElementById('pnSearchInput')?.value.trim();
   if (q) window.location.href = `tienda.html?q=${encodeURIComponent(q)}`;
