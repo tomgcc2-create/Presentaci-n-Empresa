@@ -8,13 +8,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=DM+Sans:opsz,wght@9..40,400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <!-- Leaflet CSS (Mapas 100% gratuitos sin API key) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="tiendas-cercanas.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="tema-crema-azul.css">
+  <link rel="stylesheet" href="cercanas-hero.css">
 </head>
-<body class="has-navbar">
+<body class="has-navbar pn-tema cc-page" data-pedir-ubicacion="inmediato">
 
 <!-- ════════════════════════════════════════════
      NAVBAR BLANCA FIJA
@@ -37,8 +40,8 @@
     <nav class="pn-navbar-menu" aria-label="Menú principal">
       <a href="index.html"            class="pn-menu-link">Inicio</a>
       <a href="tienda.html" class="pn-menu-link">Comparación de precios</a>
-      <a href="ofertas-novedades.html" class="pn-menu-link">Ofertas y novedades</a>
       <a href="tiendas-cercanas.html" class="pn-menu-link active">Cercanas</a>
+      <a href="ofertas-novedades.html" class="pn-menu-link">Ofertas y novedades</a>
       <a href="vendedor.html" class="pn-menu-link" data-solo-vendedor hidden>Vendedores</a>
     </nav>
 
@@ -91,8 +94,8 @@
     <nav style="display:flex;flex-direction:column;gap:4px">
       <a href="index.html"            class="pn-cat-panel-link">🏠 Inicio</a>
       <a href="tienda.html" class="pn-cat-panel-link">🛒 Comparación de precios</a>
-      <a href="ofertas-novedades.html" class="pn-cat-panel-link">🏷️ Ofertas y novedades</a>
       <a href="tiendas-cercanas.html" class="pn-cat-panel-link active">📍 Tiendas cercanas</a>
+      <a href="ofertas-novedades.html" class="pn-cat-panel-link">🏷️ Ofertas y novedades</a>
       <a href="vendedor.html" class="pn-cat-panel-link" data-solo-vendedor hidden>🏪 Vendedores</a>
     </nav>
   </div>
@@ -101,33 +104,72 @@
 <!-- ════════════════════════════════════════════
      SECCIÓN: TIENDAS CERCA DE TI
 ════════════════════════════════════════════ -->
-<section class="pn-section pn-map-section" id="tiendas-cerca" aria-labelledby="titTiendasCerca" style="padding-top:40px;">
+<!-- ════════ HERO: planeta + ubicación ════════ -->
+<main>
+<section class="cc-hero" aria-labelledby="ccTitulo">
+  <div class="cc-hero-card">
+    <div class="cc-hero-txt">
+      <span class="cc-eyebrow"><i class="bi bi-geo-alt-fill"></i> Ubicación en Bogotá</span>
+      <h1 id="ccTitulo">Encuentra tiendas con <em>mejores precios</em> cerca de ti</h1>
+      <p>Activa tu ubicación y descubre en segundos las tiendas aliadas y los comercios a tu alrededor. Toca el planeta y te llevamos directo a Colombia.</p>
+      <div class="cc-btns">
+        <button class="cc-btn dark" id="ccBtnUbic" type="button"><i class="bi bi-crosshair"></i> Dar mi ubicación</button>
+        <button class="cc-btn light" id="ccBtnManual" type="button"><i class="bi bi-pencil-square"></i> Escribir mi barrio</button>
+      </div>
+      <span class="cc-hint"><i class="bi bi-hand-index-thumb"></i> Toca el planeta para viajar a Colombia · arrástralo para girarlo</span>
+    </div>
+
+    <div class="cc-globe-wrap">
+      <div class="cc-glow"></div>
+      <canvas id="ccGlobe" width="560" height="560" aria-label="Planeta interactivo: arrástralo para girarlo" role="img"></canvas>
+      <div class="cc-orbit" id="ccOrbit" aria-label="Tiendas aliadas">
+        <a class="cc-store" href="#tiendas-cerca"><i class="bi bi-bag-heart"></i>Éxito</a>
+        <a class="cc-store" href="#tiendas-cerca"><i class="bi bi-basket"></i>Jumbo</a>
+        <a class="cc-store" href="#tiendas-cerca"><i class="bi bi-lightning-charge"></i>Alkosto</a>
+        <a class="cc-store" href="#tiendas-cerca"><i class="bi bi-shop"></i>Carulla</a>
+        <a class="cc-store" href="#tiendas-cerca"><i class="bi bi-tag"></i>D1</a>
+        <a class="cc-store" href="#tiendas-cerca"><i class="bi bi-capsule"></i>Cruz Verde</a>
+        <a class="cc-store" href="#tiendas-cerca"><i class="bi bi-handbag"></i>Falabella</a>
+        <a class="cc-store" href="#tiendas-cerca"><i class="bi bi-house-gear"></i>Homecenter</a>
+        <a class="cc-store" href="#tiendas-cerca"><i class="bi bi-cart4"></i>PriceSmart</a>
+      </div>
+      <span class="cc-chip">📍 Bogotá, Colombia</span>
+    </div>
+  </div>
+
+  <!-- Barra oscura de estado -->
+  <div class="cc-status" id="ccStatus">
+    <div class="cc-status-l">
+      <span class="cc-dot" id="ccDot"></span>
+      <div><strong id="ccStatusTit">Ubicación pendiente</strong><small id="ccStatusSub">Permite el acceso cuando tu navegador lo pida.</small></div>
+    </div>
+    <div class="cc-status-r">
+      <span><i class="bi bi-bullseye"></i> Radio 1,5 km</span>
+      <span><i class="bi bi-shield-check"></i> No guardamos tu ubicación</span>
+    </div>
+  </div>
+
+  <!-- Tarjetas de datos -->
+  <div class="cc-stats">
+    <div class="cc-stat"><small>Tiendas aliadas</small><b data-count="13">0</b><span class="cc-pill">Precios y ofertas</span></div>
+    <div class="cc-stat"><small>Ciudad</small><b>Bogotá</b><span class="cc-pill">Cobertura</span></div>
+    <div class="cc-stat"><small>Radio de búsqueda</small><b><span data-count="1500">0</span> m</b><span class="cc-pill">Cerca de ti</span></div>
+    <div class="cc-stat"><small>Costo del servicio</small><b>Gratis</b><span class="cc-pill">Siempre</span></div>
+  </div>
+</section>
+
+<section class="pn-section pn-map-section" id="tiendas-cerca" aria-label="Mapa de tiendas cercanas">
   <div class="pn-container">
 
-    <!-- Encabezado de la sección -->
-    <div class="pn-map-header">
-      <div class="pn-map-title-row">
-        <div>
-          <span class="pn-eyebrow">ubicación en bogotá</span>
-          <h1 class="pn-section-title" id="titTiendasCerca" style="margin-top:4px;">Tiendas <em>cerca de ti</em></h1>
-          <p class="pn-section-sub">Descubre tiendas aliadas con ofertas exclusivas y comercios a tu alrededor en Bogotá</p>
-        </div>
-
-        <!-- Leyenda de colores de pines -->
-        <div class="pn-map-legend" aria-label="Leyenda de pines">
-          <div class="pn-legend-item">
-            <span class="pn-legend-dot aliada"></span>
-            <span>Tiendas aliadas (Precios y ofertas)</span>
-          </div>
-          <div class="pn-legend-item">
-            <span class="pn-legend-dot google"></span>
-            <span>Tiendas cercanas (OpenStreetMap)</span>
-          </div>
-          <div class="pn-legend-item">
-            <span class="pn-legend-dot usuario"></span>
-            <span>Tu ubicación</span>
-          </div>
-        </div>
+    <div class="cc-map-head">
+      <div>
+        <span class="pn-eyebrow">mapa interactivo</span>
+        <h2 class="cc-h2">Tu mapa de tiendas</h2>
+      </div>
+      <div class="pn-map-legend" aria-label="Leyenda de pines">
+        <div class="pn-legend-item"><span class="pn-legend-dot aliada"></span><span>Tiendas aliadas</span></div>
+        <div class="pn-legend-item"><span class="pn-legend-dot google"></span><span>Tiendas cercanas</span></div>
+        <div class="pn-legend-item"><span class="pn-legend-dot usuario"></span><span>Tu ubicación</span></div>
       </div>
     </div>
 
@@ -211,6 +253,7 @@
 
   </div>
 </section>
+</main>
 
 <!-- ════════════════════════════════════════════
      FOOTER
@@ -286,5 +329,6 @@ function ejecutarBusqueda() {
 }
 </script>
 
+<script src="cercanas-globe.js"></script>
 </body>
 </html>

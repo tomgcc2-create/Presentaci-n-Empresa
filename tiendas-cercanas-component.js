@@ -69,6 +69,12 @@ function pedirUbicacionAlVerMapa(contenedor) {
     if (!userPosition) solicitarUbicacionUsuario();
   };
 
+  // Página "Tiendas cercanas": pedir la ubicación apenas la persona entra
+  if (document.body.dataset.pedirUbicacion === "inmediato") {
+    setTimeout(pedir, 700);
+    return;
+  }
+
   if (!("IntersectionObserver" in window)) {
     pedir();
     return;
