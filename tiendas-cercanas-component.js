@@ -71,7 +71,7 @@ function pedirUbicacionAlVerMapa(contenedor) {
 
   // Página "Tiendas cercanas": pedir la ubicación apenas la persona entra
   if (document.body.dataset.pedirUbicacion === "inmediato") {
-    setTimeout(pedir, 700);
+    pedir();
     return;
   }
 
@@ -262,11 +262,11 @@ function animarHaciaUbicacion(lat, lng) {
   colocarMarcadorUsuario(lat, lng);
   cargarPinesTiendas(lat, lng);
 
-  // Animación de vuelo suave de Leaflet de zoom 12 a zoom 15
-  map.flyTo([lat, lng], 15, {
-    duration: 1.5,
-    easeLinearity: 0.25
-  });
+  // Si el mapa aún no está a la vista, se coloca directo (sin vuelo visible desde zoom 12)
+  const r = document.getElementById("pnMapWrapper")?.getBoundingClientRect();
+  const aLaVista = r && r.top < window.innerHeight && r.bottom > 0;
+  if (aLaVista) map.flyTo([lat, lng], 15, { duration: 1.2, easeLinearity: 0.25 });
+  else map.setView([lat, lng], 15, { animate: false });
 }
 
 /**
@@ -411,6 +411,9 @@ async function cargarPinesTiendas(userLat, userLng) {
       crearPinTiendaAliada(store);
     }, idx * 100);
   });
+
+  renderizarListaCercanas(aliadasConDistancia);
+  actualizarKpis(aliadasConDistancia, null);
 
   // 2. Consultar tiendas cercanas en OpenStreetMap con Overpass API (~1.5 km)
   buscarTiendasOverpass(userLat, userLng);
@@ -584,6 +587,7 @@ function renderizarPinesOSM(tiendas, userLat, userLng) {
     ...t,
     distanciaMetros: calcularDistanciaMetros(userLat, userLng, t.lat, t.lng)
   }));
+  actualizarKpis(null, osmStoresList.length);
 
   osmStoresList.forEach((store, idx) => {
     setTimeout(() => {
@@ -624,6 +628,48 @@ function crearPinTiendaOSM(store) {
   });
 
   osmMarkers.push({ store, marker });
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   4b. LISTA LATERAL E INDICADORES
+   ══════════════════════════════════════════════════════════ */
+let listaAliadas = [];
+
+function renderizarListaCercanas(aliadas) {
+  const cont = document.getElementById("pnCercaList");
+  if (!cont) return;
+  listaAliadas = aliadas;
+  cont.innerHTML = aliadas
+    .slice(0, 8)
+    .map((t, i) => `
+      <button class="cc-item ${i === 0 ? "is-first" : ""}" type="button" data-id="${t.id}">
+        <span class="cc-item-dist"><b>${formatearDistancia(t.distanciaMetros).split(" ")[0]}</b>${formatearDistancia(t.distanciaMetros).split(" ")[1]}</span>
+        <span class="cc-item-main">
+          <strong>${t.cadena}</strong>
+          <small>${t.barrio} · ${t.productos.length} productos</small>
+        </span>
+        <i class="bi bi-chevron-right"></i>
+      </button>`)
+    .join("");
+
+  cont.querySelectorAll(".cc-item").forEach((el) => {
+    el.addEventListener("click", () => {
+      const store = listaAliadas.find((t) => String(t.id) === el.dataset.id);
+      if (!store || !map) return;
+      map.flyTo([store.lat, store.lng], 16, { duration: 0.9 });
+      abrirPanelTienda(store);
+    });
+  });
+}
+
+function actualizarKpis(aliadas, totalOsm) {
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  if (aliadas) {
+    set("pnKpiAliadas", aliadas.length);
+    set("pnKpiCercana", aliadas[0] ? formatearDistancia(aliadas[0].distanciaMetros) : "–");
+  }
+  if (totalOsm !== null && totalOsm !== undefined) set("pnKpiOsm", totalOsm);
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -806,6 +852,12 @@ export function filtrarPorProducto(query) {
   const clearBtn = document.getElementById("pnFilterClear");
 
   if (clearBtn) clearBtn.classList.toggle("visible", Boolean(currentSearchQuery));
+
+  document.querySelectorAll("#pnCercaList .cc-item").forEach((el) => {
+    const t = listaAliadas.find((x) => String(x.id) === el.dataset.id);
+    const ok = !currentSearchQuery || (t && t.productos.some((p) => p.nombre.toLowerCase().includes(currentSearchQuery)));
+    el.classList.toggle("is-dim", !ok);
+  });
 
   if (!currentSearchQuery) {
     if (statusEl) statusEl.classList.remove("active");

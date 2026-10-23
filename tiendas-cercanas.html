@@ -17,6 +17,8 @@
   <link rel="stylesheet" href="tema-crema-azul.css">
   <link rel="stylesheet" href="cercanas-hero.css">
   <link rel="stylesheet" href="navbar-unificado.css">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preload" as="image" crossorigin href="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r150/examples/textures/planets/earth_atmos_2048.jpg">
 </head>
 <body class="has-navbar pn-tema cc-page" data-pedir-ubicacion="inmediato">
 
@@ -162,48 +164,61 @@
 </section>
 
 <section class="pn-section pn-map-section" id="tiendas-cerca" aria-label="Mapa de tiendas cercanas">
-  <div class="pn-container">
+  <div class="cc-console">
 
-    <div class="cc-map-head">
-      <div>
-        <span class="pn-eyebrow">mapa interactivo</span>
+    <!-- Columna izquierda: filtros + lista -->
+    <aside class="cc-side">
+      <header class="cc-side-head">
         <h2 class="cc-h2">Tu mapa de tiendas</h2>
-      </div>
-      <div class="pn-map-legend" aria-label="Leyenda de pines">
-        <div class="pn-legend-item"><span class="pn-legend-dot aliada"></span><span>Tiendas aliadas</span></div>
-        <div class="pn-legend-item"><span class="pn-legend-dot google"></span><span>Tiendas cercanas</span></div>
-        <div class="pn-legend-item"><span class="pn-legend-dot usuario"></span><span>Tu ubicación</span></div>
-      </div>
-    </div>
+        <p class="cc-side-sub">Busca un producto y mira qué tienda aliada lo tiene más cerca.</p>
+      </header>
 
-    <!-- Barra de filtros opcional: Buscar por nombre de producto -->
-    <div class="pn-map-filter-bar">
       <div class="pn-filter-input-wrap">
         <i class="bi bi-search"></i>
         <input type="text" id="pnFiltroProductoInput" class="pn-filter-input"
-          placeholder="Buscar producto en tiendas aliadas (ej: zapatillas, café, audífonos, detergente, crema)..."
-          autocomplete="off">
-        <button id="pnFilterClear" class="pn-filter-clear" aria-label="Limpiar filtro">
-          <i class="bi bi-x-circle-fill"></i>
-        </button>
+          placeholder="Zapatillas, café, audífonos, detergente…" autocomplete="off" aria-label="Buscar producto en tiendas aliadas">
+        <button id="pnFilterClear" class="pn-filter-clear" aria-label="Limpiar filtro"><i class="bi bi-x-circle-fill"></i></button>
       </div>
 
       <div class="pn-filter-pills" role="tablist">
-        <button class="pn-pill-btn active" data-cat="">Todos los productos</button>
-        <button class="pn-pill-btn" data-cat="zapatillas">👟 Zapatillas Running</button>
-        <button class="pn-pill-btn" data-cat="audífonos">🎧 Audífonos Bluetooth</button>
-        <button class="pn-pill-btn" data-cat="smartwatch">⌚ Smartwatch Pro</button>
-        <button class="pn-pill-btn" data-cat="café">☕ Café Premium</button>
-        <button class="pn-pill-btn" data-cat="detergente">🧼 Detergente Líquido</button>
-        <button class="pn-pill-btn" data-cat="crema">✨ Crema Facial</button>
-        <button class="pn-pill-btn" data-cat="aceite">🫒 Aceite de Oliva</button>
+        <button class="pn-pill-btn active" data-cat="">Todos</button>
+        <button class="pn-pill-btn" data-cat="zapatillas">👟 Zapatillas</button>
+        <button class="pn-pill-btn" data-cat="audífonos">🎧 Audífonos</button>
+        <button class="pn-pill-btn" data-cat="smartwatch">⌚ Smartwatch</button>
+        <button class="pn-pill-btn" data-cat="café">☕ Café</button>
+        <button class="pn-pill-btn" data-cat="detergente">🧼 Detergente</button>
+        <button class="pn-pill-btn" data-cat="crema">✨ Crema facial</button>
+        <button class="pn-pill-btn" data-cat="aceite">🫒 Aceite de oliva</button>
       </div>
 
       <div class="pn-filter-status" id="pnFilterStatus"></div>
-    </div>
 
-    <!-- Contenedor del Mapa y Panel Lateral -->
-    <div class="pn-map-wrapper" id="pnMapWrapper" style="height: 640px;">
+      <div class="cc-list-head">
+        <h3>Más cerca de ti</h3>
+        <div class="pn-map-legend" aria-label="Leyenda de pines">
+          <span class="pn-legend-item"><span class="pn-legend-dot aliada"></span>Aliadas</span>
+          <span class="pn-legend-item"><span class="pn-legend-dot google"></span>Cercanas</span>
+          <span class="pn-legend-item"><span class="pn-legend-dot usuario"></span>Tú</span>
+        </div>
+      </div>
+
+      <div class="cc-list" id="pnCercaList" aria-live="polite">
+        <div class="cc-list-empty" id="pnCercaEmpty">
+          <i class="bi bi-geo-alt"></i>
+          <p>Cuando compartas tu ubicación, aquí verás las tiendas aliadas ordenadas por distancia.</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Columna derecha: mapa enmarcado -->
+    <div class="cc-stage">
+      <div class="cc-kpis" aria-live="polite">
+        <div class="cc-kpi"><small>Aliadas a la vista</small><b id="pnKpiAliadas">–</b></div>
+        <div class="cc-kpi"><small>La más cercana</small><b id="pnKpiCercana">–</b></div>
+        <div class="cc-kpi cc-kpi-wide"><small>Comercios del barrio</small><b id="pnKpiOsm">–</b></div>
+      </div>
+
+      <div class="pn-map-wrapper" id="pnMapWrapper">
       <!-- Mapa Leaflet / OpenStreetMap -->
       <div id="pnGoogleMap" role="region" aria-label="Mapa interactivo de Bogotá"></div>
 
@@ -252,6 +267,7 @@
 
       <!-- Panel lateral / Bottom Sheet responsive -->
       <aside class="pn-store-panel" id="pnStorePanel" role="dialog" aria-label="Información de la tienda"></aside>
+      </div>
     </div>
 
   </div>

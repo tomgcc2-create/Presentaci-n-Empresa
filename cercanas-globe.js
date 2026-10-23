@@ -95,6 +95,12 @@
     return rings;
   }
   var gotPhoto = false; cv.setAttribute('data-textura', 'simple');
+  var wrap = cv.parentNode, listo = false, visible = true;
+  cv.classList.add('cc-loading'); if (wrap) wrap.classList.add('cc-loading');
+  function mostrarPlaneta() {            // revela el planeta UNA sola vez, ya con su textura final
+    if (listo) return; listo = true;
+    cv.classList.remove('cc-loading'); if (wrap) wrap.classList.remove('cc-loading');
+  }
   function loadScript(src) { return new Promise(function (ok, no) { var s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = no; document.head.appendChild(s); }); }
 
   // 1) Foto real de la Tierra: primero img/earth.jpg (tuya, local) y luego varias fuentes en internet
@@ -115,11 +121,21 @@
     img.onerror = function () { tryImgs(urls, ok, i + 1); };
     img.src = urls[i];
   }
-  tryImgs(TEX_URLS, function (img) {
-    var c = document.createElement('canvas'); c.width = TW; c.height = TH;
-    var g = c.getContext('2d'); g.drawImage(img, 0, 0, TW, TH);
-    tex = { d: g.getImageData(0, 0, TW, TH).data }; gotPhoto = true; cv.setAttribute('data-textura', 'foto');
-  });
+  // Todas las fuentes de la textura se piden a la vez; se usa la primera que llegue
+  (function () {
+    var done = false;
+    TEX_URLS.forEach(function (u) {
+      var img = new Image(); img.crossOrigin = 'anonymous';
+      img.onload = function () {
+        if (done) return; done = true;
+        var c = document.createElement('canvas'); c.width = TW; c.height = TH;
+        var g = c.getContext('2d'); g.drawImage(img, 0, 0, TW, TH);
+        tex = { d: g.getImageData(0, 0, TW, TH).data }; gotPhoto = true; cv.setAttribute('data-textura', 'foto');
+        mostrarPlaneta();
+      };
+      img.src = u;
+    });
+  })();
   tryImgs(CLOUD_URLS, function (img) {   // nubes reales (si cargan, reemplazan a las procedurales)
     var c = document.createElement('canvas'); c.width = CW; c.height = CH;
     var g = c.getContext('2d'); g.drawImage(img, 0, 0, CW, CH);
@@ -127,12 +143,15 @@
     for (k = 3; k < d.length; k += 4) if (d[k] < 250) { hasA = true; break; }
     for (k = 0; k < CW * CH; k++) clouds[k] = hasA ? d[k * 4 + 3] : d[k * 4];
   });
-  // 2) Si la foto no carga, al menos continentes reales
-  loadScript('https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js')
-    .then(function () { return fetch('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/land-110m.json'); })
-    .then(function (r) { return r.json(); })
-    .then(function (topo) { setTimeout(function () { if (!gotPhoto) buildTexture(ringsFromTopo(topo)); }, 2500); })
-    .catch(function () {});
+  // 2) Respaldo: solo si la foto no llega en 6 s se usa el mapa de continentes (y entonces se muestra)
+  setTimeout(function () {
+    if (gotPhoto) return;
+    loadScript('https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js')
+      .then(function () { return fetch('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/land-110m.json'); })
+      .then(function (r) { return r.json(); })
+      .then(function (topo) { if (!gotPhoto) buildTexture(ringsFromTopo(topo)); mostrarPlaneta(); })
+      .catch(function () { mostrarPlaneta(); });
+  }, 6000);
 
   /* ───────── Render pixel a pixel (proyección ortográfica inversa) ───────── */
   var off = document.createElement('canvas'), octx = off.getContext('2d');
@@ -275,7 +294,7 @@
     phi0 = Math.max(-1.05, Math.min(1.05, phi0));
     cloudDrift += 0.00006 + (anim ? 0.0004 : 0);
     moverTiendas(now);
-    draw(now);
+    if (listo && visible && !document.hidden) draw(now);
     requestAnimationFrame(tick);
   }
 
@@ -290,6 +309,7 @@
   });
   function up() { if (!drag) return; drag = false; cv.classList.remove('grab'); idleUntil = performance.now() + 2500; if (moved < 6) viajarAColombia(); }
   cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+  if ('IntersectionObserver' in window) new IntersectionObserver(function (en) { visible = en[0].isIntersecting; }).observe(cv);
   requestAnimationFrame(tick);
 
   /* ── Contadores ── */
