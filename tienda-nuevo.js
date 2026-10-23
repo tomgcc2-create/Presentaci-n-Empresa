@@ -183,3 +183,46 @@
   window.addEventListener('scroll', () => { if (!pendiente) { pendiente = true; requestAnimationFrame(salida); } }, { passive: true });
   salida();
 })();
+
+/* Carruseles automáticos: avanzan solos, se pausan al tocarlos o arrastrarlos,
+   y vuelven a moverse un momento después. Se desactivan si la persona pide
+   movimiento reducido. */
+(function () {
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const VELOCIDAD = 0.5;   // píxeles por cuadro (~30 px por segundo)
+  const ESPERA = 2500;     // ms sin interacción antes de volver a moverse
+
+  function automatico(el) {
+    if (!el) return;
+    let pausado = false, timer = null, acc = 0;
+    const pausar = () => { pausado = true; clearTimeout(timer); };
+    const reanudar = () => { clearTimeout(timer); timer = setTimeout(() => { pausado = false; }, ESPERA); };
+    el.addEventListener('pointerenter', pausar);
+    el.addEventListener('pointerleave', reanudar);
+    el.addEventListener('pointerdown', pausar);
+    el.addEventListener('pointerup', reanudar);
+    el.addEventListener('pointercancel', reanudar);
+    el.addEventListener('focusin', pausar);
+    el.addEventListener('focusout', reanudar);
+    el.addEventListener('wheel', () => { pausar(); reanudar(); }, { passive: true });
+    el.addEventListener('touchstart', pausar, { passive: true });
+    el.addEventListener('touchend', reanudar, { passive: true });
+
+    function paso() {
+      if (!pausado && !el.classList.contains('is-drag') && el.scrollWidth > el.clientWidth + 2) {
+        acc += VELOCIDAD;
+        if (acc >= 1) {
+          const avance = Math.floor(acc);
+          acc -= avance;
+          el.scrollLeft += avance;
+          // Al llegar al final vuelve al inicio para seguir en bucle
+          if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 1) el.scrollLeft = 0;
+        }
+      }
+      requestAnimationFrame(paso);
+    }
+    requestAnimationFrame(paso);
+  }
+
+  ['tnTop', 'gridProductos', 'recoRail'].forEach((id) => automatico(document.getElementById(id)));
+})();
