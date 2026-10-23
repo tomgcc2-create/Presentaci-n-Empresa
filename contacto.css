@@ -1,0 +1,125 @@
+/* PriceNice — contacto.css (estructura estilo "Contact Us", colores del tema crema-azul) */
+.ct-page{background:var(--bg);color:var(--text);font-family:var(--font-body)}
+.ct-wrap{width:var(--cont-w);margin:0 auto}
+
+/* Hero */
+.ct-hero{background:var(--celeste);text-align:center;padding:84px 20px 96px;position:relative;overflow:hidden;border-radius:0 0 var(--r-xl) var(--r-xl)}
+.ct-hero h1{font-family:var(--font-title);font-weight:800;letter-spacing:-.03em;font-size:clamp(40px,7vw,76px);color:var(--brand);margin:0}
+.ct-wave{display:block;margin:10px auto 14px;color:var(--oro)}
+.ct-hero p{max-width:560px;margin:0 auto;color:var(--text-2);font-size:15px;line-height:1.6}
+.ct-chev{position:absolute;color:var(--oro);opacity:.7;font-size:34px;letter-spacing:-8px;top:50%;transform:translateY(-50%)}
+.ct-chev.l{left:6%}.ct-chev.r{right:6%;bottom:18px;top:auto;transform:none}
+
+/* Franja de tiendas */
+.ct-strip{display:flex;justify-content:space-around;align-items:center;gap:20px;flex-wrap:wrap;padding:34px 0;font-family:var(--font-title);font-weight:800;font-size:20px;color:var(--brand-mid)}
+.ct-strip span{display:flex;align-items:center;gap:8px;opacity:.75}
+.ct-strip i{color:var(--oro)}
+
+/* Formulario + newsletter */
+.ct-grid{display:grid;grid-template-columns:1.7fr 1fr;gap:24px;margin-top:8px}
+.ct-form{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-content:start}
+.ct-form .full{grid-column:1/-1}
+.ct-input,.ct-news input{width:100%;border:1px solid transparent;background:var(--celeste);color:var(--brand);border-radius:999px;padding:14px 20px;font:inherit;font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s,background .2s}
+textarea.ct-input{border-radius:var(--r-lg);min-height:150px;resize:vertical}
+.ct-input::placeholder{color:var(--text-3)}
+.ct-input:focus,.ct-news input:focus{background:var(--bg-white);border-color:var(--oro);box-shadow:0 0 0 4px rgba(198,167,94,.22)}
+.ct-btn{border:0;cursor:pointer;font:inherit;font-weight:700;font-size:14px;border-radius:999px;padding:14px 30px;background:var(--brand);color:#fff;transition:background .2s,transform .2s;width:max-content}
+.ct-btn:hover{background:var(--brand-hover);transform:translateY(-1px)}
+.ct-btn.gold{background:var(--oro);color:var(--brand)}
+.ct-btn.gold:hover{background:var(--oro-hover)}
+.ct-msg{grid-column:1/-1;font-size:14px;font-weight:600;color:var(--green);min-height:20px}
+.ct-msg.err{color:#B42318}
+
+.ct-news{background:var(--brand);color:#fff;border-radius:var(--r-lg);padding:30px 26px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:14px}
+.ct-news h3{font-family:var(--font-title);font-size:22px;margin:0}
+.ct-news p{font-size:13px;line-height:1.6;color:rgba(255,255,255,.72);margin:0}
+.ct-news input{background:#fff}
+.ct-news .ct-btn{width:100%}
+
+/* Tarjetas de contacto */
+.ct-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:44px}
+.ct-card{border-radius:var(--r-lg);padding:26px;display:flex;flex-direction:column;gap:10px;text-decoration:none;color:var(--brand);box-shadow:var(--shadow-sm);transition:transform .2s,box-shadow .2s}
+.ct-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.ct-card .row{display:flex;align-items:center;gap:12px}
+.ct-card i{font-size:28px;color:var(--brand-mid)}
+.ct-card strong{font-family:var(--font-title);font-size:19px;word-break:break-word}
+.ct-card p{margin:0;font-size:13px;line-height:1.6;color:var(--text-2)}
+.ct-card.c1{background:var(--celeste)}
+.ct-card.c2{background:var(--bg-soft)}
+.ct-card.c3{background:var(--bg-white);border:1px solid var(--border)}
+.ct-card.c1 i,.ct-card.c3 i{color:var(--oro)}
+
+/* Mapa */
+.ct-map{margin:44px 0 64px;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border);position:relative}
+.ct-map iframe{display:block;width:100%;height:340px;border:0}
+.ct-map-tag{position:absolute;top:14px;left:14px;background:var(--bg-white);border-radius:var(--r-sm);padding:10px 14px;box-shadow:var(--shadow-sm);font-size:13px;line-height:1.4}
+.ct-map-tag strong{display:block;color:var(--brand)}
+
+@media(max-width:860px){
+  .ct-grid{grid-template-columns:1fr}
+  .ct-cards{grid-template-columns:1fr}
+  .ct-chev{display:none}
+  .ct-hero{padding:60px 20px 70px}
+}
+@media(max-width:520px){.ct-form{grid-template-columns:1fr}}
+
+/* ───────── Animaciones ───────── */
+@keyframes ctFadeUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+@keyframes ctFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes ctChev{0%,100%{transform:translateX(0);opacity:.5}50%{transform:translateX(10px);opacity:1}}
+@keyframes ctDraw{from{stroke-dashoffset:140}to{stroke-dashoffset:0}}
+@keyframes ctShine{to{background-position:200% center}}
+@keyframes ctPulse{0%{box-shadow:0 0 0 0 rgba(198,167,94,.5)}100%{box-shadow:0 0 0 16px rgba(198,167,94,0)}}
+@keyframes ctBlob{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(30px,-20px) scale(1.15)}}
+
+/* Hero */
+.ct-hero::before,.ct-hero::after{content:"";position:absolute;border-radius:50%;filter:blur(40px);z-index:0;animation:ctBlob 9s ease-in-out infinite}
+.ct-hero::before{width:260px;height:260px;background:rgba(198,167,94,.28);left:-60px;top:-60px}
+.ct-hero::after{width:300px;height:300px;background:rgba(52,69,107,.16);right:-70px;bottom:-90px;animation-delay:-4s}
+.ct-hero>*{position:relative;z-index:1}
+.ct-hero h1{animation:ctFadeUp .8s cubic-bezier(.2,.7,.2,1) both;
+  background:linear-gradient(90deg,var(--brand),var(--brand-mid),var(--oro),var(--brand-mid),var(--brand));background-size:200% auto;
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:ctFadeUp .8s both,ctShine 6s linear infinite .8s}
+.ct-wave path{stroke-dasharray:140;animation:ctDraw 1.4s ease-out .5s both}
+.ct-hero p{animation:ctFadeUp .8s .35s both}
+.ct-chev.l{animation:ctChev 2s ease-in-out infinite}
+.ct-chev.r{animation:ctChev 2s ease-in-out infinite .6s}
+
+/* Aparición al hacer scroll */
+.ct-reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1);transition-delay:var(--d,0s)}
+.ct-reveal.in{opacity:1;transform:none}
+
+/* Franja */
+.ct-strip span{transition:transform .25s,opacity .25s}
+.ct-strip span:hover{transform:translateY(-4px) scale(1.08);opacity:1}
+.ct-strip span:nth-child(odd){animation:ctFloat 5s ease-in-out infinite}
+.ct-strip span:nth-child(even){animation:ctFloat 5s ease-in-out infinite -2.5s}
+
+/* Formulario */
+.ct-input{transition:transform .2s,border-color .2s,box-shadow .2s,background .2s}
+.ct-input:focus{transform:translateY(-2px)}
+.ct-btn{position:relative;overflow:hidden}
+.ct-btn::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.35) 50%,transparent 70%);transform:translateX(-120%);transition:transform .6s}
+.ct-btn:hover::after{transform:translateX(120%)}
+.ct-btn:active{transform:scale(.96)}
+.ct-btn.gold{animation:ctPulse 2.2s infinite}
+.ct-msg{animation:ctFadeUp .4s both}
+
+/* Tarjetas */
+.ct-card{transition:transform .3s cubic-bezier(.2,.7,.2,1),box-shadow .3s}
+.ct-card:hover{transform:translateY(-8px) rotate(-.6deg);box-shadow:var(--shadow-lg)}
+.ct-card i{display:inline-block;transition:transform .4s}
+.ct-card:hover i{transform:scale(1.25) rotate(-12deg)}
+.ct-news{transition:transform .3s,box-shadow .3s}
+.ct-news:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+
+/* Mapa */
+.ct-map{transition:transform .4s,box-shadow .4s}
+.ct-map:hover{transform:scale(1.01);box-shadow:var(--shadow-lg)}
+.ct-map-tag{animation:ctFloat 3.5s ease-in-out infinite}
+.ct-map-tag::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--oro);margin-right:6px;animation:ctPulse 1.6s infinite}
+
+@media (prefers-reduced-motion:reduce){
+  .ct-page *,.ct-page *::before,.ct-page *::after{animation:none!important;transition:none!important}
+  .ct-reveal{opacity:1;transform:none}
+}

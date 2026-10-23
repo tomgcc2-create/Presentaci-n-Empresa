@@ -54,8 +54,8 @@ const CONOCIMIENTO = {
     },
     {
       preguntas: ["contacto", "como los contacto", "telefono", "correo", "email", "whatsapp", "hablar con alguien", "asesor", "soporte", "ayuda", "comunicarme"],
-      respuesta: "Puedes escribirnos o llamarnos:\n\n📧 **hola@pricenice.co**\n📞 **+57 300 123 4567**\n\nRespondemos de lunes a viernes de 8:00 a.m. a 6:00 p.m.",
-      accion: { texto: "Enviar correo", url: "mailto:hola@pricenice.co" }
+      respuesta: "Puedes escribirnos o llamarnos:\n\n📧 **priceniceworld@gmail.com**\n📞 **+57 300 123 4567**\n\nRespondemos de lunes a viernes de 8:00 a.m. a 6:00 p.m.",
+      accion: { texto: "Enviar correo", url: "mailto:priceniceworld@gmail.com" }
     },
     {
       preguntas: ["horario", "a que hora abren", "cuando atienden", "dias de atencion", "horario de atencion", "cuando responden"],
