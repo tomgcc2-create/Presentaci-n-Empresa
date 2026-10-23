@@ -12,8 +12,8 @@ body.pn-glow {
   --beige-l:#F5EFE3;
   --gold:   #C6A75E;
   --gold-l: #D4B873;
-  --slate:  #D6DCE8;
-  --slate-l:#E6EAF1;
+  --slate:  #E8DCC8;
+  --slate-l:#F1E8D6;
   --wrap:   min(calc(100% - 40px), 1320px);
   --ease:   cubic-bezier(.2,.7,.2,1);
   background: var(--beige-l);
@@ -63,7 +63,7 @@ body.pn-glow {
 .pn-glow .pn-hero::after { display: none; }
 .pn-glow .pn-hero-slide { padding: 46px 0 66px; transition: background .5s ease; }
 .pn-glow .pn-hero-slide:nth-child(1) { background: linear-gradient(115deg, var(--slate) 0%, var(--slate-l) 100%); }
-.pn-glow .pn-hero-slide:nth-child(2) { background: linear-gradient(115deg, var(--beige) 0%, #F1E8D6 100%); }
+.pn-glow .pn-hero-slide:nth-child(2) { background: linear-gradient(115deg, #EADDC2 0%, #F6EEDC 100%); }
 .pn-glow .pn-hero-slide:nth-child(3) { background: linear-gradient(115deg, var(--navy) 0%, #2A3858 100%); }
 .pn-glow .pn-hero-slide:nth-child(3) .pn-hero-title,
 .pn-glow .pn-hero-slide:nth-child(3) .pn-hero-benefit-text strong { color: var(--beige-l); }
