@@ -329,6 +329,13 @@
 <!-- ════════ HERO + BUSCADOR ════════ -->
 <!-- ════════ COMPARACIÓN DE PRECIOS (antes "Tienda") + COMPARADOR ════════
      Estilos: ofertas-comparar.css + tienda-comparador.css · Lógica: tienda-comparador.js -->
+<section class="tn-top" aria-label="Destacados">
+  <div class="tn-topbar">
+    <button class="tn-arrow" type="button" data-t="tnTop" data-dir="-1" aria-label="Anterior"><i class="bi bi-chevron-left"></i></button>
+    <div class="tn-carousel" id="tnTop"></div>
+    <button class="tn-arrow" type="button" data-t="tnTop" data-dir="1" aria-label="Siguiente"><i class="bi bi-chevron-right"></i></button>
+  </div>
+</section>
 <section class="pn-oc tc" id="ocRoot" aria-labelledby="tcTitulo">
   <div class="pn-oc-stage">
     <div class="pn-oc-intro">
@@ -352,6 +359,12 @@
 
     <div class="pn-oc-feat-wrap" id="ocFeat"></div>
   </div>
+<div class="tn-float-row" id="tnFloat">
+  <button class="tn-dot on" type="button" data-i="0">01</button>
+  <button class="tn-dot" type="button" data-i="1">02</button>
+  <button class="tn-dot" type="button" data-i="2">03</button>
+  <div class="tn-chip" id="tnChip">Ahorras hasta $3.000</div>
+</div>
 </section>
 
 <!-- ════════ CONTENIDO ════════ -->
@@ -386,7 +399,7 @@
   </aside>
 
   <main>
-    <h2 class="tn-h">Descubre nuestros productos</h2>
+    <h2 class="tn-h tn-reveal">Descubre nuestros productos</h2>
     <div class="st-bar">
       <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
         <button class="st-fbtn" onclick="abrirSidebarMovil()"><i class="bi bi-funnel"></i> Filtros</button>
@@ -399,10 +412,10 @@
       </select>
     </div>
     <div id="mejoresTiendas"></div>
-    <div class="tn-cwrap">
-      <button class="pn-rail-btn tn-prev" type="button" data-t="gridProductos" data-dir="-1" aria-label="Anterior"><i class="bi bi-arrow-left"></i></button>
+    <div class="tn-cwrap tn-reveal">
+      <button class="tn-prev" type="button" data-t="gridProductos" data-dir="-1" aria-label="Anterior"><i class="bi bi-arrow-left"></i></button>
       <div class="st-grid tn-row" id="gridProductos"></div>
-      <button class="pn-rail-btn tn-next" type="button" data-t="gridProductos" data-dir="1" aria-label="Siguiente"><i class="bi bi-arrow-right"></i></button>
+      <button class="tn-next" type="button" data-t="gridProductos" data-dir="1" aria-label="Siguiente"><i class="bi bi-arrow-right"></i></button>
     </div>
     <div id="sinResultados" style="display:none" class="pn-empty-state">
       <span class="icon">🔍</span><strong style="font-size:17px;color:var(--brand)">Sin resultados</strong>
@@ -414,7 +427,7 @@
 </div>
 
 <div class="pn-container">
-  <section class="tn-mosaic" id="tnMosaic" aria-label="Categorías"></section>
+  <section class="tn-mosaic tn-reveal" id="tnMosaic" aria-label="Categorías"></section>
 <section class="st-reco" aria-label="Recomendaciones">
     <div class="st-reco-h">
       <div><h2 id="recoTitulo">Nuestras recomendaciones</h2><p id="recoSub"></p></div>
@@ -425,17 +438,17 @@
     </div>
     <div class="st-rail" id="recoRail"></div>
   </section>
-  <section class="tn-features" aria-label="Ventajas">
+  <section class="tn-features tn-reveal" aria-label="Ventajas">
   <div class="tn-feat"><i class="bi bi-stars"></i><div><h3>Comodidad</h3><p>Compara desde cualquier lugar y en cualquier momento.</p></div></div>
   <div class="tn-feat"><i class="bi bi-percent"></i><div><h3>Ofertas</h3><p>Promociones y precios competitivos en cada tienda.</p></div></div>
   <div class="tn-feat"><i class="bi bi-star"></i><div><h3>Información detallada</h3><p>Descripciones, especificaciones y opiniones de otros clientes.</p></div></div>
 </section>
-<section class="tn-story" aria-label="Nuestra historia">
+<section class="tn-story tn-reveal" aria-label="Nuestra historia">
   <div class="tn-story-img" aria-hidden="true"><div class="tn-story-a" id="tnStoryA"></div><div class="tn-story-b" id="tnStoryB"></div></div>
   <div class="tn-story-txt">
     <h2>Descubre la historia detrás de nuestros precios</h2>
     <p>Recopilamos los precios de las tiendas de Bogotá para que siempre pagues lo justo. Comparamos cada producto con datos reales y te mostramos dónde está la mejor opción.</p>
-    <a class="tn-btn" href="#ocRoot">Ver más</a>
+    <a class="tn-btn magnet" href="#ocRoot">Ver más</a>
   </div>
 </section>
 <section class="st-cta">
