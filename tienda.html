@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="ofertas-comparar.css">
   <link rel="stylesheet" href="tienda-comparador.css">
   <link rel="stylesheet" href="chatbot.css">
-  <link rel="stylesheet" href="tienda-estilo-nuevo.css">
+  <link rel="stylesheet" href="tienda-nuevo.css">
   <style>
     /* ══ Tienda · estilo editorial (hero grande, tarjetas grises, botones redondeados) ══ */
     .st-hero{position:relative;width:var(--panel-w);margin:10px auto 0;height:clamp(270px,33vw,410px);border-radius:44px;overflow:hidden;color:var(--bg);
@@ -329,6 +329,19 @@
 <!-- ════════ HERO + BUSCADOR ════════ -->
 <!-- ════════ COMPARACIÓN DE PRECIOS (antes "Tienda") + COMPARADOR ════════
      Estilos: ofertas-comparar.css + tienda-comparador.css · Lógica: tienda-comparador.js -->
+<div class="tn-top">
+<section class="tn-carousel" aria-label="Categorías destacadas">
+  <button class="tn-arrow" type="button" data-dir="-1" aria-label="Anterior"><i class="bi bi-chevron-left"></i></button>
+  <div class="tn-track" id="tnTrack">
+    <button class="tn-card c1" type="button" data-setcat="hogar"><span class="tn-pill">Hogar</span></button>
+    <button class="tn-card c2" type="button" data-setcat="moda"><span class="tn-pill">Moda</span></button>
+    <button class="tn-card c3" type="button" data-setcat="tecnologia"><span class="tn-pill">Tecnología</span></button>
+    <button class="tn-card c4" type="button" data-setcat="belleza"><span class="tn-pill">Belleza</span></button>
+    <button class="tn-card c5" type="button" data-setcat="mercado"><span class="tn-pill">Mercado</span></button>
+  </div>
+  <button class="tn-arrow" type="button" data-dir="1" aria-label="Siguiente"><i class="bi bi-chevron-right"></i></button>
+</section>
+<div class="tn-hero-wrap">
 <section class="pn-oc tc" id="ocRoot" aria-labelledby="tcTitulo">
   <div class="pn-oc-stage">
     <div class="pn-oc-intro">
@@ -356,7 +369,17 @@
 
 <!-- ════════ CONTENIDO ════════ -->
 <div class="pn-container st-main">
-  <div class="st-ov" id="sideOv" onclick="cerrarSidebarMovil()"></div>
+  </div>
+<div class="tn-hero-side" aria-hidden="false">
+  <div class="tn-dots" role="tablist" aria-label="Destacados">
+    <button class="tn-dot on" type="button" data-i="0">01</button>
+    <button class="tn-dot" type="button" data-i="1">02</button>
+    <button class="tn-dot" type="button" data-i="2">03</button>
+  </div>
+  <div class="tn-chip c-a" id="tnChip">Ahorras hasta $3.000</div>
+</div>
+</div>
+<div class="st-ov" id="sideOv" onclick="cerrarSidebarMovil()"></div>
   <aside class="st-side" id="sidebar" aria-label="Filtros">
     <div><h4>Categorías</h4><div id="catList"></div></div>
     <div class="st-fl">
@@ -426,6 +449,28 @@
   </section>
 </div>
 
+
+<section class="tn-tiles" aria-label="Categorías">
+  <button class="tn-tile t1" type="button" data-setcat="hogar"><span>Hogar</span><i class="bi bi-arrow-right"></i></button>
+  <button class="tn-tile t2" type="button" data-setcat="moda"><span>Moda</span><i class="bi bi-arrow-right"></i></button>
+  <button class="tn-tile t3" type="button" data-setcat="mascotas"><span>Mascotas</span><i class="bi bi-arrow-right"></i></button>
+  <button class="tn-tile t4" type="button" data-setcat="tecnologia"><span>Tecnología</span><i class="bi bi-arrow-right"></i></button>
+  <button class="tn-tile t5" type="button" data-setcat="belleza"><span>Belleza</span><i class="bi bi-arrow-right"></i></button>
+  <button class="tn-tile t6" type="button" data-setcat=""><span>Ver todas</span><i class="bi bi-arrow-right"></i></button>
+</section>
+<section class="tn-features" aria-label="Ventajas">
+  <div class="tn-feat"><i class="bi bi-stars"></i><div><h3>Comodidad</h3><p>Compara desde cualquier lugar y en cualquier momento.</p></div></div>
+  <div class="tn-feat"><i class="bi bi-percent"></i><div><h3>Ofertas</h3><p>Promociones y precios competitivos en cada tienda.</p></div></div>
+  <div class="tn-feat"><i class="bi bi-star"></i><div><h3>Información detallada</h3><p>Descripciones, especificaciones y opiniones de otros clientes.</p></div></div>
+</section>
+<section class="tn-story" aria-label="Nuestra historia">
+  <div class="tn-story-img" aria-hidden="true"><div class="tn-story-a"></div><div class="tn-story-b"></div></div>
+  <div class="tn-story-txt">
+    <h2>Descubre la historia detrás de nuestros precios</h2>
+    <p>Recopilamos los precios de las tiendas de Bogotá para que siempre pagues lo justo. Comparamos cada producto con datos reales y te mostramos dónde está la mejor opción.</p>
+    <a class="tn-btn" href="#ocRoot">Ver más</a>
+  </div>
+</section>
 <footer class="pn-footer" aria-label="Pie de página">
   <div class="pn-container">
     <div class="pn-footer-grid">
@@ -971,7 +1016,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <script src="tienda-comparador.js"></script>
 <script src="conocimiento.js" defer></script>
 <script src="chatbot.js" defer></script>
-<script src="tienda-mascota.js" defer></script>
+<script src="tienda-nuevo.js" defer></script>
 <script src="carrito.js" defer></script>
 </body>
 </html>
