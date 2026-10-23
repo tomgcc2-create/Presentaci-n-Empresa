@@ -1,10 +1,8 @@
 /* ═══════════════════════════════════════════════════════════
    PriceNice — tienda-nuevo.css
-   Página de comparación en claro, con los colores de la empresa
-   (crema, navy y dorado). Organización:
-   - Arriba: carrusel de categorías + hero con buscador (2da imagen).
-   - Resultados: filtros a la izquierda y productos (2da imagen).
-   - Abajo: categorías en mosaico, ventajas e historia (3ra imagen).
+   Organización de la segunda imagen (tienda tipo catálogo):
+   banner → carrusel de productos → mosaico de categorías →
+   recomendados → ventajas → historia. Colores de la empresa.
    Solo aplica a body.tienda-nueva.
    ═══════════════════════════════════════════════════════════ */
 
@@ -12,206 +10,146 @@ body.tienda-nueva {
   --navy: #1F2A44;
   --navy-2: #34456B;
   --gold: #C6A75E;
-  --gold-l: #E7D7AE;
   --cream: #F5EFE3;
   --cream-2: #EFE7D4;
   --white: #FFFFFF;
-  --line: #E2D8C4;
+  --line: #E6DFCF;
   --muted: #6B7280;
-  background: var(--cream);
+  background: #FFFFFF;
   color: var(--navy);
   font-family: 'DM Sans', 'Inter', system-ui, sans-serif;
 }
 
-/* ── Carrusel superior (2da imagen) ── */
-body.tienda-nueva .tn-top { padding-top: 110px; }
-body.tienda-nueva .tn-carousel {
-  width: min(1240px, 94vw); margin: 0 auto;
-  display: flex; align-items: center; gap: 12px;
-}
-body.tienda-nueva .tn-arrow {
-  flex: none; width: 42px; height: 42px; border-radius: 50%; cursor: pointer;
-  background: var(--white); border: 1px solid var(--line); color: var(--navy); font-size: 15px;
-}
-body.tienda-nueva .tn-arrow:hover { background: var(--navy); color: var(--white); }
-body.tienda-nueva .tn-track {
-  flex: 1; display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory;
-  scrollbar-width: none; padding: 4px 2px;
-}
-body.tienda-nueva .tn-track::-webkit-scrollbar { display: none; }
-body.tienda-nueva .tn-card {
-  flex: 0 0 min(200px, 40vw); height: 150px; border: 0; cursor: pointer;
-  border-radius: 22px; padding: 12px; display: flex; align-items: flex-end;
-  scroll-snap-align: start; transition: transform .3s;
-}
-body.tienda-nueva .tn-card:hover { transform: translateY(-4px); }
-body.tienda-nueva .tn-card.c1 { background: linear-gradient(160deg, #E7D7AE, #C6A75E); }
-body.tienda-nueva .tn-card.c2 { background: linear-gradient(160deg, #F5EFE3, #DCCFB2); }
-body.tienda-nueva .tn-card.c3 { background: linear-gradient(160deg, #6B7A9C, #34456B); }
-body.tienda-nueva .tn-card.c4 { background: linear-gradient(160deg, #F3E3D6, #D9B9A0); }
-body.tienda-nueva .tn-card.c5 { background: linear-gradient(160deg, #D9E3D0, #9FB38E); }
-body.tienda-nueva .tn-pill {
-  background: var(--white); color: var(--navy); border-radius: 999px;
-  padding: 6px 13px; font-size: 13px; font-weight: 600;
-}
+/* La columna de filtros de la izquierda ya no se muestra: los filtros
+   quedan en el banner (ubicación, barrio) y en las categorías */
+body.tienda-nueva #sidebar,
+body.tienda-nueva #sideOv,
+body.tienda-nueva .st-fbtn { display: none !important; }
 
-/* ── Hero claro (2da imagen): título grande + buscador ── */
-body.tienda-nueva .tn-hero-wrap { position: relative; }
-body.tienda-nueva .pn-oc-stage {
-  background: transparent !important; border: 0 !important; box-shadow: none !important;
-  padding: 40px 0 0 !important; color: var(--navy) !important;
+/* Banner principal (comparación) */
+body.tienda-nueva .pn-oc.tc {
+  width: min(1240px, 94vw) !important; margin: 110px auto 0 !important;
 }
-body.tienda-nueva .pn-oc-intro { text-align: left; }
+body.tienda-nueva .pn-oc-stage {
+  background: var(--cream) !important; border: 0 !important; border-radius: 28px !important;
+  box-shadow: none !important; padding: 56px 48px !important; color: var(--navy) !important;
+}
+body.tienda-nueva .pn-oc-intro { text-align: center; }
 body.tienda-nueva .pn-oc-intro h2,
 body.tienda-nueva #tcTitulo {
   font-family: 'DM Sans', sans-serif !important; font-weight: 600 !important;
-  font-size: clamp(44px, 6.4vw, 84px) !important; line-height: 1 !important;
-  letter-spacing: -.035em !important; color: var(--navy) !important;
+  font-size: clamp(40px, 5.8vw, 74px) !important; line-height: 1.02 !important;
+  letter-spacing: -.03em !important; color: var(--navy) !important;
 }
 body.tienda-nueva .pn-oc-intro > p { color: var(--muted) !important; font-size: 17px; }
 body.tienda-nueva .pn-oc-search {
   background: var(--white) !important; border: 1px solid var(--line) !important; border-radius: 999px !important;
-  box-shadow: 0 10px 30px rgba(31,42,68,.08) !important;
+  box-shadow: 0 10px 30px rgba(31,42,68,.08) !important; margin: 0 auto;
 }
 body.tienda-nueva .pn-oc-search input { color: var(--navy) !important; }
 body.tienda-nueva .pn-oc-search button,
-body.tienda-nueva .pn-oc-search .pn-oc-go {
-  background: var(--navy) !important; color: var(--white) !important; border-radius: 999px !important; font-weight: 600;
-}
+body.tienda-nueva .pn-oc-search .pn-oc-go { background: var(--navy) !important; color: var(--white) !important; border-radius: 999px !important; font-weight: 600; }
 body.tienda-nueva .tc-geo,
-body.tienda-nueva .tc-loc select {
-  border-radius: 999px !important; border: 1px solid var(--line) !important;
-  color: var(--navy) !important; background: var(--white) !important;
-}
-body.tienda-nueva .tc-loc.is-set .tc-geo { border-color: var(--gold) !important; color: var(--navy) !important; }
+body.tienda-nueva .tc-loc select { border-radius: 999px !important; border: 1px solid var(--line) !important; color: var(--navy) !important; background: var(--white) !important; }
 body.tienda-nueva .st-chips span,
-body.tienda-nueva .tc-stats span {
-  border-radius: 999px !important; background: var(--white) !important; color: var(--navy) !important;
-  border: 1px solid var(--line) !important;
-}
-
-/* Tarjeta de comparación destacada */
+body.tienda-nueva .tc-stats span { border-radius: 999px !important; background: var(--white) !important; color: var(--navy) !important; border: 1px solid var(--line) !important; }
 body.tienda-nueva .pn-oc-feat {
-  background: var(--white) !important; border: 1px solid var(--line) !important;
-  border-radius: 28px !important; box-shadow: 0 24px 50px rgba(31,42,68,.1) !important;
+  background: var(--white) !important; border: 1px solid var(--line) !important; border-radius: 26px !important;
+  box-shadow: 0 24px 50px rgba(31,42,68,.1) !important;
 }
-body.tienda-nueva .pn-oc-feat-body { background: var(--white); }
-body.tienda-nueva .pn-oc-save { background: var(--gold-l) !important; color: var(--navy) !important; border-radius: 20px !important; }
+body.tienda-nueva .pn-oc-save { background: var(--cream-2) !important; color: var(--navy) !important; border-radius: 18px !important; }
 body.tienda-nueva .pn-oc-save-t, body.tienda-nueva .pn-oc-save strong { color: var(--navy) !important; }
 body.tienda-nueva .pn-oc-row.is-best .pn-oc-bar i { background: var(--gold) !important; }
-body.tienda-nueva .pn-oc-bar { background: var(--cream-2) !important; }
-body.tienda-nueva .pn-oc-bar i { background: #CBD2DE !important; }
-body.tienda-nueva .pn-oc-add,
-body.tienda-nueva .pn-oc-cta .pn-oc-add { background: var(--gold) !important; color: var(--navy) !important; border-radius: 999px !important; font-weight: 600; }
+body.tienda-nueva .pn-oc-add, body.tienda-nueva .pn-oc-cta .pn-oc-add { background: var(--gold) !important; color: var(--navy) !important; border-radius: 999px !important; font-weight: 600; }
 body.tienda-nueva .pn-oc-buy { background: var(--navy) !important; color: var(--white) !important; border-radius: 999px !important; }
 
-/* Números 01 02 03 y etiqueta de ahorro */
-body.tienda-nueva .tn-hero-side {
-  display: flex; align-items: center; justify-content: center; gap: 12px; margin: 26px 0 0; flex-wrap: wrap;
+/* Títulos de sección centrados (como la segunda imagen) */
+body.tienda-nueva .tn-h {
+  text-align: center; font-size: 30px; font-weight: 500; letter-spacing: -.01em;
+  margin: 80px 0 28px; color: var(--navy);
 }
-body.tienda-nueva .tn-dot {
-  width: 46px; height: 46px; border-radius: 50%; cursor: pointer; font: inherit; font-weight: 600; font-size: 14px;
-  background: var(--white); color: var(--navy); border: 1px solid var(--line); transition: background .25s, color .25s;
-}
-body.tienda-nueva .tn-dot.on, body.tienda-nueva .tn-dot:hover { background: var(--navy); color: var(--white); border-color: var(--navy); }
-body.tienda-nueva .tn-chip {
-  background: var(--gold); color: var(--navy); border-radius: 999px; padding: 12px 20px; font-weight: 600; font-size: 14px;
-  transition: opacity .3s;
-}
-body.tienda-nueva .tn-chip.cambia { opacity: 0; }
 
-/* ── Resultados: filtros a la izquierda y productos (2da imagen) ── */
-body.tienda-nueva .st-side {
-  background: var(--white) !important; border: 1px solid var(--line) !important;
-  border-radius: 22px !important; color: var(--navy);
+/* Carrusel de productos: tarjetas en fila con flechas */
+body.tienda-nueva .tn-cwrap { position: relative; width: min(1240px, 94vw); margin: 0 auto; display: flex; align-items: center; gap: 10px; }
+body.tienda-nueva .tn-row {
+  flex: 1; display: flex !important; grid-template-columns: none !important; gap: 18px;
+  overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; padding: 6px 2px 12px;
 }
-body.tienda-nueva .st-side h4 { color: var(--navy); font-weight: 700; }
-body.tienda-nueva .st-in,
-body.tienda-nueva .st-side select {
-  border-radius: 14px !important; background: var(--cream) !important; border: 1px solid var(--line) !important; color: var(--navy) !important;
+body.tienda-nueva .tn-row::-webkit-scrollbar { display: none; }
+body.tienda-nueva .tn-row > * { flex: 0 0 min(250px, 70vw); scroll-snap-align: start; }
+body.tienda-nueva .tn-cwrap .pn-rail-btn,
+body.tienda-nueva .tn-prev, body.tienda-nueva .tn-next {
+  flex: none; width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--line);
+  background: var(--white); color: var(--navy); cursor: pointer; display: grid; place-items: center;
 }
-body.tienda-nueva .st-cat { border-radius: 999px !important; }
-body.tienda-nueva .st-cat.on { background: var(--navy) !important; color: var(--white) !important; }
-body.tienda-nueva #mejoresTiendas > * {
-  background: var(--white); border: 1px solid var(--line); border-radius: 20px; color: var(--navy);
-}
+body.tienda-nueva .tn-prev:hover, body.tienda-nueva .tn-next:hover { background: var(--navy); color: var(--white); }
+
+/* Tarjetas de producto estilo catálogo */
 body.tienda-nueva .st-card {
   background: var(--white); color: var(--navy); border: 1px solid var(--line);
-  border-radius: 24px; padding: 14px; transition: transform .3s, box-shadow .3s;
+  border-radius: 18px; padding: 12px; gap: 10px; transition: transform .3s, box-shadow .3s;
 }
-body.tienda-nueva .st-card:hover { transform: translateY(-5px); box-shadow: 0 18px 36px rgba(31,42,68,.1); }
-body.tienda-nueva .st-tile { border-radius: 18px; overflow: hidden; background: var(--cream); }
+body.tienda-nueva .st-card:hover { transform: translateY(-4px); box-shadow: 0 16px 32px rgba(31,42,68,.1); }
+body.tienda-nueva .st-tile { border-radius: 12px; overflow: hidden; background: var(--cream); }
 
-/* ── Mosaico de categorías (3ra imagen) ── */
-body.tienda-nueva .tn-tiles {
+/* Mosaico de categorías (tercera imagen): imágenes con velo y etiqueta */
+body.tienda-nueva .tn-mosaic {
   width: min(1240px, 94vw); margin: 90px auto 0;
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
 }
 body.tienda-nueva .tn-tile {
-  position: relative; height: 230px; border: 0; cursor: pointer; text-align: left;
-  border-radius: 24px; padding: 20px; color: var(--navy); font: inherit; font-weight: 600; font-size: 18px;
+  position: relative; height: 230px; border: 0; cursor: pointer; text-align: left; overflow: hidden;
+  border-radius: 6px; padding: 18px; color: var(--white); font: inherit; font-size: 17px; font-weight: 600;
+  background: var(--navy-2) center / cover no-repeat;
   display: flex; align-items: flex-start; justify-content: space-between;
-  transition: transform .3s;
 }
-body.tienda-nueva .tn-tile:hover { transform: translateY(-4px); }
+body.tienda-nueva .tn-tile::before {
+  content: ""; position: absolute; inset: 0; background: linear-gradient(rgba(31,42,68,.35), rgba(31,42,68,.55));
+  transition: background .3s;
+}
+body.tienda-nueva .tn-tile:hover::before { background: linear-gradient(rgba(31,42,68,.2), rgba(31,42,68,.4)); }
+body.tienda-nueva .tn-tile span, body.tienda-nueva .tn-tile i { position: relative; }
 body.tienda-nueva .tn-tile i {
-  align-self: flex-end; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
-  background: var(--white); color: var(--navy); font-style: normal;
+  align-self: flex-end; width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255,255,255,.7);
+  display: grid; place-items: center; font-style: normal;
 }
-body.tienda-nueva .tn-tile.t1 { background: linear-gradient(160deg, #E7D7AE, #C6A75E); }
-body.tienda-nueva .tn-tile.t2 { background: linear-gradient(160deg, #F5EFE3, #DCCFB2); }
-body.tienda-nueva .tn-tile.t3 { background: linear-gradient(160deg, #EFE7D4, #C9B99A); }
-body.tienda-nueva .tn-tile.t4 { background: linear-gradient(160deg, #DDE3EE, #9AA8C2); }
-body.tienda-nueva .tn-tile.t5 { background: linear-gradient(160deg, #F3E3D6, #D9B9A0); }
-body.tienda-nueva .tn-tile.t6 { background: var(--navy); color: var(--white); }
-body.tienda-nueva .tn-tile.t6 i { background: var(--gold); color: var(--navy); }
+body.tienda-nueva .tn-tile.todas { background: var(--navy); }
 
-/* ── Ventajas (3ra imagen): tres columnas con divisiones ── */
+/* Recomendados (segunda sección de carrusel) */
+body.tienda-nueva .st-reco { width: min(1240px, 94vw); margin: 60px auto 0; color: var(--navy); }
+body.tienda-nueva .st-reco h2 { text-align: center; font-size: 30px; font-weight: 500; color: var(--navy); }
+body.tienda-nueva .st-rail > * { flex: 0 0 min(250px, 70vw) !important; }
+
+/* Ventajas (tercera imagen) */
 body.tienda-nueva .tn-features {
   width: min(1240px, 94vw); margin: 80px auto 0;
   display: grid; grid-template-columns: repeat(3, 1fr);
 }
-body.tienda-nueva .tn-feat {
-  display: flex; gap: 18px; padding: 10px 30px; align-items: flex-start;
-  border-left: 1px solid var(--line);
-}
+body.tienda-nueva .tn-feat { display: flex; gap: 16px; padding: 10px 30px; align-items: flex-start; border-left: 1px solid var(--line); }
 body.tienda-nueva .tn-feat:first-child { border-left: 0; padding-left: 0; }
-body.tienda-nueva .tn-feat > i { font-size: 30px; color: var(--gold); flex: none; }
-body.tienda-nueva .tn-feat h3 { font-size: 17px; font-weight: 700; margin: 2px 0 6px; }
+body.tienda-nueva .tn-feat > i { font-size: 30px; color: var(--navy); flex: none; }
+body.tienda-nueva .tn-feat h3 { font-size: 17px; font-weight: 600; margin: 2px 0 6px; }
 body.tienda-nueva .tn-feat p { font-size: 14px; color: var(--muted); line-height: 1.55; margin: 0; }
 
-/* ── Historia (3ra imagen): imagen a la izquierda, texto a la derecha ── */
+/* Historia (tercera imagen) */
 body.tienda-nueva .tn-story {
   width: min(1240px, 94vw); margin: 90px auto 0;
   display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center;
 }
 body.tienda-nueva .tn-story-img { position: relative; height: 420px; }
-body.tienda-nueva .tn-story-a { position: absolute; left: 0; top: 0; width: 62%; height: 100%; border-radius: 28px; background: linear-gradient(160deg, #E7D7AE, #C6A75E); }
-body.tienda-nueva .tn-story-b { position: absolute; right: 0; bottom: 0; width: 52%; height: 62%; border-radius: 28px; background: linear-gradient(160deg, #34456B, #1F2A44); }
-body.tienda-nueva .tn-story-txt h2 { font-size: clamp(30px, 3.6vw, 44px); line-height: 1.1; font-weight: 600; letter-spacing: -.02em; margin: 0 0 18px; }
+body.tienda-nueva .tn-story-a { position: absolute; left: 0; top: 0; width: 62%; height: 100%; border-radius: 6px; background: var(--cream-2) center / cover no-repeat; }
+body.tienda-nueva .tn-story-b { position: absolute; right: 0; bottom: 0; width: 46%; height: 52%; border-radius: 6px; background: var(--white) center / cover no-repeat; box-shadow: 0 16px 40px rgba(31,42,68,.15); }
+body.tienda-nueva .tn-story-txt h2 { font-size: clamp(28px, 3.4vw, 40px); line-height: 1.15; font-weight: 600; margin: 0 0 18px; }
 body.tienda-nueva .tn-story-txt p { color: var(--muted); font-size: 16px; line-height: 1.7; margin: 0 0 26px; }
-body.tienda-nueva .tn-btn {
-  display: inline-block; background: var(--navy); color: var(--white); text-decoration: none;
-  border-radius: 999px; padding: 13px 26px; font-weight: 600; font-size: 14px;
-}
+body.tienda-nueva .tn-btn { display: inline-block; background: var(--navy); color: var(--white); text-decoration: none; border-radius: 999px; padding: 13px 26px; font-weight: 600; font-size: 14px; }
 body.tienda-nueva .tn-btn:hover { background: var(--navy-2); }
 
-/* Bloques de cierre existentes, en claro */
-body.tienda-nueva .st-reco, body.tienda-nueva .st-cta { color: var(--navy); }
-body.tienda-nueva .st-cta { background: var(--navy) !important; color: var(--white); border-radius: 28px; }
-
-/* Entrada suave de las secciones al bajar */
-body.tienda-nueva .tn-tiles, body.tienda-nueva .tn-features, body.tienda-nueva .tn-story {
-  animation: tnSube linear both; animation-timeline: view(); animation-range: entry 0% cover 30%;
-}
-@keyframes tnSube { from { opacity: 0; transform: translateY(36px); } to { opacity: 1; transform: none; } }
+/* Cierre existente en claro */
+body.tienda-nueva .st-cta { background: var(--navy) !important; color: var(--white); border-radius: 28px; width: min(1240px, 94vw); margin: 90px auto 0; }
 
 @media (max-width: 900px) {
-  body.tienda-nueva .tn-tiles { grid-template-columns: repeat(2, 1fr); }
+  body.tienda-nueva .tn-mosaic { grid-template-columns: repeat(2, 1fr); }
   body.tienda-nueva .tn-features { grid-template-columns: 1fr; gap: 22px; }
   body.tienda-nueva .tn-feat { border-left: 0; padding: 0; }
   body.tienda-nueva .tn-story { grid-template-columns: 1fr; }
-}
-@media (prefers-reduced-motion: reduce) {
-  body.tienda-nueva .tn-tiles, body.tienda-nueva .tn-features, body.tienda-nueva .tn-story { animation: none; }
 }

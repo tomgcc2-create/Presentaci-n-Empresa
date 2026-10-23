@@ -1,36 +1,56 @@
 /* PriceNice — tienda-nuevo.js
-   Interacciones de la página de comparación en claro:
-   carrusel superior, números 01/02/03 y accesos a las categorías. */
+   Completa el mosaico y las historias con productos reales del catálogo,
+   y conecta las flechas de los carruseles. */
 (function () {
   const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const productos = Array.isArray(window.PN_PRODUCTOS) ? window.PN_PRODUCTOS : [];
 
-  // 1) Flechas del carrusel superior
-  const track = document.getElementById('tnTrack');
-  document.querySelectorAll('.tn-top .tn-arrow').forEach((b) => {
-    b.addEventListener('click', () => {
-      if (track) track.scrollBy({ left: Number(b.dataset.dir) * 220, behavior: reduce ? 'auto' : 'smooth' });
+  const NOMBRES = {
+    belleza: 'Belleza', hogar: 'Hogar', moda: 'Moda', tecnologia: 'Tecnología',
+    mascotas: 'Mascotas', mercado: 'Mercado', higiene: 'Higiene', otros: 'Otros'
+  };
+  const ORDEN = ['belleza', 'hogar', 'moda', 'tecnologia', 'mercado', 'higiene'];
+
+  // Imagen de referencia por categoría: el primer producto de esa categoría
+  function imagenDe(cat) {
+    const p = productos.find((x) => x.cat === cat && x.imagen);
+    return p ? p.imagen : '';
+  }
+
+  // 1) Mosaico de categorías con productos reales
+  const mosaico = document.getElementById('tnMosaic');
+  if (mosaico) {
+    const cats = ORDEN.filter((c) => productos.some((x) => x.cat === c)).slice(0, 5);
+    mosaico.innerHTML = cats.map((c) => {
+      const img = imagenDe(c);
+      return '<button class="tn-tile" type="button" data-setcat="' + c + '" style="background-image:url(' + img + ')">' +
+             '<span>' + NOMBRES[c] + '</span><i class="bi bi-arrow-right"></i></button>';
+    }).join('') +
+    '<button class="tn-tile todas" type="button" data-setcat="">' +
+    '<span>Ver todas</span><i class="bi bi-arrow-right"></i></button>';
+  }
+
+  // 2) Historia: imágenes de dos productos
+  const a = document.getElementById('tnStoryA');
+  const b = document.getElementById('tnStoryB');
+  if (a && productos[0]) a.style.backgroundImage = 'url(' + productos[0].imagen + ')';
+  if (b && productos[1]) b.style.backgroundImage = 'url(' + productos[1].imagen + ')';
+
+  // 3) Flechas de los carruseles
+  document.querySelectorAll('[data-t][data-dir]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const el = document.getElementById(btn.dataset.t);
+      if (el) el.scrollBy({ left: Number(btn.dataset.dir) * 280, behavior: reduce ? 'auto' : 'smooth' });
     });
   });
 
-  // 2) Números 01 02 03: cambian la etiqueta destacada
-  const chip = document.getElementById('tnChip');
-  const textos = ['Ahorras hasta $3.000', 'Comparas 11 tiendas', 'Pagas lo justo'];
-  document.querySelectorAll('.tn-dot').forEach((d) => {
-    d.addEventListener('click', () => {
-      document.querySelectorAll('.tn-dot').forEach((x) => x.classList.toggle('on', x === d));
-      if (!chip) return;
-      chip.classList.add('cambia');
-      setTimeout(() => { chip.textContent = textos[Number(d.dataset.i)] || textos[0]; chip.classList.remove('cambia'); }, 250);
-    });
-  });
-
-  // 3) Categorías (carrusel y mosaico): usan el filtro de categorías que ya existe
-  document.querySelectorAll('[data-setcat]').forEach((el) => {
-    el.addEventListener('click', () => {
-      const cat = el.dataset.setcat;
-      if (typeof window.setCat === 'function') window.setCat(cat);
-      const res = document.getElementById('resultsInfo') || document.getElementById('gridProductos');
-      if (res) res.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
-    });
+  // 4) Mosaico: filtra por categoría y baja a los productos
+  document.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-setcat]');
+    if (!t || !t.closest('#tnMosaic')) return;
+    const cat = t.dataset.setcat;
+    if (typeof window.setCat === 'function') window.setCat(cat);
+    const main = document.querySelector('main');
+    if (main) main.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
   });
 })();
