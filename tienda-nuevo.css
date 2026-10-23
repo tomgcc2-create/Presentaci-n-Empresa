@@ -275,3 +275,21 @@ body.tienda-nueva .magnet { transition: transform .3s cubic-bezier(.2,.8,.2,1); 
 /* Ajustes finales del banner */
 body.tienda-nueva .tn-float-row { width: auto !important; margin: 0 !important; left: calc(50% - 34px) !important; right: auto !important; top: 300px !important; }
 body.tienda-nueva .tn-chip { left: -150px !important; top: -170px !important; }
+
+/* ── Corrección: banner en tonos claros, números visibles, sin sombra gris ── */
+body.tienda-nueva .pn-oc-stage .pn-oc-feat-wrap { background: var(--cream) !important; border: 1px solid var(--line); }
+body.tienda-nueva .pn-oc-stage > .pn-oc-feat-wrap .pn-oc-feat { background: var(--white) !important; color: var(--navy) !important; box-shadow: 0 24px 50px rgba(31,42,68,.12) !important; border: 1px solid var(--line) !important; }
+body.tienda-nueva .pn-oc-feat * { color: inherit; }
+body.tienda-nueva .pn-oc-feat-body { background: var(--white); color: var(--navy); }
+body.tienda-nueva .pn-oc-save { background: var(--cream) !important; color: var(--navy) !important; }
+body.tienda-nueva .pn-oc-save-t, body.tienda-nueva .pn-oc-save strong { color: var(--navy) !important; }
+body.tienda-nueva .pn-oc-bar { background: var(--cream-2) !important; }
+body.tienda-nueva .tn-dot { width: 58px; height: 58px; font-size: 16px; background: var(--white); color: var(--navy); border: 2px solid var(--navy); box-shadow: 0 8px 18px rgba(31,42,68,.12); }
+body.tienda-nueva .tn-dot.on, body.tienda-nueva .tn-dot:hover { background: var(--navy); color: var(--white); border-color: var(--navy); }
+body.tienda-nueva .tn-topbar { background: transparent; box-shadow: none; padding: 0; border-radius: 0; }
+body.tienda-nueva .tn-top .tn-carousel { background: transparent; box-shadow: none; }
+body.tienda-nueva .tn-top .tn-card { box-shadow: none; background-color: var(--cream-2); }
+body.tienda-nueva .tn-card::after { display: none; }
+body.tienda-nueva .tn-card span { background: var(--white); color: var(--navy); box-shadow: 0 6px 14px rgba(31,42,68,.15); }
+body.tienda-nueva .tn-top { margin-bottom: -120px; }
+body.tienda-nueva .tn-topbar { background: var(--white); border-radius: 48px; padding: 16px; box-shadow: none; }
