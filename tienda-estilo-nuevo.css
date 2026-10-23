@@ -1,0 +1,164 @@
+/* ═══════════════════════════════════════════════════════════
+   PriceNice — tienda-estilo-nuevo.css
+   Nuevo estilo de "Comparación de precios" (colores PriceNice).
+   Solo aplica a body.tienda-nueva, así que no toca otras páginas.
+   ═══════════════════════════════════════════════════════════ */
+
+body.tienda-nueva {
+  --brand: #1F2A44;
+  --brand-hover: #34456B;
+  --navy: #1F2A44;
+  --navy-2: #34456B;
+  --gold: #C6A75E;
+  --gold-l: #D4B873;
+  --oro: #C6A75E;
+  --bg: #F5EFE3;
+  --bg-white: #FFFFFF;
+  --text: #1F2A44;
+  --text-2: #34456B;
+  --text-3: #8A92AB;
+  --border: #DDD0B8;
+  --border-2: #C9B99A;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Lienzo decorativo: la mascota vuela detrás del contenido */
+body.tienda-nueva main,
+body.tienda-nueva .pn-oc,
+body.tienda-nueva .st-side,
+body.tienda-nueva .pn-footer { position: relative; z-index: 1; }
+
+/* ── Hero ── */
+body.tienda-nueva .pn-oc-stage {
+  background: #1F2A44 !important;
+  border-radius: 44px !important;
+  overflow: hidden;
+}
+body.tienda-nueva .pn-oc-intro h2,
+body.tienda-nueva #tcTitulo {
+  font-family: var(--font-title, 'Bricolage Grotesque', sans-serif) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.035em !important;
+  line-height: 0.98 !important;
+  color: #F5EFE3 !important;
+}
+body.tienda-nueva .pn-oc-intro > p { color: #D6DCE8 !important; }
+
+body.tienda-nueva .pn-oc-search {
+  background: #F5EFE3 !important;
+  border-radius: 999px !important;
+  border: none !important;
+}
+body.tienda-nueva .pn-oc-search button,
+body.tienda-nueva .pn-oc-search .pn-oc-go {
+  background: #C6A75E !important;
+  color: #1F2A44 !important;
+  border-radius: 999px !important;
+  font-weight: 700;
+}
+
+body.tienda-nueva .tc-geo,
+body.tienda-nueva .tc-loc select {
+  border-radius: 999px !important;
+  border: 1px solid rgba(243,241,234,.35) !important;
+  color: #F5EFE3 !important;
+  background: transparent !important;
+}
+body.tienda-nueva .tc-loc.is-set .tc-geo { border-color: #C6A75E !important; color: #C6A75E !important; }
+
+body.tienda-nueva .st-chips span,
+body.tienda-nueva .tc-stats span {
+  border-radius: 999px !important;
+  background: rgba(243,241,234,.1) !important;
+  color: #F5EFE3 !important;
+}
+
+/* Tarjeta destacada (la de mejor precio) */
+body.tienda-nueva .pn-oc-feat {
+  background: #FFFFFF !important;
+  border-radius: 36px !important;
+  border: none !important;
+  box-shadow: 0 30px 60px rgba(0,0,0,.25) !important;
+  overflow: hidden;
+}
+body.tienda-nueva .pn-oc-feat-body { background: #FFFFFF; }
+body.tienda-nueva .pn-oc-feat-body h3,
+body.tienda-nueva .pn-oc-feat-body .pn-oc-title { color: #1F2A44; font-family: var(--font-title); font-weight: 800; }
+body.tienda-nueva .pn-oc-save {
+  background: #1F2A44 !important;
+  color: #F5EFE3 !important;
+  border-radius: 28px !important;
+}
+body.tienda-nueva .pn-oc-save-t,
+body.tienda-nueva .pn-oc-save strong { color: #C6A75E !important; }
+
+body.tienda-nueva .pn-oc-row.is-best .pn-oc-bar i,
+body.tienda-nueva .pn-oc-row.is-best .pn-oc-bar i { background: #C6A75E !important; }
+body.tienda-nueva .pn-oc-bar { background: #E6EAF1 !important; }
+body.tienda-nueva .pn-oc-bar i { background: #8A92AB !important; }
+body.tienda-nueva .pn-oc-row.is-best .pn-oc-price { color: #1F2A44; }
+
+body.tienda-nueva .pn-oc-add,
+body.tienda-nueva .pn-oc-cta .pn-oc-add {
+  background: #C6A75E !important;
+  color: #1F2A44 !important;
+  border-radius: 999px !important;
+  font-weight: 700;
+}
+body.tienda-nueva .pn-oc-add:hover { background: #D4B873 !important; }
+body.tienda-nueva .pn-oc-cta .pn-oc-buy,
+body.tienda-nueva .pn-oc-buy {
+  background: #1F2A44 !important;
+  color: #F5EFE3 !important;
+  border-radius: 999px !important;
+}
+
+/* ── Filtros y listado ── */
+body.tienda-nueva .st-side {
+  background: #FFFFFF !important;
+  border-radius: 32px !important;
+  border: none !important;
+  box-shadow: 0 10px 30px rgba(20,23,14,.06);
+}
+body.tienda-nueva .st-side h4 { font-family: var(--font-title); font-weight: 800; color: #1F2A44; }
+body.tienda-nueva .st-in,
+body.tienda-nueva .st-side select {
+  border-radius: 16px !important;
+  background: #F5EFE3 !important;
+  border: 1px solid #DDD0B8 !important;
+}
+
+body.tienda-nueva .st-card {
+  background: #FFFFFF;
+  border-radius: 30px;
+  padding: 14px;
+  border: 1px solid #DDD0B8;
+  transition: transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s;
+}
+body.tienda-nueva .st-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 22px 40px rgba(20,23,14,.12);
+}
+body.tienda-nueva .st-tile { border-radius: 22px; overflow: hidden; background: #E6EAF1; }
+
+/* Animación de entrada suave al hacer scroll */
+body.tienda-nueva .st-card {
+  animation: tnSube .6s cubic-bezier(.2,.8,.2,1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 30%;
+}
+@keyframes tnSube { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
+
+/* Mascota voladora */
+.tn-mascota {
+  position: fixed; left: 0; top: 0; width: 120px; height: 120px;
+  z-index: 0; pointer-events: none; opacity: .55;
+  will-change: transform; user-select: none;
+  filter: drop-shadow(0 12px 18px rgba(20,23,14,.2));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.tienda-nueva .st-card { animation: none; }
+  .tn-mascota { display: none; }
+}
