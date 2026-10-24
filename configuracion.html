@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Configuración | PriceNice</title>
+  <title>Configuración de cuenta | PriceNice</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -15,7 +15,6 @@
   <link rel="stylesheet" href="navbar-unificado.css">
 <link rel="stylesheet" href="pn-animaciones.css">
 
-  <link rel="stylesheet" href="tema-crema-azul.css">
 <style>
 body.pn-tema{padding:0!important;background:linear-gradient(135deg,var(--celeste),var(--bg) 70%);min-height:100vh;font-family:var(--font-body);color:var(--text)}
 .vd-shell{display:grid;grid-template-columns:250px minmax(0,1fr);gap:0;max-width:1480px;margin:22px auto;background:var(--bg-white);border-radius:36px;box-shadow:var(--shadow-lg);min-height:calc(100vh - 44px);overflow:hidden}
@@ -231,8 +230,48 @@ body.pn-tema{padding:0!important;background:linear-gradient(135deg,var(--celeste
 @media(max-width:560px){.via-panel{bottom:0;right:0;width:100vw;max-width:100vw;border-radius:20px 20px 0 0;max-height:72vh}.via-floating{bottom:16px;right:16px}}
 @media(prefers-reduced-motion:reduce){.via-floating,.via-panel,.via-msg,.via-dot,.via-header-icon{animation:none!important;transition:none!important}}
 </style>
+
+<style>
+  .cu-fondo{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;background:linear-gradient(180deg,#F5EFE3 0%,#E6EAF1 55%,#D6DCE8 100%);}
+  .cu-fondo::before,.cu-fondo::after{content:"";position:absolute;border-radius:50%;filter:blur(70px);opacity:.75;}
+  .cu-fondo::before{width:560px;height:560px;top:-160px;left:-140px;background:radial-gradient(circle,#34456B 0%,rgba(52,69,107,0) 70%);animation:cu-deriva-a 14s ease-in-out infinite alternate;}
+  .cu-fondo::after{width:480px;height:480px;bottom:-140px;right:-120px;background:radial-gradient(circle,rgba(198,167,94,.6) 0%,rgba(198,167,94,0) 70%);animation:cu-deriva-b 17s ease-in-out infinite alternate;}
+  .cu-fondo i{position:absolute;width:320px;height:320px;top:45%;left:55%;border-radius:50%;filter:blur(60px);opacity:.45;background:radial-gradient(circle,#1F2A44 0%,rgba(31,42,68,0) 70%);animation:cu-pulso 9s ease-in-out infinite;}
+  @keyframes cu-deriva-a{to{transform:translate(90px,110px) scale(1.15);}}
+  @keyframes cu-deriva-b{to{transform:translate(-100px,-90px) scale(1.2);}}
+  @keyframes cu-pulso{0%,100%{transform:scale(1);opacity:.35;}50%{transform:scale(1.25);opacity:.55;}}
+  @keyframes cu-entra{from{opacity:0;transform:translateY(18px) scale(.98);filter:blur(6px);}to{opacity:1;transform:none;filter:blur(0);}}
+  .cu-wrap .vd-card{animation:cu-entra .7s cubic-bezier(.2,.8,.2,1) both;}
+  .cu-wrap .vd-card:nth-child(2){animation-delay:.12s;}
+  @media (prefers-reduced-motion:reduce){.cu-fondo::before,.cu-fondo::after,.cu-fondo i,.cu-wrap .vd-card{animation:none!important;}}
+  .cu-wrap{max-width:1100px;margin:110px auto 60px;padding:0 20px;}
+  .cu-top{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:18px;}
+  .cu-top h1{font-family:var(--font-title);font-size:30px;font-weight:800;color:var(--brand);margin:0;letter-spacing:-.02em;}
+  .cu-top p{margin:4px 0 0;color:var(--text-3);font-size:14px;}
+  .cu-tabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
+  .cu-tabs button{border:1.5px solid var(--border-2);background:var(--bg-white);color:var(--brand);border-radius:999px;padding:9px 18px;font-weight:700;font-size:13.5px;cursor:pointer;}
+  .cu-tabs button.on{background:var(--brand);color:#fff;border-color:var(--brand);}
+  .cu-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start;}
+  .cu-field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+  .cu-field label{font-size:12.5px;font-weight:700;color:var(--brand);}
+  .cu-field input{border:1.5px solid var(--border-2);border-radius:12px;padding:11px 14px;font:inherit;font-size:14px;background:#fff;color:var(--text);}
+  .cu-field input:focus{outline:none;border-color:var(--brand-mid);}
+  .cu-field input[readonly]{background:var(--bg-soft,#f3f1ec);color:var(--text-3);}
+  .cu-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .cu-hint{font-size:12px;color:var(--text-3);margin:-6px 0 14px;}
+  .cu-msg{display:none;padding:10px 14px;border-radius:12px;font-size:13.5px;margin-bottom:14px;}
+  .cu-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:6px;}
+  .cu-side .cu-resumen{text-align:center;}
+  .cu-side .cu-av{width:92px;height:92px;border-radius:50%;margin:0 auto 12px;display:grid;place-items:center;background:var(--brand);color:#fff;font:800 36px var(--font-title);border:4px solid var(--oro);}
+  .cu-side b{display:block;color:var(--brand);font-size:16px;margin-bottom:4px;}
+  .cu-side small{color:var(--text-3);font-size:12.5px;word-break:break-all;}
+  .cu-link{color:var(--brand-mid);font-size:13px;font-weight:700;text-decoration:none;}
+  .cu-link:hover{text-decoration:underline;}
+  @media (max-width:820px){ .cu-grid{grid-template-columns:1fr;} .cu-row{grid-template-columns:1fr;} }
+</style>
 </head>
 <body class="has-navbar pn-tema">
+<div class="cu-fondo" aria-hidden="true"><i></i></div>
 <header class="pn-navbar" id="pnNavbar">
   <div class="pn-navbar-main">
     <a href="index.html" class="pn-logo" aria-label="PriceNice — inicio">
@@ -273,36 +312,159 @@ body.pn-tema{padding:0!important;background:linear-gradient(135deg,var(--celeste
     </div>
   </div>
 </header>
-<main style="max-width:1100px;margin:120px auto 60px;padding:0 20px">
-  <div class="cfg">
-    <nav class="cfg-n"><h6>Preferencias</h6><a onclick="irA('c_perf')">Mi perfil</a><h6>Seguridad</h6><a onclick="irA('c_seg')">Contraseña y sesión</a></nav>
+
+<main class="cu-wrap">
+  <div class="cu-top">
     <div>
-      <div class="cfg-g" id="c_perf"><h5>Mi perfil</h5>
-        <div class="tg" id="btnPerfilUsr" style="cursor:pointer"><i class="bi bi-person-gear"></i><div><b id="cfgPerfN">Mi perfil</b><small>Nombre, teléfono, ciudad y datos de tu cuenta</small></div><i class="bi bi-chevron-right" style="width:auto"></i></div>
-      </div>
-      <div class="cfg-g" id="c_seg"><h5>Seguridad</h5>
-        <a class="tg" href="recuperar.html" style="text-decoration:none"><i class="bi bi-key"></i><div><b>Cambiar contraseña</b><small>Te enviamos un enlace a tu correo</small></div><i class="bi bi-chevron-right" style="width:auto"></i></a>
-        <div class="tg" id="btnSalirUsr" style="cursor:pointer"><i class="bi bi-box-arrow-left"></i><div><b>Cerrar sesión</b><small>Salir de este dispositivo</small></div><i class="bi bi-chevron-right" style="width:auto"></i></div>
-      </div>
+      <h1>Configuración</h1>
+      <p id="cuSub">Edita tus datos y tu cuenta</p>
     </div>
+    <button type="button" class="vd-btn g" id="cuSalir"><i class="bi bi-box-arrow-left"></i> Cerrar sesión</button>
+  </div>
+
+  <div class="cu-tabs">
+    <button type="button" class="on" data-tab="perfil">Perfil</button>
+    <button type="button" data-tab="seguridad">Seguridad</button>
+  </div>
+
+  <div class="cu-grid">
+    <section class="vd-card" id="tab-perfil">
+      <div class="cu-msg" id="msgPerfil"></div>
+      <form id="formPerfil" novalidate>
+        <div class="fs"><i class="bi bi-person"></i> Datos personales</div>
+        <div class="cu-row">
+          <div class="cu-field"><label for="cNombre">Nombre *</label><input id="cNombre" type="text" placeholder="Tu nombre"></div>
+          <div class="cu-field"><label for="cApellido">Apellido</label><input id="cApellido" type="text" placeholder="Tu apellido"></div>
+        </div>
+        <div class="cu-field"><label for="cEmail">Correo electrónico</label><input id="cEmail" type="email" readonly></div>
+        <p class="cu-hint">El correo no se puede cambiar desde aquí.</p>
+        <div class="cu-row">
+          <div class="cu-field"><label for="cTel">Teléfono</label><input id="cTel" type="tel" placeholder="Ej. 300 123 4567"></div>
+          <div class="cu-field"><label for="cCiudad">Ciudad</label><input id="cCiudad" type="text" placeholder="Ej. Bogotá"></div>
+        </div>
+        <div class="cu-actions"><button type="submit" class="vd-btn" id="btnGuardarPerfil"><i class="bi bi-check-lg"></i> Guardar perfil</button></div>
+      </form>
+    </section>
+
+    <section class="vd-card cu-side cu-resumen" id="cuResumen">
+      <div class="cu-av" id="cuAv">?</div>
+      <b id="cuNombreRes">Tu cuenta</b>
+      <small id="cuEmailRes"></small>
+    </section>
+
+    <section class="vd-card" id="tab-seguridad" style="display:none">
+      <div class="cu-msg" id="msgSeg"></div>
+      <form id="formSeg" novalidate>
+        <div class="fs"><i class="bi bi-lock"></i> Cambiar contraseña</div>
+        <div class="cu-field"><label for="pActual">Contraseña actual</label><input id="pActual" type="password" autocomplete="current-password"></div>
+        <div class="cu-row">
+          <div class="cu-field"><label for="pNueva">Nueva contraseña</label><input id="pNueva" type="password" autocomplete="new-password"></div>
+          <div class="cu-field"><label for="pConf">Confirmar nueva</label><input id="pConf" type="password" autocomplete="new-password"></div>
+        </div>
+        <p class="cu-hint">Mínimo 6 caracteres.</p>
+        <div class="cu-actions"><button type="submit" class="vd-btn" id="btnCambiarPass"><i class="bi bi-shield-lock"></i> Cambiar contraseña</button></div>
+        <p style="margin-top:14px"><a class="cu-link" href="recuperar.html">¿Olvidaste tu contraseña? Recupérala por correo</a></p>
+      </form>
+    </section>
   </div>
 </main>
 
 <script type="module" src="archivo-sesion.js"></script>
 <script type="module">
-import { initSettings } from "./settings.js";
-initSettings();
-document.getElementById("btnPerfilUsr").addEventListener("click", () => {
-  const b = document.getElementById("btnSettings");
-  if (b) b.click();
+import { auth, db } from "./firebase-config.js";
+import { onAuthStateChanged, reauthenticateWithCredential, updatePassword, EmailAuthProvider }
+  from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+const $ = id => document.getElementById(id);
+let uid = null;
+
+function msg(id, texto, ok) {
+  const el = $(id);
+  el.textContent = texto;
+  el.style.display = "block";
+  el.style.background = ok ? "#E8F5EE" : "#FBEAEA";
+  el.style.color = ok ? "#2E7D4F" : "#B23B3B";
+}
+
+onAuthStateChanged(auth, async u => {
+  if (!u) { location.href = "login.html"; return; }
+  uid = u.uid;
+  $("cEmail").value = u.email || "";
+  $("cuEmailRes").textContent = u.email || "";
+  try {
+    const s = await getDoc(doc(db, "usuarios", u.uid));
+    if (s.exists()) {
+      const d = s.data();
+      $("cNombre").value = d.nombre || "";
+      $("cApellido").value = d.apellido || "";
+      $("cTel").value = d.telefono || "";
+      $("cCiudad").value = d.ciudad || "";
+    }
+  } catch (err) { console.error(err); }
+  const n = $("cNombre").value || (u.email || "").split("@")[0];
+  $("cuNombreRes").textContent = n;
+  $("cuAv").textContent = (n || "?").charAt(0).toUpperCase();
 });
-document.getElementById("btnSalirUsr").addEventListener("click", () => {
+
+document.querySelectorAll(".cu-tabs button").forEach(b => b.addEventListener("click", () => {
+  document.querySelectorAll(".cu-tabs button").forEach(x => x.classList.toggle("on", x === b));
+  $("tab-perfil").style.display = b.dataset.tab === "perfil" ? "" : "none";
+  $("tab-seguridad").style.display = b.dataset.tab === "seguridad" ? "" : "none";
+  $("cuResumen").style.display = b.dataset.tab === "perfil" ? "" : "none";
+}));
+
+$("formPerfil").addEventListener("submit", async e => {
+  e.preventDefault();
+  const nombre = $("cNombre").value.trim();
+  if (!nombre) { msg("msgPerfil", "El nombre es obligatorio.", false); return; }
+  if (!uid) return;
+  const btn = $("btnGuardarPerfil"); btn.disabled = true;
+  try {
+    await updateDoc(doc(db, "usuarios", uid), {
+      nombre,
+      apellido: $("cApellido").value.trim(),
+      telefono: $("cTel").value.trim(),
+      ciudad: $("cCiudad").value.trim()
+    });
+    $("cuNombreRes").textContent = nombre;
+    $("cuAv").textContent = nombre.charAt(0).toUpperCase();
+    msg("msgPerfil", "Perfil actualizado correctamente.", true);
+  } catch (err) {
+    msg("msgPerfil", "Error al guardar: " + (err.message || err), false);
+  }
+  btn.disabled = false;
+});
+
+$("formSeg").addEventListener("submit", async e => {
+  e.preventDefault();
+  const actual = $("pActual").value, nueva = $("pNueva").value, conf = $("pConf").value;
+  if (nueva.length < 6) { msg("msgSeg", "La nueva contraseña debe tener al menos 6 caracteres.", false); return; }
+  if (nueva !== conf) { msg("msgSeg", "Las contraseñas nuevas no coinciden.", false); return; }
+  const user = auth.currentUser;
+  if (!user) return;
+  const btn = $("btnCambiarPass"); btn.disabled = true;
+  try {
+    await reauthenticateWithCredential(user, EmailAuthProvider.credential(user.email, actual));
+    await updatePassword(user, nueva);
+    msg("msgSeg", "Contraseña actualizada correctamente.", true);
+    $("formSeg").reset();
+  } catch (err) {
+    const m = {
+      "auth/wrong-password": "La contraseña actual es incorrecta.",
+      "auth/invalid-credential": "La contraseña actual es incorrecta.",
+      "auth/too-many-requests": "Demasiados intentos. Espera unos minutos.",
+      "auth/weak-password": "La nueva contraseña es demasiado débil."
+    };
+    msg("msgSeg", m[err.code] || ("Error: " + err.message), false);
+  }
+  btn.disabled = false;
+});
+
+$("cuSalir").addEventListener("click", () => {
   const b = document.getElementById("btnCerrarSesionNav");
-  if (b) b.click();
+  if (b) b.click(); else location.href = "login.html";
 });
-</script>
-<script>
-function irA(id){ const el = document.getElementById(id); if (el) el.scrollIntoView({behavior:'smooth', block:'start'}); }
 </script>
 </body>
 </html>
