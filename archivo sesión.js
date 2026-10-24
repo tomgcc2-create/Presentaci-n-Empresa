@@ -13,6 +13,15 @@ import { observarSesion, cerrarSesion, obtenerRol } from './auth.js';
 /* ─── Referencias DOM ─── */
 const area = document.getElementById('pnSesionArea');
 
+/* Mientras Firebase resuelve el estado de sesión, mostramos un placeholder
+   neutro para que no aparezca el botón "Iniciar sesión" antes de tiempo. */
+if (area) {
+  area.innerHTML = `
+    <div class="pn-sesion-cargando" aria-hidden="true">
+      <span class="pn-sesion-spinner"></span>
+    </div>`;
+}
+
 /* ─── Contenido solo para vendedores ───
    Los enlaces marcados con data-solo-vendedor (menú, pie de página…) nacen ocultos
    y solo se muestran si la persona inició sesión con rol vendedor (o admin). */

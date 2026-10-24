@@ -63,3 +63,22 @@ body.has-navbar.pn-tema:not(.pn-glow) { padding-top:104px; background:var(--beig
 .has-navbar.pn-tema .pn-search input{ width:100%; min-width:0; }
 .has-navbar.pn-tema .pn-actions{ flex:none; }
 @media (max-width:1180px){ .has-navbar.pn-tema .pn-menu-link{ padding:9px 8px; font-size:13.5px; } .has-navbar.pn-tema .pn-search{ max-width:150px; } }
+
+/* ── Placeholder de carga de sesión (evita parpadeo del botón "Iniciar sesión") ── */
+.pn-sesion-cargando {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+}
+.pn-sesion-spinner {
+  display: block;
+  width: 22px;
+  height: 22px;
+  border: 2.5px solid rgba(31,42,68,.15);
+  border-top-color: var(--navy, #1F2A44);
+  border-radius: 50%;
+  animation: pnSesionSpin .7s linear infinite;
+}
+@keyframes pnSesionSpin { to { transform: rotate(360deg); } }

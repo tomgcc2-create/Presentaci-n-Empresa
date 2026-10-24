@@ -10,7 +10,6 @@ import {
 const ROLES_REGISTRO = [
     { id: "usuario",      nombre: "Usuario",      desc: "Compara y compra al mejor precio", icono: "bi-person" },
     { id: "vendedor",     nombre: "Vendedor",     desc: "Publica y vende tus productos",    icono: "bi-shop" },
-    { id: "verificador",  nombre: "Verificador",  desc: "Confirma precios en las tiendas",  icono: "bi-patch-check" },
     { id: "patrocinador", nombre: "Patrocinador", desc: "Promociona tu marca",              icono: "bi-megaphone" }
 ];
 
