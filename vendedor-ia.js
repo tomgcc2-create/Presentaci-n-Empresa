@@ -410,21 +410,12 @@
 
     /* ── 2b. Botón IA en "Primeros pasos" ── */
     ayudaPrimerosPasos() {
-      _abrirPanel('Primeros pasos',
-        'Hola 👋 Te ayudo a empezar en **PriceNice**.\n\n' +
-        '📌 **Primeros pasos:**\n' +
-        '• Publica tu primer producto con al menos 3 fotos.\n' +
-        '• Completa tu perfil con el nombre de tu tienda y tu WhatsApp.\n' +
-        '• Pide a tus clientes que dejen una reseña.\n\n' +
-        '¿Qué quieres hacer primero?',
-        'resumen-pasos');
+      if (window.cbVendedorAbrir) window.cbVendedorAbrir(true);
     },
 
-    /* ── 3. Botón flotante global ── */
-    abrirChat(titulo, msgInicial, pagina) {
-      const t = titulo || 'Asistente IA';
-      const p = pagina || _paginaActual();
-      _abrirPanel(t, msgInicial || null, p, !msgInicial);
+    /* ── 3. Botón flotante global: ahora abre el asistente (chatbot-vendedor.js) ── */
+    abrirChat() {
+      if (window.cbVendedorAbrir) window.cbVendedorAbrir(true);
     },
 
     cerrarChat: _cerrarPanel

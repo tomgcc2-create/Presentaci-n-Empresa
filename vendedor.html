@@ -8,6 +8,8 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <link rel="stylesheet" href="style.css"><link rel="stylesheet" href="tema-crema-azul.css">
 <link rel="stylesheet" href="vendedor-ia.css"><link rel="stylesheet" href="vendedor-ia-tema.css">
+<link rel="stylesheet" href="chatbot.css">
+<style>#viaFloating{display:none!important}</style>
 <style>
 body.pn-tema{padding:0!important;background:linear-gradient(135deg,var(--celeste),var(--bg) 70%);min-height:100vh;font-family:var(--font-body);color:var(--text)}
 .vd-shell{display:grid;grid-template-columns:250px minmax(0,1fr);gap:0;max-width:1480px;margin:22px auto;background:var(--bg-white);border-radius:36px;box-shadow:var(--shadow-lg);min-height:calc(100vh - 44px);overflow:hidden}
@@ -367,6 +369,8 @@ observarSesion(async (u) => {
 });
 </script>
 <script src="carrito-precios.js"></script>
+<script src="conocimiento-vendedor.js"></script>
+<script src="chatbot-vendedor.js" defer></script>
 <script src="vendedor-ia.js"></script>
 <script>
 const KEY='pn_mis_productos', $=id=>document.getElementById(id);
