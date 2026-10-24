@@ -867,16 +867,6 @@
 </body>
 </html>
 
-    function contienePalabraOfensiva(texto) {
-      const textoLimpio = texto.toLowerCase()
-        .normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // quitar tildes
-      return PALABRAS_BLOQUEADAS.some(p => {
-        const pLimpia = p.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        const regex = new RegExp(`\\b${pLimpia}\\b`, "i");
-        return regex.test(textoLimpio);
-      });
-    }
-
     /* ── Auth ── */
     onAuthStateChanged(auth, async usuario => {
       if (!usuario) { window.location.href = "login.html"; return; }
