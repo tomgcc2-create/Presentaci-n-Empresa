@@ -1,0 +1,58 @@
+/* ═══════════════════════════════════════════════════════════════
+   PriceNice — pn-animaciones.css
+   Animaciones comunes para TODAS las páginas (se suman a las propias de cada una).
+   Se activan con pn-animaciones.js y respetan "reducir movimiento".
+═══════════════════════════════════════════════════════════════ */
+html { scroll-behavior: smooth; }
+body { animation: pnPagina .55s ease both; }
+@keyframes pnPagina { from { opacity: 0; } to { opacity: 1; } }
+
+/* Barra superior: baja suavemente */
+.pn-navbar { animation: pnBaja .7s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes pnBaja { from { opacity: 0; transform: translateY(-18px); } to { opacity: 1; transform: none; } }
+
+/* Aparecer al hacer scroll */
+.pn-rv { opacity: 0; transform: translateY(26px) scale(.985); }
+.pn-rv.pn-in { opacity: 1; transform: none; transition: opacity .6s ease, transform .65s cubic-bezier(.2,.8,.2,1); transition-delay: calc(var(--pn-i, 0) * 60ms); }
+.pn-rv.pn-in.pn-hecho { transition-delay: 0s; }
+
+/* Botones: se hunden al presionar y suben al pasar el cursor */
+.btn, .pn-btn-primary, .pn-btn-sesion, .vd-btn, .adm-btn, .boton-fila, .lg-btn, .rv-btn, .dm-add, .dm-now, .cb-accion {
+  transition: transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .2s, background-color .2s, color .2s, border-color .2s, filter .2s;
+}
+.btn:not(:disabled):hover, .pn-btn-primary:not(:disabled):hover, .pn-btn-sesion:hover, .vd-btn:not(:disabled):hover, .adm-btn:not(:disabled):hover,
+.boton-fila:not(:disabled):hover, .rv-btn:hover, .dm-add:hover, .dm-now:hover { transform: translateY(-2px); }
+.btn:not(:disabled):active, .pn-btn-primary:not(:disabled):active, .pn-btn-sesion:active, .vd-btn:not(:disabled):active, .adm-btn:not(:disabled):active,
+.boton-fila:not(:disabled):active, .rv-btn:active, .dm-add:active, .dm-now:active { transform: scale(.96); }
+button:disabled { cursor: not-allowed; }
+
+/* Ondita al hacer clic */
+.pn-ripple { position: relative; overflow: hidden; }
+.pn-onda { position: absolute; border-radius: 50%; pointer-events: none; background: rgba(255,255,255,.45); transform: scale(0); animation: pnOnda .6s ease-out forwards; }
+@keyframes pnOnda { to { transform: scale(4); opacity: 0; } }
+
+/* Tarjetas y enlaces */
+.card, .pn-product-card, .card-opcion { transition: transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s; }
+.card-opcion:hover { transform: translateY(-6px); box-shadow: 0 16px 34px rgba(31,42,68,.18); }
+.pn-menu-link, .pn-footer-col a { transition: color .2s, transform .2s; }
+.pn-footer-col a:hover { transform: translateX(4px); }
+.pn-badge { animation: pnPop .4s cubic-bezier(.3,1.6,.5,1); }
+@keyframes pnPop { from { transform: scale(0); } to { transform: scale(1); } }
+
+/* Ventanas emergentes: entran con suavidad */
+.pn-modal-overlay.open, .pn-modal.open, #modalProducto.open { animation: pnFundido .3s ease both; }
+#modalProducto.open #modalBox, .pn-modal.open .pn-modal-box { animation: pnSube .45s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes pnFundido { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pnSube { from { opacity: 0; transform: translateY(30px) scale(.97); } to { opacity: 1; transform: none; } }
+
+/* Avisos (toast) */
+.pn-toast { transition: transform .45s cubic-bezier(.2,.8,.2,1.2), opacity .3s; }
+
+/* Foco visible para teclado */
+:focus-visible { outline: 3px solid rgba(198,167,94,.65); outline-offset: 2px; border-radius: 6px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  body, .pn-navbar, .pn-badge, .pn-onda { animation: none !important; }
+  .pn-rv { opacity: 1; transform: none; } .pn-rv.pn-in { transition: none; }
+}

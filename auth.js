@@ -22,8 +22,8 @@ import {
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-/* Roles que una persona puede elegir al registrarse. "admin" y "dueño" solo los asigna un administrador. */
-const ROLES_PUBLICOS = ["usuario", "vendedor", "verificador", "patrocinador"];
+/* Roles que una persona puede elegir al registrarse. "admin", "dueño" y "verificador" solo los asigna un administrador (o la IA). */
+const ROLES_PUBLICOS = ["usuario", "vendedor", "patrocinador"];
 const rolSeguro = (rol) => ROLES_PUBLICOS.includes(rol) ? rol : "usuario";
 
 /* Una cuenta desactivada por el administrador no puede ingresar. */

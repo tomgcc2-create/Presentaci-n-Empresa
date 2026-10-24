@@ -14,7 +14,7 @@ const ROLES_REGISTRO = [
 ];
 
 const paginaPorRol = {
-    "usuario":      "Index.html",
+    "usuario":      "index.html",
     "vendedor":     "vendedor.html",
     "verificador":  "verificador.html",
     "patrocinador": "patrocinador.html",
@@ -65,13 +65,19 @@ const esCancelacion = e => e && (
 const correoValido = c => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(c);
 
 /* ───────────────── Redirección por rol ───────────────── */
-function irAPagina(rol) {
-    window.location.href = paginaPorRol[rol] || "Index.html";
+/* Al crear cuenta o iniciar sesión todos van a la página inicial.
+   (Cada rol entra a su panel desde el menú de la barra superior.) */
+function irAPagina() {
+    window.location.href = "index.html";
 }
 
-async function redirigirPorRol(usuario) {
-    const rol = await obtenerRol(usuario.uid);
-    irAPagina(rol);
+/* Solo para el modo de prueba del administrador: entra directo al panel del rol. */
+function irAPanelDeRol(rol) {
+    window.location.href = paginaPorRol[rol] || "index.html";
+}
+
+function redirigirPorRol() {
+    irAPagina();
 }
 
 /* ───────────────── Vista (ingresar / registrar / recuperar) ───────────────── */
@@ -448,7 +454,7 @@ formLogin.addEventListener("submit", async e => {
         sessionStorage.setItem("pn_prueba_rol", rolPrueba);
         sessionStorage.setItem("pn_prueba_codigo", codigo);
 
-        setTimeout(() => { irAPagina(rolPrueba); }, 1200);
+        setTimeout(() => { irAPanelDeRol(rolPrueba); }, 1200);
 
     } catch (err) {
         mostrar("msgLogin", "Error al validar el código: " + (err.message || err), "error");

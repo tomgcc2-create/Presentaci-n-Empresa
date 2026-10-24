@@ -196,6 +196,7 @@
     }
     .pn-logo-header:hover { transform: scale(1.06); }
   </style>
+<link rel="stylesheet" href="pn-animaciones.css">
 </head>
 <body class="sin-settings">
 
@@ -244,8 +245,8 @@
   <div class="row g-4" id="gridProductos"></div>
 
   <div class="text-center mt-5">
-    <a id="btnVolver" href="usuario.html" class="btn-volver-panel">
-      ← Volver al panel
+    <a id="btnVolver" href="index.html" class="btn-volver-panel">
+      ← Volver al inicio
     </a>
   </div>
 </div>
@@ -419,7 +420,7 @@ onAuthStateChanged(auth, async usuario => {
       dueno:       "dueño.html",
       patrocinador:"patrocinador.html"
     };
-    document.getElementById("btnVolver").href = destinos[rol] || "usuario.html";
+    document.getElementById("btnVolver").href = destinos[rol] || "index.html";
 
     iniciarApp();
   } catch (e) {
@@ -726,5 +727,6 @@ function guardarVerificacion() {
 }
 </script>
 
+<script src="pn-animaciones.js" defer></script>
 </body>
 </html>

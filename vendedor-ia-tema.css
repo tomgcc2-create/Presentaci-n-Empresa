@@ -1,0 +1,173 @@
+/* ═══════════════════════════════════════════════════════════════
+   PriceNice — vendedor-ia-tema.css
+   Viste el asistente IA del vendedor con el MISMO estilo del chatbot
+   principal (chatbot.css): botón con la mascota, ventana redondeada con
+   luces suaves, burbujas blancas / azules y barra de escritura en píldora.
+   Se carga DESPUÉS de los estilos de vendedor.html para poder sobrescribirlos.
+═══════════════════════════════════════════════════════════════ */
+:root {
+  --cb-marino: #1F2A44; --cb-azul: #34456B; --cb-oro: #C6A75E; --cb-crema: #F5EFE3;
+  --cb-texto: #1F2A44; --cb-suave: #8A92AB;
+}
+
+/* ── Botón flotante: la mascota, igual que en la página principal ── */
+button.via-floating {
+  right: 20px; bottom: 20px; padding: 0; gap: 0;
+  width: 84px; height: 84px; border-radius: 50%; border: 3px solid var(--cb-oro);
+  background: radial-gradient(circle at 50% 35%, #34456B 0%, #1F2A44 75%);
+  box-shadow: 0 10px 28px rgba(31,42,68,.4);
+  display: grid; place-items: center; overflow: visible;
+  animation: via-entrada-btn .9s .4s cubic-bezier(.2,.8,.2,1) both, via-halo-btn 3s 1.4s ease-in-out infinite;
+  transition: transform .25s, opacity .25s, box-shadow .2s;
+}
+button.via-floating img { width: 94%; height: 94%; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(0,0,0,.35)); }
+button.via-floating .via-floating-label, button.via-floating .bi-stars { display: none; }
+button.via-floating:hover { transform: scale(1.08); box-shadow: 0 14px 32px rgba(31,42,68,.5); background: radial-gradient(circle at 50% 35%, #34456B 0%, #1F2A44 75%); }
+button.via-floating:active { transform: scale(.97); }
+body.via-abierto button.via-floating { opacity: 0; transform: scale(.4); pointer-events: none; animation: none; }
+@keyframes via-entrada-btn { from { opacity: 0; transform: translateX(70px) scale(.5); } to { opacity: 1; transform: none; } }
+@keyframes via-halo-btn {
+  0%,100% { box-shadow: 0 10px 28px rgba(31,42,68,.4), 0 0 0 0 rgba(198,167,94,.5); }
+  50%     { box-shadow: 0 10px 28px rgba(31,42,68,.4), 0 0 0 12px rgba(198,167,94,0); }
+}
+
+/* ── Ventana ── */
+.via-panel {
+  right: 20px; bottom: 20px; width: 420px; height: 720px;
+  max-height: calc(100vh - 40px); max-width: calc(100vw - 24px);
+  display: flex; flex-direction: column; isolation: isolate; overflow: hidden;
+  background: linear-gradient(180deg, #F5EFE3 0%, #E6EAF1 55%, #D6DCE8 100%);
+  border: 1px solid #fff; border-radius: 30px; box-shadow: 0 24px 64px rgba(31,42,68,.35);
+  transform-origin: bottom right; transform: translateY(24px) scale(.9);
+  transition: opacity .35s ease, transform .45s cubic-bezier(.2,.8,.2,1), width .4s cubic-bezier(.2,.8,.2,1), height .4s cubic-bezier(.2,.8,.2,1);
+}
+.via-panel--open { opacity: 1; transform: none; }
+.via-panel--out  { opacity: 0; transform: translateY(24px) scale(.9); }
+.via-panel.via-grande { width: 580px; height: 820px; }
+.via-panel::before, .via-panel::after {
+  content: ""; position: absolute; z-index: -1; pointer-events: none; border-radius: 50%; filter: blur(46px);
+}
+.via-panel::before { width: 240px; height: 240px; top: -60px; left: -70px;
+  background: radial-gradient(circle, rgba(198,167,94,.55), rgba(198,167,94,0) 70%); animation: via-luz-a 9s ease-in-out infinite alternate; }
+.via-panel::after { width: 280px; height: 280px; bottom: -80px; right: -90px;
+  background: radial-gradient(circle, rgba(52,69,107,.45), rgba(52,69,107,0) 70%); animation: via-luz-b 11s ease-in-out infinite alternate; }
+@keyframes via-luz-a { to { transform: translate(70px, 120px) scale(1.15); } }
+@keyframes via-luz-b { to { transform: translate(-80px, -110px) scale(1.2); } }
+
+/* ── Cabecera ── */
+.via-panel .via-header { background: none; padding: 14px 16px 4px; border: 0; align-items: center; }
+.via-panel .via-header-left { gap: 10px; }
+.via-panel .via-header-icon {
+  width: 42px; height: 42px; border-radius: 50%; background: radial-gradient(circle at 50% 35%, #34456B, #1F2A44 75%);
+  border: 2px solid var(--cb-oro); animation: none; padding: 0; overflow: hidden;
+}
+.via-panel .via-header-icon img { width: 100%; height: 100%; object-fit: contain; }
+.via-panel .via-header-icon .bi-stars { display: none; }
+.via-panel .via-header-title { color: var(--cb-marino); font: 700 17px 'Bricolage Grotesque', 'DM Sans', sans-serif; letter-spacing: -.2px; }
+.via-panel .via-limite { color: var(--cb-suave); }
+.via-panel .via-limite--bajo { color: #B7791F; }
+.via-panel .via-demo-badge { background: var(--cb-oro); color: var(--cb-marino); }
+.via-panel .via-close, .via-panel .via-expandir {
+  width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; cursor: pointer;
+  background: #fff; border: none; color: var(--cb-texto); font-size: 15px; box-shadow: 0 2px 8px rgba(31,42,68,.12);
+  transition: transform .15s;
+}
+.via-panel .via-close:hover, .via-panel .via-expandir:hover { transform: scale(1.08); background: #fff; color: var(--cb-texto); }
+
+/* ── Mensajes ── */
+.via-panel .via-messages { padding: 12px 22px 18px; gap: 14px; scrollbar-width: thin; scrollbar-color: rgba(31,42,68,.22) transparent; }
+.via-panel .via-msg { max-width: 88%; position: relative; animation: via-aparecer .45s ease both; }
+@keyframes via-aparecer { from { opacity: 0; filter: blur(4px); transform: translateY(6px); } to { opacity: 1; filter: blur(0); transform: none; } }
+.via-panel .via-msg-icon { display: none; }
+.via-panel .via-msg-body { padding: 12px 16px; border-radius: 20px; font-size: 14px; line-height: 1.5; position: relative; }
+.via-panel .via-msg--ia .via-msg-body {
+  background: #fff; color: var(--cb-texto); border-radius: 20px 20px 20px 6px; box-shadow: 0 4px 14px rgba(31,42,68,.08);
+}
+.via-panel .via-msg--user .via-msg-body {
+  background: var(--cb-azul); color: #fff; border-radius: 20px 20px 6px 20px; box-shadow: 0 4px 14px rgba(52,69,107,.3);
+}
+.via-panel .via-msg--err .via-msg-body { background: #fdecea; color: #8a2a20; }
+/* Luz detrás de las burbujas */
+.via-panel .via-msg--ia .via-msg-body::before, .via-panel .via-msg--user .via-msg-body::before {
+  content: ""; position: absolute; inset: 8px; z-index: -1; border-radius: inherit; opacity: .55; filter: blur(14px);
+}
+.via-panel .via-msg--ia .via-msg-body::before { background: linear-gradient(135deg, rgba(207,220,244,.95), rgba(198,167,94,.4)); }
+.via-panel .via-msg--user .via-msg-body::before { background: rgba(52,69,107,.65); }
+/* Escribiendo: brillo dorado */
+.via-panel .via-dot { background: var(--cb-oro); animation: via-brillo 1.2s ease-in-out infinite; }
+@keyframes via-brillo { 0%,100% { opacity: .25; transform: none; } 50% { opacity: 1; box-shadow: 0 0 8px var(--cb-oro); } }
+
+/* ── Barra de escritura ── */
+.via-panel .via-input-row { background: none; border: 0; padding: 10px 14px 16px; gap: 8px; }
+.via-panel .via-input {
+  padding: 14px 18px; border: none; background: #fff; color: var(--cb-texto); border-radius: 26px; font-size: 14px;
+  box-shadow: 0 4px 14px rgba(31,42,68,.08);
+}
+.via-panel .via-input:focus { background: #fff; border: 0; box-shadow: 0 0 0 2px var(--cb-azul), 0 0 22px rgba(52,69,107,.3); }
+.via-panel .via-send {
+  width: 46px; height: 46px; background: var(--cb-marino); color: var(--cb-oro);
+  box-shadow: 0 4px 12px rgba(31,42,68,.3); transition: transform .15s;
+}
+.via-panel .via-send:hover { background: var(--cb-marino); transform: scale(1.07); box-shadow: 0 4px 12px rgba(31,42,68,.3); }
+
+/* ── Panel de sugerencias (Publicar producto): mismos colores y esquinas ── */
+.via-sug-panel { border: 1px solid #fff; border-radius: 24px; box-shadow: 0 14px 34px rgba(31,42,68,.18); background: linear-gradient(180deg, #FBF8F1, #E6EAF1); }
+.via-sug-header { background: radial-gradient(circle at 85% 30%, rgba(198,167,94,.35), rgba(198,167,94,0) 55%), linear-gradient(135deg, #1F2A44 0%, #34456B 100%); }
+.via-sug-chip { background: #fff; margin: 10px 12px; border: 0; border-radius: 18px; box-shadow: 0 4px 14px rgba(31,42,68,.08); }
+.via-sug-chip:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(31,42,68,.14); }
+.via-sug-chip { transition: transform .2s, box-shadow .2s; animation: via-aparecer .45s ease both; }
+.via-sug-usar { border-radius: 20px; background: var(--cb-marino); }
+.via-sug-usar:hover { background: var(--cb-azul); }
+.via-btn-mejorar, .via-btn-grafica { border-color: var(--cb-oro); }
+
+@media (max-width: 480px) {
+  .via-panel { right: 0; bottom: 0; width: 100vw; max-width: 100vw; height: 100vh; max-height: 100vh; border-radius: 0; }
+  .via-panel.via-grande { width: 100vw; height: 100vh; }
+  button.via-floating { right: 16px; bottom: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .via-panel::before, .via-panel::after, button.via-floating, .via-panel .via-msg, .via-panel .via-dot { animation: none !important; }
+}
+
+/* ═════════ PANTALLA DE INICIO del asistente (saludo + preguntas) ═════════ */
+.via-inicio { display: flex; flex-direction: column; gap: 14px; animation: via-aparecer .5s ease both; transition: opacity .25s, transform .25s; }
+.via-inicio--out { opacity: 0; transform: translateY(-10px); }
+.via-saludo { padding: 4px 2px 0; }
+.via-saludo small { font-size: 14px; color: var(--cb-suave); }
+.via-saludo h2 { margin: 2px 0 4px; font-family: 'Bricolage Grotesque', 'DM Sans', sans-serif; font-size: 40px; line-height: 1.05; font-weight: 700; color: var(--cb-marino); letter-spacing: -.5px; }
+.via-saludo h2 span { color: var(--cb-azul); }
+.via-saludo p { margin: 0; font-size: 14.5px; color: #4F5B78; }
+.via-banner {
+  position: relative; display: grid; grid-template-columns: 1fr 150px; align-items: center; margin-top: 34px; min-height: 130px; padding: 18px 8px 18px 18px; border-radius: 24px; color: #fff;
+  background: radial-gradient(circle at 80% 30%, rgba(198,167,94,.35), rgba(198,167,94,0) 55%), linear-gradient(135deg, #1F2A44 0%, #34456B 100%);
+  box-shadow: 0 14px 30px rgba(31,42,68,.32), 0 0 36px rgba(52,69,107,.25);
+}
+.via-banner::before { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: .5;
+  background-image: radial-gradient(rgba(255,255,255,.55) 1px, transparent 1.5px); background-size: 22px 22px;
+  -webkit-mask-image: linear-gradient(90deg, transparent 20%, #000); mask-image: linear-gradient(90deg, transparent 20%, #000); }
+.via-banner-txt { position: relative; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.via-banner-txt b { font-family: 'Bricolage Grotesque', 'DM Sans', sans-serif; font-size: 18px; }
+.via-banner-txt span { font-size: 12px; line-height: 1.4; color: #D6DCE8; }
+.via-mascota { width: 160px; height: auto; justify-self: end; align-self: end; margin: -30px -6px -6px 0; position: relative;
+  filter: drop-shadow(0 0 18px rgba(198,167,94,.55)) drop-shadow(0 8px 12px rgba(0,0,0,.3)); animation: via-flota 4s ease-in-out infinite; }
+@keyframes via-flota { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.via-pills { display: flex; gap: 8px; overflow-x: auto; padding: 4px 22px 8px; margin: 0 -22px; scrollbar-width: none; }
+.via-pills::-webkit-scrollbar { display: none; }
+.via-pills button { flex: none; padding: 10px 18px; border-radius: 22px; border: none; cursor: pointer; font: 600 13px 'DM Sans', sans-serif; background: #fff; color: #4F5B78; box-shadow: 0 3px 10px rgba(31,42,68,.08); transition: all .2s; }
+.via-pills button:hover { color: var(--cb-marino); }
+.via-pills button.activa { background: var(--cb-marino); color: #fff; box-shadow: 0 6px 16px rgba(31,42,68,.3), 0 0 18px rgba(52,69,107,.3); }
+.via-preguntas { display: flex; flex-direction: column; gap: 10px; }
+.via-pregunta {
+  display: flex; align-items: center; gap: 12px; text-align: left; font-family: inherit; padding: 12px 14px; background: #fff; border: none; border-radius: 20px; cursor: pointer;
+  box-shadow: 0 4px 14px rgba(31,42,68,.08); transition: transform .15s, box-shadow .15s;
+  animation: via-entra .5s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i) * 90ms);
+}
+@keyframes via-entra { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: none; } }
+.via-pregunta:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(31,42,68,.16); }
+.via-pregunta .ico { width: 40px; height: 40px; flex: none; border-radius: 12px; display: grid; place-items: center; background: var(--cb-marino); color: var(--cb-oro); font-size: 18px; }
+.via-pregunta .tx { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.via-pregunta b { font-size: 14px; color: var(--cb-texto); }
+.via-pregunta small { font-size: 12px; color: var(--cb-suave); }
+.via-pregunta .go { width: 36px; height: 36px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--cb-crema); color: var(--cb-marino); transition: transform .2s, background .2s; }
+.via-pregunta:hover .go { background: var(--cb-oro); transform: translateX(3px); }
+@media (prefers-reduced-motion: reduce) { .via-inicio, .via-mascota, .via-pregunta { animation: none !important; } }

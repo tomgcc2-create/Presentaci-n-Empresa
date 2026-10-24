@@ -12,9 +12,10 @@ import {
     doc,
     setDoc,
     updateDoc,
+    deleteDoc,
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-import { observarSesion, obtenerRol, mensajeError, actualizarVerificacion } from "./auth.js";
+import { mensajeError, actualizarVerificacion } from "./auth.js";
 import { initSettings } from "./settings.js";
 
 const contenido = document.getElementById("contenido");
@@ -79,6 +80,11 @@ async function desactivarUsuario(uid) {
     await updateDoc(doc(db, "usuarios", uid), { activo: false, desactivadoEn: serverTimestamp() });
 }
 
+/* Elimina solo el perfil (la cuenta de Authentication se borra desde la consola de Firebase). */
+async function borrarUsuario(uid) {
+    await deleteDoc(doc(db, "usuarios", uid));
+}
+
 async function reactivarUsuario(uid) {
     await updateDoc(doc(db, "usuarios", uid), { activo: true, desactivadoEn: null });
 }
@@ -138,8 +144,6 @@ function fila(usuario) {
     const esYo = usuario.uid === uidActual;
     const esVendedor = usuario.rol === "vendedor";
 
-    tr.appendChild(celda((usuario.nombre || "-") + (esYo ? " (tú)" : "")));
-    tr.appendChild(celda(usuario.email || "-"));
     tr.appendChild(celda((usuario.nombre || "-") + (esYo ? " (tú)" : "")));
     tr.appendChild(celda(usuario.email || "-"));
 
@@ -229,15 +233,6 @@ if (!esYo) {
         }
     });
     acciones.appendChild(borrar);
-        try {
-            if (inactivo) await reactivarUsuario(usuario.uid); else await desactivarUsuario(usuario.uid);
-            mostrar(inactivo ? "Cuenta reactivada." : "Cuenta desactivada: ya no podrá iniciar sesión.", "info");
-            await pintarUsuarios();
-        } catch (error) {
-            mostrar("No se pudo completar la acción: " + error.message);
-        }
-    });
-    acciones.appendChild(estado);
 }
 
 tr.appendChild(acciones);
@@ -372,13 +367,6 @@ btnRechazar.addEventListener("click", async () => {
     }
     btnRechazar.disabled = false;
 });
-
-observarSesion(async usuario => {
-    if (!usuario) {
-        window.location.href = "login.html";
-        return;
-    }
-
 
 /* admin.js solo gestiona el CRUD de usuarios.
    La autenticación y visibilidad del panel se manejan en admin.html */

@@ -22,6 +22,7 @@
   <link rel="stylesheet" href="inicio-glow.css">
   <link rel="stylesheet" href="ofertas-comparar.css">
   <link rel="stylesheet" href="navbar-unificado.css">
+<link rel="stylesheet" href="pn-animaciones.css">
 </head>
 <body class="has-navbar has-ticker pn-tema pn-glow">
 
@@ -89,10 +90,9 @@
       </button>
       <!-- Sesión -->
       <div id="pnSesionArea">
-        <div class="pn-sesion-cargando" aria-hidden="true">
-          <span class="pn-sesion-spinner"></span>
-        </div>
-      </div>
+        <a href="login.html" class="pn-btn-sesion">
+          <i class="bi bi-person"></i><span>Iniciar sesión</span>
+        </a>
       </div>
       <!-- Hamburguesa -->
       <button class="pn-hamburger" id="btnHamburguesa"
@@ -121,10 +121,8 @@
       <a href="contacto.html" class="pn-cat-panel-link">✉️ Contacto</a>
       <a href="vendedor.html" class="pn-cat-panel-link" data-solo-vendedor hidden>🏪 Vendedores</a>
     </nav>
-    <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border)">
-      <a href="login.html" class="pn-btn-primary" style="width:100%;justify-content:center;display:flex">
-        <i class="bi bi-person"></i> Iniciar sesión
-      </a>
+    <div id="pnMobileSesion" style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border)">
+      <a href="login.html" class="pn-btn-primary" style="width:100%;justify-content:center;display:flex"><i class="bi bi-person"></i> Iniciar sesión</a>
     </div>
   </div>
 </div>
@@ -818,7 +816,6 @@
         <a href="login.html#registro">Registrarse</a>
         <a href="favoritos.html">Mis favoritos</a>
         <a href="vendedor.html" data-solo-vendedor hidden>Panel vendedor</a>
-        <a href="usuario.html">Panel usuario</a>
       </div>
 
       <!-- Contacto -->
@@ -1195,5 +1192,6 @@ document.addEventListener('DOMContentLoaded', () => {
 <script src="chatbot.js" defer></script>
 <script src="inicio-glow.js"></script>
 <script src="ofertas-comparar.js"></script>
+<script src="pn-animaciones.js" defer></script>
 </body>
 </html>

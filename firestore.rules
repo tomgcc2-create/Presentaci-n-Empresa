@@ -27,7 +27,7 @@ service cloud.firestore {
     function esVerificador() { return signedIn() && cuentaActiva() && rolActual() in ['verificador', 'admin', 'dueño', 'dueno']; }
 
     // Roles que una persona puede elegir al registrarse (admin y dueño los asigna un administrador)
-    function rolPublico(r) { return r in ['usuario', 'vendedor', 'verificador', 'patrocinador']; }
+    function rolPublico(r) { return r in ['usuario', 'vendedor', 'patrocinador']; }
 
     // ---------- usuarios ----------
     match /usuarios/{uid} {
@@ -65,13 +65,18 @@ service cloud.firestore {
 
     // ---------- resenas ----------
     match /resenas/{id} {
-      allow read: if signedIn();
+      // Las aprobadas las puede leer cualquiera; las demás solo quien haya iniciado sesión
+      allow read: if resource.data.estado == 'aprobada' || signedIn();
       allow create: if signedIn() && cuentaActiva()
         && request.resource.data.usuarioId == request.auth.uid
-        && request.resource.data.estado == 'pendiente'
+        && request.resource.data.estado in ['aprobada', 'pendiente']
         && request.resource.data.calificacion is int
         && request.resource.data.calificacion >= 1
         && request.resource.data.calificacion <= 5;
+      // El vendedor dueño de la reseña solo puede agregar su respuesta
+      allow update: if signedIn() && cuentaActiva()
+        && resource.data.vendedorId == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['respuesta', 'respuestaFecha']);
       allow update, delete: if esModerador();
     }
 

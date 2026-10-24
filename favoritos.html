@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis favoritos | PriceNice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=DM+Sans:opsz,wght@9..40,400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="tema-crema-azul.css">
+  <link rel="stylesheet" href="favoritos.css">
+  <link rel="stylesheet" href="navbar-unificado.css">
+<link rel="stylesheet" href="pn-animaciones.css">
+</head>
+<body class="has-navbar pn-tema">
+
+<header class="pn-navbar" id="pnNavbar">
+  <div class="pn-navbar-main">
+    <a href="index.html" class="pn-logo" aria-label="PriceNice — inicio">
+      <div class="pn-logo-circle"><img src="img/logo-dark.png" alt="PriceNice" loading="eager"></div>
+      <div class="pn-logo-info">
+        <span class="pn-logo-name"><span class="w">Price</span><span class="b">Nice</span></span>
+        <span class="pn-logo-sub">Tu brújula de los buenos precios</span>
+      </div>
+    </a>
+
+    <nav class="pn-navbar-menu" aria-label="Menú principal">
+      <a href="index.html" class="pn-menu-link">Inicio</a>
+      <a href="tienda.html" class="pn-menu-link">Comparación de precios</a>
+      <a href="tiendas-cercanas.html" class="pn-menu-link">Cercanas</a>
+      <a href="ofertas-novedades.html" class="pn-menu-link">Ofertas y novedades</a>
+      <a href="contacto.html" class="pn-menu-link">Contacto</a>
+      <a href="vendedor.html" class="pn-menu-link" data-solo-vendedor hidden>Vendedores</a>
+    </nav>
+
+    <div class="pn-search" id="pnSearch" role="search">
+      <input type="search" id="pnSearchInput" placeholder="Buscar productos, marcas y tiendas..." aria-label="Buscar" autocomplete="off"
+        onkeydown="if(event.key==='Enter')ejecutarBusqueda()">
+      <button class="pn-search-btn" onclick="ejecutarBusqueda()" aria-label="Buscar"><i class="bi bi-search"></i></button>
+    </div>
+
+    <div class="pn-actions">
+      <button class="pn-action-btn active" aria-label="Favoritos" onclick="window.location.href='favoritos.html'">
+        <i class="bi bi-heart"></i>
+      </button>
+      <button class="pn-action-btn" aria-label="Carrito" onclick="window.location.href='carrito.html'">
+        <i class="bi bi-bag"></i>
+        <span class="pn-badge" id="badgeCarritoNav" style="display:none">0</span>
+      </button>
+      <div id="pnSesionArea">
+        <a href="login.html" class="pn-btn-sesion"><i class="bi bi-person"></i><span>Iniciar sesión</span></a>
+      </div>
+      <button class="pn-hamburger" onclick="toggleMobileMenu()" aria-label="Menú"><i class="bi bi-list"></i></button>
+    </div>
+  </div>
+</header>
+
+<!-- Menú mobile -->
+<div class="pn-mobile-menu" id="mobileMenu">
+  <div class="pn-mobile-menu-overlay" onclick="toggleMobileMenu()"></div>
+  <div class="pn-mobile-menu-panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+      <span class="pn-logo-name" style="font-size:22px"><span class="w">Price</span><span class="b">Nice</span></span>
+      <button onclick="toggleMobileMenu()" style="background:none;border:none;font-size:22px;color:var(--text-2)" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <nav style="display:flex;flex-direction:column;gap:4px">
+      <a href="index.html" class="pn-cat-panel-link">🏠 Inicio</a>
+      <a href="tienda.html" class="pn-cat-panel-link">🛒 Comparación de precios</a>
+      <a href="tiendas-cercanas.html" class="pn-cat-panel-link">📍 Tiendas cercanas</a>
+      <a href="ofertas-novedades.html" class="pn-cat-panel-link">🏷️ Ofertas y novedades</a>
+      <a href="contacto.html" class="pn-cat-panel-link">✉️ Contacto</a>
+      <a href="vendedor.html" class="pn-cat-panel-link" data-solo-vendedor hidden>🏪 Vendedores</a>
+    </nav>
+  </div>
+</div>
+
+
+<main class="fv-page" aria-labelledby="fvTitulo">
+  <div class="fv-wrap">
+
+    <!-- Portada -->
+    <section class="fv-hero">
+      <div class="fv-blob b1"></div><div class="fv-blob b2"></div>
+      <div class="fv-hero-txt">
+        <span class="fv-kicker"><i class="bi bi-heart-fill"></i> Mis favoritos</span>
+        <h1 id="fvTitulo">Lo que más te gusta,<br>en un solo lugar</h1>
+        <p>Guarda productos con el corazón y te mostramos dónde están más baratos.</p>
+      </div>
+      <div class="fv-stats" id="fvStats"></div>
+    </section>
+
+    <!-- Tarjetas por categoría (porcentaje de lo que más te gusta) -->
+    <section class="fv-sec" id="fvCatSec" aria-labelledby="fvCatTit">
+      <div class="fv-sec-h"><div><h2 id="fvCatTit">Lo que más te gusta</h2><p>Así se reparten tus favoritos. Toca una para filtrar.</p></div></div>
+      <div class="fv-cats" id="fvCats"></div>
+    </section>
+
+    <!-- Herramientas -->
+    <section class="fv-sec" id="fvListaSec">
+      <div class="fv-tools" id="fvTools">
+        <div class="fv-find"><i class="bi bi-search"></i><input id="fvBuscar" type="search" placeholder="Buscar en tus favoritos…" aria-label="Buscar en favoritos"></div>
+        <select id="fvOrden" class="fv-sel" aria-label="Ordenar">
+          <option value="reciente">Agregados recientemente</option>
+          <option value="precio">Menor precio</option>
+          <option value="ahorro">Mayor ahorro</option>
+          <option value="nombre">Nombre A–Z</option>
+        </select>
+        <div class="fv-vista" role="group" aria-label="Vista">
+          <button data-v="grid" class="on" aria-label="Cuadrícula"><i class="bi bi-grid-3x3-gap-fill"></i></button>
+          <button data-v="list" aria-label="Lista"><i class="bi bi-list-ul"></i></button>
+        </div>
+        <button class="fv-clear" id="fvLimpiar"><i class="bi bi-trash3"></i> Vaciar</button>
+      </div>
+      <div class="fv-grid" id="fvGrid"></div>
+      <div class="fv-vacio" id="fvVacio" hidden></div>
+    </section>
+
+    <!-- Barra de acción -->
+    <section class="fv-cta fv-rv" id="fvCta" hidden>
+      <div><h2>¿Los llevamos todos al carrito?</h2><p id="fvCtaTxt"></p></div>
+      <button class="fv-btn dark" id="fvTodo"><i class="bi bi-bag-plus"></i> Agregar todos al carrito</button>
+    </section>
+
+  </div>
+</main>
+
+<!-- Vista expandida: página completa -->
+<div class="fv-full" id="fvFull" role="dialog" aria-modal="true" aria-label="Detalle del favorito" hidden>
+  <div class="fv-full-in" id="fvFullIn"></div>
+</div>
+<div class="fv-toast" id="fvToast" role="status" aria-live="polite"></div>
+
+<footer class="pn-footer" aria-label="Pie de página">
+  <div class="pn-container">
+    <div class="pn-footer-grid">
+      <div class="pn-footer-brand">
+        <div class="pn-footer-logo"><div class="pn-footer-logo-circle"><img src="img/logo-dark.png" alt="PriceNice" loading="lazy"></div>
+          <span class="pn-footer-logo-name"><span class="w">Price</span><span class="b">Nice</span></span></div>
+        <p>Tu brújula de los buenos precios. Te mostramos dónde está más barato cada producto en Bogotá.</p>
+      </div>
+      <div class="pn-footer-col"><h4>Navegar</h4><a href="index.html">Inicio</a><a href="tienda.html">Comparación de precios</a><a href="tiendas-cercanas.html">Tiendas cercanas</a></div>
+      <div class="pn-footer-col"><h4>Mi cuenta</h4><a href="login.html">Iniciar sesión</a><a href="favoritos.html">Mis favoritos</a><a href="vendedor.html" data-solo-vendedor hidden>Panel vendedor</a></div>
+      <div class="pn-footer-col"><h4>Contacto</h4><a href="mailto:priceniceworld@gmail.com"><i class="bi bi-envelope me-2"></i>priceniceworld@gmail.com</a><a href="#"><i class="bi bi-geo-alt me-2"></i>Bogotá, Colombia</a></div>
+    </div>
+    <div class="pn-footer-bottom"><span>© 2026 PriceNice. Todos los derechos reservados.</span></div>
+  </div>
+</footer>
+
+<script type="module" src="archivo-sesion.js"></script>
+<script src="productos-data.js"></script>
+<script src="favoritos.js"></script>
+<script>
+function toggleMobileMenu(){var m=document.getElementById('mobileMenu');m.classList.toggle('open');document.body.style.overflow=m.classList.contains('open')?'hidden':'';}
+function ejecutarBusqueda(){var q=(document.getElementById('pnSearchInput')||{}).value||'';window.location.href='tienda.html'+(q.trim()?'?q='+encodeURIComponent(q.trim()):'');}
+window.addEventListener('scroll',function(){document.getElementById('pnNavbar').classList.toggle('scrolled',window.scrollY>10);},{passive:true});
+</script>
+<script src="pn-animaciones.js" defer></script>
+</body>
+</html>
