@@ -263,6 +263,13 @@ input, select, textarea { font-family:var(--font-body); }
 }
 .pn-avatar-wrap:hover .pn-user-menu,
 .pn-user-menu:hover { display:block; }
+.pn-user-menu::before {
+  content:"";
+  position:absolute;
+  top:-12px;
+  left:0; right:0;
+  height:12px;
+}
 @keyframes menuFadeIn {
   from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)}
 }

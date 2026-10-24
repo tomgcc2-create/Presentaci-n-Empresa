@@ -191,7 +191,7 @@
     setTimeout(() => { if (_panelEl) { _panelEl.remove(); _panelEl = null; } }, 320);
   }
 
-  function _abrirPanel(titulo, msgInicial, contextoPagina) {
+  function _abrirPanel(titulo, msgInicial, contextoPagina, conInicio) {
     if (_panelEl) _cerrarPanel();
 
     const panel = document.createElement('div');
@@ -201,7 +201,7 @@
     panel.innerHTML =
       '<div class="via-header">' +
         '<div class="via-header-left">' +
-          '<span class="via-header-icon"><i class="bi bi-stars"></i></span>' +
+          '<span class="via-header-icon"><img src="img/logo-chat.png" alt=""></span>' +
           '<div>' +
             '<span class="via-header-title">' + esc(titulo) + '</span>' +
             (DEMO_MODE ? '<span class="via-demo-badge"><i class="bi bi-flask"></i> Demo</span>' : '') +
@@ -254,7 +254,8 @@
     btnEnv.onclick = enviar;
     input.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); enviar(); } });
 
-    if (msgInicial) _addMsg('ia', msgInicial);
+    if (conInicio) _pantallaInicio(panel);
+    else if (msgInicial) _addMsg('ia', msgInicial);
     _actualizarLimite();
     setTimeout(() => input.focus(), 350);
     return panel;
@@ -408,26 +409,22 @@
     },
 
     /* ── 2b. Botón IA en "Primeros pasos" ── */
-    async ayudaPrimerosPasos() {
-      const btn = document.getElementById('viaBtnPasos');
-      if (btn) { btn.disabled = true; }
-      try {
-        const data = await _llamar({ tipo: 'grafica' }); // reutiliza el prompt de gráfica con np=0
-        _abrirPanel('Primeros pasos', data.respuesta, 'resumen-pasos');
-        _actualizarLimite();
-      } catch (err) {
-        _abrirPanel('Primeros pasos', 'Publica tu primer producto con 3 fotos y descripción clara. Completa el perfil con tu WhatsApp. Así los compradores te encuentran y confían en tu tienda.');
-      } finally {
-        if (btn) btn.disabled = false;
-      }
+    ayudaPrimerosPasos() {
+      _abrirPanel('Primeros pasos',
+        'Hola 👋 Te ayudo a empezar en **PriceNice**.\n\n' +
+        '📌 **Primeros pasos:**\n' +
+        '• Publica tu primer producto con al menos 3 fotos.\n' +
+        '• Completa tu perfil con el nombre de tu tienda y tu WhatsApp.\n' +
+        '• Pide a tus clientes que dejen una reseña.\n\n' +
+        '¿Qué quieres hacer primero?',
+        'resumen-pasos');
     },
 
     /* ── 3. Botón flotante global ── */
     abrirChat(titulo, msgInicial, pagina) {
       const t = titulo || 'Asistente IA';
       const p = pagina || _paginaActual();
-      const inicio = msgInicial || _saludo(p);
-      _abrirPanel(t, inicio, p);
+      _abrirPanel(t, msgInicial || null, p, !msgInicial);
     },
 
     cerrarChat: _cerrarPanel
@@ -440,6 +437,86 @@
   }
 
   /* ── Saludo contextual según la sección ── */
+  /* ══════════════════════════════════════════════════════
+     PREGUNTAS SUGERIDAS (pantalla de inicio del asistente)
+  ══════════════════════════════════════════════════════ */
+  const PREGUNTAS_VIA = {
+    'Publicar': [
+      ['bi-card-text', '¿Cómo escribo una buena descripción?', 'Un texto que convence'],
+      ['bi-camera',    '¿Qué fotos debo subir?',               'Fotos que generan confianza'],
+      ['bi-tags',      '¿Qué etiquetas pongo?',                'Para que te encuentren']
+    ],
+    'Productos': [
+      ['bi-graph-up-arrow', '¿Cómo mejoro mis publicaciones?', 'Precio, fotos y texto'],
+      ['bi-box-seam',       '¿Qué hago si tengo stock bajo?',  'Evita quedarte sin vender'],
+      ['bi-award',          '¿Qué producto debo destacar?',    'Elige el que más vende']
+    ],
+    'Reseñas': [
+      ['bi-chat-square-text', '¿Cómo respondo una reseña negativa?', 'Con calma y con datos'],
+      ['bi-star',             '¿Cómo consigo más reseñas?',          'Pide la opinión al momento justo']
+    ],
+    'Mi tienda': [
+      ['bi-person-badge', '¿Qué le falta a mi perfil?',  'Lo que más confianza genera'],
+      ['bi-whatsapp',     '¿Cómo configuro mi WhatsApp?', 'Para que te escriban'],
+      ['bi-pause-circle', '¿Cómo pauso mi tienda?',      'Sin borrar tus productos']
+    ]
+  };
+
+  function _pantallaInicio(panel) {
+    const box = panel.querySelector('#viaMensajes');
+    if (!box) return;
+    const nombre = ((document.getElementById('chipN') || {}).textContent || 'vendedor').trim();
+    const cats = Object.keys(PREGUNTAS_VIA);
+
+    const wrap = document.createElement('div');
+    wrap.className = 'via-inicio';
+    wrap.innerHTML =
+      '<div class="via-saludo"><small>Asistente de tu tienda</small>' +
+        '<h2>Hola, <span>' + esc(nombre) + '</span></h2>' +
+        '<p>¿Qué quieres saber hoy?</p></div>' +
+      '<div class="via-banner"><div class="via-banner-txt"><b>Vende más con PriceNice</b>' +
+        '<span>Pregúntame sobre tus productos, tus reseñas o tu perfil.</span></div>' +
+        '<img class="via-mascota" src="img/logo-chat.png" alt=""></div>' +
+      '<div class="via-pills"></div>' +
+      '<div class="via-preguntas"></div>';
+
+    const pills = wrap.querySelector('.via-pills');
+    const lista = wrap.querySelector('.via-preguntas');
+
+    function pintar(cat) {
+      pills.querySelectorAll('button').forEach(b => b.classList.toggle('activa', b.dataset.cat === cat));
+      lista.innerHTML = '';
+      PREGUNTAS_VIA[cat].forEach((p, i) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'via-pregunta';
+        b.style.setProperty('--i', i);
+        b.innerHTML =
+          '<span class="ico"><i class="bi ' + p[0] + '"></i></span>' +
+          '<span class="tx"><b>' + esc(p[1]) + '</b><small>' + esc(p[2]) + '</small></span>' +
+          '<span class="go"><i class="bi bi-arrow-right"></i></span>';
+        b.onclick = () => {
+          wrap.remove();
+          const input = panel.querySelector('#viaInput');
+          input.value = p[1];
+          panel.querySelector('#viaEnviar').click();
+        };
+        lista.appendChild(b);
+      });
+    }
+
+    cats.forEach(c => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.dataset.cat = c;
+      b.textContent = c;
+      b.onclick = () => pintar(c);
+      pills.appendChild(b);
+    });
+    pintar(cats[0]);
+    box.appendChild(wrap);
+  }
+
   function _saludo(pagina) {
     const saludos = {
       'publicar': 'Hola 👋 Estás en **Publicar producto**.\n\nPuedo ayudarte a escribir una descripción atractiva, sugerir etiquetas o decirte qué fotos subir. ¿Sobre qué quieres empezar?',
