@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configuración | PriceNice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=DM+Sans:opsz,wght@9..40,400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="tema-crema-azul.css">
+  <link rel="stylesheet" href="favoritos.css">
+  <link rel="stylesheet" href="configuracion.css">
+  <link rel="stylesheet" href="navbar-unificado.css">
+<link rel="stylesheet" href="pn-animaciones.css">
+</head>
+<body class="has-navbar pn-tema">
+
+<header class="pn-navbar" id="pnNavbar">
+  <div class="pn-navbar-main">
+    <a href="index.html" class="pn-logo" aria-label="PriceNice — inicio">
+      <div class="pn-logo-circle"><img src="img/logo-dark.png" alt="PriceNice" loading="eager"></div>
+      <div class="pn-logo-info">
+        <span class="pn-logo-name"><span class="w">Price</span><span class="b">Nice</span></span>
+        <span class="pn-logo-sub">Tu brújula de los buenos precios</span>
+      </div>
+    </a>
+
+    <nav class="pn-navbar-menu" aria-label="Menú principal">
+      <a href="index.html" class="pn-menu-link">Inicio</a>
+      <a href="tienda.html" class="pn-menu-link">Comparación de precios</a>
+      <a href="tiendas-cercanas.html" class="pn-menu-link">Cercanas</a>
+      <a href="ofertas-novedades.html" class="pn-menu-link">Ofertas y novedades</a>
+      <a href="contacto.html" class="pn-menu-link">Contacto</a>
+      <a href="vendedor.html" class="pn-menu-link" data-solo-vendedor hidden>Vendedores</a>
+    </nav>
+
+    <div class="pn-search" id="pnSearch" role="search">
+      <input type="search" id="pnSearchInput" placeholder="Buscar productos, marcas y tiendas..." aria-label="Buscar" autocomplete="off"
+        onkeydown="if(event.key==='Enter')ejecutarBusqueda()">
+      <button class="pn-search-btn" onclick="ejecutarBusqueda()" aria-label="Buscar"><i class="bi bi-search"></i></button>
+    </div>
+
+    <div class="pn-actions">
+      <button class="pn-action-btn active" aria-label="Favoritos" onclick="window.location.href='favoritos.html'">
+        <i class="bi bi-heart"></i>
+      </button>
+      <button class="pn-action-btn" aria-label="Carrito" onclick="window.location.href='carrito.html'">
+        <i class="bi bi-bag"></i>
+        <span class="pn-badge" id="badgeCarritoNav" style="display:none">0</span>
+      </button>
+      <div id="pnSesionArea">
+        <a href="login.html" class="pn-btn-sesion"><i class="bi bi-person"></i><span>Iniciar sesión</span></a>
+      </div>
+      <button class="pn-hamburger" onclick="toggleMobileMenu()" aria-label="Menú"><i class="bi bi-list"></i></button>
+    </div>
+  </div>
+</header>
+<main class="cfg-usuario">
+  <section class="cfg-usuario-card">
+    <h1>Configuración</h1>
+    <p>Aquí puedes editar tus datos personales y tu cuenta.</p>
+    <button type="button" id="btnAbrirCfg" class="cfg-usuario-btn"><i class="bi bi-person-gear"></i> Abrir configuración de mi cuenta</button>
+  </section>
+</main>
+
+<script type="module" src="archivo-sesion.js"></script>
+<script type="module">
+import { initSettings } from "./settings.js";
+initSettings();
+document.getElementById("btnAbrirCfg").addEventListener("click", () => {
+  const b = document.getElementById("btnSettings");
+  if (b) b.click();
+});
+</script>
+</body>
+</html>

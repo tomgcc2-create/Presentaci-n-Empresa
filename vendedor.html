@@ -225,8 +225,8 @@ body.pn-tema{padding:0!important;background:linear-gradient(135deg,var(--celeste
 
   <!-- CONFIGURACIÓN -->
   <section class="vd-sec" id="v-config"><div class="cfg">
-   <nav class="cfg-n"><h6>Preferencias</h6><a onclick="irA('c_not')">Notificaciones</a><a onclick="irA('c_tie')">Mi tienda</a><h6>Seguridad</h6><a onclick="irA('c_seg')">Contraseña y sesión</a></nav>
-   <div><div class="cfg-g" id="c_not"><h5>Notificaciones</h5><div id="tgN"></div></div>
+   <nav class="cfg-n"><h6>Preferencias</h6><a onclick="irA('c_perf')">Mi perfil</a><a onclick="irA('c_not')">Notificaciones</a><a onclick="irA('c_tie')">Mi tienda</a><h6>Seguridad</h6><a onclick="irA('c_seg')">Contraseña y sesión</a></nav>
+   <div><div class="cfg-g" id="c_perf"><h5>Mi perfil</h5><div class="tg" onclick="ir('perfil')" style="cursor:pointer"><i class="bi bi-person-gear"></i><div><b id="cfgPerfN">Tu perfil</b><small>Foto, nombre, tienda, WhatsApp y horario</small></div><i class="bi bi-chevron-right" style="width:auto"></i></div></div><div class="cfg-g" id="c_not"><h5>Notificaciones</h5><div id="tgN"></div></div>
     <div class="cfg-g" id="c_tie"><h5>Mi tienda</h5><div id="tgT"></div></div>
     <div class="cfg-g" id="c_seg"><h5>Seguridad</h5>
      <a class="tg" href="recuperar.html" style="text-decoration:none"><i class="bi bi-key"></i><div><b>Cambiar contraseña</b><small>Te enviamos un enlace a tu correo</small></div><i class="bi bi-chevron-right" style="width:auto"></i></a>
@@ -476,7 +476,7 @@ function guardarPerfil(){const g=i=>$(i).value.trim();Object.assign(PF,{nombre:g
 /* ── CONFIGURACIÓN ── */
 const TGS={tgN:[['alertaPrecio','bi-currency-dollar','Alerta de precios','Te avisamos si otra tienda vende tu producto más barato'],['stockBajo','bi-box-seam','Stock bajo','Cuando te queden 5 unidades o menos'],['nuevaResena','bi-star','Nueva reseña','Cuando un comprador califique un producto tuyo'],['resumenSemanal','bi-envelope','Resumen semanal por correo','Tus números de la semana, cada lunes']],
  tgT:[['mostrarWhats','bi-whatsapp','Mostrar mi WhatsApp','Los compradores podrán escribirte directo'],['presencialDef','bi-shop','Venta presencial por defecto','Tus productos nuevos salen para recoger en tienda'],['mostrarAntes','bi-tag','Mostrar precio anterior','Resalta tus descuentos con etiqueta de ahorro'],['pausarTienda','bi-pause-circle','Pausar mi tienda','Oculta todos tus productos mientras estás de vacaciones']]};
-function config(){Object.entries(TGS).forEach(([id,l])=>{$(id).innerHTML=l.map(([k,ic,t,d])=>`<div class="tg ${CF[k]?'on':''}" onclick="tog('${k}',this)"><i class="bi ${ic}"></i><div><b>${t}</b><small>${d}</small></div><span class="sw"></span></div>`).join('')})}
+function config(){const _pn=$('cfgPerfN');if(_pn)_pn.textContent=(PF.tienda||PF.nombre||SES.n||'Tu perfil');Object.entries(TGS).forEach(([id,l])=>{$(id).innerHTML=l.map(([k,ic,t,d])=>`<div class="tg ${CF[k]?'on':''}" onclick="tog('${k}',this)"><i class="bi ${ic}"></i><div><b>${t}</b><small>${d}</small></div><span class="sw"></span></div>`).join('')})}
 function tog(k,el){CF[k]=!CF[k];el.classList.toggle('on',CF[k])}
 function guardarConfig(){localStorage.setItem('pn_vendedor_config',JSON.stringify(CF));toast(CF.pausarTienda?'Guardado · tu tienda está en pausa':'Configuración guardada ✅')}
 function irA(id){$(id).scrollIntoView({behavior:'smooth',block:'start'})}

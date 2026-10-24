@@ -1,0 +1,7 @@
+.cfg-usuario { max-width: 640px; margin: 120px auto 60px; padding: 0 20px; }
+.cfg-usuario-card { background: #fff; border-radius: 24px; padding: 32px; box-shadow: 0 10px 30px rgba(31,42,68,.12); }
+.cfg-usuario-card h1 { margin: 0 0 8px; font: 700 28px 'Bricolage Grotesque', 'DM Sans', sans-serif; color: #1F2A44; }
+.cfg-usuario-card p { margin: 0 0 20px; color: #4F5B78; }
+.cfg-usuario-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border: none; border-radius: 99px;
+  background: #1F2A44; color: #fff; font: 600 14px 'DM Sans', sans-serif; cursor: pointer; }
+.cfg-usuario-btn:hover { background: #34456B; }

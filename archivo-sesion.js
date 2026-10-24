@@ -66,6 +66,8 @@ function buildAvatar(usuario, rol) {
           : ''}
       </div>
       <a href="favoritos.html" role="menuitem"><i class="bi bi-heart me-2"></i>Favoritos</a>
+      ${(!rol || rol === 'usuario') ? `<a href="carrito.html" role="menuitem"><i class="bi bi-cart3 me-2"></i>Carrito</a>
+      <a href="configuracion.html" role="menuitem"><i class="bi bi-sliders me-2"></i>Configuración</a>` : ''}
       ${vendedorLink}
       ${otroLink}
       ${adminLink}
