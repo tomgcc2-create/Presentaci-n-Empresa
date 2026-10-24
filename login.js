@@ -15,7 +15,7 @@ const ROLES_REGISTRO = [
 ];
 
 const paginaPorRol = {
-    "usuario":      "usuario.html",
+    "usuario":      "Index.html",
     "vendedor":     "vendedor.html",
     "verificador":  "verificador.html",
     "patrocinador": "patrocinador.html",
@@ -67,7 +67,7 @@ const correoValido = c => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(c);
 
 /* ───────────────── Redirección por rol ───────────────── */
 function irAPagina(rol) {
-    window.location.href = paginaPorRol[rol] || "usuario.html";
+    window.location.href = paginaPorRol[rol] || "Index.html";
 }
 
 async function redirigirPorRol(usuario) {

@@ -1,4 +1,4 @@
-/**
+ /**
  * PriceNice — Cloudflare Worker
  *
  * Endpoints:
@@ -39,7 +39,7 @@ const TOKEN_TTL_MS      = 30 * 60 * 1000; // 30 minutos
 /* Perfiles disponibles en el modo prueba.
    La clave es el id interno, el valor es la URL de destino. */
 const PERFILES_PRUEBA = {
-  usuario:      { label: "Usuario normal",  url: "usuario.html"              },
+  usuario:      { label: "Usuario normal",  url: "Index.html"                },
   vendedor:     { label: "Vendedor",         url: "registro-vendedor.html"    },
   patrocinador: { label: "Patrocinador",     url: "patrocinador.html"         },
   verificador:  { label: "Verificador",      url: "verificador.html"          },

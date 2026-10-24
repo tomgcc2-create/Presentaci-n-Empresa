@@ -204,7 +204,7 @@
             <div class="icono">📦</div>
             <h5 class="fw-bold mb-2">Catálogo</h5>
             <p class="text-secondary small">Consulta el catálogo completo de productos.</p>
-            <a href="catalogo.html" class="btn btn-warning mt-2 fw-semibold">Ver catálogo</a>
+            <a href="tienda.html" class="btn btn-warning mt-2 fw-semibold">Ver catálogo</a>
           </div>
         </div>
 
@@ -232,7 +232,7 @@
             <div class="icono">🏠</div>
             <h5 class="fw-bold mb-2">Inicio</h5>
             <p class="text-secondary small">Vuelve a la página principal.</p>
-            <a id="btnInicio" href="usuario.html" class="btn btn-outline-secondary mt-2 fw-semibold">🏠 Ir al inicio</a>
+            <a id="btnInicio" href="Index.html" class="btn btn-outline-secondary mt-2 fw-semibold">🏠 Ir al inicio</a>
           </div>
         </div>
 
@@ -426,28 +426,446 @@
     import { auth, db } from "./firebase-config.js";
     import { onAuthStateChanged, signOut }
       from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-    import { doc, getDoc, collection, addDoc, getDocs,
-             query, where, orderBy, serverTimestamp }
-      from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+    import {
+      doc, getDoc, collection, addDoc, getDocs,
+      query, where, orderBy, serverTimestamp, limit
+    } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
     import { initSettings } from "./settings.js";
 
     /* ── Estado ── */
-    let usuarioActual  = null;
-    let nombreUsuario  = "";
+    let usuarioActual = null;
+    let nombreUsuario = "";
 
     /* ══════════════════════════════════
-       LISTA DE PALABRAS OFENSIVAS
-       (moderación automática)
+       MODERACIÓN AUTOMÁTICA
     ══════════════════════════════════ */
     const PALABRAS_BLOQUEADAS = [
       "idiota","imbecil","imbécil","estupido","estúpido","maldito","maldita",
-      "hdp","hijueputa","hijueputa","gonorrea","malparido","malparida",
+      "hdp","hijueputa","gonorrea","malparido","malparida",
       "puto","puta","marica","mierda","culo","pendejo","pendeja","cabron",
       "cabrón","coño","verga","polla","joder","gilipollas","capullo",
       "zorra","bastardo","bastarda","maldición","carajo","chinga","chingada",
       "culero","wey","weon","huevon","huevón","desgraciado","desgraciada",
       "animal","bruto","bruta","burro","burra","inutil","inútil"
     ];
+
+    function contienePalabraOfensiva(texto) {
+      const t = texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      return PALABRAS_BLOQUEADAS.some(p => {
+        const pl = p.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        return new RegExp(`\\b${pl}\\b`, "i").test(t);
+      });
+    }
+
+    /* ══════════════════════════════════
+       AUTH
+    ══════════════════════════════════ */
+    onAuthStateChanged(auth, async usuario => {
+      if (!usuario) { window.location.href = "login.html"; return; }
+      usuarioActual = usuario;
+
+      const snap  = await getDoc(doc(db, "usuarios", usuario.uid));
+      const datos = snap.exists() ? snap.data() : {};
+      nombreUsuario = datos.nombre || usuario.email;
+      const rol = (datos.rol || "usuario").trim().toLowerCase();
+
+      document.getElementById("bienvenida").textContent     = "Bienvenido, " + nombreUsuario + " 👋";
+      document.getElementById("bienvenida-res").textContent = "Hola, " + nombreUsuario;
+
+      /* Botón "Volver a mi panel" para roles especiales */
+      const paginaPorRol = {
+        vendedor: "vendedor.html", verificador: "verificador.html",
+        patrocinador: "patrocinador.html", "dueño": "dueño.html", admin: "admin.html"
+      };
+      if (paginaPorRol[rol]) {
+        const div = document.createElement("div");
+        div.className = "text-center mt-3";
+        div.innerHTML = `<a href="${paginaPorRol[rol]}" class="btn btn-outline-secondary btn-cancelar-r">
+          ← Volver a mi panel (${rol})</a>`;
+        const btnCerrar = document.getElementById("btnCerrarSesion").parentElement;
+        btnCerrar.parentElement.insertBefore(div, btnCerrar);
+      }
+
+      initSettings();
+    });
+
+    document.getElementById("btnCerrarSesion").addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.href = "login.html";
+    });
+
+    /* ══════════════════════════════════
+       CACHE DE TIENDAS Y PRODUCTOS
+       Cargado desde Firestore colección "productos"
+    ══════════════════════════════════ */
+    // { tiendaNombre: [{ id, nombre, vendedorId, tienda }, …] }
+    let tiendasCache = {};
+    // { productoId: { nombre, tienda, vendedorId } }
+    let productosMapCache = {};
+
+    async function cargarTiendasFirestore() {
+      const sel = document.getElementById("select-tienda");
+      sel.innerHTML = `<option value="">— Cargando tiendas… —</option>`;
+      sel.disabled = true;
+      try {
+        const snap = await getDocs(collection(db, "productos"));
+        tiendasCache     = {};
+        productosMapCache = {};
+        snap.forEach(d => {
+          const p = d.data();
+          const t = (p.tienda || "Sin tienda").trim();
+          if (!tiendasCache[t]) tiendasCache[t] = [];
+          const item = {
+            id:        d.id,
+            nombre:    (p.nombre  || "Producto").trim(),
+            vendedorId: p.vendedorId || "",
+            tienda:     t,
+            precio:     p.precio || 0
+          };
+          tiendasCache[t].push(item);
+          productosMapCache[d.id] = item;
+        });
+        const nombres = Object.keys(tiendasCache).sort();
+        sel.innerHTML = `<option value="">— Selecciona una tienda —</option>` +
+          nombres.map(n => `<option value="${n}">${n}</option>`).join("");
+        sel.disabled = false;
+      } catch (err) {
+        console.error("Error cargando tiendas:", err);
+        sel.innerHTML = `<option value="">— Error al cargar tiendas —</option>`;
+        sel.disabled = false;
+      }
+    }
+
+    document.getElementById("select-tienda").addEventListener("change", function () {
+      const selProd = document.getElementById("select-producto");
+      const tienda  = this.value;
+      if (!tienda || !tiendasCache[tienda]) {
+        selProd.innerHTML = `<option value="" data-vid="" data-pid="">— Selecciona primero una tienda —</option>`;
+        return;
+      }
+      const prods = tiendasCache[tienda];
+      selProd.innerHTML =
+        `<option value="" data-vid="" data-pid="">— Sin producto específico —</option>` +
+        prods.map(p =>
+          `<option value="${p.nombre}" data-vid="${p.vendedorId}" data-pid="${p.id}">${p.nombre}</option>`
+        ).join("");
+    });
+
+    /* ══════════════════════════════════
+       SELECTOR DESTINO (App / Tienda)
+    ══════════════════════════════════ */
+    window.seleccionarDestino = function (dest) {
+      document.getElementById("destino-resena").value = dest;
+      const btnApp    = document.getElementById("btn-dest-app");
+      const btnTienda = document.getElementById("btn-dest-tienda");
+
+      if (dest === "app") {
+        btnApp.style.background    = "#C6A75E";  btnApp.style.color    = "white";
+        btnTienda.style.background = "white";    btnTienda.style.color = "#1a6e3c";
+        document.getElementById("campos-app").style.display    = "block";
+        document.getElementById("campos-tienda").style.display = "none";
+      } else {
+        btnTienda.style.background = "#1a6e3c";  btnTienda.style.color = "white";
+        btnApp.style.background    = "white";    btnApp.style.color    = "#C6A75E";
+        document.getElementById("campos-tienda").style.display = "block";
+        document.getElementById("campos-app").style.display    = "none";
+        cargarTiendasFirestore();
+      }
+
+      ["titulo-calificacion","bloque-calificacion","titulo-opinion",
+       "bloque-comentario","titulo-sugerencia","bloque-sugerencia","bloque-botones"]
+        .forEach(id => document.getElementById(id).style.display = "block");
+    };
+
+    /* ── Contadores de caracteres ── */
+    document.getElementById("comentario").addEventListener("input", function () {
+      document.getElementById("char-count").textContent = this.value.length;
+    });
+    document.getElementById("sugerencia").addEventListener("input", function () {
+      document.getElementById("char-count-sug").textContent = this.value.length;
+    });
+
+    /* ══════════════════════════════════
+       ANTI-DUPLICADO
+       Un usuario no puede enviar dos reseñas al mismo producto en el mismo día.
+    ══════════════════════════════════ */
+    async function yaReseno(usuarioId, productoId, tiendaNombre, destino) {
+      try {
+        /* Usar productoId si lo hay, si no usar tiendaNombre como clave */
+        const campo = productoId ? "productoId" : (tiendaNombre ? "tiendaNombre" : null);
+        const valor = productoId || tiendaNombre;
+        if (!campo) return false;
+
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0);
+
+        const q = query(
+          collection(db, "resenas"),
+          where("usuarioId", "==", usuarioId),
+          where(campo, "==", valor),
+          limit(1)
+        );
+        const snap = await getDocs(q);
+        for (const d of snap.docs) {
+          const f = d.data().fecha?.toDate?.();
+          if (f && f >= hoy) return true;   // ya reseñó hoy
+        }
+        return false;
+      } catch { return false; }
+    }
+
+    /* ══════════════════════════════════
+       ENVIAR RESEÑA
+    ══════════════════════════════════ */
+    document.getElementById("form-resena").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      this.classList.add("was-validated");
+
+      /* Validar destino */
+      const destino = document.getElementById("destino-resena").value;
+      if (!destino) {
+        alert("Por favor elige si es una reseña a la App o a una Tienda.");
+        return;
+      }
+
+      /* Validar estrellas */
+      const calificacionEl = document.querySelector('input[name="calificacion"]:checked');
+      const errEst = document.getElementById("estrellas-error");
+      if (!calificacionEl) { errEst.style.display = "block"; return; }
+      errEst.style.display = "none";
+
+      /* Validar comentario */
+      const comentario = document.getElementById("comentario").value.trim();
+      const errCom     = document.getElementById("comentario-error");
+      if (!comentario) { errCom.style.visibility = "visible"; return; }
+      errCom.style.visibility = "hidden";
+
+      const sugerencia = document.getElementById("sugerencia").value.trim();
+
+      /* ── Construir datos según destino ── */
+      let tipo, referencia;
+      let tiendaNombre = null, productoNombre = null, productoId = null, vendedorId = null;
+
+      if (destino === "tienda") {
+        tiendaNombre = document.getElementById("select-tienda").value;
+        if (!tiendaNombre) { alert("Selecciona una tienda."); return; }
+
+        const selProd = document.getElementById("select-producto");
+        productoNombre = selProd.value || null;
+
+        if (productoNombre && selProd.selectedOptions[0]) {
+          vendedorId = selProd.selectedOptions[0].dataset.vid  || null;
+          productoId = selProd.selectedOptions[0].dataset.pid  || null;
+        }
+
+        /* Si no hay producto seleccionado, usar el vendedorId del primer producto de esa tienda */
+        if (!vendedorId && tiendasCache[tiendaNombre]?.length > 0) {
+          vendedorId = tiendasCache[tiendaNombre][0].vendedorId || null;
+        }
+
+        tipo      = productoNombre ? "producto" : "tienda";
+        referencia = productoNombre || tiendaNombre;
+
+      } else {
+        tipo      = document.getElementById("tipo-resena").value || "servicio";
+        referencia = document.getElementById("referencia-app").value.trim() || "App PRICE NICE";
+      }
+
+      /* ── Anti-duplicado ── */
+      const duplicado = await yaReseno(
+        usuarioActual.uid, productoId, tiendaNombre, destino
+      );
+      if (duplicado) {
+        const aviso = document.getElementById("alerta-resena-ok");
+        aviso.style.display   = "flex";
+        aviso.querySelector("div").innerHTML =
+          "<strong>Ya enviaste una reseña hoy</strong> para este producto o tienda. " +
+          "Puedes enviar otra mañana.";
+        aviso.style.background = "#fff3cd";
+        aviso.style.borderColor = "#ffc107";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        setTimeout(() => {
+          aviso.style.display = "none";
+          aviso.style.background = "";
+          aviso.style.borderColor = "";
+          aviso.querySelector("div").innerHTML =
+            "<strong>¡Reseña enviada!</strong> Tu reseña fue recibida y está pendiente de aprobación.";
+        }, 6000);
+        return;
+      }
+
+      /* ── Moderación ── */
+      const textoCompleto = [comentario, sugerencia, referencia].join(" ");
+      if (contienePalabraOfensiva(textoCompleto)) {
+        const mod = document.getElementById("alerta-resena-mod");
+        mod.style.display = "flex";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        setTimeout(() => { mod.style.display = "none"; }, 6000);
+        return;
+      }
+
+      /* ── Deshabilitar botón ── */
+      const btn = this.querySelector(".btn-publicar-resena");
+      btn.disabled = true; btn.textContent = "⏳ Enviando…";
+
+      try {
+        const docData = {
+          /* Quién reseña */
+          usuarioId:      usuarioActual.uid,
+          nombreUsuario,
+          /* Destino */
+          destino,                        // "app" | "tienda"
+          tipo,                           // "producto" | "tienda" | "servicio" | …
+          referencia,
+          tiendaNombre:   tiendaNombre    || null,
+          productoNombre: productoNombre  || null,
+          productoId:     productoId      || null,   // ID del doc en colección "productos"
+          vendedorId:     vendedorId      || null,   // UID Firestore del vendedor
+          /* Contenido */
+          calificacion:   parseInt(calificacionEl.value),
+          comentario,
+          sugerencia:     sugerencia || null,
+          /* Estado y fecha */
+          estado:  "pendiente",
+          fecha:   serverTimestamp()
+        };
+
+        await addDoc(collection(db, "resenas"), docData);
+
+        /* ── Reset formulario ── */
+        this.classList.remove("was-validated");
+        this.reset();
+        document.getElementById("destino-resena").value  = "";
+        document.getElementById("char-count").textContent     = "0";
+        document.getElementById("char-count-sug").textContent = "0";
+        document.querySelectorAll(".estrellas-input label").forEach(l => l.style.color = "");
+        errEst.style.display = "none";
+        ["campos-app","campos-tienda","titulo-calificacion","bloque-calificacion",
+         "titulo-opinion","bloque-comentario","titulo-sugerencia",
+         "bloque-sugerencia","bloque-botones"]
+          .forEach(id => document.getElementById(id).style.display = "none");
+        document.getElementById("btn-dest-app").style.cssText    = "border:2px solid #C6A75E;background:white;color:#C6A75E";
+        document.getElementById("btn-dest-tienda").style.cssText = "border:2px solid #1a6e3c;background:white;color:#1a6e3c";
+
+        /* ── Confirmación visual ── */
+        const ok = document.getElementById("alerta-resena-ok");
+        ok.style.display = "flex";
+        ok.querySelector("div").innerHTML =
+          "<strong>¡Reseña enviada!</strong> Tu reseña fue recibida y está pendiente de aprobación.";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        setTimeout(() => { ok.style.display = "none"; }, 5500);
+
+        cargarMisResenas();
+
+      } catch (err) {
+        console.error("Error al enviar reseña:", err);
+        let msg = "❌ No se pudo enviar la reseña.";
+        if (err.code === "permission-denied") msg += " Sin permiso en Firestore.";
+        else msg += " " + (err.message || "");
+        alert(msg);
+      } finally {
+        btn.disabled = false; btn.textContent = "✉️ Publicar reseña";
+      }
+    });
+
+    /* ══════════════════════════════════
+       MIS RESEÑAS ENVIADAS
+    ══════════════════════════════════ */
+    function renderEstrellas(n) {
+      const v = Math.min(Math.max(parseInt(n) || 0, 0), 5);
+      return `<span class="estrellas-display">${"★".repeat(v)}<span class="vacia">${"★".repeat(5 - v)}</span></span>`;
+    }
+
+    async function cargarMisResenas() {
+      if (!usuarioActual) return;
+      const lista = document.getElementById("mis-resenas-lista");
+      lista.innerHTML = `<p class="text-secondary small">Cargando…</p>`;
+      try {
+        const q    = query(
+          collection(db, "resenas"),
+          where("usuarioId", "==", usuarioActual.uid)
+        );
+        const snap = await getDocs(q);
+        const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+          .sort((a, b) => {
+            const fa = a.fecha?.toDate?.() || 0;
+            const fb = b.fecha?.toDate?.() || 0;
+            return fb - fa;
+          });
+
+        if (docs.length === 0) {
+          lista.innerHTML = `<p class="text-secondary small">Aún no has enviado ninguna reseña.</p>`;
+          return;
+        }
+
+        lista.innerHTML = docs.map(r => {
+          const fecha = r.fecha?.toDate
+            ? r.fecha.toDate().toLocaleDateString("es-CO", { day:"2-digit", month:"short", year:"numeric" })
+            : "—";
+          const estadoClass = { aprobada:"estado-aprobada", pendiente:"estado-pendiente", rechazada:"estado-rechazada" }[r.estado] || "estado-pendiente";
+          const estadoLabel = { aprobada:"✅ Aprobada", pendiente:"⏳ Pendiente", rechazada:"❌ Rechazada"  }[r.estado] || r.estado;
+
+          return `
+            <div class="card-resena-propia">
+              <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+                <div>
+                  <span style="font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:20px;margin-right:6px;
+                    background:${r.destino==='tienda'?'#e8f5e9':'#fff3e0'};
+                    color:${r.destino==='tienda'?'#1a6e3c':'#C6A75E'};">
+                    ${r.destino==='tienda'?'🏪 Tienda':'📱 App'}
+                  </span>
+                  <span class="fw-bold">${r.referencia||''}</span>
+                  ${r.tiendaNombre && r.destino==='tienda'
+                    ? `<span class="text-muted ms-1" style="font-size:.8rem;">· ${r.tiendaNombre}</span>` : ''}
+                  <span class="text-muted ms-2" style="font-size:0.8rem;">(${r.tipo||''})</span>
+                </div>
+                <span class="resena-estado-badge ${estadoClass}">${estadoLabel}</span>
+              </div>
+              <div class="mb-1">${renderEstrellas(r.calificacion)}</div>
+              <p class="mb-1" style="font-size:0.9rem;">${r.comentario||''}</p>
+              ${r.sugerencia ? `<p class="mb-0 text-secondary" style="font-size:0.82rem;">💡 ${r.sugerencia}</p>` : ""}
+              <small class="text-muted">📅 ${fecha}</small>
+            </div>`;
+        }).join("");
+
+      } catch (err) {
+        console.error(err);
+        lista.innerHTML = `<p class="text-danger small">Error al cargar reseñas: ${err.message}</p>`;
+      }
+    }
+
+    /* ══════════════════════════════════
+       NAVEGACIÓN ENTRE SECCIONES
+    ══════════════════════════════════ */
+    window.mostrarResenas = function () {
+      document.getElementById("seccion-principal").style.display = "none";
+      document.getElementById("seccion-resenas").style.display   = "block";
+      document.getElementById("alerta-resena-ok").style.display  = "none";
+      document.getElementById("alerta-resena-mod").style.display = "none";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      cargarMisResenas();
+    };
+
+    window.volverPanelUsuario = function () {
+      document.getElementById("seccion-resenas").style.display   = "none";
+      document.getElementById("seccion-principal").style.display = "block";
+      document.getElementById("form-resena").classList.remove("was-validated");
+      document.getElementById("form-resena").reset();
+      document.getElementById("destino-resena").value = "";
+      document.getElementById("char-count").textContent     = "0";
+      document.getElementById("char-count-sug").textContent = "0";
+      document.getElementById("estrellas-error").style.display = "none";
+      ["campos-app","campos-tienda","titulo-calificacion","bloque-calificacion",
+       "titulo-opinion","bloque-comentario","titulo-sugerencia","bloque-sugerencia","bloque-botones"]
+        .forEach(id => document.getElementById(id).style.display = "none");
+      document.getElementById("btn-dest-app").style.cssText    = "border:2px solid #C6A75E;background:white;color:#C6A75E";
+      document.getElementById("btn-dest-tienda").style.cssText = "border:2px solid #1a6e3c;background:white;color:#1a6e3c";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+  </script>
+
+</body>
+</html>
 
     function contienePalabraOfensiva(texto) {
       const textoLimpio = texto.toLowerCase()
