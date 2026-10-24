@@ -84,10 +84,19 @@
 .tc-more { background: none; border: 0; cursor: pointer; }
 
 @media (max-width: 560px) {
-  .tc .pn-oc-row { grid-template-columns: minmax(70px, 96px) minmax(0, 1fr) auto 36px; gap: 8px; }
-  .tc-buy { width: 36px; height: 36px; font-size: 15px; }
+  .tc .pn-oc-row { grid-template-columns: minmax(0, 1fr) auto 38px; grid-template-areas: "store price buy" "bar bar bar"; gap: 8px 10px; }
+  .tc .pn-oc-store { grid-area: store; }
+  .tc .pn-oc-price { grid-area: price; }
+  .tc .pn-oc-bar { grid-area: bar; }
+  .tc-buy { grid-area: buy; width: 38px; height: 38px; font-size: 15px; }
+  .tc-kpis { gap: 8px; }
+  .tc-kpi { padding: 9px 8px; border-radius: 14px; text-align: center; }
   .tc-kpi strong { font-size: 17px; }
-  .tc-kpi { padding: 9px 10px; }
+  .tc-kpi small { font-size: 11px; }
+  .tc-loc { flex-direction: column; }
+  .tc-geo, .tc-loc select { width: 100%; justify-content: center; }
+  .tc-loc select { text-align: left; }
+  .tc .pn-oc-cta { width: 100%; }
 }
 
 /* El campo de búsqueda vive dentro de la píldora: sin los estilos globales de los inputs */

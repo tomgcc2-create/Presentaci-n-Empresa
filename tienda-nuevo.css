@@ -293,3 +293,68 @@ body.tienda-nueva .tn-card::after { display: none; }
 body.tienda-nueva .tn-card span { background: var(--white); color: var(--navy); box-shadow: 0 6px 14px rgba(31,42,68,.15); }
 body.tienda-nueva .tn-top { margin-bottom: -120px; }
 body.tienda-nueva .tn-topbar { background: var(--white); border-radius: 48px; padding: 16px; box-shadow: none; }
+
+/* ═══════════════════════════════════════════════════════════
+   MÓVIL — comparador de precios (banner, ficha, números 01-02-03)
+   Va al final y con !important porque las reglas de escritorio
+   de arriba también lo usan (1fr 1fr, posiciones absolutas, etc.)
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  /* Carrusel superior: sin solaparse con el banner */
+  body.tienda-nueva .tn-top { padding-top: 96px; margin-bottom: 14px !important; width: 94vw; }
+  body.tienda-nueva .tn-topbar { width: 100%; border-radius: 30px; padding: 10px !important; }
+  body.tienda-nueva .tn-top .tn-arrow { display: none; }
+  body.tienda-nueva .tn-top .tn-card { height: 150px; flex-basis: min(168px, 52vw); border-radius: 24px; }
+
+  /* Banner: una sola columna */
+  body.tienda-nueva .pn-oc.tc { margin-top: 0 !important; }
+  body.tienda-nueva .pn-oc-stage {
+    grid-template-columns: minmax(0, 1fr) !important; gap: 22px !important;
+    padding: 26px 16px 18px !important; border-radius: 32px !important; transform: none !important;
+  }
+  body.tienda-nueva .pn-oc-intro { padding: 0 !important; display: block; min-width: 0; }
+  body.tienda-nueva .pn-oc-intro h2, body.tienda-nueva #tcTitulo { font-size: clamp(34px, 10.5vw, 52px) !important; max-width: none; }
+  body.tienda-nueva .pn-oc-intro > p { font-size: 15.5px; margin-top: 12px; }
+  body.tienda-nueva .pn-oc-search { margin-top: 18px; padding: 6px 6px 6px 16px; }
+  body.tienda-nueva .pn-oc-search input { height: 44px; }
+  body.tienda-nueva .pn-oc-go { height: 44px; padding: 0 18px; }
+  body.tienda-nueva .tc-stats { margin-top: 16px; }
+
+  /* Ficha del producto */
+  body.tienda-nueva .pn-oc-feat-wrap { min-height: 0 !important; margin: 0 !important; padding: 8px !important; border-radius: 30px !important; }
+  body.tienda-nueva .pn-oc-feat-wrap .pn-oc-feat { min-height: 0 !important; height: auto !important; border-radius: 24px !important; }
+  body.tienda-nueva .pn-oc-feat-media { height: 170px; }
+  body.tienda-nueva .pn-oc-where { max-width: calc(100% - 32px); font-size: 12.5px; padding: 6px 12px; }
+  body.tienda-nueva .pn-oc-feat-body { padding: 16px 14px 18px; }
+  body.tienda-nueva .pn-oc-meta { flex-direction: column; align-items: flex-start; gap: 2px; }
+  body.tienda-nueva .pn-oc-feat h3 { font-size: 22px; }
+
+  /* Resumen de ahorro + botones */
+  body.tienda-nueva .pn-oc-save { flex-direction: column; align-items: stretch; gap: 12px; padding: 16px !important; }
+  body.tienda-nueva .pn-oc-cta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
+  body.tienda-nueva .pn-oc-cta .pn-oc-add, body.tienda-nueva .tc-now { justify-content: center; width: 100%; padding: 12px 8px; }
+  body.tienda-nueva .pn-oc-cta .pn-oc-add, body.tienda-nueva .tc-now { white-space: nowrap; font-size: 14px; }
+  body.tienda-nueva .tc-now { background: var(--navy); color: var(--white) !important; border-radius: 999px; }
+  body.tienda-nueva .pn-oc-cta .pn-oc-more { grid-column: 1 / -1; text-align: center; padding: 6px; }
+
+  /* Números 01 02 03 y etiqueta: en fila, debajo de la ficha (ya no flotan encima) */
+  body.tienda-nueva .tn-float-row {
+    position: static !important; transform: none !important; left: auto !important; top: auto !important;
+    flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center;
+    gap: 10px; width: 100% !important; margin: 16px 0 0 !important;
+  }
+  body.tienda-nueva .tn-dot { width: 46px; height: 46px; font-size: 14px; }
+  body.tienda-nueva .tn-chip {
+    position: static !important; flex: 1 1 100%; text-align: center; white-space: normal;
+    order: 5; padding: 10px 16px; border-radius: 999px;
+  }
+
+  /* Cabecera de recomendaciones: los botones bajan en vez de empujar la página de lado */
+  body.tienda-nueva .st-reco-h { flex-wrap: wrap; gap: 12px; }
+  body.tienda-nueva .st-reco-h > div:first-child { min-width: 0; flex: 1 1 200px; }
+
+  /* Bloque de suscripción: que no sobrepase el ancho de la pantalla */
+  body.tienda-nueva .st-cta { box-sizing: border-box; max-width: 94vw; }
+  body.tienda-nueva .st-cta form { flex-wrap: wrap; }
+  body.tienda-nueva .st-cta input { min-width: 0; max-width: 100%; }
+}

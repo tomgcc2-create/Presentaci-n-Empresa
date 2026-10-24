@@ -294,7 +294,10 @@
   .pn-oc-search input { font-size: 16px; }
   .pn-oc-go { padding: 0 18px; }
   .pn-oc-feat-body { padding: 18px 16px 22px; }
-  .pn-oc-row { grid-template-columns: minmax(72px, 94px) minmax(0, 1fr) auto; gap: 10px; }
+  .pn-oc-row { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "store price" "bar bar"; gap: 8px 12px; }
+  .pn-oc-store { grid-area: store; }
+  .pn-oc-price { grid-area: price; }
+  .pn-oc-bar { grid-area: bar; height: 10px; }
   .pn-oc-arrow { display: none; }
   .pn-oc-card { width: 216px; }
   .pn-oc-card-img { height: 160px; }
